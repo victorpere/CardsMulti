@@ -9,10 +9,14 @@
 import Foundation
 import MultipeerConnectivity
 
-protocol ConnectionServiceManagerDelegate {
+@objc protocol ConnectionServiceManagerDelegate {
     
     func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [String])
-    func colorChanged(manager: ConnectionServiceManager, colorString: String)
+    
+    @objc optional func receivedData(manager: ConnectionServiceManager, data: Data)
+    
+    // test function
+    @objc optional func colorChanged(manager: ConnectionServiceManager, colorString: String)
     
 }
 
@@ -50,6 +54,16 @@ class ConnectionServiceManager : NSObject {
     deinit {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
+    }
+    
+    func sendData(data: Data) {
+        if session.connectedPeers.count > 0 {
+            do {
+                try self.session.send(data, toPeers: session.connectedPeers, with: MCSessionSendDataMode.reliable)
+            } catch {
+                print("%@", "error sending: \(error)")
+            }
+        }
     }
     
     // test: change color
@@ -122,8 +136,9 @@ extension ConnectionServiceManager : MCSessionDelegate {
                  didReceive data: Data,
                  fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
-        let str = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
-        self.delegate?.colorChanged(manager: self, colorString: str)
+        //let str = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
+        //self.delegate?.colorChanged!(manager: self, colorString: str)
+        self.delegate?.receivedData!(manager: self, data: data)
     }
     
     func session(_ session: MCSession,

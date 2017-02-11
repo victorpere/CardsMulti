@@ -12,7 +12,7 @@ import GameplayKit
 
 class GameViewController: UIViewController {
     
-    let connectionService = ConnectionServiceManager()
+    //let connectionService = ConnectionServiceManager()
     
     var connectionsLabel: UILabel!
     var backGroundView: UIView!
@@ -21,25 +21,28 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        connectionService.delegate = self
+        //connectionService.delegate = self
         
         // Configure the view.
         backGroundView = UIView(frame: view.frame)
-        backGroundView.backgroundColor = UIColor.green
+        backGroundView.backgroundColor = UIColor.black
         view.addSubview(backGroundView)
         
-        connectionsLabel = UILabel(frame: CGRect(x: 0, y:0, width: 500, height: 100))
+        /*
+        connectionsLabel = UILabel(frame: CGRect(x: 0, y:0, width: 500, height: 50))
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
+         */
         
+        /*
         testButton = UIButton(frame: CGRect(x: 100, y: 400, width: 300, height: 50))
         testButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         testButton.tag = 1
         testButton.setTitle("change colour", for: .normal)
         view.addSubview(testButton)
+        */
         
         
-        /*
         //let skView = self.view as! SKView
         let skView = SKView(frame: view.frame)
         view.addSubview(skView)
@@ -61,7 +64,7 @@ class GameViewController: UIViewController {
         scene.scaleMode = .aspectFill
         scene.backgroundColor = UIColor.clear
         skView.presentScene(scene)
-        */
+        
     }
     
     func buttonAction(sender: UIButton!) {
@@ -69,10 +72,10 @@ class GameViewController: UIViewController {
         if btnsendtag.tag == 1 {
             if backGroundView.backgroundColor == UIColor.green {
                 changeColor(UIColor.red)
-                connectionService.sendColor(colorName: "red")
+                //connectionService.sendColor(colorName: "red")
             } else {
                 changeColor(UIColor.green)
-                connectionService.sendColor(colorName: "green")
+                //connectionService.sendColor(colorName: "green")
             }
         }
     }
