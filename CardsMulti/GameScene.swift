@@ -31,6 +31,7 @@ class GameScene: SKScene {
     private var lastUpdateTime : TimeInterval = 0
     
     var connectionLabel : SKLabelNode!
+    var dividerLine: SKShapeNode!
 
     var selectedNode = CardSpriteNode()
     var lastSelectedNode = CardSpriteNode()
@@ -54,6 +55,10 @@ class GameScene: SKScene {
         connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: connectionLabel.frame.height / 2)
         self.addChild(connectionLabel)
         
+        var points = [CGPoint(x: 0, y: self.frame.height / 2), CGPoint(x: self.frame.width, y: self.frame.height / 2)]
+        dividerLine = SKShapeNode(points: &points, count: points.count)
+        self.addChild(dividerLine)
+        
         resetGame()
     }
     
@@ -73,8 +78,9 @@ class GameScene: SKScene {
             cardNode.faceUp = true
             cardNode.selectable = true
             cardNode.zPosition = CGFloat(0 - cardNumber)
-            let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
-            cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + CGFloat(border) + cardOffset, y: self.frame.size.height / 2 - CGFloat(border) - yPeek - cardNode.frame.size.height / 2 - cardOffset)
+            //let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
+            cardNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY * 1.5)
+            //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + CGFloat(border) + cardOffset, y: self.frame.size.height - CGFloat(border) - yPeek - cardNode.frame.size.height / 2 - cardOffset)
             self.addChild(cardNode)
             lastSelectedNode = cardNode
         }
@@ -191,12 +197,18 @@ extension GameScene : ConnectionServiceManagerDelegate {
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
-        //get CGPoint from Data
-        let str = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
-        let newPosition = CGPointFromString(str)
-        lastSelectedNode.position = newPosition
+        
+        var cardDictionary = NSDictionary()
+        do {
+            cardDictionary = try JSONSerialization.jsonObject(with: data) as! NSDictionary
+            let newPositionRelative = CGPointFromString(cardDictionary["relativePosition"] as! String)
+            let newPosition = CGPoint(x: newPositionRelative.x * self.frame.width, y: newPositionRelative.y * self.frame.height)
+            let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height * 1.5 - newPosition.y)
+            lastSelectedNode.position = newPositionInverted
+        } catch {
+            print("\(error)")
+        }
     }
-    
 }
 
 
@@ -214,9 +226,20 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func sendPosition(of cardNode: CardSpriteNode) {
-        let newPositionString = NSStringFromCGPoint(cardNode.position)
-        let newPositionData = newPositionString.data(using: String.Encoding.utf8, allowLossyConversion: false)!
-        connectionService.sendData(data: newPositionData)
+        let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: cardNode.position.y / self.frame.height)
+        //let newPositionString = NSStringFromCGPoint(newPositionRelative)
+        let cardDictionary: NSDictionary = [
+            "cardSymbol": (cardNode.card?.symbol())! as String,
+            "faceUp": String(cardNode.faceUp),
+            "relativePosition": NSStringFromCGPoint(newPositionRelative)
+        ]
+        var jsonData = Data()
+        do {
+            jsonData = try JSONSerialization.data(withJSONObject: cardDictionary)
+            connectionService.sendData(data: jsonData)
+        } catch {
+            print("Error sending json data: \(error)")
+        }
     }
 }
 
