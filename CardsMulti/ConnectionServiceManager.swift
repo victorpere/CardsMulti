@@ -11,7 +11,8 @@ import MultipeerConnectivity
 
 @objc protocol ConnectionServiceManagerDelegate {
     
-    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [String])
+    //func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [String])
+    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID])
     
     @objc optional func receivedData(manager: ConnectionServiceManager, data: Data)
     
@@ -129,7 +130,8 @@ extension ConnectionServiceManager : MCSessionDelegate {
                  peer peerID: MCPeerID,
                  didChange state: MCSessionState) {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.stringValue())")
-        self.delegate?.connectedDevicesChanged(manager: self, connectedDevices: session.connectedPeers.map({$0.displayName}))
+        //self.delegate?.connectedDevicesChanged(manager: self, connectedDevices: session.connectedPeers.map({$0.displayName}))
+        self.delegate?.connectedDevicesChanged(manager: self, connectedDevices: session.connectedPeers)
     }
     
     func session(_ session: MCSession,

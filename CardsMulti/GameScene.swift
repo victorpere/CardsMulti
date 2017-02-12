@@ -8,11 +8,13 @@
 
 import SpriteKit
 import GameplayKit
+import MultipeerConnectivity
 
 class GameScene: SKScene {
+    let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     
-    let numberOfCards = 1
-    let minRank = 2
+    let numberOfCards = 0
+    let minRank = 6
     let border: CGFloat = 10.0
     let resetDuration = 0.5
     let verticalHeight = 0.3
@@ -21,7 +23,7 @@ class GameScene: SKScene {
     let yOffset: CGFloat = 5.0
     let xPeek: CGFloat = 20.0
     let yPeek: CGFloat = 20.0
-
+    let buffer: CGFloat = 100.0
     
     let connectionService = ConnectionServiceManager()
     
@@ -53,13 +55,15 @@ class GameScene: SKScene {
         connectionLabel.fontColor = UIColor.green
         connectionLabel.fontSize = 20
         connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: connectionLabel.frame.height / 2)
+        connectionLabel.zPosition = 100
         self.addChild(connectionLabel)
         
         var points = [CGPoint(x: 0, y: self.frame.height / 2), CGPoint(x: self.frame.width, y: self.frame.height / 2)]
         dividerLine = SKShapeNode(points: &points, count: points.count)
+        dividerLine.zPosition = -100
         self.addChild(dividerLine)
         
-        resetGame()
+        self.resetGame()
     }
     
     override func sceneDidLoad() {
@@ -69,22 +73,39 @@ class GameScene: SKScene {
     }
     
     func resetGame() {
-        //allCards = newShuffledDeck(minRank: minRank, numberOfCards: numberOfCards, name: "deck")
+        allCards = newShuffledDeck(minRank: minRank, numberOfCards: numberOfCards, name: "deck")
+        /*
         let newCard = CardSpriteNode(card: Card(suit: Suit.spades, rank: Rank.queen), name: "deck")
         allCards.append(newCard)
-        for (cardNumber,cardNode) in allCards.enumerated() {
+        let newCard2 = CardSpriteNode(card: Card(suit: Suit.diamonds, rank: .six), name: "deck")
+        allCards.append(newCard2)
+        */
+        
+        for cardNode in allCards {
+            self.addChild(cardNode)
+        }
+
+        self.resetCards(sync: false)
+    }
+    
+    func resetCards(sync: Bool) {
+        shuffle(&allCards)
+        
+        for cardNode in allCards {
             cardNode.delegate = self
-            //cardNode.texture = cardNode.backTexture
-            cardNode.faceUp = true
+            cardNode.texture = cardNode.backTexture
+            cardNode.faceUp = false
             cardNode.selectable = true
-            cardNode.zPosition = CGFloat(0 - cardNumber)
+            //cardNode.zPosition = CGFloat(0 - cardNumber)
+            cardNode.moveToFront()
             //let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
             cardNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY * 1.5)
             //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + CGFloat(border) + cardOffset, y: self.frame.size.height - CGFloat(border) - yPeek - cardNode.frame.size.height / 2 - cardOffset)
-            self.addChild(cardNode)
-            lastSelectedNode = cardNode
-        }
 
+            if sync {
+                cardNode.delegate!.sendPosition(of: cardNode)
+            }
+        }
     }
     
     func selectNodeForTouch(touchLocation: CGPoint, tapCount: Int) {
@@ -120,7 +141,12 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
         for t in touches {
-            selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
+            if t.location(in: self).x > self.frame.width - cornerTapSize && t.location(in: self).y < cornerTapSize {
+                // bottom right corner
+                resetCards(sync: true)
+            } else {
+                selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
+            }
         }
     }
     
@@ -189,24 +215,54 @@ class GameScene: SKScene {
 
 extension GameScene : ConnectionServiceManagerDelegate {
     
-    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [String]) {
+    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID]) {
         OperationQueue.main.addOperation {
-            self.connectionLabel.text = "Connections: \(connectedDevices)"
+            let connectedDevicesNames = connectedDevices.map({$0.displayName})
+            self.connectionLabel.text = "Connections: \(connectedDevicesNames)"
             self.connectionLabel.position = CGPoint(x: self.connectionLabel.frame.width / 2, y: self.connectionLabel.frame.height / 2)
+            
+            if connectedDevices.count > 0 {
+                var allDevices = [self.myPeerId]
+                allDevices.append(contentsOf: connectedDevices)
+                allDevices.sort { $0.hashValue < $1.hashValue }
+                
+                if self.myPeerId == allDevices.first {
+                
+                    // reset deck and sync
+                    self.resetCards(sync: true)
+                }
+            }
         }
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
         
-        var cardDictionary = NSDictionary()
         do {
-            cardDictionary = try JSONSerialization.jsonObject(with: data) as! NSDictionary
+            let cardDictionary = try JSONSerialization.jsonObject(with: data) as! NSDictionary
+            let cardSymbol = cardDictionary["cardSymbol"] as! String
+            let cardNode = allCards.filter { $0.card?.symbol() == cardSymbol }.first
+            /*
+            for card in allCards {
+                if cardSymbol == card.card?.symbol() {
+                    self.selectedNode = card
+                }
+            }
+            */
             let newPositionRelative = CGPointFromString(cardDictionary["relativePosition"] as! String)
             let newPosition = CGPoint(x: newPositionRelative.x * self.frame.width, y: newPositionRelative.y * self.frame.height)
             let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height * 1.5 - newPosition.y)
-            lastSelectedNode.position = newPositionInverted
+            
+            cardNode?.flip(faceUp: cardDictionary["faceUp"] as! Bool)
+            //cardNode?.zPosition = cardDictionary["zPosition"] as! CGFloat
+            cardNode?.moveToFront()
+            cardNode?.position = newPositionInverted
+            /*
+            self.selectedNode.moveToFront()
+            self.selectedNode.flip(faceUp: cardDictionary["faceUp"] as! Bool)
+            self.selectedNode.position = newPositionInverted
+            */
         } catch {
-            print("\(error)")
+            print("Error deserializing json data \(error)")
         }
     }
 }
@@ -226,20 +282,24 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func sendPosition(of cardNode: CardSpriteNode) {
-        let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: cardNode.position.y / self.frame.height)
-        //let newPositionString = NSStringFromCGPoint(newPositionRelative)
-        let cardDictionary: NSDictionary = [
-            "cardSymbol": (cardNode.card?.symbol())! as String,
-            "faceUp": String(cardNode.faceUp),
-            "relativePosition": NSStringFromCGPoint(newPositionRelative)
-        ]
-        var jsonData = Data()
-        do {
-            jsonData = try JSONSerialization.data(withJSONObject: cardDictionary)
-            connectionService.sendData(data: jsonData)
-        } catch {
-            print("Error sending json data: \(error)")
-        }
+        //if cardNode.position.y > self.frame.midY - cardNode.frame.height / 2 - buffer {
+        
+            let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: cardNode.position.y / self.frame.height)
+
+            let cardDictionary: NSDictionary = [
+                "cardSymbol": (cardNode.card?.symbol())! as String,
+                "faceUp": cardNode.faceUp,
+                "relativePosition": NSStringFromCGPoint(newPositionRelative),
+                //"zPosition": cardNode.zPosition
+            ]
+
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: cardDictionary)
+                connectionService.sendData(data: jsonData)
+            } catch {
+                print("Error sending json data: \(error)")
+            }
+        //}
     }
 }
 

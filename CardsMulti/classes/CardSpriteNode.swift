@@ -17,7 +17,7 @@ class CardSpriteNode : SKSpriteNode {
     let cardWidthFullSizePixels: CGFloat = 500.0
     let cardWidthsPerScreen: CGFloat = 6.0
     let cardHeightFullSizePixels: CGFloat = 726.0
-    let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 181.5)
+    let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
     let flipDuration = 0.2
     let backImageName = "back"
 
@@ -82,6 +82,13 @@ class CardSpriteNode : SKSpriteNode {
             }
         }
         faceUp = !faceUp
+        self.delegate!.sendPosition(of: self)
+    }
+    
+    func flip(faceUp: Bool) {
+        if self.faceUp != faceUp {
+            self.flip()
+        }        
     }
     
     func move(transformation: CGPoint) {

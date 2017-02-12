@@ -105,7 +105,7 @@ class GameViewController: UIViewController {
         return true
     }
 }
-
+/*
 extension GameViewController : ConnectionServiceManagerDelegate {
     
     func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [String]) {
@@ -128,3 +128,4 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     }
     
 }
+ */

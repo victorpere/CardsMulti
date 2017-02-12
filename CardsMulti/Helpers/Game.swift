@@ -28,6 +28,10 @@ func newShuffledDeck(minRank: Int, numberOfCards: Int, name: String) -> [CardSpr
     return Array(deck.prefix(numberOfCards))
 }
 
+func shuffle(_ deck: inout [CardSpriteNode]) {
+    deck = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: deck) as! [CardSpriteNode]
+}
+
 /*
 func deal(deck: inout [CardSpriteNode], numberOfPlayers: Int, numberOfCards: Int) -> [Player] {
     var players = [Player]()
