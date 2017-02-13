@@ -170,6 +170,9 @@ class CardSpriteNode : SKSpriteNode {
         delegate!.moveToFront(self)
     }
     
+    func getCardsUnder() -> [CardSpriteNode] {
+        return self.delegate!.getCards(under: self)
+    }
     /*
     func play() -> CGPoint {
         return delegate!.play(self)
@@ -183,6 +186,7 @@ class CardSpriteNode : SKSpriteNode {
 protocol CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode)
     func sendPosition(of cardNode: CardSpriteNode)
+    func getCards(under card: CardSpriteNode) -> [CardSpriteNode]
     //func makeHumanPlayerHandSelectable()
     //func play(_ cardNode: CardSpriteNode) -> CGPoint
 }

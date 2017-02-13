@@ -9,6 +9,7 @@
 import SpriteKit
 import GameplayKit
 import MultipeerConnectivity
+import AudioToolbox
 
 class GameScene: SKScene {
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
@@ -36,11 +37,15 @@ class GameScene: SKScene {
     var dividerLine: SKShapeNode!
 
     var selectedNode = CardSpriteNode()
+    var selectedNodes = [CardSpriteNode]()
     var lastSelectedNode = CardSpriteNode()
     var movingSpeed = CGVector()
     var lastTouchTimestamp = 0.0
     
     var allCards = [CardSpriteNode]()
+    
+    var forceTouch = false
+    var forceTouchActivated = false
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -125,7 +130,23 @@ class GameScene: SKScene {
                     // this is the second tap - flip the card
                     selectedNode.flip()
                 }
+                
+                //print("Cards under touched node: ", terminator: "")
+                //displayCards(self.getCards(under: self.selectedNode))
             }
+        }
+    }
+    
+    func selectMultipleNodesForTouch(touchLocation: CGPoint) {
+        let touchedNode = self.atPoint(touchLocation)
+        if touchedNode is CardSpriteNode {
+            AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+            
+            let touchedCardNode = touchedNode as! CardSpriteNode
+            self.selectedNodes = self.getCards(under: touchedCardNode)
+            
+            print("force touched to drag cards: ", terminator: "")
+            displayCards(self.selectedNodes)
         }
     }
 
@@ -136,11 +157,16 @@ class GameScene: SKScene {
     
     func deselectNodeForTouch() {
         selectedNode = CardSpriteNode()
+        selectedNodes.removeAll()
     }
 
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
         for t in touches {
+            if forceTouch {
+                print("touch began force: \(t.force)")
+            }
+            
             if t.location(in: self).x > self.frame.width - cornerTapSize && t.location(in: self).y < cornerTapSize {
                 // bottom right corner
                 resetCards(sync: true)
@@ -152,6 +178,14 @@ class GameScene: SKScene {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
+            if forceTouch {
+                print("touch moved force: \(t.force)")
+                if t.force > 6.0 && !forceTouchActivated {
+                    forceTouchActivated = true
+                    selectMultipleNodesForTouch(touchLocation: t.location(in: self))
+                }
+            }
+            
             let currentPosition = t.location(in: self)
             let previousPosition = t.previousLocation(in: self)
             let transformation = CGPoint(x: currentPosition.x - previousPosition.x, y: currentPosition.y - previousPosition.y)
@@ -159,7 +193,12 @@ class GameScene: SKScene {
             //setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
             
             lastTouchTimestamp = t.timestamp
-            if selectedNode.selectable {
+            
+            if selectedNodes.count > 0 {
+                for node in selectedNodes {
+                    node.move(transformation: transformation)
+                }
+            } else if selectedNode.selectable {
                 selectedNode.move(transformation: transformation)
             }
             
@@ -169,7 +208,24 @@ class GameScene: SKScene {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            if selectedNode.selectable {
+            if forceTouch {
+                print("touch ended force: \(t.force)")
+                forceTouchActivated = false
+            }
+            
+            if selectedNodes.count > 0 {
+                let currentPosition = t.location(in: self)
+                let previousPosition = t.previousLocation(in: self)
+                let timeInterval = t.timestamp - lastTouchTimestamp
+                setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
+                //print("touches ended")
+                
+                for node in selectedNodes {
+                    node.stopMoving(startSpeed: movingSpeed)
+                }
+                
+                lastTouchTimestamp = 0.0
+            } else if selectedNode.selectable {
                 let currentPosition = t.location(in: self)
                 let previousPosition = t.previousLocation(in: self)
                 let timeInterval = t.timestamp - lastTouchTimestamp
@@ -301,5 +357,13 @@ extension GameScene : CardSpriteNodeDelegate {
             }
         //}
     }
+    
+    func getCards(under card: CardSpriteNode) -> [CardSpriteNode] {
+        let cards = self.allCards.filter { card.frame.contains($0.position) }
+        return cards.sorted { $0.zPosition < $1.zPosition }
+    }
 }
+
+
+
 

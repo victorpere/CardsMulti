@@ -68,6 +68,7 @@ func getFirstPlayer(players: [Player], trump: Card) -> Int {
     }
     return firstPlayer
 }
+*/
 
 // console log functions
 
@@ -81,6 +82,7 @@ func displayCards(_ cards: [CardSpriteNode]) {
     print()
 }
 
+/*
 func displayStatus(_ players: [Player], _ deck: [CardSpriteNode], _ trump: Card, _ discardPile: [CardSpriteNode]) {
     for player in players {
         print("Player \(player.playerNumber)'s hand:", terminator:"")

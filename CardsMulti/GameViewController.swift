@@ -16,6 +16,8 @@ class GameViewController: UIViewController {
     
     var connectionsLabel: UILabel!
     var backGroundView: UIView!
+    var skView: SKView!
+    var scene: GameScene!
     
     var testButton: UIButton!
 
@@ -44,7 +46,7 @@ class GameViewController: UIViewController {
         
         
         //let skView = self.view as! SKView
-        let skView = SKView(frame: view.frame)
+        skView = SKView(frame: view.frame)
         view.addSubview(skView)
         
         //let handArea = CGRect(x: 0.0, y: 0.0, width: view.frame.width, height: view.frame.height / 2)
@@ -58,7 +60,8 @@ class GameViewController: UIViewController {
         skView.ignoresSiblingOrder = true
         skView.allowsTransparency = true
         
-        let scene = GameScene(size: skView.frame.size)
+        scene = GameScene(size: skView.frame.size)
+        checkForceTouch()
         
         /* Set the scale mode to scale to fit the window */
         scene.scaleMode = .aspectFill
@@ -76,6 +79,15 @@ class GameViewController: UIViewController {
             } else {
                 changeColor(UIColor.green)
                 //connectionService.sendColor(colorName: "green")
+            }
+        }
+    }
+    
+    func checkForceTouch() {
+        if self.traitCollection.forceTouchCapability == UIForceTouchCapability.available {
+            print("force touch available")
+            if self.scene != nil {
+                self.scene.forceTouch = true
             }
         }
     }
@@ -104,7 +116,20 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+
 }
+
+
+/*
+ Trait collection change
+ */
+extension GameViewController {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        self.checkForceTouch()
+    }
+}
+
 /*
 extension GameViewController : ConnectionServiceManagerDelegate {
     
