@@ -108,9 +108,28 @@ class GameScene: SKScene {
             cardNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY * 1.5)
             //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + CGFloat(border) + cardOffset, y: self.frame.size.height - CGFloat(border) - yPeek - cardNode.frame.size.height / 2 - cardOffset)
 
+            /*
             if sync {
                 cardNode.delegate!.sendPosition(of: [cardNode])
             }
+             */
+        }
+        if sync {
+            self.sendPosition(of: allCards)
+        }
+    }
+    
+    func resetHand() {
+        let usableWidth = self.frame.size.width - (border * 2)
+
+        let hand = allCards.filter { $0.position.y < self.frame.midY }
+        
+        for (nodeNumber, cardNode) in hand.enumerated() {
+            
+            let node_x = ((usableWidth - cardNode.frame.size.width) / CGFloat(hand.count)) * CGFloat(nodeNumber)
+            let newPosition = CGPoint(x: cardNode.frame.size.width / 2 + node_x + border, y: cardNode.frame.size.height / 2 + border)
+            cardNode.moveToFront()
+            cardNode.moveAndFlip(to: newPosition, faceUp: true, duration: self.resetDuration)
         }
     }
     
@@ -168,7 +187,10 @@ class GameScene: SKScene {
                 print("touch began force: \(t.force)")
             }
             
-            if t.location(in: self).x > self.frame.width - cornerTapSize && t.location(in: self).y < cornerTapSize {
+            if t.location(in: self).x < cornerTapSize  && t.location(in: self).y < cornerTapSize {
+                // bottom left corner
+                self.resetHand()
+            } else if t.location(in: self).x > self.frame.width - cornerTapSize && t.location(in: self).y < cornerTapSize {
                 // bottom right corner
                 resetCards(sync: true)
             } else {

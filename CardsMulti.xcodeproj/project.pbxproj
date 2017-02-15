@@ -241,7 +241,7 @@
 				TargetAttributes = {
 					57B053D01E4E3BD20057E62F = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = DS2QAADY9B;
+						DevelopmentTeam = NB9MQB54L9;
 						ProvisioningStyle = Automatic;
 					};
 					57B053EA1E4E3BD20057E62F = {
@@ -471,11 +471,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = DS2QAADY9B;
+				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.victorius.CardsMulti;
+				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -485,11 +485,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = DS2QAADY9B;
+				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.victorius.CardsMulti;
+				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -572,6 +572,7 @@
 				57B054011E4E3BD20057E62F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		57B054021E4E3BD20057E62F /* Build configuration list for PBXNativeTarget "CardsMultiTests" */ = {
 			isa = XCConfigurationList;
@@ -580,6 +581,7 @@
 				57B054041E4E3BD20057E62F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		57B054051E4E3BD20057E62F /* Build configuration list for PBXNativeTarget "CardsMultiUITests" */ = {
 			isa = XCConfigurationList;
@@ -588,6 +590,7 @@
 				57B054071E4E3BD20057E62F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

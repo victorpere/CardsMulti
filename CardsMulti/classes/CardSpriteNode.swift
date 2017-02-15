@@ -73,16 +73,19 @@ class CardSpriteNode : SKSpriteNode {
         if faceUp {
             run(firstHalfFlip) {
                 self.texture = self.backTexture
-                self.run(secondHalfFlip)
+                self.run(secondHalfFlip) {
+                    self.delegate!.sendPosition(of: [self])
+                }
             }
         } else {
             run(firstHalfFlip) {
                 self.texture = self.frontTexture
-                self.run(secondHalfFlip)
+                self.run(secondHalfFlip) {
+                    self.delegate!.sendPosition(of: [self])
+                }
             }
         }
         faceUp = !faceUp
-        self.delegate!.sendPosition(of: [self])
     }
     
     func flip(faceUp: Bool) {
@@ -136,6 +139,8 @@ class CardSpriteNode : SKSpriteNode {
         self.run(movement) {
             if self.faceUp != faceUp {
                 self.flip()
+            } else {
+                self.delegate!.sendPosition(of: [self])
             }
             self.moving = false
             //print(self.card?.symbol()," moveAndFlip ", newPosition, self.position)
