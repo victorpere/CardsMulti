@@ -25,6 +25,7 @@ class GameScene: SKScene {
     let xPeek: CGFloat = 20.0
     let yPeek: CGFloat = 20.0
     let buffer: CGFloat = 100.0
+    let forceTouchRatio: CGFloat = 0.9
     
     let connectionService = ConnectionServiceManager()
     
@@ -165,6 +166,10 @@ class GameScene: SKScene {
             let touchedCardNode = touchedNode as! CardSpriteNode
             self.selectedNodes = self.getCards(under: touchedCardNode)
             
+            for cardNode in self.selectedNodes {
+                cardNode.moveToFront()
+            }
+            
             print("force touched to drag cards: ", terminator: "")
             displayCards(self.selectedNodes)
         }
@@ -205,7 +210,7 @@ class GameScene: SKScene {
         for t in touches {
             if forceTouch {
                 print("touch moved force: \(t.force)")
-                if t.force > 6.0 && !forceTouchActivated {
+                if !forceTouchActivated && t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     forceTouchActivated = true
                     selectMultipleNodesForTouch(touchLocation: t.location(in: self))
                 }
