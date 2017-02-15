@@ -65,8 +65,10 @@ class GameScene: SKScene {
         connectionLabel.zPosition = 100
         self.addChild(connectionLabel)
         
-        var points = [CGPoint(x: 0, y: self.frame.height / 2), CGPoint(x: self.frame.width, y: self.frame.height / 2)]
+        //var points = [CGPoint(x: 0, y: self.frame.height - self.frame.width), CGPoint(x: self.frame.width, y: self.frame.height - self.frame.width)]
+        var points = [CGPoint(x: 0, y: 0), CGPoint(x: self.frame.width, y: 0)]
         dividerLine = SKShapeNode(points: &points, count: points.count)
+        dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
         dividerLine.zPosition = -100
         self.addChild(dividerLine)
         
@@ -106,7 +108,7 @@ class GameScene: SKScene {
             //cardNode.zPosition = CGFloat(0 - cardNumber)
             cardNode.moveToFront()
             //let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
-            cardNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY * 1.5)
+            cardNode.position = CGPoint(x: self.frame.midX, y: self.dividerLine.position.y + self.frame.width / 2)
             //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + CGFloat(border) + cardOffset, y: self.frame.size.height - CGFloat(border) - yPeek - cardNode.frame.size.height / 2 - cardOffset)
 
             /*
@@ -123,7 +125,7 @@ class GameScene: SKScene {
     func resetHand() {
         let usableWidth = self.frame.size.width - (border * 2)
 
-        let hand = allCards.filter { $0.position.y < self.frame.midY }
+        let hand = allCards.filter { $0.position.y < self.dividerLine.position.y }
         
         for (nodeNumber, cardNode) in hand.enumerated() {
             
@@ -149,7 +151,7 @@ class GameScene: SKScene {
                 
                 if tapCount > 1 {
                     // this is the second tap - flip the card
-                    selectedNode.flip()
+                    selectedNode.flip(sendPosition: true)
                 }
                 
                 //print("Cards under touched node: ", terminator: "")
@@ -335,9 +337,9 @@ extension GameScene : ConnectionServiceManagerDelegate {
 
                 let newPositionRelative = CGPointFromString(cardDictionary["relativePosition"] as! String)
                 let newPosition = CGPoint(x: newPositionRelative.x * self.frame.width, y: newPositionRelative.y * self.frame.height)
-                let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height * 1.5 - newPosition.y)
+                let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
             
-                cardNode?.flip(faceUp: cardDictionary["faceUp"] as! Bool)
+                cardNode?.flip(faceUp: cardDictionary["faceUp"] as! Bool, sendPosition: false)
                 //cardNode?.zPosition = cardDictionary["zPosition"] as! CGFloat
                 cardNode?.moveToFront()
                 cardNode?.position = newPositionInverted

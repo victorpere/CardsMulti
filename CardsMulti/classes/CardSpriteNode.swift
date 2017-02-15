@@ -15,7 +15,7 @@ class CardSpriteNode : SKSpriteNode {
     let accelerationTimeInterval = 0.001
 
     let cardWidthFullSizePixels: CGFloat = 500.0
-    let cardWidthsPerScreen: CGFloat = 6.0
+    let cardWidthsPerScreen: CGFloat = 8.0
     let cardHeightFullSizePixels: CGFloat = 726.0
     let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
     let flipDuration = 0.2
@@ -55,17 +55,17 @@ class CardSpriteNode : SKSpriteNode {
     
     func getScale() -> CGFloat {
         let screenSize: CGRect = UIScreen.main.bounds
-        //let screenScale = UIScreen.main.scale
-        //let screenWidthPixels = screenSize.width * 2 // * screenScale  // * 2
-        //let cardWidthPixels = screenWidthPixels / cardWidthsPerScreen
-        //return cardWidthPixels / cardWidthFullSizePixels
+
+        let screenWidthPixels = screenSize.width * 2
+        let cardWidthPixels = screenWidthPixels / cardWidthsPerScreen
+        return cardWidthPixels / cardWidthFullSizePixels
         
-        let screenHeightPixels = screenSize.height * 2
-        let cardHeightPixels = screenHeightPixels / cardHeightsPerScreen
-        return cardHeightPixels / cardHeightFullSizePixels
+        //let screenHeightPixels = screenSize.height * 2
+        //let cardHeightPixels = screenHeightPixels / cardHeightsPerScreen
+        //return cardHeightPixels / cardHeightFullSizePixels
     }
     
-    func flip() {
+    func flip(sendPosition: Bool) {
         let firstHalfFlip = SKAction.scaleX(to: 0.0, duration: flipDuration)
         let secondHalfFlip = SKAction.scaleX(to: cardScale, duration: flipDuration)
         
@@ -74,23 +74,27 @@ class CardSpriteNode : SKSpriteNode {
             run(firstHalfFlip) {
                 self.texture = self.backTexture
                 self.run(secondHalfFlip) {
-                    self.delegate!.sendPosition(of: [self])
+                    if sendPosition {
+                        self.delegate!.sendPosition(of: [self])
+                    }
                 }
             }
         } else {
             run(firstHalfFlip) {
                 self.texture = self.frontTexture
                 self.run(secondHalfFlip) {
-                    self.delegate!.sendPosition(of: [self])
+                    if sendPosition {
+                        self.delegate!.sendPosition(of: [self])
+                    }
                 }
             }
         }
         faceUp = !faceUp
     }
     
-    func flip(faceUp: Bool) {
+    func flip(faceUp: Bool, sendPosition: Bool) {
         if self.faceUp != faceUp {
-            self.flip()
+            self.flip(sendPosition: sendPosition)
         }        
     }
     
@@ -138,7 +142,7 @@ class CardSpriteNode : SKSpriteNode {
         let movement = SKAction.move(to: newPosition, duration: duration)
         self.run(movement) {
             if self.faceUp != faceUp {
-                self.flip()
+                self.flip(sendPosition: true)
             } else {
                 self.delegate!.sendPosition(of: [self])
             }
