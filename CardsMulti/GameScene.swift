@@ -37,7 +37,6 @@ class GameScene: SKScene {
     var connectionLabel : SKLabelNode!
     var dividerLine: SKShapeNode!
 
-    var selectedNode = CardSpriteNode()
     var selectedNodes = [CardSpriteNode]()
     var lastSelectedNode = CardSpriteNode()
     var movingSpeed = CGVector()
@@ -144,14 +143,12 @@ class GameScene: SKScene {
             // select card to move
             let touchedCardNode = touchedNode as! CardSpriteNode
             if touchedCardNode.selectable {
-                if !selectedNode.isEqual(touchedCardNode) {
-                    selectedNode = touchedCardNode
-                    selectedNode.moveToFront()
-                }
-                
+                touchedCardNode.moveToFront()
+                self.selectedNodes = [touchedCardNode]
+
                 if tapCount > 1 {
                     // this is the second tap - flip the card
-                    selectedNode.flip(sendPosition: true)
+                    touchedCardNode.flip(sendPosition: true)
                 }
                 
                 //print("Cards under touched node: ", terminator: "")
@@ -183,7 +180,6 @@ class GameScene: SKScene {
     }
     
     func deselectNodeForTouch() {
-        selectedNode = CardSpriteNode()
         selectedNodes.removeAll()
     }
 
@@ -226,12 +222,11 @@ class GameScene: SKScene {
             
             if selectedNodes.count > 0 {
                 selectedNodes.move(transformation: transformation)
-                if t.timestamp - lastSendPositionTimestamp >= 0.1 {
+                let timeElapsed = t.timestamp - lastSendPositionTimestamp
+                if timeElapsed >= 0.1 || (selectedNodes.count <= 2 && timeElapsed >= 0.05) {
                     lastSendPositionTimestamp = t.timestamp
                     self.sendPosition(of: selectedNodes)
                 }
-            } else if selectedNode.selectable {
-                selectedNode.move(transformation: transformation)
             }
             
             lastTouchTimestamp = t.timestamp
@@ -258,18 +253,10 @@ class GameScene: SKScene {
                 }
                 
                 lastTouchTimestamp = 0.0
-            } else if selectedNode.selectable {
-                let currentPosition = t.location(in: self)
-                let previousPosition = t.previousLocation(in: self)
-                let timeInterval = t.timestamp - lastTouchTimestamp
-                setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
-                //print("touches ended")
-                selectedNode.stopMoving(startSpeed: movingSpeed)
-                lastTouchTimestamp = 0.0
             }
         }
-        deselectNodeForTouch()
         
+        deselectNodeForTouch()
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
