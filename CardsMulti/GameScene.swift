@@ -319,14 +319,14 @@ extension GameScene : ConnectionServiceManagerDelegate {
             for cardDictionaryArrayElement in cardDictionaryArray {
                 let cardDictionary = cardDictionaryArrayElement as! NSDictionary
                 
-                let cardSymbol = cardDictionary["cardSymbol"] as! String
+                let cardSymbol = cardDictionary["c"] as! String
                 let cardNode = allCards.filter { $0.card?.symbol() == cardSymbol }.first
 
-                let newPositionRelative = CGPointFromString(cardDictionary["relativePosition"] as! String)
+                let newPositionRelative = CGPointFromString(cardDictionary["p"] as! String)
                 let newPosition = CGPoint(x: newPositionRelative.x * self.frame.width, y: newPositionRelative.y * self.frame.height)
                 let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
             
-                cardNode?.flip(faceUp: cardDictionary["faceUp"] as! Bool, sendPosition: false)
+                cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
                 //cardNode?.zPosition = cardDictionary["zPosition"] as! CGFloat
                 cardNode?.moveToFront()
                 cardNode?.position = newPositionInverted
@@ -358,9 +358,9 @@ extension GameScene : CardSpriteNodeDelegate {
             let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: cardNode.position.y / self.frame.height)
 
             let cardDictionary: NSDictionary = [
-                "cardSymbol": (cardNode.card?.symbol())! as String,
-                "faceUp": cardNode.faceUp,
-                "relativePosition": NSStringFromCGPoint(newPositionRelative),
+                "c": (cardNode.card?.symbol())! as String,
+                "f": cardNode.faceUp,
+                "p": NSStringFromCGPoint(newPositionRelative),
                 //"zPosition": cardNode.zPosition
             ]
             
@@ -371,7 +371,7 @@ extension GameScene : CardSpriteNodeDelegate {
             let jsonData = try JSONSerialization.data(withJSONObject: cardDictionaryArray)
             connectionService.sendData(data: jsonData)
         } catch {
-            print("Error sending json data: \(error)")
+            print("Error serializing json data: \(error)")
         }
 
     }
