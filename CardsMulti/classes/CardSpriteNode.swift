@@ -122,15 +122,14 @@ class CardSpriteNode : SKSpriteNode {
 
             run(firstHalfFlip) {
                 self.texture = newTexture
-                self.run(secondHalfFlip) {
-                    if sendPosition {
-                        self.delegate!.sendPosition(of: [self])
-                    }
-                }
+                self.run(secondHalfFlip)
             }
         }
         
         faceUp = !faceUp
+        if sendPosition {
+            self.delegate!.sendPosition(of: [self])
+        }
     }
     
     func flip(faceUp: Bool, sendPosition: Bool) {
