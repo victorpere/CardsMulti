@@ -20,7 +20,7 @@ class CardSpriteNode : SKSpriteNode {
     let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
     let flipDuration = 0.2
     let backImageName = "back"
-
+    
     var cardScale: CGFloat = 0.25
     
     var card: Card?
@@ -29,6 +29,9 @@ class CardSpriteNode : SKSpriteNode {
     var faceUp = true
     var moving = false
     var selectable = false
+    
+    var flipToFrontAction: SKAction!
+    var flipToBackAction: SKAction!
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -51,6 +54,19 @@ class CardSpriteNode : SKSpriteNode {
         self.name = name
         self.cardScale = self.getScale()
         self.setScale(cardScale)
+        
+        if #available(iOS 10.0, *) {
+            self.flipToFrontAction = Actions.getFlipAction(texture: self.frontTexture!, duration: self.flipDuration)
+            self.flipToBackAction = Actions.getFlipAction(texture: self.backTexture!, duration: self.flipDuration)
+        } else {
+            let flipFirstHalfFlip = SKAction.scaleX(to: 0.0, duration: flipDuration)
+            let flipSecondHalfFlip = SKAction.scaleX(to: cardScale, duration: flipDuration)
+            let textureChangeToFront = SKAction.setTexture(self.frontTexture!)
+            let textureChangeToBack = SKAction.setTexture(self.backTexture!)
+            
+            self.flipToFrontAction = SKAction.sequence([flipFirstHalfFlip, textureChangeToFront, flipSecondHalfFlip])
+            self.flipToBackAction = SKAction.sequence([flipFirstHalfFlip, textureChangeToBack, flipSecondHalfFlip])
+        }
     }
     
     func getScale() -> CGFloat {
@@ -66,64 +82,10 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     func flip(sendPosition: Bool) {
-
-        var newTexture: SKTexture
         if faceUp {
-            newTexture = self.backTexture!
+            self.run(flipToBackAction)
         } else {
-            newTexture = self.frontTexture!
-        }
-        
-        if #available(iOS 10.0, *) {
-            let originalPositions: [vector_float2] = [
-                vector_float2(0, 0), vector_float2(1, 0),
-                vector_float2(0, 1), vector_float2(1, 1)
-            ]
-            let firstHalfDestinationPositions: [vector_float2] = [
-                vector_float2(0.5, 0.0), vector_float2(0.5, -0.1),
-                vector_float2(0.5, 1.0), vector_float2(0.5, 1.1)
-            ]
-            let switchDestinationPositions: [vector_float2] = [
-                vector_float2(0.5, -0.1), vector_float2(0.5, 0.0),
-                vector_float2(0.5, 1.1), vector_float2(0.5, 1.0)
-            ]
-            
-            let firstHalfFlipGeometryGrid = SKWarpGeometryGrid(columns: 1, rows: 1, sourcePositions: originalPositions, destinationPositions: firstHalfDestinationPositions)
-            let switchGeometryGrid = SKWarpGeometryGrid(columns: 1, rows: 1, sourcePositions: originalPositions, destinationPositions: switchDestinationPositions)
-            
-            let warpGeometryGridNoWarp = SKWarpGeometryGrid(columns: 1, rows: 1)
-            self.warpGeometry = warpGeometryGridNoWarp
-            
-            let firstHalfWarp = SKAction.warp(to: firstHalfFlipGeometryGrid, duration: self.flipDuration)
-            let firstHalfShade = SKAction.colorize(with: .gray, colorBlendFactor: 1, duration: self.flipDuration)
-            let firstHalfGroup = SKAction.group([firstHalfWarp!, firstHalfShade])
-            
-            let switchWarp = SKAction.warp(to: switchGeometryGrid, duration: 0)
-            
-            let secondHalfWarp = SKAction.warp(to: warpGeometryGridNoWarp, duration: self.flipDuration)
-            let secondHalfShade = SKAction.colorize(withColorBlendFactor: 0, duration: self.flipDuration)
-            let secondHalfGroup = SKAction.group([secondHalfWarp!, secondHalfShade])
-            
-            let textureChange = SKAction.setTexture(newTexture)
-            
-            let sequence = SKAction.sequence([firstHalfGroup,
-                                              textureChange,
-                                              switchWarp!,
-                                              secondHalfGroup
-                                            ])
-            self.run(sequence)
-            
-        } else {
-
-            let firstHalfFlip = SKAction.scaleX(to: 0.0, duration: flipDuration)
-            let secondHalfFlip = SKAction.scaleX(to: cardScale, duration: flipDuration)
-            
-            setScale(cardScale)
-
-            run(firstHalfFlip) {
-                self.texture = newTexture
-                self.run(secondHalfFlip)
-            }
+            self.run(flipToFrontAction)
         }
         
         faceUp = !faceUp
