@@ -27,7 +27,7 @@ class GameScene: SKScene {
     let buffer: CGFloat = 100.0
     let forceTouchRatio: CGFloat = 0.9
     
-    let connectionService = ConnectionServiceManager()
+    //let connectionService = ConnectionServiceManager()
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -47,6 +47,8 @@ class GameScene: SKScene {
     
     var forceTouch = false
     var forceTouchActivated = false
+    
+    var gameSceneDelegate: GameSceneDelegate?
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -55,7 +57,7 @@ class GameScene: SKScene {
     override init(size: CGSize) {
         super.init(size: size)
         
-        connectionService.delegate = self
+        //connectionService.delegate = self
 
         connectionLabel = SKLabelNode(text: "Connections: ")
         connectionLabel.fontColor = UIColor.green
@@ -369,7 +371,7 @@ extension GameScene : CardSpriteNodeDelegate {
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: cardDictionaryArray)
-            connectionService.sendData(data: jsonData)
+            self.gameSceneDelegate!.sendData(data: jsonData)
         } catch {
             print("Error serializing json data: \(error)")
         }
@@ -380,6 +382,13 @@ extension GameScene : CardSpriteNodeDelegate {
         let cards = self.allCards.filter { card.frame.contains($0.position) }
         return cards.sorted { $0.zPosition < $1.zPosition }
     }
+}
+
+
+protocol GameSceneDelegate {
+    
+    func sendData(data: Data)
+
 }
 
 

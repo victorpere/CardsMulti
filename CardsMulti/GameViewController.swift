@@ -9,10 +9,11 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import MultipeerConnectivity
 
 class GameViewController: UIViewController {
     
-    //let connectionService = ConnectionServiceManager()
+    let connectionService = ConnectionServiceManager()
     
     var connectionsLabel: UILabel!
     var backGroundView: UIView!
@@ -23,7 +24,7 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //connectionService.delegate = self
+        connectionService.delegate = self
         
         // Configure the view.
         backGroundView = UIView(frame: view.frame)
@@ -66,6 +67,7 @@ class GameViewController: UIViewController {
         /* Set the scale mode to scale to fit the window */
         scene.scaleMode = .aspectFill
         scene.backgroundColor = UIColor.clear
+        scene.gameSceneDelegate = self
         skView.presentScene(scene)
         
     }
@@ -130,27 +132,22 @@ extension GameViewController {
     }
 }
 
-/*
+
 extension GameViewController : ConnectionServiceManagerDelegate {
     
-    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [String]) {
-        OperationQueue.main.addOperation {
-            self.connectionsLabel.text = "Connections: \(connectedDevices)"
-        }
+    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID]) {
+        self.scene.connectedDevicesChanged(manager: manager, connectedDevices: connectedDevices)
     }
     
-    func colorChanged(manager: ConnectionServiceManager, colorString: String) {
-        OperationQueue.main.addOperation {
-            switch colorString {
-            case "red":
-                self.changeColor(UIColor.red)
-            case "green":
-                self.changeColor(UIColor.green)
-            default:
-                NSLog("%@", "Unknown color value received: \(colorString)")
-            }
-        }
+    func receivedData(manager: ConnectionServiceManager, data: Data) {
+        self.scene.receivedData(manager: manager, data: data)
     }
     
 }
- */
+
+extension GameViewController : GameSceneDelegate {
+    
+    func sendData(data: Data) {
+        self.connectionService.sendData(data: data)
+    }
+}
