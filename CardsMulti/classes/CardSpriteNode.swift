@@ -22,6 +22,7 @@ class CardSpriteNode : SKSpriteNode {
     let backImageName = "back"
     
     var cardScale: CGFloat = 0.25
+    var popScaleBy: CGFloat = 1.1
     
     var card: Card?
     var frontTexture: SKTexture?
@@ -32,6 +33,7 @@ class CardSpriteNode : SKSpriteNode {
     
     var flipToFrontAction: SKAction!
     var flipToBackAction: SKAction!
+    var popAction: SKAction!
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -67,6 +69,8 @@ class CardSpriteNode : SKSpriteNode {
             self.flipToFrontAction = SKAction.sequence([flipFirstHalfFlip, textureChangeToFront, flipSecondHalfFlip])
             self.flipToBackAction = SKAction.sequence([flipFirstHalfFlip, textureChangeToBack, flipSecondHalfFlip])
         }
+        
+        self.popAction = Actions.getPopAction(originalScale: cardScale, scaleBy: popScaleBy, duration: flipDuration)
     }
     
     func getScale() -> CGFloat {
@@ -179,6 +183,10 @@ class CardSpriteNode : SKSpriteNode {
     
     func moveToFront() {
         delegate!.moveToFront(self)
+    }
+    
+    func pop() {
+        self.run(popAction)
     }
     
     func getCardsUnder() -> [CardSpriteNode] {

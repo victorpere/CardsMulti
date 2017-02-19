@@ -26,6 +26,7 @@ class GameScene: SKScene {
     let yPeek: CGFloat = 20.0
     let buffer: CGFloat = 100.0
     let forceTouchRatio: CGFloat = 0.9
+    let timeToSelectMultipleNodes: TimeInterval = 2
     
     //let connectionService = ConnectionServiceManager()
     
@@ -42,6 +43,7 @@ class GameScene: SKScene {
     var movingSpeed = CGVector()
     var lastTouchTimestamp = 0.0
     var lastSendPositionTimestamp = 0.0
+    var lastTouchMoveTimestamp = 0.0
     
     var allCards = [CardSpriteNode]()
     
@@ -59,12 +61,15 @@ class GameScene: SKScene {
         
         //connectionService.delegate = self
 
+        
         connectionLabel = SKLabelNode(text: "Connections: ")
         connectionLabel.fontColor = UIColor.green
-        connectionLabel.fontSize = 20
+        connectionLabel.fontSize = 15
+        connectionLabel.fontName = "Helvetica"
         connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: connectionLabel.frame.height / 2)
         connectionLabel.zPosition = 100
         self.addChild(connectionLabel)
+        
         
         //var points = [CGPoint(x: 0, y: self.frame.height - self.frame.width), CGPoint(x: self.frame.width, y: self.frame.height - self.frame.width)]
         var points = [CGPoint(x: 0, y: 0), CGPoint(x: self.frame.width, y: 0)]
@@ -103,8 +108,7 @@ class GameScene: SKScene {
         
         for cardNode in allCards {
             cardNode.delegate = self
-            cardNode.texture = cardNode.backTexture
-            cardNode.faceUp = false
+            cardNode.flip(faceUp: false, sendPosition: false)
             cardNode.selectable = true
             //cardNode.zPosition = CGFloat(0 - cardNumber)
             cardNode.moveToFront()
@@ -168,6 +172,7 @@ class GameScene: SKScene {
             self.selectedNodes = self.getCards(under: touchedCardNode)
             
             for cardNode in self.selectedNodes {
+                cardNode.pop()
                 cardNode.moveToFront()
             }
             
@@ -188,10 +193,6 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
         for t in touches {
-            if forceTouch {
-                print("touch began force: \(t.force)")
-            }
-            
             if t.location(in: self).x < cornerTapSize  && t.location(in: self).y < cornerTapSize {
                 // bottom left corner
                 self.resetHand()
@@ -203,34 +204,40 @@ class GameScene: SKScene {
             }
             
             lastTouchTimestamp = t.timestamp
+            lastTouchMoveTimestamp = t.timestamp
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
+            print("touches moved at \(t.location(in: self)) at \(t.timestamp)")
+ 
+            let currentPosition = t.location(in: self)
+            let previousPosition = t.previousLocation(in: self)
+            let transformation = CGPoint(x: currentPosition.x - previousPosition.x, y: currentPosition.y - previousPosition.y)
+            
             if forceTouch {
-                print("touch moved force: \(t.force)")
+                //print("touch moved force: \(t.force)")
                 if !forceTouchActivated && t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     forceTouchActivated = true
                     selectMultipleNodesForTouch(touchLocation: t.location(in: self))
                 }
             }
             
-            let currentPosition = t.location(in: self)
-            let previousPosition = t.previousLocation(in: self)
-            let transformation = CGPoint(x: currentPosition.x - previousPosition.x, y: currentPosition.y - previousPosition.y)
             //let timeInterval = t.timestamp - lastTouchTimestamp
             //setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
             
-            if selectedNodes.count > 0 {
-                selectedNodes.move(transformation: transformation)
-                let timeElapsed = t.timestamp - lastSendPositionTimestamp
-                if timeElapsed >= 0.1 || (selectedNodes.count <= 2 && timeElapsed >= 0.05) {
-                    lastSendPositionTimestamp = t.timestamp
-                    self.sendPosition(of: selectedNodes)
+            if transformation.x != 0 || transformation.y != 0 {
+                lastTouchMoveTimestamp = t.timestamp
+                if selectedNodes.count > 0 {
+                    selectedNodes.move(transformation: transformation)
+                    let timeElapsed = t.timestamp - lastSendPositionTimestamp
+                    if timeElapsed >= 0.1 || (selectedNodes.count <= 2 && timeElapsed >= 0.05) {
+                        lastSendPositionTimestamp = t.timestamp
+                        self.sendPosition(of: selectedNodes)
+                    }
                 }
             }
-            
             lastTouchTimestamp = t.timestamp
         }
         
@@ -238,10 +245,7 @@ class GameScene: SKScene {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            if forceTouch {
-                print("touch ended force: \(t.force)")
-                forceTouchActivated = false
-            }
+            forceTouchActivated = false
             
             if selectedNodes.count > 0 {
                 let currentPosition = t.location(in: self)
@@ -255,6 +259,7 @@ class GameScene: SKScene {
                 }
                 
                 lastTouchTimestamp = 0.0
+                lastTouchMoveTimestamp = 0.0
             }
         }
         
@@ -283,6 +288,14 @@ class GameScene: SKScene {
         }
         
         self.lastUpdateTime = currentTime
+        
+        if !forceTouch {
+            if selectedNodes.count == 1 && !forceTouchActivated && lastTouchMoveTimestamp != 0.0 && currentTime - lastTouchMoveTimestamp >= timeToSelectMultipleNodes {
+                // select multiple nodes for devices with no force touch
+                forceTouchActivated = true
+                selectMultipleNodesForTouch(touchLocation: selectedNodes[0].position)
+            }
+        }
     }
 }
 
@@ -304,10 +317,14 @@ extension GameScene : ConnectionServiceManagerDelegate {
                 allDevices.append(contentsOf: connectedDevices)
                 allDevices.sort { $0.hashValue < $1.hashValue }
                 
+                print("Syncing with \(allDevices.first?.displayName)")
                 if self.myPeerId == allDevices.first {
                 
                     // reset deck and sync
-                    self.resetCards(sync: true)
+                    //self.resetCards(sync: true)
+                    
+                    // sync other peer(s) to one device
+                    self.sendPosition(of: self.allCards)
                 }
             }
         }

@@ -76,7 +76,7 @@ func displayCards(_ cards: [CardSpriteNode]) {
     for cardNode in cards {
         if let card = cardNode.card {
             print(" \(card.symbol())", terminator:"")
-        //print(" \(card.spriteName)", terminator:"")
+            //print(" \(card.spriteName)", terminator:"")
         }
     }
     print()

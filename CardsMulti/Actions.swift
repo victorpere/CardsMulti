@@ -8,29 +8,28 @@
 
 import GameplayKit
 
-@available(iOS 10.0, *)
 class Actions {
     
-    static let originalPositions: [vector_float2] = [
-        vector_float2(0, 0), vector_float2(1, 0),
-        vector_float2(0, 1), vector_float2(1, 1)
-    ]
-    static let flipFirstHalfDestinationPositions: [vector_float2] = [
-        vector_float2(0.5, 0.0), vector_float2(0.5, -0.1),
-        vector_float2(0.5, 1.0), vector_float2(0.5, 1.1)
-    ]
-    static let switchDestinationPositions: [vector_float2] = [
-        vector_float2(0.5, -0.1), vector_float2(0.5, 0.0),
-        vector_float2(0.5, 1.1), vector_float2(0.5, 1.0)
-    ]
-    
-    static let flipFirstHalfFlipGeometryGrid = SKWarpGeometryGrid(columns: 1, rows: 1, sourcePositions: originalPositions, destinationPositions: flipFirstHalfDestinationPositions)
-    static let switchGeometryGrid = SKWarpGeometryGrid(columns: 1, rows: 1, sourcePositions: originalPositions, destinationPositions: switchDestinationPositions)
-    static let warpGeometryGridNoWarp = SKWarpGeometryGrid(columns: 1, rows: 1)
-    
-    static let switchWarp = SKAction.warp(to: switchGeometryGrid, duration: 0)
-    
+    @available(iOS 10.0, *)
     static func getFlipAction(texture: SKTexture, duration: TimeInterval) -> SKAction {
+        let originalPositions: [vector_float2] = [
+            vector_float2(0, 0), vector_float2(1, 0),
+            vector_float2(0, 1), vector_float2(1, 1)
+        ]
+        let flipFirstHalfDestinationPositions: [vector_float2] = [
+            vector_float2(0.5, 0.0), vector_float2(0.5, -0.1),
+            vector_float2(0.5, 1.0), vector_float2(0.5, 1.1)
+        ]
+        let switchDestinationPositions: [vector_float2] = [
+            vector_float2(0.5, -0.1), vector_float2(0.5, 0.0),
+            vector_float2(0.5, 1.1), vector_float2(0.5, 1.0)
+        ]
+        
+        let flipFirstHalfFlipGeometryGrid = SKWarpGeometryGrid(columns: 1, rows: 1, sourcePositions: originalPositions, destinationPositions: flipFirstHalfDestinationPositions)
+        let switchGeometryGrid = SKWarpGeometryGrid(columns: 1, rows: 1, sourcePositions: originalPositions, destinationPositions: switchDestinationPositions)
+        let warpGeometryGridNoWarp = SKWarpGeometryGrid(columns: 1, rows: 1)
+        let switchWarp = SKAction.warp(to: switchGeometryGrid, duration: 0)
+        
         let flipFirstHalfWarp = SKAction.warp(to: flipFirstHalfFlipGeometryGrid, duration: duration)
         let flipFirstHalfShade = SKAction.colorize(with: .gray, colorBlendFactor: 1, duration: duration)
         let flipFirstHalfMove = SKAction.move(by: CGVector(dx: 20, dy: 10), duration: duration)
@@ -47,5 +46,11 @@ class Actions {
                                   textureChange,
                                   switchWarp!,
                                   flipSecondHalfGroup])
+    }
+    
+    static func getPopAction(originalScale: CGFloat, scaleBy: CGFloat, duration: TimeInterval) -> SKAction {
+        let popUp = SKAction.scale(by: scaleBy, duration: duration / 2)
+        let popDown = SKAction.scale(to: originalScale, duration: duration / 2)
+        return SKAction.sequence([popUp, popDown])
     }
 }

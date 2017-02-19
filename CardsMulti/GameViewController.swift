@@ -20,7 +20,7 @@ class GameViewController: UIViewController {
     var skView: SKView!
     var scene: GameScene!
     
-    var testButton: UIButton!
+    var startButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,28 +31,35 @@ class GameViewController: UIViewController {
         backGroundView.backgroundColor = UIColor.black
         view.addSubview(backGroundView)
         
-        /*
-        connectionsLabel = UILabel(frame: CGRect(x: 0, y:0, width: 500, height: 50))
+        
+        startButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height / 2, width: self.view.frame.width, height: 50))
+        startButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        startButton.tag = 1
+        startButton.setTitle("Start", for: .normal)
+        view.addSubview(startButton)
+        
+        connectionsLabel = UILabel(frame: CGRect(x: 0, y:self.view.frame.height - 30, width: self.view.frame.width, height: 30))
+        connectionsLabel.textColor = UIColor.green
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
-         */
         
-        /*
-        testButton = UIButton(frame: CGRect(x: 100, y: 400, width: 300, height: 50))
-        testButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        testButton.tag = 1
-        testButton.setTitle("change colour", for: .normal)
-        view.addSubview(testButton)
-        */
-        
+        self.startGame()
+    }
+    
+    func buttonAction(sender: UIButton!) {
+        let btnsendtag: UIButton = sender
+        if btnsendtag.tag == 1 {
+            self.startGame()
+        }
+    }
+    
+    func startGame() {
+        startButton.isHidden = true
+        connectionsLabel.isHidden = true
         
         //let skView = self.view as! SKView
         skView = SKView(frame: view.frame)
         view.addSubview(skView)
-        
-        //let handArea = CGRect(x: 0.0, y: 0.0, width: view.frame.width, height: view.frame.height / 2)
-        //UIColor.green.setFill()
-        //UIRectFill(handArea)
         
         skView.showsFPS = false
         skView.showsNodeCount = false
@@ -63,26 +70,13 @@ class GameViewController: UIViewController {
         
         scene = GameScene(size: skView.frame.size)
         checkForceTouch()
+        scene.gameSceneDelegate = self
         
         /* Set the scale mode to scale to fit the window */
         scene.scaleMode = .aspectFill
         scene.backgroundColor = UIColor.clear
-        scene.gameSceneDelegate = self
-        skView.presentScene(scene)
         
-    }
-    
-    func buttonAction(sender: UIButton!) {
-        let btnsendtag: UIButton = sender
-        if btnsendtag.tag == 1 {
-            if backGroundView.backgroundColor == UIColor.green {
-                changeColor(UIColor.red)
-                //connectionService.sendColor(colorName: "red")
-            } else {
-                changeColor(UIColor.green)
-                //connectionService.sendColor(colorName: "green")
-            }
-        }
+        skView.presentScene(scene)
     }
     
     func checkForceTouch() {
@@ -136,11 +130,18 @@ extension GameViewController {
 extension GameViewController : ConnectionServiceManagerDelegate {
     
     func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID]) {
-        self.scene.connectedDevicesChanged(manager: manager, connectedDevices: connectedDevices)
+        let connectedDevicesNames = connectedDevices.map({$0.displayName})
+        self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+        
+        if scene != nil {
+            self.scene.connectedDevicesChanged(manager: manager, connectedDevices: connectedDevices)
+        }
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
-        self.scene.receivedData(manager: manager, data: data)
+        if scene != nil {
+            self.scene.receivedData(manager: manager, data: data)
+        }
     }
     
 }
