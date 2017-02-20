@@ -26,7 +26,7 @@ class GameScene: SKScene {
     let yPeek: CGFloat = 20.0
     let buffer: CGFloat = 100.0
     let forceTouchRatio: CGFloat = 0.9
-    let timeToSelectMultipleNodes: TimeInterval = 2
+    let timeToSelectMultipleNodes: TimeInterval = 1.0
     
     //let connectionService = ConnectionServiceManager()
     
