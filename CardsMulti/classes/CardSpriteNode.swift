@@ -35,6 +35,11 @@ class CardSpriteNode : SKSpriteNode {
     var flipToBackAction: SKAction!
     var popAction: SKAction!
     
+    var moveSound: SKAction!
+    
+    var shadowNode: SKSpriteNode!
+    var shadowFlipAction: SKAction!
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -60,6 +65,8 @@ class CardSpriteNode : SKSpriteNode {
         if #available(iOS 10.0, *) {
             self.flipToFrontAction = Actions.getFlipAction(texture: self.frontTexture!, duration: self.flipDuration)
             self.flipToBackAction = Actions.getFlipAction(texture: self.backTexture!, duration: self.flipDuration)
+            
+            self.shadowFlipAction = Actions.getShadowFlipAction(duration: flipDuration)
         } else {
             let flipFirstHalfFlip = SKAction.scaleX(to: 0.0, duration: flipDuration)
             let flipSecondHalfFlip = SKAction.scaleX(to: cardScale, duration: flipDuration)
@@ -68,9 +75,19 @@ class CardSpriteNode : SKSpriteNode {
             
             self.flipToFrontAction = SKAction.sequence([flipFirstHalfFlip, textureChangeToFront, flipSecondHalfFlip])
             self.flipToBackAction = SKAction.sequence([flipFirstHalfFlip, textureChangeToBack, flipSecondHalfFlip])
+            
+            self.shadowFlipAction = SKAction.sequence([flipFirstHalfFlip, flipSecondHalfFlip])
         }
         
         self.popAction = Actions.getPopAction(originalScale: cardScale, scaleBy: popScaleBy, duration: flipDuration)
+        self.moveSound = Actions.getCardMoveSound()
+        
+        self.shadowNode = SKSpriteNode(texture: SKTexture(imageNamed: backImageName))
+        self.shadowNode.color = .black
+        self.shadowNode.colorBlendFactor = 1.0
+        self.shadowNode.alpha = 0.5
+        self.shadowNode.setScale(cardScale)
+        self.shadowNode.isHidden = true
     }
     
     func getScale() -> CGFloat {
@@ -86,10 +103,18 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     func flip(sendPosition: Bool) {
+        self.shadowNode.position = self.position
+        self.shadowNode.zPosition = self.zPosition - 0.5
+        self.shadowNode.isHidden = false
+        
         if faceUp {
             self.run(flipToBackAction)
         } else {
             self.run(flipToFrontAction)
+        }
+        
+        self.shadowNode.run(self.shadowFlipAction) {
+            self.shadowNode.isHidden = true
         }
         
         faceUp = !faceUp
@@ -146,7 +171,8 @@ class CardSpriteNode : SKSpriteNode {
     func moveAndFlip(to newPosition: CGPoint, faceUp: Bool, duration: Double) {
         self.moving = true
         let movement = SKAction.move(to: newPosition, duration: duration)
-        self.run(movement) {
+        let actionGroup = SKAction.group([movement, self.moveSound])
+        self.run(actionGroup) {
             if self.faceUp != faceUp {
                 self.flip(sendPosition: true)
             } else {

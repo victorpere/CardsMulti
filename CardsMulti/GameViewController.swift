@@ -28,7 +28,8 @@ class GameViewController: UIViewController {
         
         // Configure the view.
         backGroundView = UIView(frame: view.frame)
-        backGroundView.backgroundColor = UIColor.black
+        //backGroundView.backgroundColor = UIColor.black
+        backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
         view.addSubview(backGroundView)
         
         

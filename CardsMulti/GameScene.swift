@@ -98,6 +98,7 @@ class GameScene: SKScene {
         
         for cardNode in allCards {
             self.addChild(cardNode)
+            self.addChild(cardNode.shadowNode)
         }
 
         self.resetCards(sync: false)
