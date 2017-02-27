@@ -117,6 +117,7 @@ class CardSpriteNode : SKSpriteNode {
             self.shadowNode.isHidden = true
         }
         
+        self.delegate!.makeFlipSound()
         faceUp = !faceUp
         if sendPosition {
             self.delegate!.sendPosition(of: [self])
@@ -157,6 +158,7 @@ class CardSpriteNode : SKSpriteNode {
         }
         if movements.count > 0 {
             let movementSequence = SKAction.sequence(movements)
+            self.delegate!.makeMoveSound()
             self.run(movementSequence) {
                 self.moving = false
                 //self.delegate.makeHumanPlayerHandSelectable()
@@ -172,6 +174,7 @@ class CardSpriteNode : SKSpriteNode {
         self.moving = true
         let movement = SKAction.move(to: newPosition, duration: duration)
         let actionGroup = SKAction.group([movement, self.moveSound])
+        self.delegate!.makeMoveSound()
         self.run(actionGroup) {
             if self.faceUp != faceUp {
                 self.flip(sendPosition: true)
@@ -234,6 +237,8 @@ protocol CardSpriteNodeDelegate {
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode]
     //func makeHumanPlayerHandSelectable()
     //func play(_ cardNode: CardSpriteNode) -> CGPoint
+    func makeMoveSound()
+    func makeFlipSound()
 }
 
 

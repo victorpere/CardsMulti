@@ -13,6 +13,8 @@ import MultipeerConnectivity
 
 class GameViewController: UIViewController {
     
+    let buttonMargin: CGFloat = 8.0
+    
     let connectionService = ConnectionServiceManager()
     
     var connectionsLabel: UILabel!
@@ -20,46 +22,58 @@ class GameViewController: UIViewController {
     var skView: SKView!
     var scene: GameScene!
     
-    var startButton: UIButton!
+    
+    var restartButton: UIButton!
+    var numberOfPlayersButton: UIButton!
+    var lineUpCardsButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         connectionService.delegate = self
         
         // Configure the view.
+        
+        let playersIcon = UIImage(named: "icon_players")
+        let restartIcon = UIImage(named: "icon_restart")
+        let cardsIcon = UIImage(named: "icon_cards")
+        
+        let barHeight = (playersIcon?.size.height)! + 2 * buttonMargin
+        
         backGroundView = UIView(frame: view.frame)
         //backGroundView.backgroundColor = UIColor.black
         backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
         view.addSubview(backGroundView)
         
-        
-        startButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height / 2, width: self.view.frame.width, height: 50))
-        startButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        startButton.tag = 1
-        startButton.setTitle("Start", for: .normal)
-        view.addSubview(startButton)
-        
         connectionsLabel = UILabel(frame: CGRect(x: 0, y:self.view.frame.height - 30, width: self.view.frame.width, height: 30))
         connectionsLabel.textColor = UIColor.green
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
+
         
-        self.startGame()
-    }
-    
-    func buttonAction(sender: UIButton!) {
-        let btnsendtag: UIButton = sender
-        if btnsendtag.tag == 1 {
-            self.startGame()
-        }
-    }
-    
-    func startGame() {
-        startButton.isHidden = true
-        connectionsLabel.isHidden = true
+        restartButton = UIButton(frame: CGRect(x: view.frame.width - buttonMargin - (restartIcon?.size.width)!, y: view.frame.height - buttonMargin - (restartIcon?.size.height)!, width: (restartIcon?.size.height)!, height: (restartIcon?.size.height)!))
+        restartButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        restartButton.tag = 1
+        restartButton.setImage(restartIcon, for: .normal)
+        view.addSubview(restartButton)
+        
+        /*
+        numberOfPlayersButton = UIButton(frame: CGRect(x: buttonMargin, y: buttonMargin, width: (playersIcon?.size.width)!, height: (restartIcon?.size.height)!))
+        numberOfPlayersButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        numberOfPlayersButton.tag = 2
+        numberOfPlayersButton.setImage(playersIcon, for: .normal)
+        view.addSubview(numberOfPlayersButton)
+        */
+        
+        lineUpCardsButton = UIButton(frame: CGRect(x: buttonMargin, y: view.frame.height - buttonMargin - (cardsIcon?.size.height)!, width: (cardsIcon?.size.height)!, height: (cardsIcon?.size.height)!))
+        lineUpCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        lineUpCardsButton.tag = 3
+        lineUpCardsButton.setImage(cardsIcon, for: .normal)
+        view.addSubview(lineUpCardsButton)
         
         //let skView = self.view as! SKView
-        skView = SKView(frame: view.frame)
+        let sceneFrame = CGRect(x: view.frame.minX, y: view.frame.minY, width: view.frame.width, height: view.frame.height - barHeight)
+        skView = SKView(frame: sceneFrame)
+        //skView = SKView(frame: view.frame)
         view.addSubview(skView)
         
         skView.showsFPS = false
@@ -68,6 +82,22 @@ class GameViewController: UIViewController {
         /* Sprite Kit applies additional optimizations to improve rendering performance */
         skView.ignoresSiblingOrder = true
         skView.allowsTransparency = true
+        
+        self.startGame()
+    }
+    
+    func buttonAction(sender: UIButton!) {
+        let btnsendtag: UIButton = sender
+        if btnsendtag.tag == 1 {
+            self.startGame()
+        } else if btnsendtag.tag == 3 {
+            self.lineUpCards()
+        }
+    }
+    
+    func startGame() {
+
+        connectionsLabel.isHidden = true
         
         scene = GameScene(size: skView.frame.size)
         checkForceTouch()
@@ -78,6 +108,10 @@ class GameViewController: UIViewController {
         scene.backgroundColor = UIColor.clear
         
         skView.presentScene(scene)
+    }
+    
+    func lineUpCards() {
+        scene.resetHand()
     }
     
     func checkForceTouch() {

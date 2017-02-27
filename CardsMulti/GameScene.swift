@@ -18,7 +18,7 @@ class GameScene: SKScene {
     let minRank = 6
     let border: CGFloat = 10.0
     let resetDuration = 0.5
-    let verticalHeight = 0.3
+    let verticalHeight = 0.2
     let cornerTapSize: CGFloat = 50.0
     let xOffset: CGFloat = 20.0
     let yOffset: CGFloat = 5.0
@@ -51,7 +51,10 @@ class GameScene: SKScene {
     var forceTouchActivated = false
     
     var gameSceneDelegate: GameSceneDelegate?
-
+    
+    var moveSound = Actions.getCardMoveSound()
+    var flipSound = Actions.getCardFlipSound()
+        
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -66,7 +69,7 @@ class GameScene: SKScene {
         connectionLabel.fontColor = UIColor.green
         connectionLabel.fontSize = 15
         connectionLabel.fontName = "Helvetica"
-        connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: connectionLabel.frame.height / 2)
+        connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: self.frame.height - connectionLabel.frame.height / 2 - border)
         connectionLabel.zPosition = 100
         self.addChild(connectionLabel)
         
@@ -76,6 +79,7 @@ class GameScene: SKScene {
         dividerLine = SKShapeNode(points: &points, count: points.count)
         dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
         dividerLine.zPosition = -100
+        dividerLine.strokeColor = UIColor(colorLiteralRed: 183, green: 180, blue: 125, alpha: 0.3)
         self.addChild(dividerLine)
         
         self.resetGame()
@@ -107,15 +111,15 @@ class GameScene: SKScene {
     func resetCards(sync: Bool) {
         shuffle(&allCards)
         
-        for cardNode in allCards {
+        for (cardNumber, cardNode) in allCards.enumerated() {
             cardNode.delegate = self
             cardNode.flip(faceUp: false, sendPosition: false)
             cardNode.selectable = true
             //cardNode.zPosition = CGFloat(0 - cardNumber)
             cardNode.moveToFront()
-            //let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
-            cardNode.position = CGPoint(x: self.frame.midX, y: self.dividerLine.position.y + self.frame.width / 2)
-            //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + CGFloat(border) + cardOffset, y: self.frame.size.height - CGFloat(border) - yPeek - cardNode.frame.size.height / 2 - cardOffset)
+            let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
+            cardNode.position = CGPoint(x: self.frame.midX - cardOffset, y: self.dividerLine.position.y + self.frame.width / 2 + cardOffset)
+            //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + self.frame.midX + cardOffset, y: self.frame.size.height - (self.dividerLine.position.y + self.frame.width / 2) - cardNode.frame.size.height / 2 - cardOffset)
 
             /*
             if sync {
@@ -194,15 +198,7 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
         for t in touches {
-            if t.location(in: self).x < cornerTapSize  && t.location(in: self).y < cornerTapSize {
-                // bottom left corner
-                self.resetHand()
-            } else if t.location(in: self).x > self.frame.width - cornerTapSize && t.location(in: self).y < cornerTapSize {
-                // bottom right corner
-                resetCards(sync: true)
-            } else {
-                selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
-            }
+            selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
             
             lastTouchTimestamp = t.timestamp
             lastTouchMoveTimestamp = t.timestamp
@@ -311,7 +307,7 @@ extension GameScene : ConnectionServiceManagerDelegate {
         OperationQueue.main.addOperation {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
             self.connectionLabel.text = "Connections: \(connectedDevicesNames)"
-            self.connectionLabel.position = CGPoint(x: self.connectionLabel.frame.width / 2, y: self.connectionLabel.frame.height / 2)
+            self.connectionLabel.position = CGPoint(x: self.connectionLabel.frame.width / 2, y: self.frame.height - self.connectionLabel.frame.height / 2 - self.border)
             
             if connectedDevices.count > 0 {
                 var allDevices = [self.myPeerId]
@@ -399,6 +395,18 @@ extension GameScene : CardSpriteNodeDelegate {
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode] {
         let cards = self.allCards.filter { card.frame.contains($0.position) }
         return cards.sorted { $0.zPosition < $1.zPosition }
+    }
+    
+    func makeMoveSound() {
+        if !self.hasActions() {
+            self.run(self.moveSound)
+        }
+    }
+    
+    func makeFlipSound() {
+        if !self.hasActions() {
+            self.run(self.flipSound)
+        }
     }
 }
 

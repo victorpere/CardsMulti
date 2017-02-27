@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
-		5740504F1E5E890000316AEB /* card_move.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504D1E5E890000316AEB /* card_move.m4a */; };
 		574050551E5F82AA00316AEB /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
+		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
 		57B053D51E4E3BD20057E62F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053D41E4E3BD20057E62F /* AppDelegate.swift */; };
 		57B053DB1E4E3BD20057E62F /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DA1E4E3BD20057E62F /* GameScene.swift */; };
 		57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DC1E4E3BD20057E62F /* GameViewController.swift */; };
@@ -47,8 +47,8 @@
 
 /* Begin PBXFileReference section */
 		5740504C1E5E890000316AEB /* card_flip.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_flip.m4a; sourceTree = "<group>"; };
-		5740504D1E5E890000316AEB /* card_move.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_move.m4a; sourceTree = "<group>"; };
 		574050541E5F82AA00316AEB /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDevice.swift; path = Extensions/UIDevice.swift; sourceTree = "<group>"; };
+		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
 		57B053D11E4E3BD20057E62F /* CardsMulti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsMulti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57B053D41E4E3BD20057E62F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		57B053DA1E4E3BD20057E62F /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -109,8 +109,8 @@
 		5740504B1E5E88F300316AEB /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				575F28061E62501600AE0C53 /* card_slide.m4a */,
 				5740504C1E5E890000316AEB /* card_flip.m4a */,
-				5740504D1E5E890000316AEB /* card_move.m4a */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -319,8 +319,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				575F28071E62501600AE0C53 /* card_slide.m4a in Resources */,
 				57B053E01E4E3BD20057E62F /* Main.storyboard in Resources */,
-				5740504F1E5E890000316AEB /* card_move.m4a in Resources */,
 				5740504E1E5E890000316AEB /* card_flip.m4a in Resources */,
 				57B053E21E4E3BD20057E62F /* Assets.xcassets in Resources */,
 				57B053E51E4E3BD20057E62F /* LaunchScreen.storyboard in Resources */,

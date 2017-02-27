@@ -40,8 +40,8 @@ class Actions {
         let flipSecondHalfWarp = SKAction.warp(to: warpGeometryGridNoWarp, duration: duration)
         let flipSecondHalfShade = SKAction.colorize(withColorBlendFactor: 0, duration: duration)
         let flipSecondHalfMove = SKAction.move(by: CGVector(dx: -20, dy: -10), duration: duration)
-        let flipSound = SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false)
-        let flipSecondHalfGroup = SKAction.group([flipSecondHalfWarp!, flipSecondHalfShade, flipSecondHalfMove, flipSound])
+        
+        let flipSecondHalfGroup = SKAction.group([flipSecondHalfWarp!, flipSecondHalfShade, flipSecondHalfMove])
         
         return SKAction.sequence([flipFirstHalgGroup,
                                   textureChange,
@@ -86,6 +86,6 @@ class Actions {
     }
     
     static func getCardMoveSound() -> SKAction {
-        return SKAction.playSoundFileNamed("card_move.m4a", waitForCompletion: false)
+        return SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
     }
 }
