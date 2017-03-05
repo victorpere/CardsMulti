@@ -89,7 +89,7 @@ class GameViewController: UIViewController {
     func buttonAction(sender: UIButton!) {
         let btnsendtag: UIButton = sender
         if btnsendtag.tag == 1 {
-            self.startGame()
+            self.resetGame()
         } else if btnsendtag.tag == 3 {
             self.lineUpCards()
         }
@@ -108,6 +108,10 @@ class GameViewController: UIViewController {
         scene.backgroundColor = UIColor.clear
         
         skView.presentScene(scene)
+    }
+    
+    func resetGame() {
+        scene.resetCards(sync: true)
     }
     
     func lineUpCards() {

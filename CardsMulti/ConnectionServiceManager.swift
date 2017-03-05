@@ -16,8 +16,6 @@ import MultipeerConnectivity
     
     @objc optional func receivedData(manager: ConnectionServiceManager, data: Data)
     
-    // test function
-    @objc optional func colorChanged(manager: ConnectionServiceManager, colorString: String)
     
 }
 
@@ -67,19 +65,6 @@ class ConnectionServiceManager : NSObject {
         }
     }
     
-    // test: change color
-    func sendColor(colorName : String) {
-        NSLog("%@", "sendColor: \(colorName)")
-        
-        if session.connectedPeers.count > 0 {
-            do {
-                try self.session.send(colorName.data(using: String.Encoding.utf8, allowLossyConversion: false)!, toPeers: session.connectedPeers, with: MCSessionSendDataMode.reliable)
-            } catch {
-                print("%@", "error sending: \(error)")
-            }
-        }
-        
-    }
 }
 
 extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {

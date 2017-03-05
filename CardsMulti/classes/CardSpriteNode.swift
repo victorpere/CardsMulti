@@ -120,7 +120,7 @@ class CardSpriteNode : SKSpriteNode {
         self.delegate!.makeFlipSound()
         faceUp = !faceUp
         if sendPosition {
-            self.delegate!.sendPosition(of: [self])
+            self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
         }
     }
     
@@ -134,7 +134,7 @@ class CardSpriteNode : SKSpriteNode {
         self.moving = true
         let currentPosition = self.position
         self.position = CGPoint(x: currentPosition.x + transformation.x, y: currentPosition.y + transformation.y)
-        self.delegate!.sendPosition(of: [self])
+        self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
     }
     
     func stopMoving(startSpeed: CGVector) {
@@ -162,7 +162,7 @@ class CardSpriteNode : SKSpriteNode {
             self.run(movementSequence) {
                 self.moving = false
                 //self.delegate.makeHumanPlayerHandSelectable()
-                self.delegate!.sendPosition(of: [self])
+                self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
             }
         } else {
             self.moving = false
@@ -170,16 +170,16 @@ class CardSpriteNode : SKSpriteNode {
         }
     }
     
-    func moveAndFlip(to newPosition: CGPoint, faceUp: Bool, duration: Double) {
+    func moveAndFlip(to newPosition: CGPoint, faceUp: Bool, duration: Double, sendPosition: Bool) {
         self.moving = true
         let movement = SKAction.move(to: newPosition, duration: duration)
         let actionGroup = SKAction.group([movement, self.moveSound])
         self.delegate!.makeMoveSound()
         self.run(actionGroup) {
             if self.faceUp != faceUp {
-                self.flip(sendPosition: true)
-            } else {
-                self.delegate!.sendPosition(of: [self])
+                self.flip(sendPosition: sendPosition)
+            } else if sendPosition {
+                self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
             }
             self.moving = false
             //print(self.card?.symbol()," moveAndFlip ", newPosition, self.position)
@@ -233,7 +233,7 @@ class CardSpriteNode : SKSpriteNode {
 
 protocol CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode)
-    func sendPosition(of cardNodes: [CardSpriteNode])
+    func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool)
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode]
     //func makeHumanPlayerHandSelectable()
     //func play(_ cardNode: CardSpriteNode) -> CGPoint
@@ -247,7 +247,7 @@ protocol CardSpriteNodeDelegate {
 extension Array where Element:CardSpriteNode {
 
     func move(transformation: CGPoint) {
-        for cardNode in self {
+        for cardNode in self.sorted(by: { $0.zPosition < $1.zPosition }) {
             cardNode.moving = true
             let currentPosition = cardNode.position
             cardNode.position = CGPoint(x: currentPosition.x + transformation.x, y: currentPosition.y + transformation.y)
@@ -255,3 +255,4 @@ extension Array where Element:CardSpriteNode {
     }
     
 }
+

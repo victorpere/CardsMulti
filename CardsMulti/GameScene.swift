@@ -54,6 +54,9 @@ class GameScene: SKScene {
     
     var moveSound = Actions.getCardMoveSound()
     var flipSound = Actions.getCardFlipSound()
+    
+    var cutting = false
+    var cutStartPosition: CGPoint!
         
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -121,15 +124,62 @@ class GameScene: SKScene {
             cardNode.position = CGPoint(x: self.frame.midX - cardOffset, y: self.dividerLine.position.y + self.frame.width / 2 + cardOffset)
             //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + self.frame.midX + cardOffset, y: self.frame.size.height - (self.dividerLine.position.y + self.frame.width / 2) - cardNode.frame.size.height / 2 - cardOffset)
 
-            /*
-            if sync {
-                cardNode.delegate!.sendPosition(of: [cardNode])
-            }
-             */
         }
         if sync {
-            self.sendPosition(of: allCards)
+            self.sendPosition(of: allCards, moveToFront: true, animate: false)
         }
+    }
+    
+    func stack(cards: [CardSpriteNode], position: CGPoint) {
+        var cardsCopy = [CardSpriteNode]()
+        for (cardNumber, card) in cards.enumerated() {
+            let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
+            let newPosition = CGPoint(x: position.x + cardOffset, y: position.y - cardOffset)
+            card.moveAndFlip(to: newPosition, faceUp: card.faceUp, duration: resetDuration, sendPosition: false)
+            //card.position = cardPosition
+            let cardCopy = card.copy() as! CardSpriteNode
+            cardCopy.position = newPosition
+            cardCopy.card = card.card
+            cardCopy.faceUp = card.faceUp
+            cardsCopy.append(cardCopy)
+        }
+        self.sendPosition(of: cardsCopy, moveToFront: true, animate: true)
+    }
+    
+    func cut(cards: [CardSpriteNode]) {
+        if cards.count > 1 {
+            let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
+            let originalPosition  = cardsSorted.first?.position
+            var position1 = CGPoint(x: (originalPosition?.x)! - (cardsSorted.first?.frame.size.width)! / 2 - xOffset, y: (originalPosition?.y)!)
+            var position2 = CGPoint(x: (originalPosition?.x)! + (cardsSorted.first?.frame.size.width)! / 2 + xOffset, y: (originalPosition?.y)!)
+            
+            if position1.x < (cardsSorted.first?.frame.width)! / 2 + xOffset {
+                position1.x = (cardsSorted.first?.frame.width)! / 2 + border
+                position2.x = position1.x + (cardsSorted.first?.frame.width)! + 2 * xOffset
+            } else if position2.x > self.frame.width - (cardsSorted.first?.frame.width)! / 2 - xOffset {
+                position2.x = self.frame.width - (cardsSorted.first?.frame.width)! / 2 - border
+                position1.x = position2.x - (cardsSorted.first?.frame.width)! - 2 * xOffset
+            }
+            
+            let halfIndex: Int = cardsSorted.count / 2
+            let stack1 = Array(cardsSorted.prefix(upTo: halfIndex))
+            let stack2 = Array(cardsSorted.suffix(from: halfIndex))
+            
+            //stack(cards: cardsSorted, position: originalPosition!)
+            stack(cards: stack1, position: position1)
+            stack(cards: stack2, position: position2)
+        }
+    }
+    
+    func stoppedCutting(touchLocation: CGPoint) {
+        print ("cutting \(cutStartPosition) -> \(touchLocation)")
+        
+        let origin = CGPoint(x: min(touchLocation.x, cutStartPosition.x), y: min(touchLocation.y, cutStartPosition.y))
+        let width = abs(touchLocation.x - cutStartPosition.x)
+        let height = abs(touchLocation.y - cutStartPosition.y)
+        let cutRect = CGRect(x: origin.x, y: origin.y, width: width, height: height)
+        let cards = self.allCards.filter { cutRect.contains($0.position) }
+        self.cut(cards: cards)
     }
     
     func resetHand() {
@@ -142,7 +192,7 @@ class GameScene: SKScene {
             let node_x = ((usableWidth - cardNode.frame.size.width) / CGFloat(hand.count)) * CGFloat(nodeNumber)
             let newPosition = CGPoint(x: cardNode.frame.size.width / 2 + node_x + border, y: cardNode.frame.size.height / 2 + border)
             cardNode.moveToFront()
-            cardNode.moveAndFlip(to: newPosition, faceUp: true, duration: self.resetDuration)
+            cardNode.moveAndFlip(to: newPosition, faceUp: true, duration: self.resetDuration, sendPosition: true)
         }
     }
     
@@ -164,7 +214,12 @@ class GameScene: SKScene {
                 
                 //print("Cards under touched node: ", terminator: "")
                 //displayCards(self.getCards(under: self.selectedNode))
+                self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
             }
+        } else {
+            print("cutting started")
+            self.cutting = true
+            self.cutStartPosition = touchLocation
         }
     }
     
@@ -183,6 +238,8 @@ class GameScene: SKScene {
             
             print("force touched to drag cards: ", terminator: "")
             displayCards(self.selectedNodes)
+            
+            self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
         }
     }
 
@@ -207,7 +264,7 @@ class GameScene: SKScene {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            print("touches moved at \(t.location(in: self)) at \(t.timestamp)")
+            //print("touches moved at \(t.location(in: self)) at \(t.timestamp)")
  
             let currentPosition = t.location(in: self)
             let previousPosition = t.previousLocation(in: self)
@@ -231,7 +288,17 @@ class GameScene: SKScene {
                     let timeElapsed = t.timestamp - lastSendPositionTimestamp
                     if timeElapsed >= 0.1 || (selectedNodes.count <= 2 && timeElapsed >= 0.05) {
                         lastSendPositionTimestamp = t.timestamp
-                        self.sendPosition(of: selectedNodes)
+                        self.sendPosition(of: selectedNodes, moveToFront: false, animate: false)
+                    }
+                } else {
+                    if self.cutting {
+                        let transformationFromStart = CGPoint(x: currentPosition.x - cutStartPosition.x, y: currentPosition.y - cutStartPosition.y)
+                        if ((transformationFromStart.x < 0) != (transformation.x < 0)) || ((transformationFromStart.y < 0) != (transformation.y < 0)) {
+                            self.cutting = false
+                            print("cutting interrupted")
+                        } else {
+                            print("cutting continued")
+                        }
                     }
                 }
             }
@@ -257,6 +324,12 @@ class GameScene: SKScene {
                 
                 lastTouchTimestamp = 0.0
                 lastTouchMoveTimestamp = 0.0
+            } else {
+                if cutting {
+                    print("cutting stopped")
+                    cutting = false
+                    self.stoppedCutting(touchLocation: t.location(in: self))
+                }
             }
         }
         
@@ -321,7 +394,7 @@ extension GameScene : ConnectionServiceManagerDelegate {
                     //self.resetCards(sync: true)
                     
                     // sync other peer(s) to one device
-                    self.sendPosition(of: self.allCards)
+                    self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
                 }
             }
         }
@@ -344,8 +417,16 @@ extension GameScene : ConnectionServiceManagerDelegate {
             
                 cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
                 //cardNode?.zPosition = cardDictionary["zPosition"] as! CGFloat
-                cardNode?.moveToFront()
-                cardNode?.position = newPositionInverted
+                
+                if (cardDictionary["m"] as! Bool) {
+                    cardNode?.moveToFront()
+                }
+                
+                if cardDictionary["a"] as! Bool {
+                    cardNode?.moveAndFlip(to: newPositionInverted, faceUp: (cardNode?.faceUp)!, duration: resetDuration, sendPosition: false)
+                } else {
+                    cardNode?.position = newPositionInverted
+                }
             }
         } catch {
             print("Error deserializing json data \(error)")
@@ -367,16 +448,18 @@ extension GameScene : CardSpriteNodeDelegate {
         lastSelectedNode = cardNode
     }
     
-    func sendPosition(of cardNodes: [CardSpriteNode]) {
+    func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool) {
         
         var cardDictionaryArray = [NSDictionary]()
-        for cardNode in cardNodes {
+        for cardNode in cardNodes.sorted(by: { $0.zPosition < $1.zPosition }) {
             let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: cardNode.position.y / self.frame.height)
 
             let cardDictionary: NSDictionary = [
                 "c": (cardNode.card?.symbol())! as String,
                 "f": cardNode.faceUp,
                 "p": NSStringFromCGPoint(newPositionRelative),
+                "m": moveToFront,
+                "a": animate
                 //"zPosition": cardNode.zPosition
             ]
             
