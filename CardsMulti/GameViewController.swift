@@ -90,7 +90,11 @@ class GameViewController: UIViewController {
             case 1:
                 self.resetGame()
             case 2:
-                self.browsePeers()
+                if self.connectionService.session.connectedPeers.count > 0 {
+                    self.disconnectFromPeer()
+                } else {
+                    self.browsePeers()
+                }
             case 3:
                 self.lineUpCards()
             default: break
@@ -125,12 +129,26 @@ class GameViewController: UIViewController {
         for peerID in self.connectionService.foundPeers {
             let peerAction = UIAlertAction(title: peerID.displayName, style: .default, handler: { (alert) -> Void in
                 self.scene.slave = true
-                self.connectionService.invitePeer(peerID) } )
+                self.connectionService.invitePeer(peerID)
+            } )
             peerBrowser.addAction(peerAction)
         }
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
         peerBrowser.addAction(cancelButton)
         self.present(peerBrowser, animated: true, completion: nil)
+    }
+    
+    func disconnectFromPeer() {
+        let connectionAlert = UIAlertController(title: "Disconnect from game", message: nil, preferredStyle: .actionSheet)
+        let disconnectButton = UIAlertAction(title: "Disconnect", style: .default, handler: { (alert) -> Void in
+            self.scene.slave = false
+            self.connectionService.disconnect()
+        } )
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
+        
+        connectionAlert.addAction(disconnectButton)
+        connectionAlert.addAction(cancelButton)
+        self.present(connectionAlert, animated: true, completion: nil)
     }
     
     func checkForceTouch() {

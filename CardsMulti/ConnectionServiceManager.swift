@@ -79,6 +79,9 @@ class ConnectionServiceManager : NSObject {
         self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
+    func disconnect() {
+        self.session.disconnect()
+    }
 }
 
 extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {
@@ -109,7 +112,6 @@ extension ConnectionServiceManager : MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser,
                  foundPeer peerID: MCPeerID,
                  withDiscoveryInfo info: [String : String]?) {
-        // automatically invites peer
         
         NSLog("%@", "foundPeer: \(peerID)")
         NSLog("%@", "invitePeer: \(peerID)")
