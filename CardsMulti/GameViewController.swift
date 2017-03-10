@@ -205,15 +205,24 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         let connectedDevicesNames = connectedDevices.map({$0.displayName})
         self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
         
-        if scene != nil {
-            self.scene.connectedDevicesChanged(manager: manager, connectedDevices: connectedDevices)
-        }
+        self.scene.connectedDevicesChanged(manager: manager, connectedDevices: connectedDevices)
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
-        if scene != nil {
-            self.scene.receivedData(manager: manager, data: data)
-        }
+        self.scene.receivedData(manager: manager, data: data)
+    }
+    
+    func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        let invitationAlert = UIAlertController(title: "\(peerID.displayName) wants to connect", message: nil, preferredStyle: .alert)
+        let allow = UIAlertAction(title: "Allow", style: .default, handler: { (alert) -> Void in
+                self.scene.slave = false
+                invitationHandler(true, self.connectionService.session)
+            } )
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
+        
+        invitationAlert.addAction(allow)
+        invitationAlert.addAction(cancelButton)
+        self.present(invitationAlert, animated: true, completion: nil)
     }
     
 }

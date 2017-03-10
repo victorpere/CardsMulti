@@ -15,7 +15,7 @@ import MultipeerConnectivity
     func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID])
     
     @objc optional func receivedData(manager: ConnectionServiceManager, data: Data)
-    
+    @objc optional func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
     
 }
 
@@ -97,7 +97,9 @@ extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {
         // automatically accept invitation from peer
         
         NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
-        invitationHandler(true, self.session)
+        //invitationHandler(true, self.session)
+        
+        self.delegate?.receivedInvitation!(from: peerID, invitationHandler: invitationHandler)
     }
     
 }
