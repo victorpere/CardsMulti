@@ -11,11 +11,10 @@ import MultipeerConnectivity
 
 @objc protocol ConnectionServiceManagerDelegate {
     
-    //func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [String])
-    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID])
-    
     @objc optional func receivedData(manager: ConnectionServiceManager, data: Data)
     @objc optional func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
+    @objc optional func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
+    @objc optional func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     
 }
 
@@ -23,9 +22,12 @@ class ConnectionServiceManager : NSObject {
     
     private let ConnectionServiceType = "cards-multi"
     
-    private let myPeerId = MCPeerID(displayName: UIDevice.current.name)
+    let myPeerId = MCPeerID(displayName: UIDevice.current.name)
+    
+    var hostPeerID: MCPeerID!
+    
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
-    private let serviceBrowser : MCNearbyServiceBrowser
+    let serviceBrowser : MCNearbyServiceBrowser
     
     var foundPeers = [MCPeerID]()
     
@@ -42,6 +44,8 @@ class ConnectionServiceManager : NSObject {
         self.serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: ConnectionServiceType)
         
         super.init()
+        
+        self.hostPeerID = self.myPeerId
         
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
@@ -63,7 +67,13 @@ class ConnectionServiceManager : NSObject {
         self.serviceBrowser.startBrowsingForPeers()
     }
     
+    func stopAdvertising() {
+        self.serviceAdvertiser.stopAdvertisingPeer()
+    }
     
+    func stopBrowsing() {
+        self.serviceBrowser.stopBrowsingForPeers()
+    }
     
     func sendData(data: Data) {
         if session.connectedPeers.count > 0 {
@@ -76,11 +86,17 @@ class ConnectionServiceManager : NSObject {
     }
     
     func invitePeer(_ peerID: MCPeerID) {
+        self.hostPeerID = peerID
         self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
     func disconnect() {
+        self.hostPeerID = self.myPeerId
         self.session.disconnect()
+    }
+    
+    func isHost() -> Bool {
+        return self.hostPeerID == self.myPeerId
     }
 }
 
@@ -138,16 +154,34 @@ extension ConnectionServiceManager : MCSessionDelegate {
                  peer peerID: MCPeerID,
                  didChange state: MCSessionState) {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.stringValue())")
-        //self.delegate?.connectedDevicesChanged(manager: self, connectedDevices: session.connectedPeers.map({$0.displayName}))
-        self.delegate?.connectedDevicesChanged(manager: self, connectedDevices: session.connectedPeers)
+        
+        if state == .connected {
+            if session.connectedPeers.count >= 4 {
+                self.stopAdvertising()
+            }
+            
+            self.delegate?.newDeviceConnected!(peerID: peerID, connectedDevices: session.connectedPeers)
+        } else if state == .notConnected {
+            if self.hostPeerID == peerID {
+                var allPeers = [myPeerId]
+                allPeers.append(contentsOf: session.connectedPeers)
+                self.hostPeerID = allPeers.sorted { $0.hashValue < $1.hashValue } .first
+            }
+            
+            if session.connectedPeers.count < 4 {
+                self.startAdvertising()
+            }
+            
+            self.delegate?.deviceDisconnected!(peerID: peerID, connectedDevices: session.connectedPeers)
+        }
+        
     }
     
     func session(_ session: MCSession,
                  didReceive data: Data,
                  fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
-        //let str = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
-        //self.delegate?.colorChanged!(manager: self, colorString: str)
+
         self.delegate?.receivedData!(manager: self, data: data)
     }
     

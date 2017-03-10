@@ -16,6 +16,12 @@ class GameViewController: UIViewController {
     let buttonMargin: CGFloat = 8.0
     
     let connectionService = ConnectionServiceManager()
+    //var host: MCPeerID!
+    
+    var playerBottom: MCPeerID?
+    var playerTop: MCPeerID?
+    var playerLeft: MCPeerID?
+    var playerRight: MCPeerID?
     
     var connectionsLabel: UILabel!
     var backGroundView: UIView!
@@ -30,6 +36,8 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         connectionService.delegate = self
+        //host = connectionService.myPeerId
+        playerBottom = connectionService.myPeerId
         
         // Configure the view.
         
@@ -44,8 +52,9 @@ class GameViewController: UIViewController {
         backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
         view.addSubview(backGroundView)
         
-        connectionsLabel = UILabel(frame: CGRect(x: 0, y:self.view.frame.height - 30, width: self.view.frame.width, height: 30))
+        connectionsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 15))
         connectionsLabel.textColor = UIColor.green
+        connectionsLabel.font = UIFont(name: "Helvetica", size: 15)
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
 
@@ -103,7 +112,7 @@ class GameViewController: UIViewController {
     
     func startGame() {
 
-        connectionsLabel.isHidden = true
+        //connectionsLabel.isHidden = true
         
         scene = GameScene(size: skView.frame.size)
         checkForceTouch()
@@ -125,10 +134,10 @@ class GameViewController: UIViewController {
     }
     
     func browsePeers() {
-        let peerBrowser = UIAlertController(title: "Select device to connect to:", message: nil, preferredStyle: .actionSheet)
+        
+        let peerBrowser = UIAlertController(title: "Select device to join:", message: nil, preferredStyle: .actionSheet)
         for peerID in self.connectionService.foundPeers {
             let peerAction = UIAlertAction(title: peerID.displayName, style: .default, handler: { (alert) -> Void in
-                self.scene.slave = true
                 self.connectionService.invitePeer(peerID)
             } )
             peerBrowser.addAction(peerAction)
@@ -139,9 +148,8 @@ class GameViewController: UIViewController {
     }
     
     func disconnectFromPeer() {
-        let connectionAlert = UIAlertController(title: "Disconnect from game", message: nil, preferredStyle: .actionSheet)
-        let disconnectButton = UIAlertAction(title: "Disconnect", style: .default, handler: { (alert) -> Void in
-            self.scene.slave = false
+        let connectionAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let disconnectButton = UIAlertAction(title: "Disconnect from the game", style: .default, handler: { (alert) -> Void in
             self.connectionService.disconnect()
         } )
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
@@ -201,11 +209,22 @@ extension GameViewController {
 
 extension GameViewController : ConnectionServiceManagerDelegate {
     
-    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID]) {
-        let connectedDevicesNames = connectedDevices.map({$0.displayName})
-        self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+    func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
+        DispatchQueue.main.async {
+            let connectedDevicesNames = connectedDevices.map({$0.displayName})
+            self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+        }
         
-        self.scene.connectedDevicesChanged(manager: manager, connectedDevices: connectedDevices)
+        if self.connectionService.isHost() {
+            self.scene.syncToMe()
+        }
+    }
+    
+    func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
+        DispatchQueue.main.async {
+            let connectedDevicesNames = connectedDevices.map({$0.displayName})
+            self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+        }
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
@@ -213,16 +232,17 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     }
     
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        let invitationAlert = UIAlertController(title: "\(peerID.displayName) wants to connect", message: nil, preferredStyle: .alert)
-        let allow = UIAlertAction(title: "Allow", style: .default, handler: { (alert) -> Void in
-                self.scene.slave = false
-                invitationHandler(true, self.connectionService.session)
-            } )
-        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
-        
-        invitationAlert.addAction(allow)
-        invitationAlert.addAction(cancelButton)
-        self.present(invitationAlert, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            let invitationAlert = UIAlertController(title: "\(peerID.displayName) wants to connect to the game", message: nil, preferredStyle: .alert)
+            let allow = UIAlertAction(title: "Allow", style: .default, handler: { (alert) -> Void in
+                    invitationHandler(true, self.connectionService.session)
+                } )
+            let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
+            
+            invitationAlert.addAction(allow)
+            invitationAlert.addAction(cancelButton)
+            self.present(invitationAlert, animated: true, completion: nil)
+        }
     }
     
 }
@@ -233,3 +253,15 @@ extension GameViewController : GameSceneDelegate {
         self.connectionService.sendData(data: data)
     }
 }
+
+/*
+extension GameViewController : MCBrowserViewControllerDelegate {
+    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
+        dismiss(animated: true)
+    }
+    
+    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
+        dismiss(animated: true)
+    }
+}
+ */

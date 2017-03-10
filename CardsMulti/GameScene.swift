@@ -32,8 +32,7 @@ class GameScene: SKScene {
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
-    
-    var slave = false
+
     
     private var lastUpdateTime : TimeInterval = 0
     
@@ -76,7 +75,7 @@ class GameScene: SKScene {
         connectionLabel.fontName = "Helvetica"
         connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: self.frame.height - connectionLabel.frame.height / 2 - border)
         connectionLabel.zPosition = 100
-        self.addChild(connectionLabel)
+        //self.addChild(connectionLabel)
         
         
         //var points = [CGPoint(x: 0, y: self.frame.height - self.frame.width), CGPoint(x: self.frame.width, y: self.frame.height - self.frame.width)]
@@ -370,6 +369,10 @@ class GameScene: SKScene {
             }
         }
     }
+    
+    func syncToMe() {
+        self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
+    }
 }
 
 
@@ -377,23 +380,8 @@ class GameScene: SKScene {
  ConnectionServiceManagerDelegate
  */
 
-extension GameScene : ConnectionServiceManagerDelegate {
+extension GameScene {
     
-    func connectedDevicesChanged(manager: ConnectionServiceManager, connectedDevices: [MCPeerID]) {
-        OperationQueue.main.addOperation {
-            let connectedDevicesNames = connectedDevices.map({$0.displayName})
-            self.connectionLabel.text = "Connections: \(connectedDevicesNames)"
-            self.connectionLabel.position = CGPoint(x: self.connectionLabel.frame.width / 2, y: self.frame.height - self.connectionLabel.frame.height / 2 - self.border)
-            
-            if !self.slave {
-                print("Server")
-                self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
-            } else {
-                print("Slave")
-            }
-            
-        }
-    }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
         
