@@ -21,13 +21,13 @@ import MultipeerConnectivity
 
 class ConnectionServiceManager : NSObject {
     
-    // Service type must be a unique string, at most 15 characters long
-    // and can contain only ASCII lowercase letters, numbers and hyphens.
     private let ConnectionServiceType = "cards-multi"
     
     private let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
     private let serviceBrowser : MCNearbyServiceBrowser
+    
+    var foundPeers = [MCPeerID]()
     
     var delegate: ConnectionServiceManagerDelegate?
     
@@ -55,6 +55,16 @@ class ConnectionServiceManager : NSObject {
         self.serviceBrowser.stopBrowsingForPeers()
     }
     
+    func startAdvertising() {
+        self.serviceAdvertiser.startAdvertisingPeer()
+    }
+    
+    func startBrowsing() {
+        self.serviceBrowser.startBrowsingForPeers()
+    }
+    
+    
+    
     func sendData(data: Data) {
         if session.connectedPeers.count > 0 {
             do {
@@ -63,6 +73,10 @@ class ConnectionServiceManager : NSObject {
                 print("%@", "error sending: \(error)")
             }
         }
+    }
+    
+    func invitePeer(_ peerID: MCPeerID) {
+        self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
 }
@@ -99,12 +113,17 @@ extension ConnectionServiceManager : MCNearbyServiceBrowserDelegate {
         
         NSLog("%@", "foundPeer: \(peerID)")
         NSLog("%@", "invitePeer: \(peerID)")
-        browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        
+        self.foundPeers.append(peerID)
+        
+        //browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
     func browser(_ browser: MCNearbyServiceBrowser,
                  lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
+        
+        self.foundPeers.remove(at: foundPeers.index(of: peerID)!)
     }
     
 }

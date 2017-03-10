@@ -33,6 +33,8 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
+    var slave = false
+    
     private var lastUpdateTime : TimeInterval = 0
     
     var connectionLabel : SKLabelNode!
@@ -136,7 +138,7 @@ class GameScene: SKScene {
             let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
             let newPosition = CGPoint(x: position.x + cardOffset, y: position.y - cardOffset)
             card.moveAndFlip(to: newPosition, faceUp: card.faceUp, duration: resetDuration, sendPosition: false)
-            //card.position = cardPosition
+            
             let cardCopy = card.copy() as! CardSpriteNode
             cardCopy.position = newPosition
             cardCopy.card = card.card
@@ -239,6 +241,7 @@ class GameScene: SKScene {
             print("force touched to drag cards: ", terminator: "")
             displayCards(self.selectedNodes)
             
+            //self.stack(cards: self.selectedNodes, position: touchedCardNode.position)
             self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
         }
     }
@@ -382,21 +385,13 @@ extension GameScene : ConnectionServiceManagerDelegate {
             self.connectionLabel.text = "Connections: \(connectedDevicesNames)"
             self.connectionLabel.position = CGPoint(x: self.connectionLabel.frame.width / 2, y: self.frame.height - self.connectionLabel.frame.height / 2 - self.border)
             
-            if connectedDevices.count > 0 {
-                var allDevices = [self.myPeerId]
-                allDevices.append(contentsOf: connectedDevices)
-                allDevices.sort { $0.hashValue < $1.hashValue }
-                
-                print("Syncing with \(allDevices.first?.displayName)")
-                if self.myPeerId == allDevices.first {
-                
-                    // reset deck and sync
-                    //self.resetCards(sync: true)
-                    
-                    // sync other peer(s) to one device
-                    self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
-                }
+            if !self.slave {
+                print("Server")
+                self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
+            } else {
+                print("Slave")
             }
+            
         }
     }
     

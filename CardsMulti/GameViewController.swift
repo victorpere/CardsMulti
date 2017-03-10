@@ -50,25 +50,23 @@ class GameViewController: UIViewController {
         view.addSubview(connectionsLabel)
 
         
-        restartButton = UIButton(frame: CGRect(x: view.frame.width - buttonMargin - (restartIcon?.size.width)!, y: view.frame.height - buttonMargin - (restartIcon?.size.height)!, width: (restartIcon?.size.height)!, height: (restartIcon?.size.height)!))
-        restartButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        restartButton.tag = 1
-        restartButton.setImage(restartIcon, for: .normal)
-        view.addSubview(restartButton)
-        
-        /*
-        numberOfPlayersButton = UIButton(frame: CGRect(x: buttonMargin, y: buttonMargin, width: (playersIcon?.size.width)!, height: (restartIcon?.size.height)!))
-        numberOfPlayersButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        numberOfPlayersButton.tag = 2
-        numberOfPlayersButton.setImage(playersIcon, for: .normal)
-        view.addSubview(numberOfPlayersButton)
-        */
-        
         lineUpCardsButton = UIButton(frame: CGRect(x: buttonMargin, y: view.frame.height - buttonMargin - (cardsIcon?.size.height)!, width: (cardsIcon?.size.height)!, height: (cardsIcon?.size.height)!))
         lineUpCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         lineUpCardsButton.tag = 3
         lineUpCardsButton.setImage(cardsIcon, for: .normal)
         view.addSubview(lineUpCardsButton)
+        
+        numberOfPlayersButton = UIButton(frame: CGRect(x: view.frame.midX - (playersIcon!.size.width / 2), y: view.frame.height - buttonMargin - (restartIcon?.size.height)!, width: (playersIcon?.size.width)!, height: (playersIcon?.size.height)!))
+        numberOfPlayersButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        numberOfPlayersButton.tag = 2
+        numberOfPlayersButton.setImage(playersIcon, for: .normal)
+        view.addSubview(numberOfPlayersButton)
+        
+        restartButton = UIButton(frame: CGRect(x: view.frame.width - buttonMargin - (restartIcon?.size.width)!, y: view.frame.height - buttonMargin - (restartIcon?.size.height)!, width: (restartIcon?.size.height)!, height: (restartIcon?.size.height)!))
+        restartButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        restartButton.tag = 1
+        restartButton.setImage(restartIcon, for: .normal)
+        view.addSubview(restartButton)
         
         //let skView = self.view as! SKView
         let sceneFrame = CGRect(x: view.frame.minX, y: view.frame.minY, width: view.frame.width, height: view.frame.height - barHeight)
@@ -88,10 +86,14 @@ class GameViewController: UIViewController {
     
     func buttonAction(sender: UIButton!) {
         let btnsendtag: UIButton = sender
-        if btnsendtag.tag == 1 {
-            self.resetGame()
-        } else if btnsendtag.tag == 3 {
-            self.lineUpCards()
+        switch btnsendtag.tag {
+            case 1:
+                self.resetGame()
+            case 2:
+                self.browsePeers()
+            case 3:
+                self.lineUpCards()
+            default: break
         }
     }
     
@@ -116,6 +118,19 @@ class GameViewController: UIViewController {
     
     func lineUpCards() {
         scene.resetHand()
+    }
+    
+    func browsePeers() {
+        let peerBrowser = UIAlertController(title: "Select device to connect to:", message: nil, preferredStyle: .actionSheet)
+        for peerID in self.connectionService.foundPeers {
+            let peerAction = UIAlertAction(title: peerID.displayName, style: .default, handler: { (alert) -> Void in
+                self.scene.slave = true
+                self.connectionService.invitePeer(peerID) } )
+            peerBrowser.addAction(peerAction)
+        }
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
+        peerBrowser.addAction(cancelButton)
+        self.present(peerBrowser, animated: true, completion: nil)
     }
     
     func checkForceTouch() {
