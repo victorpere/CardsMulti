@@ -16,6 +16,7 @@ import MultipeerConnectivity
     @objc optional func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     @objc optional func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     
+    @objc optional func updateLabels()
 }
 
 class ConnectionServiceManager : NSObject {
@@ -25,6 +26,7 @@ class ConnectionServiceManager : NSObject {
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     
     var hostPeerID: MCPeerID!
+    var players: [MCPeerID?] = [nil, nil, nil, nil]
     
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
     let serviceBrowser : MCNearbyServiceBrowser
@@ -46,6 +48,8 @@ class ConnectionServiceManager : NSObject {
         super.init()
         
         self.hostPeerID = self.myPeerId
+        //self.playerBottom = self.myPeerId
+        players[Position.bottom.rawValue] = self.myPeerId
         
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
@@ -85,6 +89,11 @@ class ConnectionServiceManager : NSObject {
         }
     }
     
+    func sendPlayerData() {
+        let encodedData = NSKeyedArchiver.archivedData(withRootObject: self.players)
+        self.sendData(data: encodedData)
+    }
+    
     func invitePeer(_ peerID: MCPeerID) {
         self.hostPeerID = peerID
         self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
@@ -98,6 +107,15 @@ class ConnectionServiceManager : NSObject {
     func isHost() -> Bool {
         return self.hostPeerID == self.myPeerId
     }
+    
+    func myPosition() -> Position {
+        for i in 0..<self.players.count {
+            if self.players[i] == myPeerId {
+                return Position(rawValue: i)!
+            }
+        }
+        return .error
+    }
 }
 
 extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {
@@ -110,7 +128,6 @@ extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {
                     didReceiveInvitationFromPeer peerID: MCPeerID,
                     withContext context: Data?,
                     invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        // automatically accept invitation from peer
         
         NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
         //invitationHandler(true, self.session)
@@ -135,8 +152,6 @@ extension ConnectionServiceManager : MCNearbyServiceBrowserDelegate {
         NSLog("%@", "invitePeer: \(peerID)")
         
         self.foundPeers.append(peerID)
-        
-        //browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
     func browser(_ browser: MCNearbyServiceBrowser,
@@ -156,20 +171,45 @@ extension ConnectionServiceManager : MCSessionDelegate {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.stringValue())")
         
         if state == .connected {
-            if session.connectedPeers.count >= 4 {
+            // a device connected to the game
+            
+            if session.connectedPeers.count >= 3 {
                 self.stopAdvertising()
             }
             
+            if self.isHost() {
+                for i in 0..<self.players.count {
+                    if self.players[i] == nil {
+                        self.players[i] = peerID
+                        break
+                    }
+                }
+
+                self.sendPlayerData()
+            }
+            
             self.delegate?.newDeviceConnected!(peerID: peerID, connectedDevices: session.connectedPeers)
+            
         } else if state == .notConnected {
+            // a device disconnected from the game
+            
             if self.hostPeerID == peerID {
                 var allPeers = [myPeerId]
                 allPeers.append(contentsOf: session.connectedPeers)
                 self.hostPeerID = allPeers.sorted { $0.hashValue < $1.hashValue } .first
             }
             
-            if session.connectedPeers.count < 4 {
+            if session.connectedPeers.count < 3 {
                 self.startAdvertising()
+            }
+            
+            for i in 0..<self.players.count {
+                if self.players[i] == peerID { self.players[i] = nil }
+            }
+            
+            if session.connectedPeers.count == 0 {
+                self.players = [nil, nil, nil, nil]
+                self.players[Position.bottom.rawValue] = myPeerId
             }
             
             self.delegate?.deviceDisconnected!(peerID: peerID, connectedDevices: session.connectedPeers)
@@ -182,7 +222,13 @@ extension ConnectionServiceManager : MCSessionDelegate {
                  fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
 
-        self.delegate?.receivedData!(manager: self, data: data)
+        if let receivedPlayers = NSKeyedUnarchiver.unarchiveObject(with: data) as? [MCPeerID?] {
+            self.players = receivedPlayers
+            self.delegate?.updateLabels!()
+        } else {
+            self.delegate?.receivedData!(manager: self, data: data)
+        }
+
     }
     
     func session(_ session: MCSession,

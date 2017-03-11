@@ -36,6 +36,8 @@ class GameScene: SKScene {
     
     private var lastUpdateTime : TimeInterval = 0
     
+    var playerPosition: Position = .bottom
+    
     var connectionLabel : SKLabelNode!
     var dividerLine: SKShapeNode!
 

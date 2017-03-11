@@ -18,12 +18,10 @@ class GameViewController: UIViewController {
     let connectionService = ConnectionServiceManager()
     //var host: MCPeerID!
     
-    var playerBottom: MCPeerID?
-    var playerTop: MCPeerID?
-    var playerLeft: MCPeerID?
-    var playerRight: MCPeerID?
     
     var connectionsLabel: UILabel!
+    var positionLabel: UILabel!
+    
     var backGroundView: UIView!
     var skView: SKView!
     var scene: GameScene!
@@ -36,8 +34,6 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         connectionService.delegate = self
-        //host = connectionService.myPeerId
-        playerBottom = connectionService.myPeerId
         
         // Configure the view.
         
@@ -58,6 +54,15 @@ class GameViewController: UIViewController {
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
 
+        positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
+        positionLabel.textColor = UIColor.green
+        positionLabel.font = UIFont(name: "Helvetica", size: 10)
+        positionLabel.numberOfLines = 0
+        positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
+        for player in self.connectionService.players {
+            positionLabel.text?.append("\(player)\n")
+        }
+        view.addSubview(positionLabel)
         
         lineUpCardsButton = UIButton(frame: CGRect(x: buttonMargin, y: view.frame.height - buttonMargin - (cardsIcon?.size.height)!, width: (cardsIcon?.size.height)!, height: (cardsIcon?.size.height)!))
         lineUpCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
@@ -213,7 +218,10 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         DispatchQueue.main.async {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
             self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+            self.updateLabels()
         }
+        
+        self.scene.playerPosition = self.connectionService.myPosition()
         
         if self.connectionService.isHost() {
             self.scene.syncToMe()
@@ -224,6 +232,16 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         DispatchQueue.main.async {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
             self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+            self.updateLabels()
+        }
+    }
+    
+    func updateLabels() {
+        DispatchQueue.main.async {
+            self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
+            for player in self.connectionService.players {
+                self.positionLabel.text?.append("\(player)\n")
+            }
         }
     }
     

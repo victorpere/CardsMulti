@@ -26,6 +26,7 @@
 		57B054171E4E766A0057E62F /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054161E4E766A0057E62F /* Math.swift */; };
 		57B054191E4E7AC70057E62F /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054181E4E7AC70057E62F /* Game.swift */; };
 		57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B9C8F31E58FAA900F8E25B /* Actions.swift */; };
+		57E97B0A1E7368B4000243B2 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B091E7368B3000243B2 /* Position.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		57B054161E4E766A0057E62F /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Math.swift; path = Helpers/Math.swift; sourceTree = "<group>"; };
 		57B054181E4E7AC70057E62F /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = Helpers/Game.swift; sourceTree = "<group>"; };
 		57B9C8F31E58FAA900F8E25B /* Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actions.swift; sourceTree = "<group>"; };
+		57E97B091E7368B3000243B2 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Position.swift; path = Enums/Position.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +188,7 @@
 			children = (
 				57B0540B1E4E75B10057E62F /* Rank.swift */,
 				57B0540C1E4E75B10057E62F /* Suit.swift */,
+				57E97B091E7368B3000243B2 /* Position.swift */,
 			);
 			name = Enums;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
 				57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */,
 				57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */,
+				57E97B0A1E7368B4000243B2 /* Position.swift in Sources */,
 				574050551E5F82AA00316AEB /* UIDevice.swift in Sources */,
 				57B0540D1E4E75B10057E62F /* Rank.swift in Sources */,
 				57B0540E1E4E75B10057E62F /* Suit.swift in Sources */,
