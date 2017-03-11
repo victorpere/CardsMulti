@@ -198,6 +198,14 @@ class GameViewController: UIViewController {
         return true
     }
 
+    func updateLabels() {
+        DispatchQueue.main.async {
+            self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
+            for player in self.connectionService.players {
+                self.positionLabel.text?.append("\(player)\n")
+            }
+        }
+    }
 }
 
 
@@ -226,6 +234,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         if self.connectionService.isHost() {
             self.scene.syncToMe()
         }
+        self.scene.playerPosition = self.connectionService.myPosition()
     }
     
     func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
@@ -234,15 +243,12 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
             self.updateLabels()
         }
+        self.scene.playerPosition = self.connectionService.myPosition()
     }
     
-    func updateLabels() {
-        DispatchQueue.main.async {
-            self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
-            for player in self.connectionService.players {
-                self.positionLabel.text?.append("\(player)\n")
-            }
-        }
+    func updatePositions() {
+        self.updateLabels()
+        self.scene.playerPosition = self.connectionService.myPosition()
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {

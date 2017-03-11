@@ -397,8 +397,26 @@ extension GameScene {
                 let cardNode = allCards.filter { $0.card?.symbol() == cardSymbol }.first
 
                 let newPositionRelative = CGPointFromString(cardDictionary["p"] as! String)
-                let newPosition = CGPoint(x: newPositionRelative.x * self.frame.width, y: newPositionRelative.y * self.frame.height)
-                let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
+                var newPositionTransposed = CGPoint()
+                
+                switch self.playerPosition {
+                case .bottom :
+                    newPositionTransposed = newPositionRelative
+                case .top :
+                    newPositionTransposed.x = 1 - newPositionRelative.x
+                    newPositionTransposed.y = 1 - newPositionRelative.y
+                case .left :
+                    newPositionTransposed.x = 1 - newPositionRelative.y
+                    newPositionTransposed.y = newPositionRelative.x
+                case .right:
+                    newPositionTransposed.x = newPositionRelative.y
+                    newPositionTransposed.y = 1 - newPositionRelative.x
+                default:
+                    break
+                }
+                
+                let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
+                //let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
             
                 cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
                 //cardNode?.zPosition = cardDictionary["zPosition"] as! CGFloat
@@ -408,9 +426,9 @@ extension GameScene {
                 }
                 
                 if cardDictionary["a"] as! Bool {
-                    cardNode?.moveAndFlip(to: newPositionInverted, faceUp: (cardNode?.faceUp)!, duration: resetDuration, sendPosition: false)
+                    cardNode?.moveAndFlip(to: newPosition, faceUp: (cardNode?.faceUp)!, duration: resetDuration, sendPosition: false)
                 } else {
-                    cardNode?.position = newPositionInverted
+                    cardNode?.position = newPosition
                 }
             }
         } catch {
@@ -437,12 +455,29 @@ extension GameScene : CardSpriteNodeDelegate {
         
         var cardDictionaryArray = [NSDictionary]()
         for cardNode in cardNodes.sorted(by: { $0.zPosition < $1.zPosition }) {
-            let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: cardNode.position.y / self.frame.height)
-
+            let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: (cardNode.position.y - self.dividerLine.position.y) / self.frame.width)
+            var newPositionTransposed = CGPoint()
+            
+            switch self.playerPosition {
+            case .bottom :
+                newPositionTransposed = newPositionRelative
+            case .top :
+                newPositionTransposed.x = 1 - newPositionRelative.x
+                newPositionTransposed.y = 1 - newPositionRelative.y
+            case .left :
+                newPositionTransposed.x = newPositionRelative.y
+                newPositionTransposed.y = 1 - newPositionRelative.x
+            case .right:
+                newPositionTransposed.x = 1 - newPositionRelative.y
+                newPositionTransposed.y = newPositionRelative.x
+            default:
+                break
+            }
+            
             let cardDictionary: NSDictionary = [
                 "c": (cardNode.card?.symbol())! as String,
                 "f": cardNode.faceUp,
-                "p": NSStringFromCGPoint(newPositionRelative),
+                "p": NSStringFromCGPoint(newPositionTransposed),
                 "m": moveToFront,
                 "a": animate
                 //"zPosition": cardNode.zPosition

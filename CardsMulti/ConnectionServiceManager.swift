@@ -16,7 +16,7 @@ import MultipeerConnectivity
     @objc optional func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     @objc optional func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     
-    @objc optional func updateLabels()
+    @objc optional func updatePositions()
 }
 
 class ConnectionServiceManager : NSObject {
@@ -230,7 +230,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
         if let receivedPlayers = NSKeyedUnarchiver.unarchiveObject(with: data) as? [MCPeerID?] {
             self.players = receivedPlayers
             self.reassignHost()
-            self.delegate?.updateLabels!()
+            self.delegate?.updatePositions!()
         } else {
             self.delegate?.receivedData!(manager: self, data: data)
         }
