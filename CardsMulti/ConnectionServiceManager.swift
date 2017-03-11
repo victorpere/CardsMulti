@@ -116,6 +116,11 @@ class ConnectionServiceManager : NSObject {
         }
         return .error
     }
+    
+    func reassignHost() {
+        let allPeers = self.players.filter { $0 != nil }
+        self.hostPeerID = allPeers.first!
+    }
 }
 
 extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {
@@ -186,6 +191,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 }
 
                 self.sendPlayerData()
+                self.reassignHost()
             }
             
             self.delegate?.newDeviceConnected!(peerID: peerID, connectedDevices: session.connectedPeers)
@@ -193,23 +199,22 @@ extension ConnectionServiceManager : MCSessionDelegate {
         } else if state == .notConnected {
             // a device disconnected from the game
             
+            for i in 0..<self.players.count {
+                if self.players[i] == peerID { self.players[i] = nil }
+            }
+            
             if self.hostPeerID == peerID {
-                var allPeers = [myPeerId]
-                allPeers.append(contentsOf: session.connectedPeers)
-                self.hostPeerID = allPeers.sorted { $0.hashValue < $1.hashValue } .first
+                self.reassignHost()
             }
             
             if session.connectedPeers.count < 3 {
                 self.startAdvertising()
             }
             
-            for i in 0..<self.players.count {
-                if self.players[i] == peerID { self.players[i] = nil }
-            }
-            
             if session.connectedPeers.count == 0 {
                 self.players = [nil, nil, nil, nil]
                 self.players[Position.bottom.rawValue] = myPeerId
+                self.hostPeerID = self.myPeerId
             }
             
             self.delegate?.deviceDisconnected!(peerID: peerID, connectedDevices: session.connectedPeers)
@@ -224,6 +229,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
 
         if let receivedPlayers = NSKeyedUnarchiver.unarchiveObject(with: data) as? [MCPeerID?] {
             self.players = receivedPlayers
+            self.reassignHost()
             self.delegate?.updateLabels!()
         } else {
             self.delegate?.receivedData!(manager: self, data: data)
