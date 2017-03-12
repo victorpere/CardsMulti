@@ -15,7 +15,7 @@ class CardSpriteNode : SKSpriteNode {
     let accelerationTimeInterval = 0.001
 
     let cardWidthFullSizePixels: CGFloat = 500.0
-    let cardWidthsPerScreen: CGFloat = 4.0
+    let cardWidthsPerScreen: CGFloat = 6.0
     let cardHeightFullSizePixels: CGFloat = 726.0
     let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
     let flipDuration = 0.2

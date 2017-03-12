@@ -152,6 +152,12 @@ class GameViewController: UIViewController {
         }
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
         peerBrowser.addAction(cancelButton)
+        
+        let presentationController = peerBrowser.popoverPresentationController
+        presentationController?.permittedArrowDirections = .down
+        presentationController?.sourceView = self.numberOfPlayersButton
+        presentationController?.sourceRect = self.numberOfPlayersButton.bounds
+        
         self.present(peerBrowser, animated: true, completion: nil)
     }
     
@@ -171,12 +177,13 @@ class GameViewController: UIViewController {
         let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
         settingsViewController.modalPresentationStyle = .popover
         settingsViewController.delegate = self
-        self.present(settingsViewController, animated: true, completion: nil)
         
         let presentationController = settingsViewController.popoverPresentationController
         presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = self.view
-        presentationController?.sourceRect = self.view.frame
+        presentationController?.sourceView = self.settingsButton
+        presentationController?.sourceRect = self.settingsButton.bounds
+        
+        self.present(settingsViewController, animated: true, completion: nil)
     }
     
     func checkForceTouch() {

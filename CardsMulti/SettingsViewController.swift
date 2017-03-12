@@ -32,11 +32,17 @@ class SettingsViewController : UIViewController {
         let minRankLabel = UILabel(frame: CGRect(x: 10, y:30, width: self.view.frame.width / 2 - 10, height: 51))
         minRankLabel.text = "Minimum rank:"
         
+        var sliderTrackImage = UIImage(named: "slider_frame")
+        let insets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        sliderTrackImage = sliderTrackImage?.resizableImage(withCapInsets: insets)
+
         self.minRankSlider = UISlider(frame: CGRect(x: self.view.frame.width / 2, y: 30, width: self.view.frame.width / 2 - 10, height: 51))
         self.minRankSlider.minimumValue = 3
         self.minRankSlider.maximumValue = 10
         self.minRankSlider.value = Float(settings.minRank)
         self.minRankSlider.addTarget(self, action: #selector(minRankSliderChanged), for: .valueChanged)
+        self.minRankSlider.setMinimumTrackImage(sliderTrackImage, for: .normal)
+        self.minRankSlider.setMaximumTrackImage(sliderTrackImage, for: .normal)
         self.setSliderThumbImage(slider: self.minRankSlider)
         
         let maxRankLabel = UILabel(frame: CGRect(x: 10, y:100, width: self.view.frame.width / 2 - 10, height: 51))
@@ -47,6 +53,8 @@ class SettingsViewController : UIViewController {
         self.maxRankSlider.maximumValue = 10
         self.maxRankSlider.value = Float(settings.maxRank)
         self.maxRankSlider.addTarget(self, action: #selector(maxRankSliderChanged), for: .valueChanged)
+        self.maxRankSlider.setMinimumTrackImage(sliderTrackImage, for: .normal)
+        self.maxRankSlider.setMaximumTrackImage(sliderTrackImage, for: .normal)
         self.setSliderThumbImage(slider: self.maxRankSlider)
         
         self.doneButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height - 50, width: self.view.frame.width, height: 50))
