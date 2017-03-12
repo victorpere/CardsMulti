@@ -8,15 +8,22 @@
 
 import GameplayKit
 
-func newShuffledDeck(minRank: Int, numberOfCards: Int, name: String) -> [CardSpriteNode] {
+func newShuffledDeck(minRank: Int, numberOfCards: Int, name: String, settings: Settings) -> [CardSpriteNode] {
     var deck = [CardSpriteNode]()
     
     var suitNum = 0
     while let newSuit = Suit(rawValue: suitNum) {
-        var rankNum = minRank
+        var rankNum = settings.minRank
         while let newRank = Rank(rawValue: rankNum) {
-            let card = CardSpriteNode(card: Card(suit: newSuit, rank:newRank), name: name)            
-            deck.append(card)
+            if (rankNum <= settings.maxRank && settings.pips) ||
+                (newRank == .jack && settings.jack) ||
+                (newRank == .queen && settings.queen) ||
+                (newRank == .king && settings.king) ||
+                (newRank == .ace && settings.ace) {
+                let card = CardSpriteNode(card: Card(suit: newSuit, rank:newRank), name: name)
+                deck.append(card)
+            }
+            
             rankNum += 1
         }
         suitNum += 1

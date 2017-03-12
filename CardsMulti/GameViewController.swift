@@ -14,6 +14,7 @@ import MultipeerConnectivity
 class GameViewController: UIViewController {
     
     let buttonMargin: CGFloat = 8.0
+    let numberOfButtons: CGFloat = 4
     
     let connectionService = ConnectionServiceManager()
     //var host: MCPeerID!
@@ -27,9 +28,10 @@ class GameViewController: UIViewController {
     var scene: GameScene!
     
     
-    var restartButton: UIButton!
-    var numberOfPlayersButton: UIButton!
-    var lineUpCardsButton: UIButton!
+    var restartButton: BottomButton!
+    var settingsButton: BottomButton!
+    var numberOfPlayersButton: BottomButton!
+    var lineUpCardsButton: BottomButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +40,6 @@ class GameViewController: UIViewController {
         // Configure the view.
         
         let playersIcon = UIImage(named: "icon_players")
-        let restartIcon = UIImage(named: "icon_restart")
-        let cardsIcon = UIImage(named: "icon_cards")
         
         let barHeight = (playersIcon?.size.height)! + 2 * buttonMargin
         
@@ -63,23 +63,22 @@ class GameViewController: UIViewController {
             positionLabel.text?.append("\(player)\n")
         }
         view.addSubview(positionLabel)
+        positionLabel.isHidden = true
         
-        lineUpCardsButton = UIButton(frame: CGRect(x: buttonMargin, y: view.frame.height - buttonMargin - (cardsIcon?.size.height)!, width: (cardsIcon?.size.height)!, height: (cardsIcon?.size.height)!))
+        lineUpCardsButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.view.frame, buttonNumber: 0, numberOfButtons: numberOfButtons, tag: 3)
         lineUpCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        lineUpCardsButton.tag = 3
-        lineUpCardsButton.setImage(cardsIcon, for: .normal)
         view.addSubview(lineUpCardsButton)
         
-        numberOfPlayersButton = UIButton(frame: CGRect(x: view.frame.midX - (playersIcon!.size.width / 2), y: view.frame.height - buttonMargin - (restartIcon?.size.height)!, width: (playersIcon?.size.width)!, height: (playersIcon?.size.height)!))
+        settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.view.frame, buttonNumber: 1, numberOfButtons: numberOfButtons, tag: 4)
+        settingsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        view.addSubview(settingsButton)
+        
+        numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.view.frame, buttonNumber: 2, numberOfButtons: numberOfButtons, tag: 2)
         numberOfPlayersButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        numberOfPlayersButton.tag = 2
-        numberOfPlayersButton.setImage(playersIcon, for: .normal)
         view.addSubview(numberOfPlayersButton)
         
-        restartButton = UIButton(frame: CGRect(x: view.frame.width - buttonMargin - (restartIcon?.size.width)!, y: view.frame.height - buttonMargin - (restartIcon?.size.height)!, width: (restartIcon?.size.height)!, height: (restartIcon?.size.height)!))
+        restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.view.frame, buttonNumber: 3, numberOfButtons: numberOfButtons, tag: 1)
         restartButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        restartButton.tag = 1
-        restartButton.setImage(restartIcon, for: .normal)
         view.addSubview(restartButton)
         
         //let skView = self.view as! SKView
@@ -101,17 +100,21 @@ class GameViewController: UIViewController {
     func buttonAction(sender: UIButton!) {
         let btnsendtag: UIButton = sender
         switch btnsendtag.tag {
-            case 1:
-                self.resetGame()
-            case 2:
-                if self.connectionService.session.connectedPeers.count > 0 {
-                    self.disconnectFromPeer()
-                } else {
-                    self.browsePeers()
-                }
-            case 3:
-                self.lineUpCards()
-            default: break
+        case 1:
+            self.resetGame()
+        case 2:
+            if self.connectionService.session.connectedPeers.count > 0 {
+                self.disconnectFromPeer()
+            } else {
+                self.browsePeers()
+            }
+        case 3:
+            self.lineUpCards()
+        case 4:
+            self.openSettings()
+            break
+            
+        default: break
         }
     }
     
@@ -164,6 +167,18 @@ class GameViewController: UIViewController {
         self.present(connectionAlert, animated: true, completion: nil)
     }
     
+    func openSettings() {
+        let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
+        settingsViewController.modalPresentationStyle = .popover
+        settingsViewController.delegate = self
+        self.present(settingsViewController, animated: true, completion: nil)
+        
+        let presentationController = settingsViewController.popoverPresentationController
+        presentationController?.permittedArrowDirections = .down
+        presentationController?.sourceView = self.view
+        presentationController?.sourceRect = self.view.frame
+    }
+    
     func checkForceTouch() {
         if self.traitCollection.forceTouchCapability == UIForceTouchCapability.available {
             print("force touch available")
@@ -172,10 +187,7 @@ class GameViewController: UIViewController {
             }
         }
     }
-    
-    func changeColor(_ color: UIColor) {
-        backGroundView.backgroundColor = color
-    }
+
 
     override var shouldAutorotate: Bool {
         return true
@@ -289,3 +301,10 @@ extension GameViewController : MCBrowserViewControllerDelegate {
     }
 }
  */
+
+extension GameViewController : SettingsViewControllerDelegate {
+    
+    func settingsChanged() {
+        self.scene.resetGame(sync: true)
+    }
+}
