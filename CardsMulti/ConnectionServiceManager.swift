@@ -13,6 +13,7 @@ import MultipeerConnectivity
     
     @objc optional func receivedData(manager: ConnectionServiceManager, data: Data)
     @objc optional func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
+    @objc optional func syncToMe()
     @objc optional func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     @objc optional func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     
@@ -77,6 +78,7 @@ class ConnectionServiceManager : NSObject {
     
     func stopBrowsing() {
         self.serviceBrowser.stopBrowsingForPeers()
+        self.foundPeers.removeAll()
     }
     
     func sendData(data: Data) {
@@ -96,7 +98,7 @@ class ConnectionServiceManager : NSObject {
     
     func invitePeer(_ peerID: MCPeerID) {
         self.hostPeerID = peerID
-        self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 15)
     }
     
     func disconnect() {
@@ -191,10 +193,12 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 }
 
                 self.sendPlayerData()
+                self.delegate?.updatePositions!()
+                self.delegate?.syncToMe!()
                 self.reassignHost()
             }
             
-            self.delegate?.newDeviceConnected!(peerID: peerID, connectedDevices: session.connectedPeers)
+            //self.delegate?.newDeviceConnected!(peerID: peerID, connectedDevices: session.connectedPeers)
             
         } else if state == .notConnected {
             // a device disconnected from the game

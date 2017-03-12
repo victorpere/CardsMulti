@@ -22,6 +22,9 @@ class GameViewController: UIViewController {
     
     var connectionsLabel: UILabel!
     var positionLabel: UILabel!
+    var playerLeftLabel: UILabel!
+    var playerAcrossLabel: UILabel!
+    var playerRightLabel: UILabel!
     
     var backGroundView: UIView!
     var skView: SKView!
@@ -49,11 +52,34 @@ class GameViewController: UIViewController {
         backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
         view.addSubview(backGroundView)
         
-        connectionsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 15))
+        connectionsLabel = UILabel(frame: CGRect(x: 0, y: self.view.frame.width, width: self.view.frame.width, height: 15))
         connectionsLabel.textColor = UIColor.green
-        connectionsLabel.font = UIFont(name: "Helvetica", size: 15)
+        connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
+        
+        playerAcrossLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 15))
+        playerAcrossLabel.textColor = UIColor.green
+        playerAcrossLabel.font = UIFont(name: "Helvetica", size: 12)
+        //playerAcrossLabel.text = "Player across: "
+        playerAcrossLabel.textAlignment = .center
+        view.addSubview(playerAcrossLabel)
+        
+        playerLeftLabel = UILabel(frame: CGRect(x: 7.5 - self.view.frame.width / 2, y: self.view.frame.width / 2, width: self.view.frame.width, height: 15))
+        playerLeftLabel.textColor = UIColor.green
+        playerLeftLabel.font = UIFont(name: "Helvetica", size: 12)
+        //playerLeftLabel.text = "Player left: "
+        playerLeftLabel.textAlignment = .center
+        playerLeftLabel.transform = CGAffineTransform(rotationAngle: CGFloat(0 - M_PI / 2))
+        view.addSubview(playerLeftLabel)
+        
+        playerRightLabel = UILabel(frame: CGRect(x: self.view.frame.width / 2 - 7.5, y: self.view.frame.width / 2, width: self.view.frame.width, height: 15))
+        playerRightLabel.textColor = UIColor.green
+        playerRightLabel.font = UIFont(name: "Helvetica", size: 12)
+        //playerRightLabel.text = "Player right: "
+        playerRightLabel.textAlignment = .center
+        playerRightLabel.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI / 2))
+        view.addSubview(playerRightLabel)
 
         positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
         positionLabel.textColor = UIColor.green
@@ -235,6 +261,29 @@ class GameViewController: UIViewController {
             }
         }
     }
+    
+    func updatePlayerLabels() {
+        DispatchQueue.main.async {
+            let positionToLeft = self.connectionService.myPosition().positionToLeft()
+            let positionAcross = self.connectionService.myPosition().positionAcross()
+            let positionToRight = self.connectionService.myPosition().positionToRight()
+            if let playerToLeft = self.connectionService.players[positionToLeft.rawValue] {
+                self.playerLeftLabel.text = playerToLeft.displayName
+            } else {
+                self.playerLeftLabel.text = ""
+            }
+            if let playerAcross = self.connectionService.players[positionAcross.rawValue] {
+                self.playerAcrossLabel.text = playerAcross.displayName
+            } else {
+                self.playerAcrossLabel.text = ""
+            }
+            if let playerToRight = self.connectionService.players[positionToRight.rawValue] {
+                self.playerRightLabel.text = playerToRight.displayName
+            } else {
+                self.playerRightLabel.text = ""
+            }
+        }
+    }
 }
 
 
@@ -251,19 +300,20 @@ extension GameViewController {
 
 extension GameViewController : ConnectionServiceManagerDelegate {
     
+    func syncToMe() {
+        self.scene.syncToMe()
+    }
+    
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
         DispatchQueue.main.async {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
             self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
             self.updateLabels()
+            self.updatePlayerLabels()
         }
         
         self.scene.playerPosition = self.connectionService.myPosition()
         
-        if self.connectionService.isHost() {
-            self.scene.syncToMe()
-        }
-        self.scene.playerPosition = self.connectionService.myPosition()
     }
     
     func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
@@ -271,12 +321,18 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
             self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
             self.updateLabels()
+            self.updatePlayerLabels()
         }
         self.scene.playerPosition = self.connectionService.myPosition()
     }
     
     func updatePositions() {
-        self.updateLabels()
+        DispatchQueue.main.async {
+            let connectedDevicesNames = self.connectionService.session.connectedPeers.map({$0.displayName})
+            self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+            self.updateLabels()
+            self.updatePlayerLabels()
+        }
         self.scene.playerPosition = self.connectionService.myPosition()
     }
     
