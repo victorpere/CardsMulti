@@ -191,10 +191,16 @@ class GameScene: SKScene {
         self.cut(cards: cards)
     }
     
-    func resetHand() {
+    func resetHand(sort: Bool) {
         let usableWidth = self.frame.size.width - (border * 2)
 
-        let hand = allCards.filter { $0.position.y < self.dividerLine.position.y }
+        var hand = allCards.filter { $0.position.y < self.dividerLine.position.y }
+        if sort {
+            hand.sort { ($0.card?.rank.rawValue)! < ($1.card?.rank.rawValue)! }
+            hand.sort { ($0.card?.suit.rawValue)! < ($1.card?.suit.rawValue)! }
+        } else {
+            hand.sort { $0.position.x < $1.position.x }
+        }
         
         for (nodeNumber, cardNode) in hand.enumerated() {
             

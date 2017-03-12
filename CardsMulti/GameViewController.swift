@@ -14,7 +14,7 @@ import MultipeerConnectivity
 class GameViewController: UIViewController {
     
     let buttonMargin: CGFloat = 8.0
-    let numberOfButtons: CGFloat = 4
+    let numberOfButtons: CGFloat = 5
     
     let connectionService = ConnectionServiceManager()
     //var host: MCPeerID!
@@ -32,6 +32,7 @@ class GameViewController: UIViewController {
     var settingsButton: BottomButton!
     var numberOfPlayersButton: BottomButton!
     var lineUpCardsButton: BottomButton!
+    var sortCardsButton: BottomButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,15 +70,19 @@ class GameViewController: UIViewController {
         lineUpCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         view.addSubview(lineUpCardsButton)
         
-        settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.view.frame, buttonNumber: 1, numberOfButtons: numberOfButtons, tag: 4)
+        sortCardsButton = BottomButton(withIconNamed: "icon_cards_sort", viewFrame: self.view.frame, buttonNumber: 1, numberOfButtons: numberOfButtons, tag: 5)
+        sortCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        view.addSubview(sortCardsButton)
+        
+        settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.view.frame, buttonNumber: 2, numberOfButtons: numberOfButtons, tag: 4)
         settingsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         view.addSubview(settingsButton)
         
-        numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.view.frame, buttonNumber: 2, numberOfButtons: numberOfButtons, tag: 2)
+        numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.view.frame, buttonNumber: 3, numberOfButtons: numberOfButtons, tag: 2)
         numberOfPlayersButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         view.addSubview(numberOfPlayersButton)
         
-        restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.view.frame, buttonNumber: 3, numberOfButtons: numberOfButtons, tag: 1)
+        restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.view.frame, buttonNumber: 4, numberOfButtons: numberOfButtons, tag: 1)
         restartButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         view.addSubview(restartButton)
         
@@ -112,7 +117,8 @@ class GameViewController: UIViewController {
             self.lineUpCards()
         case 4:
             self.openSettings()
-            break
+        case 5:
+            self.sortCards()
             
         default: break
         }
@@ -138,7 +144,11 @@ class GameViewController: UIViewController {
     }
     
     func lineUpCards() {
-        scene.resetHand()
+        scene.resetHand(sort: false)
+    }
+    
+    func sortCards() {
+        scene.resetHand(sort: true)
     }
     
     func browsePeers() {
