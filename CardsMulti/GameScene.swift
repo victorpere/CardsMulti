@@ -97,10 +97,10 @@ class GameScene: SKScene {
         dividerLine = SKShapeNode(points: &points, count: points.count)
         dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
         dividerLine.zPosition = -100
-        dividerLine.strokeColor = UIColor(colorLiteralRed: 183, green: 180, blue: 125, alpha: 0.3)
+        dividerLine.strokeColor = UIColor(red: 0.7, green: 0.7, blue: 0.5, alpha: 1.0)
         self.addChild(dividerLine)
         
-        allCards = newShuffledDeck(minRank: minRank, numberOfCards: numberOfCards, name: "deck", settings: settings)
+        allCards = newShuffledDeck(name: "deck", settings: settings)
         /*
         let newCard = CardSpriteNode(card: Card(suit: Suit.spades, rank: Rank.queen), name: "deck")
         allCards.append(newCard)
@@ -334,8 +334,16 @@ class GameScene: SKScene {
                 setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
                 //print("touches ended")
                 
+                /*
                 for node in selectedNodes {
-                    node.stopMoving(startSpeed: movingSpeed)
+                    let stopQ = DispatchQueue(label: "com.CardsMulti.StopMoving")
+                    stopQ.async {
+                        node.stopMoving(startSpeed: self.movingSpeed)
+                    }
+                }
+                */
+                DispatchQueue.concurrentPerform(iterations: selectedNodes.count) {
+                    self.selectedNodes[$0].stopMoving(startSpeed: self.movingSpeed)
                 }
                 
                 lastTouchTimestamp = 0.0
@@ -409,7 +417,7 @@ class GameScene: SKScene {
 extension GameScene {
     
     
-    func receivedData(manager: ConnectionServiceManager, data: Data) {
+    func receivedData(data: Data) {
         
         if let receivedSettings = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSDictionary {
             self.settings.minRank = (receivedSettings["minRank"] as? Int)!
@@ -488,38 +496,7 @@ extension GameScene : CardSpriteNodeDelegate {
     
     func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool) {
         
-        var cardDictionaryArray = [NSDictionary]()
-        for cardNode in cardNodes.sorted(by: { $0.zPosition < $1.zPosition }) {
-            let newPositionRelative = CGPoint(x: cardNode.position.x / self.frame.width, y: (cardNode.position.y - self.dividerLine.position.y) / self.frame.width)
-            var newPositionTransposed = CGPoint()
-            
-            switch self.playerPosition {
-            case .bottom :
-                newPositionTransposed = newPositionRelative
-            case .top :
-                newPositionTransposed.x = 1 - newPositionRelative.x
-                newPositionTransposed.y = 1 - newPositionRelative.y
-            case .left :
-                newPositionTransposed.x = newPositionRelative.y
-                newPositionTransposed.y = 1 - newPositionRelative.x
-            case .right:
-                newPositionTransposed.x = 1 - newPositionRelative.y
-                newPositionTransposed.y = newPositionRelative.x
-            default:
-                break
-            }
-            
-            let cardDictionary: NSDictionary = [
-                "c": (cardNode.card?.symbol())! as String,
-                "f": cardNode.faceUp,
-                "p": NSStringFromCGPoint(newPositionTransposed),
-                "m": moveToFront,
-                "a": animate
-                //"zPosition": cardNode.zPosition
-            ]
-            
-            cardDictionaryArray.append(cardDictionary)
-        }
+        let cardDictionaryArray = getCardDictionaryArray(cardNodes: cardNodes, position: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate)
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: cardDictionaryArray)

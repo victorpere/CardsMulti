@@ -38,16 +38,6 @@
                ReferencedContainer = "container:CardsMulti.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "57B053F51E4E3BD20057E62F"
-               BuildableName = "CardsMultiUITests.xctest"
-               BlueprintName = "CardsMultiUITests"
-               ReferencedContainer = "container:CardsMulti.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

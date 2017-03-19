@@ -337,7 +337,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
-        self.scene.receivedData(manager: manager, data: data)
+        self.scene.receivedData(data: data)
     }
     
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void) {

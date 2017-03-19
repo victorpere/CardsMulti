@@ -10,6 +10,21 @@
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
 		574050551E5F82AA00316AEB /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
+		578B1C551E7EF960008B8381 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DC1E4E3BD20057E62F /* GameViewController.swift */; };
+		578B1C571E7EFB04008B8381 /* ConnectionServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054081E4E40750057E62F /* ConnectionServiceManager.swift */; };
+		578B1C581E7EFB0A008B8381 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DA1E4E3BD20057E62F /* GameScene.swift */; };
+		578B1C591E7EFB17008B8381 /* BottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0C1E7479F5000243B2 /* BottomButton.swift */; };
+		578B1C5A1E7EFB1B008B8381 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0E1E748244000243B2 /* SettingsViewController.swift */; };
+		578B1C5B1E7EFB33008B8381 /* CardSpriteNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054121E4E75F30057E62F /* CardSpriteNode.swift */; };
+		578B1C5C1E7EFB37008B8381 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B091E7368B3000243B2 /* Position.swift */; };
+		578B1C5D1E7EFBCB008B8381 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B101E74A651000243B2 /* Settings.swift */; };
+		578B1C5E1E7EFBD3008B8381 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054161E4E766A0057E62F /* Math.swift */; };
+		578B1C5F1E7EFBD6008B8381 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054181E4E7AC70057E62F /* Game.swift */; };
+		578B1C601E7EFBD9008B8381 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054111E4E75F30057E62F /* Card.swift */; };
+		578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B9C8F31E58FAA900F8E25B /* Actions.swift */; };
+		578B1C621E7EFBE1008B8381 /* Rank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B0540B1E4E75B10057E62F /* Rank.swift */; };
+		578B1C631E7EFBE4008B8381 /* Suit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B0540C1E4E75B10057E62F /* Suit.swift */; };
+		578B1C641E7EFBE7008B8381 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
 		57B053D51E4E3BD20057E62F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053D41E4E3BD20057E62F /* AppDelegate.swift */; };
 		57B053DB1E4E3BD20057E62F /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DA1E4E3BD20057E62F /* GameScene.swift */; };
 		57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DC1E4E3BD20057E62F /* GameViewController.swift */; };
@@ -391,7 +406,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				578B1C551E7EF960008B8381 /* GameViewController.swift in Sources */,
+				578B1C631E7EFBE4008B8381 /* Suit.swift in Sources */,
+				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
+				578B1C591E7EFB17008B8381 /* BottomButton.swift in Sources */,
+				578B1C5B1E7EFB33008B8381 /* CardSpriteNode.swift in Sources */,
 				57B053F01E4E3BD20057E62F /* CardsMultiTests.swift in Sources */,
+				578B1C621E7EFBE1008B8381 /* Rank.swift in Sources */,
+				578B1C641E7EFBE7008B8381 /* UIDevice.swift in Sources */,
+				578B1C581E7EFB0A008B8381 /* GameScene.swift in Sources */,
+				578B1C571E7EFB04008B8381 /* ConnectionServiceManager.swift in Sources */,
+				578B1C5F1E7EFBD6008B8381 /* Game.swift in Sources */,
+				578B1C601E7EFBD9008B8381 /* Card.swift in Sources */,
+				578B1C5D1E7EFBCB008B8381 /* Settings.swift in Sources */,
+				578B1C5C1E7EFB37008B8381 /* Position.swift in Sources */,
+				578B1C5A1E7EFB1B008B8381 /* SettingsViewController.swift in Sources */,
+				578B1C5E1E7EFBD3008B8381 /* Math.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

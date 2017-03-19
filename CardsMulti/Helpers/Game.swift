@@ -8,7 +8,7 @@
 
 import GameplayKit
 
-func newShuffledDeck(minRank: Int, numberOfCards: Int, name: String, settings: Settings) -> [CardSpriteNode] {
+func newShuffledDeck(name: String, settings: Settings) -> [CardSpriteNode] {
     var deck = [CardSpriteNode]()
     
     var suitNum = 0
@@ -29,10 +29,8 @@ func newShuffledDeck(minRank: Int, numberOfCards: Int, name: String, settings: S
         suitNum += 1
     }
     deck = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: deck) as! [CardSpriteNode]
-    if numberOfCards == 0 {
-        return deck
-    }
-    return Array(deck.prefix(numberOfCards))
+    
+    return deck
 }
 
 func shuffle(_ deck: inout [CardSpriteNode]) {
@@ -104,3 +102,40 @@ func displayStatus(_ players: [Player], _ deck: [CardSpriteNode], _ trump: Card,
     print()
 }
 */
+
+func getCardDictionaryArray(cardNodes: [CardSpriteNode], position: Position, width: CGFloat, yOffset: CGFloat, moveToFront: Bool, animate: Bool) -> [NSDictionary] {
+    var cardDictionaryArray = [NSDictionary]()
+    for cardNode in cardNodes.sorted(by: { $0.zPosition < $1.zPosition }) {
+        let newPositionRelative = CGPoint(x: cardNode.position.x / width, y: (cardNode.position.y - yOffset) / width)
+        var newPositionTransposed = CGPoint()
+        
+        switch position {
+        case .bottom :
+            newPositionTransposed = newPositionRelative
+        case .top :
+            newPositionTransposed.x = 1 - newPositionRelative.x
+            newPositionTransposed.y = 1 - newPositionRelative.y
+        case .left :
+            newPositionTransposed.x = newPositionRelative.y
+            newPositionTransposed.y = 1 - newPositionRelative.x
+        case .right:
+            newPositionTransposed.x = 1 - newPositionRelative.y
+            newPositionTransposed.y = newPositionRelative.x
+        default:
+            break
+        }
+        
+        let cardDictionary: NSDictionary = [
+            "c": (cardNode.card?.symbol())! as String,
+            "f": cardNode.faceUp,
+            "p": NSStringFromCGPoint(newPositionTransposed),
+            "m": moveToFront,
+            "a": animate
+            //"zPosition": cardNode.zPosition
+        ]
+        
+        cardDictionaryArray.append(cardDictionary)
+    }
+    
+    return cardDictionaryArray
+}
