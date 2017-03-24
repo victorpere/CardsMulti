@@ -97,7 +97,7 @@ class GameScene: SKScene {
         dividerLine = SKShapeNode(points: &points, count: points.count)
         dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
         dividerLine.zPosition = -100
-        dividerLine.strokeColor = UIColor(red: 0.7, green: 0.7, blue: 0.5, alpha: 1.0)
+        dividerLine.strokeColor = Config.mainColor
         self.addChild(dividerLine)
         
         allCards = newShuffledDeck(name: "deck", settings: settings)

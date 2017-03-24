@@ -74,15 +74,15 @@ class SettingsViewController : UIViewController {
         let aceLabel = UILabel(frame: CGRect(x: 10, y: 410, width: self.view.frame.width / 2 - 10, height: 51))
         aceLabel.text = "Ace:"
 
-        self.pipsSwitch = UISwitch(frame: CGRect(x: self.view.frame.width / 2, y: 170, width: self.view.frame.width / 2 - 10, height: 51))
+        self.pipsSwitch = Switch(frame: CGRect(x: self.view.frame.width / 2, y: 170, width: self.view.frame.width / 2 - 10, height: 51))
         self.pipsSwitch.isOn = settings.pips
-        self.jackSwitch = UISwitch(frame: CGRect(x: self.view.frame.width / 2, y: 230, width: self.view.frame.width / 2 - 10, height: 51))
+        self.jackSwitch = Switch(frame: CGRect(x: self.view.frame.width / 2, y: 230, width: self.view.frame.width / 2 - 10, height: 51))
         self.jackSwitch.isOn = settings.jack
-        self.queenSwitch = UISwitch(frame: CGRect(x: self.view.frame.width / 2, y: 290, width: self.view.frame.width / 2 - 10, height: 51))
+        self.queenSwitch = Switch(frame: CGRect(x: self.view.frame.width / 2, y: 290, width: self.view.frame.width / 2 - 10, height: 51))
         self.queenSwitch.isOn = settings.queen
-        self.kingSwitch = UISwitch(frame: CGRect(x: self.view.frame.width / 2, y: 350, width: self.view.frame.width / 2 - 10, height: 51))
+        self.kingSwitch = Switch(frame: CGRect(x: self.view.frame.width / 2, y: 350, width: self.view.frame.width / 2 - 10, height: 51))
         self.kingSwitch.isOn = settings.king
-        self.aceSwitch = UISwitch(frame: CGRect(x: self.view.frame.width / 2, y: 410, width: self.view.frame.width / 2 - 10, height: 51))
+        self.aceSwitch = Switch(frame: CGRect(x: self.view.frame.width / 2, y: 410, width: self.view.frame.width / 2 - 10, height: 51))
         self.aceSwitch.isOn = settings.ace
 
         self.view.addSubview(minRankLabel)
@@ -137,6 +137,7 @@ class SettingsViewController : UIViewController {
     func done(sender: UIButton) {
         switch sender.tag {
         case 1:
+
             var minRankValue = Int(self.minRankSlider.value)
             if self.minRankSlider.value == 3.0 {
                 minRankValue = 2
@@ -146,13 +147,13 @@ class SettingsViewController : UIViewController {
                 maxRankValue = 2
             }
             
-            if minRankValue != settings.minRank ||
-                maxRankValue != settings.maxRank ||
-                self.pipsSwitch.isOn != settings.pips ||
-                self.jackSwitch.isOn != settings.jack ||
-                self.queenSwitch.isOn != settings.queen ||
-                self.kingSwitch.isOn != settings.king ||
-                self.aceSwitch.isOn != settings.ace {
+            if minRankValue != self.settings.minRank ||
+                maxRankValue != self.settings.maxRank ||
+                self.pipsSwitch.isOn != self.settings.pips ||
+                self.jackSwitch.isOn != self.settings.jack ||
+                self.queenSwitch.isOn != self.settings.queen ||
+                self.kingSwitch.isOn != self.settings.king ||
+                self.aceSwitch.isOn != self.settings.ace {
                 
                 DispatchQueue.main.async {
                     let alert = UIAlertController(title: "Settings have changed, are you sure you want to proceed? (Game will be restarted)", message: nil, preferredStyle: .alert)
@@ -171,31 +172,32 @@ class SettingsViewController : UIViewController {
                     self.dismiss(animated: true, completion: nil)
                 }
             }
-            
+
         default: break
         }
     }
     
     func saveSettingsAndExit() {
-        var minRankValue = Int(self.minRankSlider.value)
-        if self.minRankSlider.value == 3.0 {
-            minRankValue = 2
-        }
-        var maxRankValue = Int(self.maxRankSlider.value)
-        if self.maxRankSlider.value == 3.0 {
-            maxRankValue = 2
-        }
-        
-        settings.minRank = minRankValue
-        settings.maxRank = maxRankValue
-        settings.pips = self.pipsSwitch.isOn
-        settings.jack = self.jackSwitch.isOn
-        settings.queen = self.queenSwitch.isOn
-        settings.king = self.kingSwitch.isOn
-        settings.ace = self.aceSwitch.isOn
-        
-        self.delegate?.settingsChanged()
         DispatchQueue.main.async {
+            var minRankValue = Int(self.minRankSlider.value)
+            if self.minRankSlider.value == 3.0 {
+                minRankValue = 2
+            }
+            var maxRankValue = Int(self.maxRankSlider.value)
+            if self.maxRankSlider.value == 3.0 {
+                maxRankValue = 2
+            }
+            
+            self.settings.minRank = minRankValue
+            self.settings.maxRank = maxRankValue
+            self.settings.pips = self.pipsSwitch.isOn
+            self.settings.jack = self.jackSwitch.isOn
+            self.settings.queen = self.queenSwitch.isOn
+            self.settings.king = self.kingSwitch.isOn
+            self.settings.ace = self.aceSwitch.isOn
+            
+            self.delegate?.settingsChanged()
+        
             self.dismiss(animated: true, completion: nil)
         }
     }

@@ -10,6 +10,8 @@
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
 		574050551E5F82AA00316AEB /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
+		57897FF81E85652400B1D4A6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF71E85652400B1D4A6 /* Config.swift */; };
+		57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF91E85658D00B1D4A6 /* Switch.swift */; };
 		578B1C551E7EF960008B8381 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DC1E4E3BD20057E62F /* GameViewController.swift */; };
 		578B1C571E7EFB04008B8381 /* ConnectionServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054081E4E40750057E62F /* ConnectionServiceManager.swift */; };
 		578B1C581E7EFB0A008B8381 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DA1E4E3BD20057E62F /* GameScene.swift */; };
@@ -68,6 +70,8 @@
 		5740504C1E5E890000316AEB /* card_flip.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_flip.m4a; sourceTree = "<group>"; };
 		574050541E5F82AA00316AEB /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDevice.swift; path = Extensions/UIDevice.swift; sourceTree = "<group>"; };
 		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
+		57897FF71E85652400B1D4A6 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		57897FF91E85658D00B1D4A6 /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
 		57B053D11E4E3BD20057E62F /* CardsMulti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsMulti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57B053D41E4E3BD20057E62F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		57B053DA1E4E3BD20057E62F /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -146,6 +150,14 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		57897FF61E85651400B1D4A6 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				57897FF71E85652400B1D4A6 /* Config.swift */,
+			);
+			name = Config;
+			sourceTree = "<group>";
+		};
 		57B053C81E4E3BD20057E62F = {
 			isa = PBXGroup;
 			children = (
@@ -169,6 +181,7 @@
 		57B053D31E4E3BD20057E62F /* CardsMulti */ = {
 			isa = PBXGroup;
 			children = (
+				57897FF61E85651400B1D4A6 /* Config */,
 				574050531E5F828200316AEB /* Extensions */,
 				5740504A1E5E88E900316AEB /* Resources */,
 				57B054151E4E76340057E62F /* Helpers */,
@@ -240,6 +253,7 @@
 			children = (
 				57E97B0C1E7479F5000243B2 /* BottomButton.swift */,
 				57E97B0E1E748244000243B2 /* SettingsViewController.swift */,
+				57897FF91E85658D00B1D4A6 /* Switch.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -386,7 +400,9 @@
 				57B053DB1E4E3BD20057E62F /* GameScene.swift in Sources */,
 				57B054191E4E7AC70057E62F /* Game.swift in Sources */,
 				57B054091E4E40750057E62F /* ConnectionServiceManager.swift in Sources */,
+				57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */,
 				57B054171E4E766A0057E62F /* Math.swift in Sources */,
+				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
 				57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */,
 				57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */,
