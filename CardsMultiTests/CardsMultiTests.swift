@@ -73,7 +73,7 @@ class CardsMultiTests: XCTestCase {
         let scene = self.vc!.scene
         //displayCards((scene?.allCards.sorted { $0.zPosition < $1.zPosition })!)
         
-        var newDeck = newShuffledDeck(name: "deck", settings: settings)
+        var newDeck = Global.newShuffledDeck(name: "deck", settings: settings)
         
         newDeck.sort { ($0.card?.rank.rawValue)! < ($1.card?.rank.rawValue)! }
         newDeck.sort { ($0.card?.suit.rawValue)! < ($1.card?.suit.rawValue)! }
@@ -82,7 +82,7 @@ class CardsMultiTests: XCTestCase {
             card.zPosition = CGFloat(cardIndex)
         }
         
-        let newDeckDictionaryArray = getCardDictionaryArray(cardNodes: newDeck, position: .left, width: (scene?.frame.width)!, yOffset: (scene?.dividerLine.position.y)!, moveToFront: true, animate: false)
+        let newDeckDictionaryArray = Global.cardDictionaryArray(with: newDeck, position: .left, width: (scene?.frame.width)!, yOffset: (scene?.dividerLine.position.y)!, moveToFront: true, animate: false)
         
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: newDeckDictionaryArray)

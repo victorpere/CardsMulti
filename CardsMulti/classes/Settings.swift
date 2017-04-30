@@ -15,106 +15,106 @@ class Settings : NSObject, NSCoding {
     
     var minRank: Int {
         get {
-            if let m = userDefaults.value(forKey: "minRank") as? Int {
+            if let m = self.userDefaults.value(forKey: "minRank") as? Int {
                 return m
             }
-            userDefaults.setValue(defaultMinRank, forKey: "minRank")
-            userDefaults.synchronize()
-            return defaultMinRank
+            self.userDefaults.setValue(defaultMinRank, forKey: "minRank")
+            self.userDefaults.synchronize()
+            return self.defaultMinRank
         }
         set(value) {
-            userDefaults.setValue(value, forKey: "minRank")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(value, forKey: "minRank")
+            self.userDefaults.synchronize()
         }
     }
     
     var maxRank: Int {
         get {
-            if let m = userDefaults.value(forKey: "maxRank") as? Int {
+            if let m = self.userDefaults.value(forKey: "maxRank") as? Int {
                 return m
             }
-            userDefaults.setValue(defaultMaxRank, forKey: "maxRank")
-            userDefaults.synchronize()
-            return defaultMaxRank
+            self.userDefaults.setValue(defaultMaxRank, forKey: "maxRank")
+            self.userDefaults.synchronize()
+            return self.defaultMaxRank
         }
         set(value) {
-            userDefaults.setValue(value, forKey: "maxRank")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(value, forKey: "maxRank")
+            self.userDefaults.synchronize()
         }
     }
     
     var pips: Bool {
         get {
-            if let m = userDefaults.value(forKey: "pips") as? Bool {
+            if let m = self.userDefaults.value(forKey: "pips") as? Bool {
                 return m
             }
-            userDefaults.setValue(true, forKey: "pips")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(true, forKey: "pips")
+            self.userDefaults.synchronize()
             return true
         }
         set(value) {
-            userDefaults.setValue(value, forKey: "pips")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(value, forKey: "pips")
+            self.userDefaults.synchronize()
         }
     }
     
     var jack: Bool {
         get {
-            if let m = userDefaults.value(forKey: "jack") as? Bool {
+            if let m = self.userDefaults.value(forKey: "jack") as? Bool {
                 return m
             }
-            userDefaults.setValue(true, forKey: "jack")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(true, forKey: "jack")
+            self.userDefaults.synchronize()
             return true
         }
         set(value) {
-            userDefaults.setValue(value, forKey: "jack")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(value, forKey: "jack")
+            self.userDefaults.synchronize()
         }
     }
     
     var queen: Bool {
         get {
-            if let m = userDefaults.value(forKey: "queen") as? Bool {
+            if let m = self.userDefaults.value(forKey: "queen") as? Bool {
                 return m
             }
-            userDefaults.setValue(true, forKey: "queen")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(true, forKey: "queen")
+            self.userDefaults.synchronize()
             return true
         }
         set(value) {
-            userDefaults.setValue(value, forKey: "queen")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(value, forKey: "queen")
+            self.userDefaults.synchronize()
         }
     }
     
     var king: Bool {
         get {
-            if let m = userDefaults.value(forKey: "king") as? Bool {
+            if let m = self.userDefaults.value(forKey: "king") as? Bool {
                 return m
             }
-            userDefaults.setValue(true, forKey: "king")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(true, forKey: "king")
+            self.userDefaults.synchronize()
             return true
         }
         set(value) {
-            userDefaults.setValue(value, forKey: "king")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(value, forKey: "king")
+            self.userDefaults.synchronize()
         }
     }
     
     var ace: Bool {
         get {
-            if let m = userDefaults.value(forKey: "ace") as? Bool {
+            if let m = self.userDefaults.value(forKey: "ace") as? Bool {
                 return m
             }
-            userDefaults.setValue(true, forKey: "ace")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(true, forKey: "ace")
+            self.userDefaults.synchronize()
             return true
         }
         set(value) {
-            userDefaults.setValue(value, forKey: "ace")
-            userDefaults.synchronize()
+            self.userDefaults.setValue(value, forKey: "ace")
+            self.userDefaults.synchronize()
         }
     }
     

@@ -61,6 +61,8 @@ class GameScene: SKScene {
     
     var cutting = false
     var cutStartPosition: CGPoint!
+    
+    // MARK: - Initializers
         
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -80,6 +82,11 @@ class GameScene: SKScene {
         
     }
     
+    // MARK: - Private methods
+    
+    
+    // MARK: - Public methods
+    
     func resetGame(sync: Bool) {
         self.removeAllChildren()
         
@@ -94,21 +101,15 @@ class GameScene: SKScene {
         
         //var points = [CGPoint(x: 0, y: self.frame.height - self.frame.width), CGPoint(x: self.frame.width, y: self.frame.height - self.frame.width)]
         var points = [CGPoint(x: 0, y: 0), CGPoint(x: self.frame.width, y: 0)]
-        dividerLine = SKShapeNode(points: &points, count: points.count)
-        dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
-        dividerLine.zPosition = -100
-        dividerLine.strokeColor = Config.mainColor
-        self.addChild(dividerLine)
+        self.dividerLine = SKShapeNode(points: &points, count: points.count)
+        self.dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
+        self.dividerLine.zPosition = -100
+        self.dividerLine.strokeColor = Config.mainColor
+        self.addChild(self.dividerLine)
         
-        allCards = newShuffledDeck(name: "deck", settings: settings)
-        /*
-        let newCard = CardSpriteNode(card: Card(suit: Suit.spades, rank: Rank.queen), name: "deck")
-        allCards.append(newCard)
-        let newCard2 = CardSpriteNode(card: Card(suit: Suit.diamonds, rank: .six), name: "deck")
-        allCards.append(newCard2)
-        */
+        self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
         
-        for cardNode in allCards {
+        for cardNode in self.allCards {
             self.addChild(cardNode)
             self.addChild(cardNode.shadowNode)
         }
@@ -121,21 +122,19 @@ class GameScene: SKScene {
     }
     
     func resetCards(sync: Bool) {
-        shuffle(&allCards)
+        Global.shuffle(&self.allCards)
         
-        for (cardNumber, cardNode) in allCards.enumerated() {
+        for (cardNumber, cardNode) in self.allCards.enumerated() {
             cardNode.delegate = self
-            cardNode.flip(faceUp: false, sendPosition: false)
+            
             cardNode.selectable = true
-            //cardNode.zPosition = CGFloat(0 - cardNumber)
             cardNode.moveToFront()
-            let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
+            let cardOffset = CGFloat(Double(cardNumber) * self.verticalHeight)
             cardNode.position = CGPoint(x: self.frame.midX - cardOffset, y: self.dividerLine.position.y + self.frame.width / 2 + cardOffset)
-            //cardNode.position = CGPoint(x: cardNode.frame.size.width / 2 + self.frame.midX + cardOffset, y: self.frame.size.height - (self.dividerLine.position.y + self.frame.width / 2) - cardNode.frame.size.height / 2 - cardOffset)
-
+            cardNode.flip(faceUp: false, sendPosition: false)
         }
         if sync {
-            self.sendPosition(of: allCards, moveToFront: true, animate: false)
+            self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
         }
     }
     
@@ -192,9 +191,9 @@ class GameScene: SKScene {
     }
     
     func resetHand(sort: Bool) {
-        let usableWidth = self.frame.size.width - (border * 2)
+        let usableWidth = self.frame.size.width - (self.border * 2)
 
-        var hand = allCards.filter { $0.position.y < self.dividerLine.position.y }
+        var hand = self.allCards.filter { $0.position.y < self.dividerLine.position.y }
         if sort {
             hand.sort { ($0.card?.rank.rawValue)! < ($1.card?.rank.rawValue)! }
             hand.sort { ($0.card?.suit.rawValue)! < ($1.card?.suit.rawValue)! }
@@ -252,7 +251,7 @@ class GameScene: SKScene {
             }
             
             print("force touched to drag cards: ", terminator: "")
-            displayCards(self.selectedNodes)
+            Global.displayCards(self.selectedNodes)
             
             //self.stack(cards: self.selectedNodes, position: touchedCardNode.position)
             self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
@@ -260,21 +259,22 @@ class GameScene: SKScene {
     }
 
     func setMovingSpeed(startPosition: CGPoint, endPosition: CGPoint, time: Double) {
-        movingSpeed.dx = (endPosition.x - startPosition.x) / CGFloat(time)
-        movingSpeed.dy = (endPosition.y - startPosition.y) / CGFloat(time)
+        self.movingSpeed.dx = (endPosition.x - startPosition.x) / CGFloat(time)
+        self.movingSpeed.dy = (endPosition.y - startPosition.y) / CGFloat(time)
     }
     
     func deselectNodeForTouch() {
-        selectedNodes.removeAll()
+        self.selectedNodes.removeAll()
     }
 
+    // MARK: - UIResponder methods
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
         for t in touches {
-            selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
+            self.selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
             
-            lastTouchTimestamp = t.timestamp
-            lastTouchMoveTimestamp = t.timestamp
+            self.lastTouchTimestamp = t.timestamp
+            self.lastTouchMoveTimestamp = t.timestamp
         }
     }
     
@@ -290,7 +290,7 @@ class GameScene: SKScene {
                 //print("touch moved force: \(t.force)")
                 if !forceTouchActivated && t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     forceTouchActivated = true
-                    selectMultipleNodesForTouch(touchLocation: t.location(in: self))
+                    self.selectMultipleNodesForTouch(touchLocation: t.location(in: self))
                 }
             }
             
@@ -298,17 +298,17 @@ class GameScene: SKScene {
             //setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
             
             if transformation.x != 0 || transformation.y != 0 {
-                lastTouchMoveTimestamp = t.timestamp
-                if selectedNodes.count > 0 {
-                    selectedNodes.move(transformation: transformation)
-                    let timeElapsed = t.timestamp - lastSendPositionTimestamp
-                    if timeElapsed >= 0.1 || (selectedNodes.count <= 2 && timeElapsed >= 0.05) {
-                        lastSendPositionTimestamp = t.timestamp
-                        self.sendPosition(of: selectedNodes, moveToFront: false, animate: false)
+                self.lastTouchMoveTimestamp = t.timestamp
+                if self.selectedNodes.count > 0 {
+                    self.selectedNodes.move(transformation: transformation)
+                    let timeElapsed = t.timestamp - self.lastSendPositionTimestamp
+                    if timeElapsed >= 0.1 || (self.selectedNodes.count <= 2 && timeElapsed >= 0.05) {
+                        self.lastSendPositionTimestamp = t.timestamp
+                        self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
                     }
                 } else {
                     if self.cutting {
-                        let transformationFromStart = CGPoint(x: currentPosition.x - cutStartPosition.x, y: currentPosition.y - cutStartPosition.y)
+                        let transformationFromStart = CGPoint(x: currentPosition.x - self.cutStartPosition.x, y: currentPosition.y - cutStartPosition.y)
                         if ((transformationFromStart.x < 0) != (transformation.x < 0)) || ((transformationFromStart.y < 0) != (transformation.y < 0)) {
                             self.cutting = false
                             print("cutting interrupted")
@@ -318,52 +318,44 @@ class GameScene: SKScene {
                     }
                 }
             }
-            lastTouchTimestamp = t.timestamp
+            self.lastTouchTimestamp = t.timestamp
         }
         
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            forceTouchActivated = false
+            self.forceTouchActivated = false
             
-            if selectedNodes.count > 0 {
+            if self.selectedNodes.count > 0 {
                 let currentPosition = t.location(in: self)
                 let previousPosition = t.previousLocation(in: self)
-                let timeInterval = t.timestamp - lastTouchTimestamp
-                setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
-                //print("touches ended")
-                
-                /*
-                for node in selectedNodes {
-                    let stopQ = DispatchQueue(label: "com.CardsMulti.StopMoving")
-                    stopQ.async {
-                        node.stopMoving(startSpeed: self.movingSpeed)
-                    }
-                }
-                */
-                DispatchQueue.concurrentPerform(iterations: selectedNodes.count) {
+                let timeInterval = t.timestamp - self.lastTouchTimestamp
+                self.setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
+
+                DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
                     self.selectedNodes[$0].stopMoving(startSpeed: self.movingSpeed)
                 }
                 
-                lastTouchTimestamp = 0.0
-                lastTouchMoveTimestamp = 0.0
+                self.lastTouchTimestamp = 0.0
+                self.lastTouchMoveTimestamp = 0.0
             } else {
-                if cutting {
+                if self.cutting {
                     print("cutting stopped")
-                    cutting = false
+                    self.cutting = false
                     self.stoppedCutting(touchLocation: t.location(in: self))
                 }
             }
         }
         
-        deselectNodeForTouch()
+        self.deselectNodeForTouch()
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        deselectNodeForTouch()
+        self.deselectNodeForTouch()
     }
     
+    // MARK: - Scene methods
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
@@ -407,14 +399,6 @@ class GameScene: SKScene {
         let encodedData = NSKeyedArchiver.archivedData(withRootObject: settingsDictionary)
         self.gameSceneDelegate!.sendData(data: encodedData)
     }
-}
-
-
-/*
- ConnectionServiceManagerDelegate
- */
-
-extension GameScene {
     
     
     func receivedData(data: Data) {
@@ -436,7 +420,7 @@ extension GameScene {
                     let cardDictionary = cardDictionaryArrayElement as! NSDictionary
                     
                     let cardSymbol = cardDictionary["c"] as! String
-                    let cardNode = allCards.filter { $0.card?.symbol() == cardSymbol }.first
+                    let cardNode = self.allCards.filter { $0.card?.symbol() == cardSymbol }.first
 
                     let newPositionRelative = CGPointFromString(cardDictionary["p"] as! String)
                     var newPositionTransposed = CGPoint()
@@ -481,22 +465,20 @@ extension GameScene {
 }
 
 
-/*
- CardSpriteNodeDelegate
- */
+// MARK: - CardSpriteNodeDelegate
 
 extension GameScene : CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode) {
         for eachCardNode in allCards {
             eachCardNode.zPosition -= 1
         }
-        cardNode.zPosition = lastSelectedNode.zPosition + 1
-        lastSelectedNode = cardNode
+        cardNode.zPosition = self.lastSelectedNode.zPosition + 1
+        self.lastSelectedNode = cardNode
     }
     
     func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool) {
         
-        let cardDictionaryArray = getCardDictionaryArray(cardNodes: cardNodes, position: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate)
+        let cardDictionaryArray = Global.cardDictionaryArray(with: cardNodes, position: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate)
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: cardDictionaryArray)
@@ -525,6 +507,7 @@ extension GameScene : CardSpriteNodeDelegate {
     }
 }
 
+// MARK: - Protocol GameSceneDelegate
 
 protocol GameSceneDelegate {
     

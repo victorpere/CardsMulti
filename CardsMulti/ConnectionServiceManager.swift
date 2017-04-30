@@ -42,6 +42,8 @@ class ConnectionServiceManager : NSObject {
         return session
     }()
     
+    // MARK: - Initializers
+    
     override init() {
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: ConnectionServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: ConnectionServiceType)
@@ -63,6 +65,8 @@ class ConnectionServiceManager : NSObject {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
     }
+    
+    // MARK: - Public methods
     
     func startAdvertising() {
         self.serviceAdvertiser.startAdvertisingPeer()
@@ -125,6 +129,8 @@ class ConnectionServiceManager : NSObject {
     }
 }
 
+// MARK: - MCNearbyServiceAdvertiserDelegate
+
 extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {
     
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
@@ -143,6 +149,8 @@ extension ConnectionServiceManager : MCNearbyServiceAdvertiserDelegate {
     }
     
 }
+
+// MARK: - MCNearbyServiceBrowserDelegate
 
 extension ConnectionServiceManager : MCNearbyServiceBrowserDelegate {
     
@@ -169,6 +177,8 @@ extension ConnectionServiceManager : MCNearbyServiceBrowserDelegate {
     }
     
 }
+
+// MARK: - MCSessionDelegate
 
 extension ConnectionServiceManager : MCSessionDelegate {
     
@@ -264,6 +274,8 @@ extension ConnectionServiceManager : MCSessionDelegate {
     }
     
 }
+
+// MARK: - Extensoin MCSessionState
 
 extension MCSessionState {
     

@@ -36,6 +36,8 @@ class GameViewController: UIViewController {
     var numberOfPlayersButton: BottomButton!
     var lineUpCardsButton: BottomButton!
     var sortCardsButton: BottomButton!
+    
+    // MARK: - View methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +50,7 @@ class GameViewController: UIViewController {
         let barHeight = (playersIcon?.size.height)! + 2 * buttonMargin
         
         backGroundView = UIView(frame: view.frame)
-        //backGroundView.backgroundColor = UIColor.black
+        backGroundView.backgroundColor = UIColor.black
         backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
         view.addSubview(backGroundView)
         
@@ -128,6 +130,8 @@ class GameViewController: UIViewController {
         self.startGame()
     }
     
+    // MARK: - Action methods
+    
     func buttonAction(sender: UIButton!) {
         let btnsendtag: UIButton = sender
         switch btnsendtag.tag {
@@ -149,6 +153,8 @@ class GameViewController: UIViewController {
         default: break
         }
     }
+    
+    // MARK: - Public methods
     
     func startGame() {
 
@@ -284,19 +290,14 @@ class GameViewController: UIViewController {
             }
         }
     }
-}
 
-
-/*
- Trait collection change
- */
-extension GameViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         self.checkForceTouch()
     }
 }
 
+// MARK: - ConnectionServiceManagerDelegate
 
 extension GameViewController : ConnectionServiceManagerDelegate {
     
@@ -353,8 +354,9 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             self.present(invitationAlert, animated: true, completion: nil)
         }
     }
-    
 }
+
+// MARK: - GameSceneDelegate
 
 extension GameViewController : GameSceneDelegate {
     
@@ -363,17 +365,7 @@ extension GameViewController : GameSceneDelegate {
     }
 }
 
-/*
-extension GameViewController : MCBrowserViewControllerDelegate {
-    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
-        dismiss(animated: true)
-    }
-    
-    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
-        dismiss(animated: true)
-    }
-}
- */
+// MARK: - SettingsViewControllerDelegate
 
 extension GameViewController : SettingsViewControllerDelegate {
     

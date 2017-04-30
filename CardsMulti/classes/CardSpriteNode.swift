@@ -40,6 +40,8 @@ class CardSpriteNode : SKSpriteNode {
     var shadowNode: SKSpriteNode!
     var shadowFlipAction: SKAction!
     
+    // MARK: - Initializers
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -53,23 +55,23 @@ class CardSpriteNode : SKSpriteNode {
     init(card: Card, name: String) {
         self.frontTexture = SKTexture(imageNamed: card.spriteName)
         self.frontTexture?.filteringMode = SKTextureFilteringMode.nearest
-        self.backTexture = SKTexture(imageNamed: backImageName)
+        self.backTexture = SKTexture(imageNamed: self.backImageName)
         self.backTexture?.filteringMode = SKTextureFilteringMode.nearest
         super.init(texture: self.frontTexture, color: .clear, size: (self.frontTexture?.size())!)
 
         self.card = card
         self.name = name
         self.cardScale = self.getScale()
-        self.setScale(cardScale)
+        self.setScale(self.cardScale)
         
         if #available(iOS 10.0, *) {
             self.flipToFrontAction = Actions.getFlipAction(texture: self.frontTexture!, duration: self.flipDuration)
             self.flipToBackAction = Actions.getFlipAction(texture: self.backTexture!, duration: self.flipDuration)
             
-            self.shadowFlipAction = Actions.getShadowFlipAction(duration: flipDuration)
+            self.shadowFlipAction = Actions.getShadowFlipAction(duration: self.flipDuration)
         } else {
-            let flipFirstHalfFlip = SKAction.scaleX(to: 0.0, duration: flipDuration)
-            let flipSecondHalfFlip = SKAction.scaleX(to: cardScale, duration: flipDuration)
+            let flipFirstHalfFlip = SKAction.scaleX(to: 0.0, duration: self.flipDuration)
+            let flipSecondHalfFlip = SKAction.scaleX(to: self.cardScale, duration: flipDuration)
             let textureChangeToFront = SKAction.setTexture(self.frontTexture!)
             let textureChangeToBack = SKAction.setTexture(self.backTexture!)
             
@@ -90,7 +92,9 @@ class CardSpriteNode : SKSpriteNode {
         self.shadowNode.isHidden = true
     }
     
-    func getScale() -> CGFloat {
+    // MARK: - Private methods
+    
+    private func getScale() -> CGFloat {
         let screenSize: CGRect = UIScreen.main.bounds
 
         //let screenWidthPixels = screenSize.width * 2
@@ -102,15 +106,17 @@ class CardSpriteNode : SKSpriteNode {
         //return cardHeightPixels / cardHeightFullSizePixels
     }
     
+    // MARK: - Public methods
+    
     func flip(sendPosition: Bool) {
         self.shadowNode.position = self.position
         self.shadowNode.zPosition = self.zPosition - 0.5
         self.shadowNode.isHidden = false
         
         if faceUp {
-            self.run(flipToBackAction)
+            self.run(self.flipToBackAction)
         } else {
-            self.run(flipToFrontAction)
+            self.run(self.flipToFrontAction)
         }
         
         self.shadowNode.run(self.shadowFlipAction) {
@@ -141,16 +147,13 @@ class CardSpriteNode : SKSpriteNode {
         self.moving = true
         
         var currentSpeed = startSpeed
-        var linearSpeed = hypotenuse(from: currentSpeed)
-        let linearAcceleration = linearSpeed * accelerationMultiplier
-        let acceleration = acceleration2d(linearAcceleration: linearAcceleration, speed: currentSpeed)
-        
-        //print("speed: \(linearSpeed)")
-        //print("acceleration: \(linearAcceleration)")
+        var linearSpeed = Math.hypotenuse(from: currentSpeed)
+        let linearAcceleration = linearSpeed * self.accelerationMultiplier
+        let acceleration = Math.acceleration2d(linearAcceleration: linearAcceleration, speed: currentSpeed)
         
         var movements = [SKAction]()
         while linearSpeed > 0 {
-            let movement = SKAction.moveBy(x: currentSpeed.dx * CGFloat(accelerationTimeInterval), y: currentSpeed.dy * CGFloat(accelerationTimeInterval), duration: accelerationTimeInterval)
+            let movement = SKAction.moveBy(x: currentSpeed.dx * CGFloat(self.accelerationTimeInterval), y: currentSpeed.dy * CGFloat(self.accelerationTimeInterval), duration: self.accelerationTimeInterval)
             movements.append(movement)
             currentSpeed.dx -= CGFloat(accelerationTimeInterval) * acceleration.dx
             currentSpeed.dy -= CGFloat(accelerationTimeInterval) * acceleration.dy
@@ -161,12 +164,10 @@ class CardSpriteNode : SKSpriteNode {
             self.delegate!.makeMoveSound()
             self.run(movementSequence) {
                 self.moving = false
-                //self.delegate.makeHumanPlayerHandSelectable()
                 self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
             }
         } else {
             self.moving = false
-            //self.delegate.makeHumanPlayerHandSelectable()
         }
     }
     
@@ -182,7 +183,6 @@ class CardSpriteNode : SKSpriteNode {
                 self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
             }
             self.moving = false
-            //print(self.card?.symbol()," moveAndFlip ", newPosition, self.position)
         }
     }
     
@@ -215,21 +215,16 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     func pop() {
-        self.run(popAction)
+        self.run(self.popAction)
     }
     
     func getCardsUnder() -> [CardSpriteNode] {
         return self.delegate!.getCards(under: self)
     }
-    /*
-    func play() -> CGPoint {
-        return delegate!.play(self)
-    }
-    */
 }
 
 
-// CardSpriteNodeDelegate
+// MARK: - CardSpriteNodeDelegate
 
 protocol CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode)
@@ -242,7 +237,7 @@ protocol CardSpriteNodeDelegate {
 }
 
 
-// Array of CardSpriteNode extension
+// MARK: - Array of CardSpriteNode extension
 
 extension Array where Element:CardSpriteNode {
 
