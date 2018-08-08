@@ -132,7 +132,7 @@ class GameViewController: UIViewController {
     
     // MARK: - Action methods
     
-    func buttonAction(sender: UIButton!) {
+    @objc func buttonAction(sender: UIButton!) {
         let btnsendtag: UIButton = sender
         switch btnsendtag.tag {
         case 1:

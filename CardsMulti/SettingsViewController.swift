@@ -102,7 +102,7 @@ class SettingsViewController : UIViewController {
         self.view.addSubview(self.doneButton)
     }
     
-    func minRankSliderChanged(sender: UISlider) {
+    @objc func minRankSliderChanged(sender: UISlider) {
         setSliderThumbImage(slider: sender)
         if sender.value > self.maxRankSlider.value {
             DispatchQueue.main.async {
@@ -112,7 +112,7 @@ class SettingsViewController : UIViewController {
         }
     }
     
-    func maxRankSliderChanged(sender: UISlider) {
+    @objc func maxRankSliderChanged(sender: UISlider) {
         setSliderThumbImage(slider: sender)
         if sender.value < self.minRankSlider.value {
             DispatchQueue.main.async {
@@ -134,7 +134,7 @@ class SettingsViewController : UIViewController {
         }
     }
     
-    func done(sender: UIButton) {
+    @objc func done(sender: UIButton) {
         switch sender.tag {
         case 1:
 
