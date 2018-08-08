@@ -72,7 +72,7 @@ class GameViewController: UIViewController {
         playerLeftLabel.font = UIFont(name: "Helvetica", size: 12)
         //playerLeftLabel.text = "Player left: "
         playerLeftLabel.textAlignment = .center
-        playerLeftLabel.transform = CGAffineTransform(rotationAngle: CGFloat(0 - M_PI / 2))
+        playerLeftLabel.transform = CGAffineTransform(rotationAngle: CGFloat(0 - Double.pi / 2))
         view.addSubview(playerLeftLabel)
         
         playerRightLabel = UILabel(frame: CGRect(x: self.view.frame.width / 2 - 7.5, y: self.view.frame.width / 2, width: self.view.frame.width, height: 15))
@@ -80,7 +80,7 @@ class GameViewController: UIViewController {
         playerRightLabel.font = UIFont(name: "Helvetica", size: 12)
         //playerRightLabel.text = "Player right: "
         playerRightLabel.textAlignment = .center
-        playerRightLabel.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI / 2))
+        playerRightLabel.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2))
         view.addSubview(playerRightLabel)
 
         positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
@@ -89,7 +89,7 @@ class GameViewController: UIViewController {
         positionLabel.numberOfLines = 0
         positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
         for player in self.connectionService.players {
-            positionLabel.text?.append("\(player)\n")
+            positionLabel.text?.append("\(String(describing: player))\n")
         }
         view.addSubview(positionLabel)
         positionLabel.isHidden = true
@@ -263,7 +263,7 @@ class GameViewController: UIViewController {
         DispatchQueue.main.async {
             self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
             for player in self.connectionService.players {
-                self.positionLabel.text?.append("\(player)\n")
+                self.positionLabel.text?.append("\(String(describing: player))\n")
             }
         }
     }

@@ -20,6 +20,6 @@ class Math {
     }
 
     static func degToRad(degree: Double) -> CGFloat {
-        return CGFloat(Double(degree) / 180.0 * M_PI)
+        return CGFloat(Double(degree) / 180.0 * Double.pi)
     }
 }
