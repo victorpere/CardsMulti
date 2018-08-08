@@ -218,11 +218,12 @@ class GameScene: SKScene {
             // select card to move
             let touchedCardNode = touchedNode as! CardSpriteNode
             if touchedCardNode.selectable {
-                touchedCardNode.moveToFront()
+                //touchedCardNode.moveToFront()
                 self.selectedNodes = [touchedCardNode]
 
                 if tapCount > 1 {
                     // this is the second tap - flip the card
+                    touchedCardNode.moveToFront()
                     touchedCardNode.flip(sendPosition: true)
                 }
                 
@@ -287,10 +288,16 @@ class GameScene: SKScene {
             let transformation = CGPoint(x: currentPosition.x - previousPosition.x, y: currentPosition.y - previousPosition.y)
             
             if forceTouch {
-                //print("touch moved force: \(t.force)")
-                if !forceTouchActivated && t.force / t.maximumPossibleForce >= self.forceTouchRatio {
-                    forceTouchActivated = true
-                    self.selectMultipleNodesForTouch(touchLocation: t.location(in: self))
+                if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
+                    // Force touch activated
+                    if !forceTouchActivated {
+                        forceTouchActivated = true
+                        self.selectMultipleNodesForTouch(touchLocation: currentPosition)
+                        //self.stack(cards: self.selectedNodes, position: currentPosition)
+                    } else {
+                        // Need to make cards stack when force touch activated second time?
+                        //self.stack(cards: selectedNodes, position: currentPosition)
+                    }
                 }
             }
             
@@ -300,6 +307,11 @@ class GameScene: SKScene {
             if transformation.x != 0 || transformation.y != 0 {
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
+                    if self.selectedNodes.count == 1 {
+                        if self.selectedNodes[0].isOnTopOfPile() {
+                            self.selectedNodes[0].moveToFront()
+                        }
+                    }
                     self.selectedNodes.move(transformation: transformation)
                     let timeElapsed = t.timestamp - self.lastSendPositionTimestamp
                     if timeElapsed >= 0.1 || (self.selectedNodes.count <= 2 && timeElapsed >= 0.05) {
@@ -492,6 +504,15 @@ extension GameScene : CardSpriteNodeDelegate {
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode] {
         let cards = self.allCards.filter { card.frame.contains($0.position) }
         return cards.sorted { $0.zPosition < $1.zPosition }
+    }
+    
+    func isOnTopOfPile(_ card: CardSpriteNode) -> Bool {
+        let cardsOnTopOfCard = self.allCards.filter { (card.frame.contains($0.bottomLeftCorner()) ||
+                                                       card.frame.contains($0.bottomRightCorner()) ||
+                                                       card.frame.contains($0.topLeftCorner()) ||
+                                                       card.frame.contains($0.topRightCorner()))
+                                                        && $0.zPosition > card.zPosition }
+        return cardsOnTopOfCard.count == 0;
     }
     
     func makeMoveSound() {
