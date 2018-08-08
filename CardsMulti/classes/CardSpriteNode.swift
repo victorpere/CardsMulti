@@ -221,6 +221,26 @@ class CardSpriteNode : SKSpriteNode {
     func getCardsUnder() -> [CardSpriteNode] {
         return self.delegate!.getCards(under: self)
     }
+    
+    func isOnTopOfPile() -> Bool {
+        return self.delegate!.isOnTopOfPile(self);
+    }
+    
+    func bottomLeftCorner() -> CGPoint {
+        return CGPoint(x: self.position.x - self.frame.width / 2, y: self.position.y - self.frame.height / 2)
+    }
+    
+    func bottomRightCorner() -> CGPoint {
+        return CGPoint(x: self.position.x + self.frame.width / 2, y: self.position.y - self.frame.height / 2 )
+    }
+    
+    func topLeftCorner() -> CGPoint {
+        return CGPoint(x: self.position.x - self.frame.width / 2, y: self.position.y + self.frame.height / 2)
+    }
+    
+    func topRightCorner() -> CGPoint {
+        return CGPoint(x: self.position.x + self.frame.width / 2, y : self.position.y + self.frame.height / 2)
+    }
 }
 
 
@@ -230,6 +250,7 @@ protocol CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode)
     func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool)
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode]
+    func isOnTopOfPile(_ cardNode: CardSpriteNode) -> Bool
     //func makeHumanPlayerHandSelectable()
     //func play(_ cardNode: CardSpriteNode) -> CGPoint
     func makeMoveSound()
