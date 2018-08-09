@@ -53,6 +53,8 @@ class GameScene: SKScene {
     
     var forceTouch = false
     var forceTouchActivated = false
+    var forceTouchReleased = false
+    var forceTouchActivatedAgain = false
     
     var gameSceneDelegate: GameSceneDelegate?
     
@@ -139,8 +141,9 @@ class GameScene: SKScene {
     }
     
     func stack(cards: [CardSpriteNode], position: CGPoint) {
+        let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
         var cardsCopy = [CardSpriteNode]()
-        for (cardNumber, card) in cards.enumerated() {
+        for (cardNumber, card) in cardsSorted.enumerated() {
             let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
             let newPosition = CGPoint(x: position.x + cardOffset, y: position.y - cardOffset)
             card.moveAndFlip(to: newPosition, faceUp: card.faceUp, duration: resetDuration, sendPosition: false)
@@ -174,8 +177,8 @@ class GameScene: SKScene {
             let stack2 = Array(cardsSorted.suffix(from: halfIndex))
             
             //stack(cards: cardsSorted, position: originalPosition!)
-            stack(cards: stack1, position: position1)
-            stack(cards: stack2, position: position2)
+            self.stack(cards: stack1, position: position1)
+            self.stack(cards: stack2, position: position2)
         }
     }
     
@@ -229,7 +232,7 @@ class GameScene: SKScene {
                 
                 //print("Cards under touched node: ", terminator: "")
                 //displayCards(self.getCards(under: self.selectedNode))
-                self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
+                self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
             }
         } else {
             print("cutting started")
@@ -241,7 +244,7 @@ class GameScene: SKScene {
     func selectMultipleNodesForTouch(touchLocation: CGPoint) {
         let touchedNode = self.atPoint(touchLocation)
         if touchedNode is CardSpriteNode {
-            AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+            //AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
             
             let touchedCardNode = touchedNode as! CardSpriteNode
             self.selectedNodes = self.getCards(under: touchedCardNode)
@@ -290,14 +293,21 @@ class GameScene: SKScene {
             if forceTouch {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     // Force touch activated
-                    if !forceTouchActivated {
-                        forceTouchActivated = true
+                    if !self.forceTouchActivated {
+                        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+                        self.forceTouchActivated = true
                         self.selectMultipleNodesForTouch(touchLocation: currentPosition)
                         //self.stack(cards: self.selectedNodes, position: currentPosition)
-                    } else {
+                    } else if self.forceTouchReleased && !self.forceTouchActivatedAgain {
                         // Need to make cards stack when force touch activated second time?
-                        //self.stack(cards: selectedNodes, position: currentPosition)
+                        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+                        self.forceTouchReleased = false
+                        self.forceTouchActivatedAgain = true
+                        self.stack(cards: selectedNodes, position: currentPosition)
                     }
+                } else if self.forceTouchActivated && !self.forceTouchReleased && !self.forceTouchActivatedAgain {
+                    // force touch activated, then released while still touching
+                    self.forceTouchReleased = true
                 }
             }
             
@@ -307,9 +317,13 @@ class GameScene: SKScene {
             if transformation.x != 0 || transformation.y != 0 {
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
-                    if self.selectedNodes.count == 1 {
+                    
+                    // check if the card now has no cards over it,
+                    // if it doesn't move it to the top
+                    if self.selectedNodes.count == 1 && self.selectedNodes[0] != self.lastSelectedNode {
                         if self.selectedNodes[0].isOnTopOfPile() {
                             self.selectedNodes[0].moveToFront()
+                            self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
                         }
                     }
                     self.selectedNodes.move(transformation: transformation)
@@ -338,6 +352,8 @@ class GameScene: SKScene {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
             self.forceTouchActivated = false
+            self.forceTouchReleased = false
+            self.forceTouchActivatedAgain = false
             
             if self.selectedNodes.count > 0 {
                 let currentPosition = t.location(in: self)
