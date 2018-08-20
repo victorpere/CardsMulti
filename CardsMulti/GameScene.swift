@@ -64,6 +64,9 @@ class GameScene: SKScene {
     var cutting = false
     var cutStartPosition: CGPoint!
     
+    var movingDirection = MovingDirection.none
+    var movingDirectionReversed = 0
+    
     // MARK: - Initializers
         
     required init?(coder aDecoder: NSCoder) {
@@ -270,6 +273,26 @@ class GameScene: SKScene {
     func deselectNodeForTouch() {
         self.selectedNodes.removeAll()
     }
+    
+    // shuffle cards function - work in progress...
+    func shuffle(cards: [CardSpriteNode]) {
+        print("shuffling cards")
+        print("old order:")
+        Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
+        
+        var shuffledCards = cards
+        Global.shuffle(&shuffledCards)
+        
+        for card in shuffledCards {
+            card.moveToFront()
+        }
+        
+        // stacking cards also sends position to other devices
+        self.stack(cards: cards, position: (cards.first?.position)!)
+ 
+        print("new order:")
+        Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
+    }
 
     // MARK: - UIResponder methods
     
@@ -294,12 +317,12 @@ class GameScene: SKScene {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     // Force touch activated
                     if !self.forceTouchActivated {
+                        // multiple cards are selected
                         AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
                         self.forceTouchActivated = true
                         self.selectMultipleNodesForTouch(touchLocation: currentPosition)
-                        //self.stack(cards: self.selectedNodes, position: currentPosition)
                     } else if self.forceTouchReleased && !self.forceTouchActivatedAgain {
-                        // Need to make cards stack when force touch activated second time?
+                        // force touch activated again: stack selected cards
                         AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
                         self.forceTouchReleased = false
                         self.forceTouchActivatedAgain = true
@@ -310,9 +333,6 @@ class GameScene: SKScene {
                     self.forceTouchReleased = true
                 }
             }
-            
-            //let timeInterval = t.timestamp - lastTouchTimestamp
-            //setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
             
             if transformation.x != 0 || transformation.y != 0 {
                 self.lastTouchMoveTimestamp = t.timestamp
@@ -332,6 +352,18 @@ class GameScene: SKScene {
                         self.lastSendPositionTimestamp = t.timestamp
                         self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
                     }
+                    
+                    // logic to detect shuffling
+                    if self.selectedNodes.count > 1 {
+                        // detect change of direction
+                        let newMovingDirection = MovingDirection(transformation: transformation)
+                        if self.movingDirection != newMovingDirection {
+                            print("direction reversed \(self.movingDirection) \(String(describing: newMovingDirection))")
+                            self.movingDirectionReversed += 1
+                        }
+                        self.movingDirection = newMovingDirection!
+                    }
+                    
                 } else {
                     if self.cutting {
                         let transformationFromStart = CGPoint(x: currentPosition.x - self.cutStartPosition.x, y: currentPosition.y - cutStartPosition.y)
@@ -343,10 +375,17 @@ class GameScene: SKScene {
                         }
                     }
                 }
+            } else {
+                // no movement
+                if self.movingDirectionReversed > 4 {
+                    // shuffle
+                    self.movingDirectionReversed = 0
+                    self.shuffle(cards: self.selectedNodes)
+                }
+                self.movingDirectionReversed = 0
             }
             self.lastTouchTimestamp = t.timestamp
-        }
-        
+        }        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -354,6 +393,7 @@ class GameScene: SKScene {
             self.forceTouchActivated = false
             self.forceTouchReleased = false
             self.forceTouchActivatedAgain = false
+            self.movingDirectionReversed = 0
             
             if self.selectedNodes.count > 0 {
                 let currentPosition = t.location(in: self)
