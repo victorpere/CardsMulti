@@ -9,6 +9,9 @@
 import UIKit
 
 class SettingsViewController : UIViewController {
+    
+    // MARK: - Variables
+    
     var delegate: SettingsViewControllerDelegate?
     
     let settings = Settings()
@@ -22,12 +25,16 @@ class SettingsViewController : UIViewController {
     var kingSwitch: UISwitch!
     var aceSwitch: UISwitch!
     
-    var doneButton: UIButton!
+    var tableView: UITableView!
+    
+    // MARK: - View methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
+        self.title = "Settings"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
         
         let minRankLabel = UILabel(frame: CGRect(x: 10, y:30, width: self.view.frame.width / 2 - 10, height: 51))
         minRankLabel.text = "Minimum rank:"
@@ -56,12 +63,6 @@ class SettingsViewController : UIViewController {
         self.maxRankSlider.setMinimumTrackImage(sliderTrackImage, for: .normal)
         self.maxRankSlider.setMaximumTrackImage(sliderTrackImage, for: .normal)
         self.setSliderThumbImage(slider: self.maxRankSlider)
-        
-        self.doneButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height - 50, width: self.view.frame.width, height: 50))
-        self.doneButton.setTitle("Done", for: .normal)
-        self.doneButton.setTitleColor(.black, for: .normal)
-        self.doneButton.addTarget(self, action: #selector(done), for: .touchUpInside)
-        self.doneButton.tag = 1
         
         let pipsLabel = UILabel(frame: CGRect(x: 10, y: 170, width: self.view.frame.width / 2 - 10, height: 51))
         pipsLabel.text = "Pip cards:"
@@ -99,7 +100,6 @@ class SettingsViewController : UIViewController {
         self.view.addSubview(self.queenSwitch)
         self.view.addSubview(self.kingSwitch)
         self.view.addSubview(self.aceSwitch)
-        self.view.addSubview(self.doneButton)
     }
     
     @objc func minRankSliderChanged(sender: UISlider) {
@@ -135,45 +135,39 @@ class SettingsViewController : UIViewController {
     }
     
     @objc func done(sender: UIButton) {
-        switch sender.tag {
-        case 1:
-
-            var minRankValue = Int(self.minRankSlider.value)
-            if self.minRankSlider.value == 3.0 {
-                minRankValue = 2
-            }
-            var maxRankValue = Int(self.maxRankSlider.value)
-            if self.maxRankSlider.value == 3.0 {
-                maxRankValue = 2
-            }
+        var minRankValue = Int(self.minRankSlider.value)
+        if self.minRankSlider.value == 3.0 {
+            minRankValue = 2
+        }
+        var maxRankValue = Int(self.maxRankSlider.value)
+        if self.maxRankSlider.value == 3.0 {
+            maxRankValue = 2
+        }
+        
+        if minRankValue != self.settings.minRank ||
+            maxRankValue != self.settings.maxRank ||
+            self.pipsSwitch.isOn != self.settings.pips ||
+            self.jackSwitch.isOn != self.settings.jack ||
+            self.queenSwitch.isOn != self.settings.queen ||
+            self.kingSwitch.isOn != self.settings.king ||
+            self.aceSwitch.isOn != self.settings.ace {
             
-            if minRankValue != self.settings.minRank ||
-                maxRankValue != self.settings.maxRank ||
-                self.pipsSwitch.isOn != self.settings.pips ||
-                self.jackSwitch.isOn != self.settings.jack ||
-                self.queenSwitch.isOn != self.settings.queen ||
-                self.kingSwitch.isOn != self.settings.king ||
-                self.aceSwitch.isOn != self.settings.ace {
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: "Settings have changed, are you sure you want to proceed? (Game will be restarted)", message: nil, preferredStyle: .alert)
+                let yesAction = UIAlertAction(title: "Yes", style: .default, handler: { (alert) -> Void in
+                    self.saveSettingsAndExit()
+                } )
+                let cancelButton = UIAlertAction(title: "No", style: .cancel) { (alert) -> Void in }
                 
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(title: "Settings have changed, are you sure you want to proceed? (Game will be restarted)", message: nil, preferredStyle: .alert)
-                    let yesAction = UIAlertAction(title: "Yes", style: .default, handler: { (alert) -> Void in
-                        self.saveSettingsAndExit()
-                    } )
-                    let cancelButton = UIAlertAction(title: "No", style: .cancel) { (alert) -> Void in }
-                    
-                    
-                    alert.addAction(cancelButton)
-                    alert.addAction(yesAction)
-                    self.present(alert, animated: true, completion: nil)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.dismiss(animated: true, completion: nil)
-                }
+                
+                alert.addAction(cancelButton)
+                alert.addAction(yesAction)
+                self.present(alert, animated: true, completion: nil)
             }
-
-        default: break
+        } else {
+            DispatchQueue.main.async {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
     

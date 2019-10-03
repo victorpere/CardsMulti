@@ -10,6 +10,22 @@ enum Position : Int {
     case error = -1
     case bottom = 0, top, left, right
     
+    func positionTo(_ direction: Position) -> Position {
+        switch direction {
+        case .bottom:
+            return self
+        case .top:
+            return self.positionAcross()
+        case .left:
+            return self.positionToLeft()
+        case .right:
+            return self.positionToRight()
+        default:
+            break
+        }
+        return .error
+    }
+    
     func positionToLeft() -> Position {
         switch self {
         case .bottom:

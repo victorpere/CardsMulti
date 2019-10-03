@@ -67,6 +67,8 @@ class GameScene: SKScene {
     var movingDirection = MovingDirection.none
     var movingDirectionReversed = 0
     
+    var peers: [MCPeerID?]!
+    
     // MARK: - Initializers
         
     required init?(coder aDecoder: NSCoder) {
@@ -141,6 +143,44 @@ class GameScene: SKScene {
         if sync {
             self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
         }
+    }
+    
+    func deal(_ cardsToDeal: Int, from cards: inout [CardSpriteNode]) {
+        // deal the cards to each peer
+        for _ in 1...cardsToDeal {
+            for (peerPositionIndex,peer) in self.peers.enumerated() {
+                if peer != nil {
+                    // deal a card to the position of the peer
+                    // which is determined by its index in the array
+                    if let peerPosition = Position(rawValue: peerPositionIndex) {
+                        self.dealTo(position: self.playerPosition.positionTo(peerPosition), from: &cards)
+                    }
+                }
+            }
+        }
+    }
+    
+    func dealTo(position positionToDeal: Position, from cards: inout [CardSpriteNode]) {
+        // deal a single card to the specified position
+        // take the top card in the common area
+        if cards.count > 0 {
+            //  select top card
+            cards = cards.sorted { $0.zPosition > $1.zPosition }
+            let cardToDeal = cards.first
+            // deal the card to somewhere in the area
+            let newLocation = randomLocationForPlayer(in: positionToDeal)
+            cardToDeal?.moveAndFlip(to: newLocation, faceUp: false, duration: resetDuration, sendPosition: true)
+            
+            // remove the dealt card from the stack
+            cards.remove(at: 0)
+        }
+    }
+    
+    func randomLocationForPlayer(in position: Position) -> CGPoint {
+        // TODO:
+        // random point somewhere within the player's area
+        // should be weighted towards centre
+        return CGPoint(x:0, y:0)
     }
     
     func stack(cards: [CardSpriteNode], position: CGPoint) {
@@ -590,6 +630,7 @@ protocol GameSceneDelegate {
     
     func sendData(data: Data)
 
+    func peers() -> [MCPeerID?]
 }
 
 

@@ -217,15 +217,16 @@ class GameViewController: UIViewController {
     
     func openSettings() {
         let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
-        settingsViewController.modalPresentationStyle = .popover
         settingsViewController.delegate = self
+        let navSettingsViewController = UINavigationController(rootViewController: settingsViewController)
+        navSettingsViewController.modalPresentationStyle = .popover
         
-        let presentationController = settingsViewController.popoverPresentationController
+        let presentationController = navSettingsViewController.popoverPresentationController
         presentationController?.permittedArrowDirections = .down
         presentationController?.sourceView = self.settingsButton
         presentationController?.sourceRect = self.settingsButton.bounds
         
-        self.present(settingsViewController, animated: true, completion: nil)
+        self.present(navSettingsViewController, animated: true, completion: nil)
     }
     
     func checkForceTouch() {
@@ -291,6 +292,13 @@ class GameViewController: UIViewController {
         }
     }
 
+    func updateScenePlayers(){
+        self.scene.peers = self.connectionService.players
+    }
+    
+    
+    // MARK : - System method overrides
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         self.checkForceTouch()
@@ -314,6 +322,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         }
         
         self.scene.playerPosition = self.connectionService.myPosition()
+        self.updateScenePlayers()
         
     }
     
@@ -325,6 +334,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             self.updatePlayerLabels()
         }
         self.scene.playerPosition = self.connectionService.myPosition()
+        self.updateScenePlayers()
     }
     
     func updatePositions() {
@@ -335,6 +345,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             self.updatePlayerLabels()
         }
         self.scene.playerPosition = self.connectionService.myPosition()
+        self.updateScenePlayers()
     }
     
     func receivedData(manager: ConnectionServiceManager, data: Data) {
@@ -360,6 +371,10 @@ extension GameViewController : ConnectionServiceManagerDelegate {
 
 extension GameViewController : GameSceneDelegate {
     
+    func peers() -> [MCPeerID?] {
+        return self.connectionService.players
+    }
+        
     func sendData(data: Data) {
         self.connectionService.sendData(data: data)
     }

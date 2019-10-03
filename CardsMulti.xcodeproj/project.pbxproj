@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		570C3973233697E200A2882C /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
+		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
 		574050551E5F82AA00316AEB /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
@@ -70,6 +72,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
+		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		5740504C1E5E890000316AEB /* card_flip.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_flip.m4a; sourceTree = "<group>"; };
 		574050541E5F82AA00316AEB /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDevice.swift; path = Extensions/UIDevice.swift; sourceTree = "<group>"; };
 		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
@@ -129,6 +133,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		570C3971233697B100A2882C /* GameScenes */ = {
+			isa = PBXGroup;
+			children = (
+				570C3972233697E200A2882C /* GameGoFish.swift */,
+			);
+			name = GameScenes;
+			sourceTree = "<group>";
+		};
 		5740504A1E5E88E900316AEB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -185,6 +197,7 @@
 		57B053D31E4E3BD20057E62F /* CardsMulti */ = {
 			isa = PBXGroup;
 			children = (
+				570C3971233697B100A2882C /* GameScenes */,
 				57897FF61E85651400B1D4A6 /* Config */,
 				574050531E5F828200316AEB /* Extensions */,
 				5740504A1E5E88E900316AEB /* Resources */,
@@ -240,6 +253,7 @@
 				57B054121E4E75F30057E62F /* CardSpriteNode.swift */,
 				57B9C8F31E58FAA900F8E25B /* Actions.swift */,
 				57E97B101E74A651000243B2 /* Settings.swift */,
+				570C397423369C4D00A2882C /* Player.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -355,6 +369,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -408,7 +423,9 @@
 				57B054191E4E7AC70057E62F /* Game.swift in Sources */,
 				57B054091E4E40750057E62F /* ConnectionServiceManager.swift in Sources */,
 				57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */,
+				570C397523369C4D00A2882C /* Player.swift in Sources */,
 				57B054171E4E766A0057E62F /* Math.swift in Sources */,
+				570C3973233697E200A2882C /* GameGoFish.swift in Sources */,
 				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
 				57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */,
