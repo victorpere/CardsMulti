@@ -129,7 +129,7 @@ class Global {
             let cardDictionary: NSDictionary = [
                 "c": (cardNode.card?.symbol())! as String,
                 "f": cardNode.faceUp,
-                "p": NSStringFromCGPoint(newPositionTransposed),
+                "p": NSCoder.string(for: newPositionTransposed),
                 "m": moveToFront,
                 "a": animate
                 //"zPosition": cardNode.zPosition

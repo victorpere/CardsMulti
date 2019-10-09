@@ -173,7 +173,7 @@ extension ConnectionServiceManager : MCNearbyServiceBrowserDelegate {
                  lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
         
-        self.foundPeers.remove(at: foundPeers.index(of: peerID)!)
+        self.foundPeers.remove(at: foundPeers.firstIndex(of: peerID)!)
     }
     
 }

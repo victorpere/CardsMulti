@@ -27,6 +27,7 @@ class GameScene: SKScene {
     let buffer: CGFloat = 100.0
     let forceTouchRatio: CGFloat = 0.9
     let timeToSelectMultipleNodes: TimeInterval = 1.0
+    let timeToPopUpMenu: TimeInterval = 1.1
     
     //let connectionService = ConnectionServiceManager()
     
@@ -48,6 +49,7 @@ class GameScene: SKScene {
     var lastTouchTimestamp = 0.0
     var lastSendPositionTimestamp = 0.0
     var lastTouchMoveTimestamp = 0.0
+    var touchesBeganTimestamp = 0.0
     
     var allCards = [CardSpriteNode]()
     
@@ -91,6 +93,12 @@ class GameScene: SKScene {
     
     // MARK: - Private methods
     
+    private func numberOfPlayers() -> Int {
+        if self.peers == nil {
+            return 1
+        }
+        return self.peers.filter { $0 != nil }.count
+    }
     
     // MARK: - Public methods
     
@@ -145,7 +153,8 @@ class GameScene: SKScene {
         }
     }
     
-    func deal(_ cardsToDeal: Int, from cards: inout [CardSpriteNode]) {
+    // Deal the specified number of cards into each of the connected players' areas
+    func deal(_ cardsToDeal: Int) {
         // deal the cards to each peer
         for _ in 1...cardsToDeal {
             for (peerPositionIndex,peer) in self.peers.enumerated() {
@@ -153,13 +162,17 @@ class GameScene: SKScene {
                     // deal a card to the position of the peer
                     // which is determined by its index in the array
                     if let peerPosition = Position(rawValue: peerPositionIndex) {
-                        self.dealTo(position: self.playerPosition.positionTo(peerPosition), from: &cards)
+                        self.dealTo(position: self.playerPosition.positionTo(peerPosition), from: &self.selectedNodes)
                     }
                 }
             }
         }
+        
+        // deselect the remaining cards (which have not been dealt)
+        self.deselectNodeForTouch()
     }
     
+    // deal one card from the top of the passed pile to the specified position
     func dealTo(position positionToDeal: Position, from cards: inout [CardSpriteNode]) {
         // deal a single card to the specified position
         // take the top card in the common area
@@ -340,6 +353,7 @@ class GameScene: SKScene {
         for t in touches {
             self.selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
             
+            self.touchesBeganTimestamp = t.timestamp
             self.lastTouchTimestamp = t.timestamp
             self.lastTouchMoveTimestamp = t.timestamp
         }
@@ -447,6 +461,15 @@ class GameScene: SKScene {
                 
                 self.lastTouchTimestamp = 0.0
                 self.lastTouchMoveTimestamp = 0.0
+                
+                // pop up cotextual menu, if multiple cards were selected
+                // and less that a certain time interval elapsed since touches began
+                // should contain: deal, shuffle
+                let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
+                if self.selectedNodes.count > 1 && timeSinceTouchesBegan < self.timeToPopUpMenu  {
+                    self.popUpMenu(forNumberOfCards: self.selectedNodes.count, at: self.selectedNodes[0].position)
+                }
+                
             } else {
                 if self.cutting {
                     print("cutting stopped")
@@ -456,7 +479,9 @@ class GameScene: SKScene {
             }
         }
         
-        self.deselectNodeForTouch()
+
+        
+        //self.deselectNodeForTouch()
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -530,7 +555,7 @@ class GameScene: SKScene {
                     let cardSymbol = cardDictionary["c"] as! String
                     let cardNode = self.allCards.filter { $0.card?.symbol() == cardSymbol }.first
 
-                    let newPositionRelative = CGPointFromString(cardDictionary["p"] as! String)
+                    let newPositionRelative = NSCoder.cgPoint(for: cardDictionary["p"] as! String)
                     var newPositionTransposed = CGPoint()
                     
                     switch self.playerPosition {
@@ -569,6 +594,14 @@ class GameScene: SKScene {
                 print("Error deserializing json data \(error)")
             }
         }
+    }
+    
+    // MARK: - UI methods
+    func popUpMenu(forNumberOfCards numberOfCards: Int, at location: CGPoint) {
+        // present contextual menu for selected pile of cards
+        // contains: deal, shuffle
+        let cardsPerPlayer = numberOfCards / self.numberOfPlayers()
+        self.gameSceneDelegate?.presentPopUpMenu(maxNumberToDeal: cardsPerPlayer, at: location)
     }
 }
 
@@ -631,6 +664,8 @@ protocol GameSceneDelegate {
     func sendData(data: Data)
 
     func peers() -> [MCPeerID?]
+    
+    func presentPopUpMenu(maxNumberToDeal: Int, at location: CGPoint)
 }
 
 

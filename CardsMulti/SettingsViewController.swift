@@ -198,6 +198,34 @@ class SettingsViewController : UIViewController {
 
 }
 
+extension SettingsViewController : UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return 7
+        default:
+            break
+        }
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        switch indexPath.section {
+        default:
+            break
+        }
+        return UITableViewCell()
+    }
+}
+
+extension SettingsViewController : UITableViewDelegate {
+    
+}
+
 protocol SettingsViewControllerDelegate {
     func settingsChanged()
 }

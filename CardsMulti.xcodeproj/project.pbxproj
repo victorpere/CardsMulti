@@ -44,7 +44,13 @@
 		57B054141E4E75F30057E62F /* CardSpriteNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054121E4E75F30057E62F /* CardSpriteNode.swift */; };
 		57B054171E4E766A0057E62F /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054161E4E766A0057E62F /* Math.swift */; };
 		57B054191E4E7AC70057E62F /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054181E4E7AC70057E62F /* Game.swift */; };
+		57B8732F234584D4001A54DD /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF91E85658D00B1D4A6 /* Switch.swift */; };
+		57B87330234584D5001A54DD /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF91E85658D00B1D4A6 /* Switch.swift */; };
 		57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B9C8F31E58FAA900F8E25B /* Actions.swift */; };
+		57BB31D3234BFC0C00AE2CDC /* PopUpMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */; };
+		57C626122346E6D6008A9872 /* CardSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C626112346E6D6008A9872 /* CardSlider.swift */; };
+		57C626132346E6DB008A9872 /* CardSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C626112346E6D6008A9872 /* CardSlider.swift */; };
+		57C626142346E6DB008A9872 /* CardSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C626112346E6D6008A9872 /* CardSlider.swift */; };
 		57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */; };
 		57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */; };
 		57E0935D212730E500D4E4F6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF71E85652400B1D4A6 /* Config.swift */; };
@@ -101,6 +107,8 @@
 		57B054161E4E766A0057E62F /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Math.swift; path = Helpers/Math.swift; sourceTree = "<group>"; };
 		57B054181E4E7AC70057E62F /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = Helpers/Game.swift; sourceTree = "<group>"; };
 		57B9C8F31E58FAA900F8E25B /* Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actions.swift; sourceTree = "<group>"; };
+		57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpMenu.swift; sourceTree = "<group>"; };
+		57C626112346E6D6008A9872 /* CardSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSlider.swift; sourceTree = "<group>"; };
 		57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingDirection.swift; sourceTree = "<group>"; };
 		57E97B091E7368B3000243B2 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Position.swift; path = Enums/Position.swift; sourceTree = "<group>"; };
 		57E97B0C1E7479F5000243B2 /* BottomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
@@ -273,6 +281,8 @@
 				57E97B0C1E7479F5000243B2 /* BottomButton.swift */,
 				57E97B0E1E748244000243B2 /* SettingsViewController.swift */,
 				57897FF91E85658D00B1D4A6 /* Switch.swift */,
+				57C626112346E6D6008A9872 /* CardSlider.swift */,
+				57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -346,13 +356,13 @@
 					57B053D01E4E3BD20057E62F = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = NB9MQB54L9;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					57B053EA1E4E3BD20057E62F = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = DS2QAADY9B;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 57B053D01E4E3BD20057E62F;
 					};
@@ -419,10 +429,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57BB31D3234BFC0C00AE2CDC /* PopUpMenu.swift in Sources */,
 				57B053DB1E4E3BD20057E62F /* GameScene.swift in Sources */,
 				57B054191E4E7AC70057E62F /* Game.swift in Sources */,
 				57B054091E4E40750057E62F /* ConnectionServiceManager.swift in Sources */,
 				57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */,
+				57C626122346E6D6008A9872 /* CardSlider.swift in Sources */,
 				570C397523369C4D00A2882C /* Player.swift in Sources */,
 				57B054171E4E766A0057E62F /* Math.swift in Sources */,
 				570C3973233697E200A2882C /* GameGoFish.swift in Sources */,
@@ -451,6 +463,7 @@
 				578B1C631E7EFBE4008B8381 /* Suit.swift in Sources */,
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
 				578B1C591E7EFB17008B8381 /* BottomButton.swift in Sources */,
+				57C626132346E6DB008A9872 /* CardSlider.swift in Sources */,
 				578B1C5B1E7EFB33008B8381 /* CardSpriteNode.swift in Sources */,
 				57B053F01E4E3BD20057E62F /* CardsMultiTests.swift in Sources */,
 				578B1C621E7EFBE1008B8381 /* Rank.swift in Sources */,
@@ -465,6 +478,7 @@
 				57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */,
 				578B1C5A1E7EFB1B008B8381 /* SettingsViewController.swift in Sources */,
 				578B1C5E1E7EFBD3008B8381 /* Math.swift in Sources */,
+				57B8732F234584D4001A54DD /* Switch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,7 +486,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57C626142346E6DB008A9872 /* CardSlider.swift in Sources */,
 				57B053FB1E4E3BD20057E62F /* CardsMultiUITests.swift in Sources */,
+				57B87330234584D5001A54DD /* Switch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -631,8 +647,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -649,8 +664,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -664,8 +678,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorius.CardsMultiTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CardsMulti.app/CardsMulti";
 			};
 			name = Debug;
@@ -680,8 +693,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorius.CardsMultiTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CardsMulti.app/CardsMulti";
 			};
 			name = Release;

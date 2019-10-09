@@ -370,6 +370,10 @@ extension GameViewController : ConnectionServiceManagerDelegate {
 // MARK: - GameSceneDelegate
 
 extension GameViewController : GameSceneDelegate {
+    func presentPopUpMenu(maxNumberToDeal: Int, at location: CGPoint) {
+                let popUpMenu = PopUpMenu(numberOfCards: maxNumberToDeal)
+        self.present(popUpMenu, animated: true, completion: nil)
+    }
     
     func peers() -> [MCPeerID?] {
         return self.connectionService.players
@@ -387,4 +391,21 @@ extension GameViewController : SettingsViewControllerDelegate {
     func settingsChanged() {
         self.scene.resetGame(sync: true)
     }
+}
+
+// MARK: - PopUpMenuDelegate
+
+extension GameViewController : PopUpMenuDelegate {
+    func deal(_ cards: Int) {
+        self.scene.deal(cards)
+    }
+    
+    func shuffle() {
+        self.scene.shuffle(cards: self.scene.selectedNodes)
+    }
+    
+    func cancel() {
+        self.scene.deselectNodeForTouch()
+    }
+
 }
