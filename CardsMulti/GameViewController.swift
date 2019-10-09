@@ -370,8 +370,8 @@ extension GameViewController : ConnectionServiceManagerDelegate {
 // MARK: - GameSceneDelegate
 
 extension GameViewController : GameSceneDelegate {
-    func presentPopUpMenu(maxNumberToDeal: Int, at location: CGPoint) {
-                let popUpMenu = PopUpMenu(numberOfCards: maxNumberToDeal)
+    func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint) {
+                let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, numberOfPlayers: numberOfPlayers)
         self.present(popUpMenu, animated: true, completion: nil)
     }
     

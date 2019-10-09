@@ -467,7 +467,7 @@ class GameScene: SKScene {
                 // should contain: deal, shuffle
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 && timeSinceTouchesBegan < self.timeToPopUpMenu  {
-                    self.popUpMenu(forNumberOfCards: self.selectedNodes.count, at: self.selectedNodes[0].position)
+                    self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: t.location(in: self))
                 }
                 
             } else {
@@ -596,13 +596,7 @@ class GameScene: SKScene {
         }
     }
     
-    // MARK: - UI methods
-    func popUpMenu(forNumberOfCards numberOfCards: Int, at location: CGPoint) {
-        // present contextual menu for selected pile of cards
-        // contains: deal, shuffle
-        let cardsPerPlayer = numberOfCards / self.numberOfPlayers()
-        self.gameSceneDelegate?.presentPopUpMenu(maxNumberToDeal: cardsPerPlayer, at: location)
-    }
+
 }
 
 
@@ -665,7 +659,7 @@ protocol GameSceneDelegate {
 
     func peers() -> [MCPeerID?]
     
-    func presentPopUpMenu(maxNumberToDeal: Int, at location: CGPoint)
+    func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint)
 }
 
 
