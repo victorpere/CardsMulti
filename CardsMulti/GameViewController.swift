@@ -163,6 +163,7 @@ class GameViewController: UIViewController {
         scene = GameScene(size: skView.frame.size)
         checkForceTouch()
         scene.gameSceneDelegate = self
+        self.updateScenePlayers()
         
         /* Set the scale mode to scale to fit the window */
         scene.scaleMode = .aspectFill
@@ -371,7 +372,8 @@ extension GameViewController : ConnectionServiceManagerDelegate {
 
 extension GameViewController : GameSceneDelegate {
     func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint) {
-                let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, numberOfPlayers: numberOfPlayers)
+        let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, numberOfPlayers: numberOfPlayers)
+        popUpMenu.delegate = self
         self.present(popUpMenu, animated: true, completion: nil)
     }
     

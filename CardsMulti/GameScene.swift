@@ -154,46 +154,62 @@ class GameScene: SKScene {
     }
     
     // Deal the specified number of cards into each of the connected players' areas
-    func deal(_ cardsToDeal: Int) {
+    func deal(_ numberOfCardsToDeal: Int) {
         // deal the cards to each peer
-        for _ in 1...cardsToDeal {
-            for (peerPositionIndex,peer) in self.peers.enumerated() {
-                if peer != nil {
-                    // deal a card to the position of the peer
-                    // which is determined by its index in the array
-                    if let peerPosition = Position(rawValue: peerPositionIndex) {
-                        self.dealTo(position: self.playerPosition.positionTo(peerPosition), from: &self.selectedNodes)
+        
+        var cardsToDeal = self.selectedNodes
+        self.deselectNodeForTouch()
+        
+        DispatchQueue.global(qos: .default).async {
+            for _ in 1...numberOfCardsToDeal {
+                for (peerPositionIndex,peer) in self.peers.enumerated() {
+                    if peer != nil {
+                        // deal a card to the position of the peer
+                        // which is determined by its index in the array
+                        if let peerPosition = Position(rawValue: peerPositionIndex) {
+                            cardsToDeal = self.dealTo(position: self.playerPosition.positionTo(peerPosition), from: cardsToDeal)
+                            usleep(useconds_t(self.resetDuration * 1000000))
+                        }
                     }
                 }
             }
         }
-        
-        // deselect the remaining cards (which have not been dealt)
-        self.deselectNodeForTouch()
     }
     
     // deal one card from the top of the passed pile to the specified position
-    func dealTo(position positionToDeal: Position, from cards: inout [CardSpriteNode]) {
+    func dealTo(position positionToDeal: Position, from cards: [CardSpriteNode]) -> [CardSpriteNode] {
         // deal a single card to the specified position
         // take the top card in the common area
         if cards.count > 0 {
             //  select top card
-            cards = cards.sorted { $0.zPosition > $1.zPosition }
-            let cardToDeal = cards.first
+            var cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
+            let cardToDeal = cardsSorted.first
             // deal the card to somewhere in the area
             let newLocation = randomLocationForPlayer(in: positionToDeal)
-            cardToDeal?.moveAndFlip(to: newLocation, faceUp: false, duration: resetDuration, sendPosition: true)
             
+            DispatchQueue.main.async {
+                cardToDeal?.moveAndFlip(to: newLocation, faceUp: false, duration: self.resetDuration, sendPosition: true)
+            }
             // remove the dealt card from the stack
-            cards.remove(at: 0)
+            cardsSorted.remove(at: 0)
+            
+            return cardsSorted
         }
+        
+        return [CardSpriteNode]()
     }
     
     func randomLocationForPlayer(in position: Position) -> CGPoint {
         // TODO:
         // random point somewhere within the player's area
         // should be weighted towards centre
-        return CGPoint(x:0, y:0)
+        
+        let newX = CGFloat(Int.random(in: 0...Int(self.frame.width)))
+        let newY = self.dividerLine.position.y / 2.0
+        
+        // transpose coordinates to the specified position
+        
+        return CGPoint(x: newX, y: newY)
     }
     
     func stack(cards: [CardSpriteNode], position: CGPoint) {
@@ -468,6 +484,7 @@ class GameScene: SKScene {
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 && timeSinceTouchesBegan < self.timeToPopUpMenu  {
                     self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: t.location(in: self))
+                    return
                 }
                 
             } else {
@@ -481,7 +498,7 @@ class GameScene: SKScene {
         
 
         
-        //self.deselectNodeForTouch()
+        self.deselectNodeForTouch()
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
