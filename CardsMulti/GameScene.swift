@@ -188,6 +188,7 @@ class GameScene: SKScene {
             let newLocation = randomLocationForPlayer(in: positionToDeal)
             
             DispatchQueue.main.async {
+                cardToDeal?.moveToFront()
                 cardToDeal?.moveAndFlip(to: newLocation, faceUp: false, duration: self.resetDuration, sendPosition: true)
             }
             // remove the dealt card from the stack
@@ -200,12 +201,17 @@ class GameScene: SKScene {
     }
     
     func randomLocationForPlayer(in position: Position) -> CGPoint {
-        // TODO:
+        // TODO: move to a CGPoint extension?
         // random point somewhere within the player's area
         // should be weighted towards centre
         
-        let newX = CGFloat(Int.random(in: 0...Int(self.frame.width)))
-        let newY = self.dividerLine.position.y / 2.0
+        let xoffset = ((self.frame.width / 2) / CGFloat(Int.random(in: 1...Int(self.frame.width / 2)))) * (Int.random(in: 0...1) == 0 ? 1 : -1)
+        let yoffset = ((self.dividerLine.position.y / 2) / CGFloat(Int.random(in: 1...Int(self.dividerLine.position.y / 2)))) * (Int.random(in: 0...1) == 0 ? 1 : -1)
+
+        
+        //let newX = CGFloat(Int.random(in: 0...Int(self.frame.width)))
+        let newX = self.frame.width / 2 + xoffset
+        let newY = self.dividerLine.position.y / 2 + yoffset
         
         // transpose coordinates to the specified position
         
