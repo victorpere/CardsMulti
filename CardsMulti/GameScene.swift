@@ -653,9 +653,20 @@ extension GameScene : CardSpriteNodeDelegate {
         self.lastSelectedNode = cardNode
     }
     
+    func sendFuture(position futurePosition: CGPoint, of cardNode: CardSpriteNode, moveToFront: Bool) {
+        let cardDictionary = Global.cardDictionary(for: cardNode, cardPosition: futurePosition, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: true)
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: [cardDictionary])
+            self.gameSceneDelegate!.sendData(data: jsonData)
+        } catch {
+            print("Error serializing json data: \(error)")
+        }
+    }
+    
     func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool) {
         
-        let cardDictionaryArray = Global.cardDictionaryArray(with: cardNodes, position: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate)
+        let cardDictionaryArray = Global.cardDictionaryArray(with: cardNodes, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate)
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: cardDictionaryArray)
