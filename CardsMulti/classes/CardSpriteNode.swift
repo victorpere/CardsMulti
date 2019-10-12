@@ -171,7 +171,7 @@ class CardSpriteNode : SKSpriteNode {
         }
     }
     
-    func moveAndFlip(to newPosition: CGPoint, faceUp: Bool, duration: Double, sendPosition: Bool) {
+    func moveAndFlip(to newPosition: CGPoint, faceUp: Bool, duration: Double, sendPosition: Bool, animateReceiver: Bool = false) {
         self.moving = true
         let movement = SKAction.move(to: newPosition, duration: duration)
         let actionGroup = SKAction.group([movement, self.moveSound])
@@ -180,7 +180,7 @@ class CardSpriteNode : SKSpriteNode {
             if self.faceUp != faceUp {
                 self.flip(sendPosition: sendPosition)
             } else if sendPosition {
-                self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
+                self.delegate!.sendPosition(of: [self], moveToFront: true, animate: animateReceiver)
             }
             self.moving = false
         }

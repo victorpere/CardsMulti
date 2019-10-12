@@ -189,7 +189,7 @@ class GameScene: SKScene {
             
             DispatchQueue.main.async {
                 cardToDeal?.moveToFront()
-                cardToDeal?.moveAndFlip(to: newLocation, faceUp: false, duration: self.resetDuration, sendPosition: true)
+                cardToDeal?.moveAndFlip(to: newLocation, faceUp: false, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
             }
             // remove the dealt card from the stack
             cardsSorted.remove(at: 0)
@@ -213,9 +213,28 @@ class GameScene: SKScene {
         let newX = self.frame.width / 2 + xoffset
         let newY = self.dividerLine.position.y / 2 + yoffset
         
-        // transpose coordinates to the specified position
+        var transposedX = newX
+        var transposedY = newY
         
-        return CGPoint(x: newX, y: newY)
+        // transpose coordinates to the specified position
+        // TODO move this to a method/extension/separate class
+        switch position {
+        case .bottom:
+            break
+        case .top:
+            transposedX = self.frame.width - newX
+            transposedY = self.frame.height + self.dividerLine.position.y - newY
+        case .left:
+            transposedX = newY - self.dividerLine.position.y
+            transposedY = self.frame.height - newX
+        case .right:
+            transposedX = self.frame.width + self.dividerLine.position.y - newY
+            transposedY = self.dividerLine.position.y + newX
+        case .error:
+            break
+        }
+        
+        return CGPoint(x: transposedX, y: transposedY)
     }
     
     func stack(cards: [CardSpriteNode], position: CGPoint) {
