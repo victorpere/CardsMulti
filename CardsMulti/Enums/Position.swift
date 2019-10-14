@@ -6,7 +6,7 @@
 //  Copyright © 2017 Victorius Software Inc. All rights reserved.
 //
 
-enum Position : Int {
+enum Position : Int, CaseIterable {
     case error = -1
     case bottom = 0, top, left, right
     

@@ -22,9 +22,9 @@ class GameViewController: UIViewController {
     
     var connectionsLabel: UILabel!
     var positionLabel: UILabel!
-    var playerLeftLabel: UILabel!
-    var playerAcrossLabel: UILabel!
-    var playerRightLabel: UILabel!
+    var playerLeftLabel: PlayerStatusLabel!
+    var playerAcrossLabel: PlayerStatusLabel!
+    var playerRightLabel: PlayerStatusLabel!
     
     var backGroundView: UIView!
     var skView: SKView!
@@ -60,27 +60,13 @@ class GameViewController: UIViewController {
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
         
-        playerAcrossLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 15))
-        playerAcrossLabel.textColor = UIColor.green
-        playerAcrossLabel.font = UIFont(name: "Helvetica", size: 12)
-        //playerAcrossLabel.text = "Player across: "
-        playerAcrossLabel.textAlignment = .center
+        playerAcrossLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .top)
         view.addSubview(playerAcrossLabel)
         
-        playerLeftLabel = UILabel(frame: CGRect(x: 7.5 - self.view.frame.width / 2, y: self.view.frame.width / 2, width: self.view.frame.width, height: 15))
-        playerLeftLabel.textColor = UIColor.green
-        playerLeftLabel.font = UIFont(name: "Helvetica", size: 12)
-        //playerLeftLabel.text = "Player left: "
-        playerLeftLabel.textAlignment = .center
-        playerLeftLabel.transform = CGAffineTransform(rotationAngle: CGFloat(0 - Double.pi / 2))
+        playerLeftLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .left)
         view.addSubview(playerLeftLabel)
         
-        playerRightLabel = UILabel(frame: CGRect(x: self.view.frame.width / 2 - 7.5, y: self.view.frame.width / 2, width: self.view.frame.width, height: 15))
-        playerRightLabel.textColor = UIColor.green
-        playerRightLabel.font = UIFont(name: "Helvetica", size: 12)
-        //playerRightLabel.text = "Player right: "
-        playerRightLabel.textAlignment = .center
-        playerRightLabel.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi / 2))
+        playerRightLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .right)
         view.addSubview(playerRightLabel)
 
         positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
@@ -271,24 +257,30 @@ class GameViewController: UIViewController {
     }
     
     func updatePlayerLabels() {
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .default).async {
             let positionToLeft = self.connectionService.myPosition().positionToLeft()
             let positionAcross = self.connectionService.myPosition().positionAcross()
             let positionToRight = self.connectionService.myPosition().positionToRight()
             if let playerToLeft = self.connectionService.players[positionToLeft.rawValue] {
-                self.playerLeftLabel.text = playerToLeft.displayName
+                //self.playerLeftLabel.text = playerToLeft.displayName
+                self.playerLeftLabel.update(playerName: playerToLeft.displayName)
             } else {
-                self.playerLeftLabel.text = ""
+                //self.playerLeftLabel.text = ""
+                self.playerLeftLabel.update(playerName: "")
             }
             if let playerAcross = self.connectionService.players[positionAcross.rawValue] {
-                self.playerAcrossLabel.text = playerAcross.displayName
+                //self.playerAcrossLabel.text = playerAcross.displayName
+                self.playerAcrossLabel.update(playerName: playerAcross.displayName)
             } else {
-                self.playerAcrossLabel.text = ""
+                //self.playerAcrossLabel.text = ""
+                self.playerAcrossLabel.update(playerName: "")
             }
             if let playerToRight = self.connectionService.players[positionToRight.rawValue] {
-                self.playerRightLabel.text = playerToRight.displayName
+                //self.playerRightLabel.text = playerToRight.displayName
+                self.playerRightLabel.update(playerName: playerToRight.displayName)
             } else {
-                self.playerRightLabel.text = ""
+                //self.playerRightLabel.text = ""
+                self.playerRightLabel.update(playerName: "")
             }
         }
     }
@@ -371,6 +363,19 @@ extension GameViewController : ConnectionServiceManagerDelegate {
 // MARK: - GameSceneDelegate
 
 extension GameViewController : GameSceneDelegate {
+    func updatePlayer(numberOfCards: Int, inPosition position: Position) {
+        switch position {
+        case .left:
+            self.playerLeftLabel.update(numberOfCards: numberOfCards)
+        case .top:
+            self.playerAcrossLabel.update(numberOfCards: numberOfCards)
+        case .right:
+            self.playerRightLabel.update(numberOfCards: numberOfCards)
+        default:
+            break
+        }
+    }
+    
     func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint) {
         let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, numberOfPlayers: numberOfPlayers)
         popUpMenu.delegate = self
@@ -399,7 +404,7 @@ extension GameViewController : SettingsViewControllerDelegate {
 
 extension GameViewController : PopUpMenuDelegate {
     func deal(_ cards: Int) {
-        self.scene.deal(cards)
+        self.scene.deal(numberOfCards: cards)
     }
     
     func shuffle() {

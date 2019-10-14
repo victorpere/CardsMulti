@@ -71,6 +71,8 @@ class GameScene: SKScene {
     
     var peers: [MCPeerID?]!
     
+    var playersHands = [0, 0, 0, 0]
+    
     // MARK: - Initializers
         
     required init?(coder aDecoder: NSCoder) {
@@ -100,7 +102,28 @@ class GameScene: SKScene {
         return self.peers.filter { $0 != nil }.count
     }
     
+    private func cards(inPosition position: Position) -> [CardSpriteNode] {
+        switch position {
+        case .left:
+            return self.allCards.filter { $0.position.x < 0 }
+        case .error:
+            return []
+        case .bottom:
+            return self.allCards.filter { $0.position.y < self.dividerLine.position.y }
+        case .top:
+            return self.allCards.filter { $0.position.y > self.frame.height }
+        case .right:
+            return self.allCards.filter { $0.position.x > self.frame.width }
+        }
+    }
+        
     // MARK: - Public methods
+    
+    func numberOfCards(inPosition position: Position) -> Int {
+        return cards(inPosition: position).count
+    }
+
+    // MARK: - Game methods
     
     func resetGame(sync: Bool) {
         self.removeAllChildren()
@@ -154,20 +177,20 @@ class GameScene: SKScene {
     }
     
     // Deal the specified number of cards into each of the connected players' areas
-    func deal(_ numberOfCardsToDeal: Int) {
+    func deal(numberOfCards: Int) {
         // deal the cards to each peer
         
         var cardsToDeal = self.selectedNodes
         self.deselectNodeForTouch()
         
         DispatchQueue.global(qos: .default).async {
-            for _ in 1...numberOfCardsToDeal {
+            for _ in 1...numberOfCards {
                 for (peerPositionIndex,peer) in self.peers.enumerated() {
                     if peer != nil {
                         // deal a card to the position of the peer
                         // which is determined by its index in the array
                         if let peerPosition = Position(rawValue: peerPositionIndex) {
-                            cardsToDeal = self.dealTo(position: self.playerPosition.positionTo(peerPosition), from: cardsToDeal)
+                            cardsToDeal = self.deal(to: self.playerPosition.positionTo(peerPosition), from: cardsToDeal)
                             usleep(useconds_t(self.resetDuration * 1000000))
                         }
                     }
@@ -177,7 +200,7 @@ class GameScene: SKScene {
     }
     
     // deal one card from the top of the passed pile to the specified position
-    func dealTo(position positionToDeal: Position, from cards: [CardSpriteNode]) -> [CardSpriteNode] {
+    func deal(to position: Position, from cards: [CardSpriteNode]) -> [CardSpriteNode] {
         // deal a single card to the specified position
         // take the top card in the common area
         if cards.count > 0 {
@@ -185,7 +208,7 @@ class GameScene: SKScene {
             var cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
             let cardToDeal = cardsSorted.first
             // deal the card to somewhere in the area
-            let newLocation = randomLocationForPlayer(in: positionToDeal)
+            let newLocation = randomLocationForPlayer(in: position)
             
             DispatchQueue.main.async {
                 cardToDeal?.moveToFront()
@@ -293,7 +316,7 @@ class GameScene: SKScene {
     func resetHand(sort: Bool) {
         let usableWidth = self.frame.size.width - (self.border * 2)
 
-        var hand = self.allCards.filter { $0.position.y < self.dividerLine.position.y }
+        var hand = self.cards(inPosition: self.playerPosition)
         if sort {
             hand.sort { ($0.card?.rank.rawValue)! < ($1.card?.rank.rawValue)! }
             hand.sort { ($0.card?.suit.rawValue)! < ($1.card?.suit.rawValue)! }
@@ -534,6 +557,19 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        DispatchQueue.global(qos: .default).async {
+            // update number of cards in each position
+            // in order to update player labels
+            for positionIndex in 1...3 {
+                if let position = Position.init(rawValue: positionIndex) {
+                    let numberOfCards = self.numberOfCards(inPosition: position)
+                    if numberOfCards != self.playersHands[positionIndex] {
+                        self.playersHands[positionIndex] = numberOfCards
+                        self.gameSceneDelegate?.updatePlayer(numberOfCards: numberOfCards, inPosition: position)
+                    }
+                }
+            }
+        }
         
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
@@ -713,6 +749,8 @@ protocol GameSceneDelegate {
     func peers() -> [MCPeerID?]
     
     func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint)
+    
+    func updatePlayer(numberOfCards: Int, inPosition position: Position)
 }
 
 

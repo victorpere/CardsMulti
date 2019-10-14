@@ -12,6 +12,7 @@ import MultipeerConnectivity
 class Player {
     var peerId: MCPeerID
     var position: Position
+    var hand = [CardSpriteNode]()
     
     init(peerId: MCPeerID, position: Position) {
         self.peerId = peerId
