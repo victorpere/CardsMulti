@@ -187,10 +187,9 @@ class GameScene: SKScene {
             for _ in 1...numberOfCards {
                 for direction in [Position.left, Position.top, Position.right, Position.bottom] {
                     let nextPositionToDealTo = direction.positionTo(self.playerPosition)
-                    let nextPlayerToDealTo = self.playerPosition.positionTo(nextPositionToDealTo)
                     
-                    if self.peers?[nextPlayerToDealTo.rawValue] != nil {
-                        cardsToDeal = self.deal(to: nextPositionToDealTo, from: cardsToDeal)
+                    if self.peers?[nextPositionToDealTo.rawValue] != nil {
+                        cardsToDeal = self.deal(to: direction, from: cardsToDeal)
                         usleep(useconds_t(self.resetDuration * 1000000))
                     }
                 }
@@ -316,7 +315,7 @@ class GameScene: SKScene {
     func resetHand(sort: Bool) {
         let usableWidth = self.frame.size.width - (self.border * 2)
 
-        var hand = self.cards(inPosition: self.playerPosition)
+        var hand = self.cards(inPosition: .bottom)
         if sort {
             hand.sort { ($0.card?.rank.rawValue)! < ($1.card?.rank.rawValue)! }
             hand.sort { ($0.card?.suit.rawValue)! < ($1.card?.suit.rawValue)! }
