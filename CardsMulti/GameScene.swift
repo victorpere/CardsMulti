@@ -185,14 +185,13 @@ class GameScene: SKScene {
         
         DispatchQueue.global(qos: .default).async {
             for _ in 1...numberOfCards {
-                for (peerPositionIndex,peer) in self.peers.enumerated() {
-                    if peer != nil {
-                        // deal a card to the position of the peer
-                        // which is determined by its index in the array
-                        if let peerPosition = Position(rawValue: peerPositionIndex) {
-                            cardsToDeal = self.deal(to: self.playerPosition.positionTo(peerPosition), from: cardsToDeal)
-                            usleep(useconds_t(self.resetDuration * 1000000))
-                        }
+                for direction in [Position.left, Position.top, Position.right, Position.bottom] {
+                    let nextPositionToDealTo = direction.positionTo(self.playerPosition)
+                    let nextPlayerToDealTo = self.playerPosition.positionTo(nextPositionToDealTo)
+                    
+                    if self.peers?[nextPlayerToDealTo.rawValue] != nil {
+                        cardsToDeal = self.deal(to: nextPositionToDealTo, from: cardsToDeal)
+                        usleep(useconds_t(self.resetDuration * 1000000))
                     }
                 }
             }
@@ -241,6 +240,7 @@ class GameScene: SKScene {
         
         // transpose coordinates to the specified position
         // TODO move this to a method/extension/separate class
+        print("deal to \(position)")
         switch position {
         case .bottom:
             break
