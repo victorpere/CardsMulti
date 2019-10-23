@@ -13,9 +13,14 @@ class Switch: UISwitch {
         fatalError("init(coder:) has not been implemented")
     }
     
+    convenience init(width: CGFloat) {
+        let frame = CGRect(x: 0, y: 0, width: width, height: 51)
+        self.init(frame: frame)
+        self.onTintColor = Config.mainColor
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.onTintColor = Config.mainColor
     }
 }
 

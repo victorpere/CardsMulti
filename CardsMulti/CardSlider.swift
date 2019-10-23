@@ -9,17 +9,37 @@
 import UIKit
 
 class CardSlider : UISlider {
-    let SLIDER_ICON = "icon_card_slider"
+    let slider_icon = "icon_card_slider"
+    let slider_track = "slider_frame"
     let MIN: Float = 3.0
     let MAX: Float = 10.0
     
+    var minDelegate: CardSlider?
+    var maxDelegate: CardSlider?
+    
+    var rank: Int { return self.value == self.MIN ? Int(self.MIN - 1) : Int(self.value) }
+    
     // MARK: - Initializers
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    convenience init(width: CGFloat, initialRank: Int) {
+        let frame = CGRect(x: 0, y: 0, width: width, height: 51)
+        self.init(frame: frame)
         self.addTarget(self, action: #selector(sliderMoved), for: .valueChanged)
         self.minimumValue = MIN
         self.maximumValue = MAX
+        
+        var sliderTrackImage = UIImage(named: self.slider_track)
+        let insets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        sliderTrackImage = sliderTrackImage?.resizableImage(withCapInsets: insets)
+        self.setMinimumTrackImage(sliderTrackImage, for: .normal)
+        self.setMaximumTrackImage(sliderTrackImage, for: .normal)
+        
+        self.value = Float(initialRank) + 0.5
+        self.setThumbImage()
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     required init?(coder: NSCoder) {
@@ -29,24 +49,29 @@ class CardSlider : UISlider {
     // MARK: - Events
     
     @objc func sliderMoved(sender: CardSlider) {
-        self.value = sender.value
-        self.setThumbImage()
+        DispatchQueue.main.async {
+            self.setThumbImage()
+            
+            if self.minDelegate != nil && self.minDelegate!.value > self.value {
+                self.minDelegate?.value = self.value
+                self.minDelegate?.setThumbImage()
+            }
+            
+            if self.maxDelegate != nil && self.maxDelegate!.value < self.value {
+                self.maxDelegate?.value = self.value
+                self.maxDelegate?.setThumbImage()
+            }
+        }
     }
     
     // MARK: - Methods
     
     func setThumbImage() {
-        if self.value >= MIN && self.value <= MAX {
-            var cardValue = Int(self.value)
-            if self.value == MIN {
-                cardValue = Int(MIN) - 1
-            }
-            let imageName = SLIDER_ICON + String(cardValue)
-            let image = UIImage(named: imageName)
-            
-            DispatchQueue.main.async {
-                self.setThumbImage(image, for: .normal)
-            }
+        let imageName = self.slider_icon + String(self.rank)
+        let image = UIImage(named: imageName)
+        
+        DispatchQueue.main.async {
+            self.setThumbImage(image, for: .normal)
         }
     }
 }

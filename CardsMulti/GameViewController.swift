@@ -203,7 +203,8 @@ class GameViewController: UIViewController {
     }
     
     func openSettings() {
-        let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
+        //let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
+        let settingsViewController = SettingsTableContoller(nibName: nil, bundle: nil)
         settingsViewController.delegate = self
         let navSettingsViewController = UINavigationController(rootViewController: settingsViewController)
         navSettingsViewController.modalPresentationStyle = .popover
@@ -393,7 +394,7 @@ extension GameViewController : GameSceneDelegate {
 
 // MARK: - SettingsViewControllerDelegate
 
-extension GameViewController : SettingsViewControllerDelegate {
+extension GameViewController : SettingsViewControllerDelegate, SettingsTableControllerDelegate {
     
     func settingsChanged() {
         self.scene.resetGame(sync: true)
