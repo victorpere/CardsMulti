@@ -430,6 +430,10 @@ class GameScene: SKScene {
             let previousPosition = t.previousLocation(in: self)
             let transformation = CGPoint(x: currentPosition.x - previousPosition.x, y: currentPosition.y - previousPosition.y)
             
+            // determine speed of last move
+            let timeInterval = t.timestamp - self.lastTouchTimestamp
+            self.setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
+            
             if forceTouch {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     // Force touch activated
@@ -513,11 +517,6 @@ class GameScene: SKScene {
             self.movingDirectionReversed = 0
             
             if self.selectedNodes.count > 0 {
-                let currentPosition = t.location(in: self)
-                let previousPosition = t.previousLocation(in: self)
-                let timeInterval = t.timestamp - self.lastTouchTimestamp
-                self.setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
-
                 DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
                     self.selectedNodes[$0].stopMoving(startSpeed: self.movingSpeed)
                 }
@@ -526,10 +525,13 @@ class GameScene: SKScene {
                 self.lastTouchMoveTimestamp = 0.0
                 
                 // pop up cotextual menu, if multiple cards were selected
+                // and the cards were't being moved
                 // and less that a certain time interval elapsed since touches began
                 // should contain: deal, shuffle
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
-                if self.selectedNodes.count > 1 && timeSinceTouchesBegan < self.timeToPopUpMenu  {
+                if self.selectedNodes.count > 1 &&
+                    self.movingSpeed.dx == 0 && self.movingSpeed.dy == 0 &&
+                    timeSinceTouchesBegan < self.timeToPopUpMenu {
                     self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: t.location(in: self))
                     return
                 }
