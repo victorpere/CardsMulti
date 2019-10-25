@@ -13,110 +13,72 @@ class Settings : NSObject, NSCoding {
     let defaultMinRank = 2
     let defaultMaxRank = 10
     
+    // MARK: - Properties
+    
     var minRank: Int {
         get {
-            if let m = self.userDefaults.value(forKey: "minRank") as? Int {
-                return m
-            }
-            self.userDefaults.setValue(defaultMinRank, forKey: "minRank")
-            self.userDefaults.synchronize()
-            return self.defaultMinRank
+            return self.settingOrDefault(forKey: "minRank", defaultValue: self.defaultMinRank)
         }
         set(value) {
-            self.userDefaults.setValue(value, forKey: "minRank")
-            self.userDefaults.synchronize()
+            self.setSetting(forKey: "minRank", toValue: value)
         }
     }
     
     var maxRank: Int {
         get {
-            if let m = self.userDefaults.value(forKey: "maxRank") as? Int {
-                return m
-            }
-            self.userDefaults.setValue(defaultMaxRank, forKey: "maxRank")
-            self.userDefaults.synchronize()
-            return self.defaultMaxRank
+            return self.settingOrDefault(forKey: "maxRank", defaultValue: self.defaultMaxRank)
         }
         set(value) {
-            self.userDefaults.setValue(value, forKey: "maxRank")
-            self.userDefaults.synchronize()
+            self.setSetting(forKey: "maxRank", toValue: value)
         }
     }
     
     var pips: Bool {
         get {
-            if let m = self.userDefaults.value(forKey: "pips") as? Bool {
-                return m
-            }
-            self.userDefaults.setValue(true, forKey: "pips")
-            self.userDefaults.synchronize()
-            return true
+            return self.settingOrDefault(forKey: "pips", defaultValue: true)
         }
         set(value) {
-            self.userDefaults.setValue(value, forKey: "pips")
-            self.userDefaults.synchronize()
+            self.setSetting(forKey: "pips", toValue: value)
         }
     }
     
     var jack: Bool {
         get {
-            if let m = self.userDefaults.value(forKey: "jack") as? Bool {
-                return m
-            }
-            self.userDefaults.setValue(true, forKey: "jack")
-            self.userDefaults.synchronize()
-            return true
+            return self.settingOrDefault(forKey: "jack", defaultValue: true)
         }
         set(value) {
-            self.userDefaults.setValue(value, forKey: "jack")
-            self.userDefaults.synchronize()
+            self.setSetting(forKey: "jack", toValue: value)
         }
     }
     
     var queen: Bool {
         get {
-            if let m = self.userDefaults.value(forKey: "queen") as? Bool {
-                return m
-            }
-            self.userDefaults.setValue(true, forKey: "queen")
-            self.userDefaults.synchronize()
-            return true
+            return self.settingOrDefault(forKey: "queen", defaultValue: true)
         }
         set(value) {
-            self.userDefaults.setValue(value, forKey: "queen")
-            self.userDefaults.synchronize()
+            self.setSetting(forKey: "queen", toValue: value)
         }
     }
     
     var king: Bool {
         get {
-            if let m = self.userDefaults.value(forKey: "king") as? Bool {
-                return m
-            }
-            self.userDefaults.setValue(true, forKey: "king")
-            self.userDefaults.synchronize()
-            return true
+            return self.settingOrDefault(forKey: "king", defaultValue: true)
         }
         set(value) {
-            self.userDefaults.setValue(value, forKey: "king")
-            self.userDefaults.synchronize()
+            self.setSetting(forKey: "king", toValue: value)
         }
     }
     
     var ace: Bool {
         get {
-            if let m = self.userDefaults.value(forKey: "ace") as? Bool {
-                return m
-            }
-            self.userDefaults.setValue(true, forKey: "ace")
-            self.userDefaults.synchronize()
-            return true
+            return self.settingOrDefault(forKey: "ace", defaultValue: true)
         }
         set(value) {
-            self.userDefaults.setValue(value, forKey: "ace")
-            self.userDefaults.synchronize()
+            self.setSetting(forKey: "ace", toValue: value)
         }
     }
+    
+    // MARK: - Initializers
     
     override init() {}
     
@@ -142,6 +104,8 @@ class Settings : NSObject, NSCoding {
         }
     }
     
+    // MARK: - NSCoding methods
+    
     func encode(with aCoder: NSCoder) {
         aCoder.encode(minRank, forKey: "minRank")
         aCoder.encode(maxRank, forKey: "maxRank")
@@ -150,4 +114,32 @@ class Settings : NSObject, NSCoding {
         aCoder.encode(king, forKey: "king")
         aCoder.encode(ace, forKey: "ace")
     }
+    
+    // MARK: - Private functions
+    
+    private func setting<T>(forKey key: String) throws -> T {
+        if let value = self.userDefaults.value(forKey: key) as? T {
+            return value
+        }
+        throw SettingsErrors.settingNotFound
+    }
+    
+    private func settingOrDefault<T>(forKey key: String, defaultValue: T) -> T {
+        if let value = self.userDefaults.value(forKey: key) as? T {
+            return value
+        }
+        self.setSetting(forKey: key, toValue: defaultValue)
+        return defaultValue
+    }
+    
+    private func setSetting<T>(forKey key: String, toValue value: T) {
+        self.userDefaults.setValue(value, forKey: key)
+        self.userDefaults.synchronize()
+    }
+}
+
+// MARK: - Protocol SettingsErrors
+
+enum SettingsErrors : Error {
+    case settingNotFound
 }
