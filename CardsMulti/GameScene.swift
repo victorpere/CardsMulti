@@ -45,7 +45,8 @@ class GameScene: SKScene {
 
     var selectedNodes = [CardSpriteNode]()
     var lastSelectedNode = CardSpriteNode()
-    var movingSpeed = CGVector()
+    var currentMovingSpeed = CGVector()
+    var previousMovingSpeed = CGVector()
     var lastTouchTimestamp = 0.0
     var lastSendPositionTimestamp = 0.0
     var lastTouchMoveTimestamp = 0.0
@@ -382,8 +383,9 @@ class GameScene: SKScene {
     }
 
     func setMovingSpeed(startPosition: CGPoint, endPosition: CGPoint, time: Double) {
-        self.movingSpeed.dx = (endPosition.x - startPosition.x) / CGFloat(time)
-        self.movingSpeed.dy = (endPosition.y - startPosition.y) / CGFloat(time)
+        self.previousMovingSpeed = self.currentMovingSpeed
+        self.currentMovingSpeed.dx = (endPosition.x - startPosition.x) / CGFloat(time)
+        self.currentMovingSpeed.dy = (endPosition.y - startPosition.y) / CGFloat(time)
     }
     
     func deselectNodeForTouch() {
@@ -433,6 +435,7 @@ class GameScene: SKScene {
             // determine speed of last move
             let timeInterval = t.timestamp - self.lastTouchTimestamp
             self.setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
+            print("\(timeInterval) \(self.currentMovingSpeed)")
             
             if forceTouch {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
@@ -517,8 +520,10 @@ class GameScene: SKScene {
             self.movingDirectionReversed = 0
             
             if self.selectedNodes.count > 0 {
-                DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
-                    self.selectedNodes[$0].stopMoving(startSpeed: self.movingSpeed)
+                if self.previousMovingSpeed.dx != 0 || self.previousMovingSpeed.dy != 0 {
+                    DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
+                        self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
+                    }
                 }
                 
                 self.lastTouchTimestamp = 0.0
@@ -530,7 +535,7 @@ class GameScene: SKScene {
                 // should contain: deal, shuffle
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 &&
-                    self.movingSpeed.dx == 0 && self.movingSpeed.dy == 0 &&
+                    self.currentMovingSpeed.dx == 0 && self.currentMovingSpeed.dy == 0 &&
                     timeSinceTouchesBegan < self.timeToPopUpMenu {
                     self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: t.location(in: self))
                     return
