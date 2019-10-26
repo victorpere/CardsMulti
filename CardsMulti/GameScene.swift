@@ -442,15 +442,18 @@ class GameScene: SKScene {
                     // Force touch activated
                     if !self.forceTouchActivated {
                         // multiple cards are selected
-                        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+                        
                         self.forceTouchActivated = true
                         self.selectMultipleNodesForTouch(touchLocation: currentPosition)
-                    } else if self.forceTouchReleased && !self.forceTouchActivatedAgain {
+                        if (self.selectedNodes.count > 1) {
+                            AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+                        }
+                    } else if self.selectedNodes.count > 1 && self.forceTouchReleased && !self.forceTouchActivatedAgain {
                         // force touch activated again: stack selected cards
                         AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
                         self.forceTouchReleased = false
                         self.forceTouchActivatedAgain = true
-                        self.stack(cards: selectedNodes, position: currentPosition)
+                        self.stack(cards: self.selectedNodes, position: currentPosition)
                     }
                 } else if self.forceTouchActivated && !self.forceTouchReleased && !self.forceTouchActivatedAgain {
                     // force touch activated, then released while still touching
@@ -520,7 +523,9 @@ class GameScene: SKScene {
             self.movingDirectionReversed = 0
             
             if self.selectedNodes.count > 0 {
-                if self.previousMovingSpeed.dx != 0 || self.previousMovingSpeed.dy != 0 {
+                // inertia movement
+                // only if one card is selected
+                if self.selectedNodes.count == 1 && (self.previousMovingSpeed.dx != 0 || self.previousMovingSpeed.dy != 0) {
                     DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
                         self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
                     }
