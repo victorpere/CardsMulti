@@ -106,7 +106,7 @@ class CardSpriteNode : SKSpriteNode {
         //return cardHeightPixels / cardHeightFullSizePixels
     }
     
-    // MARK: - Public methods
+    // MARK: - Public methods - movement
     
     func flip(sendPosition: Bool) {
         self.shadowNode.position = self.position
@@ -193,6 +193,17 @@ class CardSpriteNode : SKSpriteNode {
         }
     }
     
+    func rotate(to angle: CGFloat, duration: Double, sendPosition: Bool) {
+        let movement = SKAction.rotate(toAngle: angle, duration: duration, shortestUnitArc: true)
+        self.run(movement) {
+            if sendPosition {
+                self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
+            }
+        }
+    }
+    
+    // MARK: - Public methods - ranking/scoring
+    
     func includesRank(among cardNodes: [CardSpriteNode]) -> Bool {
         let filtered = cardNodes.filter { $0.card?.rank.rawValue == self.card?.rank.rawValue }
         if filtered.count > 0 {
@@ -247,6 +258,13 @@ class CardSpriteNode : SKSpriteNode {
     
     func topRightCorner() -> CGPoint {
         return CGPoint(x: self.position.x + self.frame.width / 2, y : self.position.y + self.frame.height / 2)
+    }
+    
+    /* returns true if the point in the mid section of the card node */
+    func isPointInMiddle(_ point: CGPoint) -> Bool {
+        
+        
+        return false
     }
 }
 

@@ -18,6 +18,7 @@ class GameScene: SKScene {
     let minRank = 6
     let border: CGFloat = 10.0
     let resetDuration = 0.5
+    let shortDuration = 0.1
     let verticalHeight = 0.2
     let cornerTapSize: CGFloat = 50.0
     let xOffset: CGFloat = 20.0
@@ -438,7 +439,7 @@ class GameScene: SKScene {
             print("New Position: \(newPosition)")
             print("Angle: \(angle)")
             
-            card.zRotation = CGFloat.pi - angle
+            card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
             card.moveAndFlip(to: newPosition, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
         }
         
@@ -495,6 +496,11 @@ class GameScene: SKScene {
             }
             
             if transformation.x != 0 || transformation.y != 0 {
+                // rotate back to zero
+                if (!self.forceTouchActivated && self.selectedNodes.count == 1 && self.selectedNodes[0].zRotation != 0) {
+                    self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
+                }
+                
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
                     
