@@ -202,6 +202,15 @@ class CardSpriteNode : SKSpriteNode {
         }
     }
     
+    func rotate(by angle: CGFloat, duration: Double, sendPosition: Bool) {
+        let movement = SKAction.rotate(byAngle: angle, duration: duration)
+        self.run(movement) {
+            if sendPosition {
+                self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
+            }
+        }
+    }
+    
     // MARK: - Public methods - ranking/scoring
     
     func includesRank(among cardNodes: [CardSpriteNode]) -> Bool {
@@ -261,9 +270,13 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     /* returns true if the point in the mid section of the card node */
-    func isPointInMiddle(_ point: CGPoint) -> Bool {
+    func isPointInMidSection(_ point: CGPoint) -> Bool {
+        let transposedPoint = point.rotateAbout(point: self.position, byAngle: -self.zRotation)
+        let midSection = CGRect(center: self.position, size: CGSize(width: self.frame.width, height: self.frame.height / 2))
         
-        
+        if (midSection.contains(transposedPoint)) {
+            return true
+        }
         return false
     }
 }
