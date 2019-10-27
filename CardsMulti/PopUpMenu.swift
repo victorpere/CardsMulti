@@ -24,6 +24,12 @@ class PopUpMenu : UIAlertController {
         })
         self.addAction(shuffleButton)
         
+        let fanButton = UIAlertAction(title: "Fan", style: .default, handler: {
+            (alert) -> Void in
+            self.delegate?.fan()
+        })
+        self.addAction(fanButton)
+        
         for index in 1...maxNumberOfCardsToDeal {
             let dealButton = UIAlertAction(title: "Deal \(index)", style: .default, handler: { (alert) -> Void in
                 self.delegate?.deal(index)
@@ -42,6 +48,7 @@ class PopUpMenu : UIAlertController {
 
 protocol PopUpMenuDelegate {
     func deal(_ cards: Int)
+    func fan()
     func shuffle()
     func cancel()
 }

@@ -167,6 +167,7 @@ class GameScene: SKScene {
             cardNode.delegate = self
             
             cardNode.selectable = true
+            cardNode.zRotation = 0
             cardNode.moveToFront()
             let cardOffset = CGFloat(Double(cardNumber) * self.verticalHeight)
             cardNode.position = CGPoint(x: self.frame.midX - cardOffset, y: self.dividerLine.position.y + self.frame.width / 2 + cardOffset)
@@ -272,6 +273,7 @@ class GameScene: SKScene {
             cardCopy.position = newPosition
             cardCopy.card = card.card
             cardCopy.faceUp = card.faceUp
+            cardCopy.zRotation = 0
             cardsCopy.append(cardCopy)
         }
         self.sendPosition(of: cardsCopy, moveToFront: true, animate: true)
@@ -411,6 +413,36 @@ class GameScene: SKScene {
  
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
+    }
+    
+    func fan(cards: [CardSpriteNode], faceUp: Bool) {
+        let fanRadius: CGFloat = 100
+        let radianPerCard: CGFloat = 0.2
+        //let arcSize = CGFloat(cards.count) * radianPerCard
+        
+        let topCardPosition = (cards.last?.position)!
+        
+        for (cardNumber, card) in cards.sorted(by: { $0.zPosition > $1.zPosition }).enumerated() {
+            //let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(cards.count - 1) / 2)
+            let offset: CGFloat = (CGFloat(cards.count - 1) / 2) - CGFloat(cardNumber)
+            let angle: CGFloat = radianPerCard * offset
+            
+            let dx: CGFloat = fanRadius * sin(angle)
+            let dy: CGFloat = (fanRadius * cos(angle)) - fanRadius
+            
+            let newPosition = CGPoint(x: topCardPosition.x + dx, y: topCardPosition.y + dy)
+            
+            Global.displayCards([card])
+            print("Offset: \(offset)")
+            print("Old position: \(topCardPosition)")
+            print("New Position: \(newPosition)")
+            print("Angle: \(angle)")
+            
+            card.zRotation = CGFloat.pi - angle
+            card.moveAndFlip(to: newPosition, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+        }
+        
+        self.deselectNodeForTouch()
     }
 
     // MARK: - UIResponder methods

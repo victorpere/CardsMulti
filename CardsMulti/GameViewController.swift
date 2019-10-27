@@ -404,6 +404,10 @@ extension GameViewController : SettingsViewControllerDelegate, SettingsTableCont
 // MARK: - PopUpMenuDelegate
 
 extension GameViewController : PopUpMenuDelegate {
+    func fan() {
+        self.scene.fan(cards: self.scene.selectedNodes, faceUp: true)
+    }
+    
     func deal(_ cards: Int) {
         self.scene.deal(numberOfCards: cards)
     }
