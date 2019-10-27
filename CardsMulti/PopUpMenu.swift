@@ -17,6 +17,13 @@ class PopUpMenu : UIAlertController {
     convenience init(numberOfCards: Int, numberOfPlayers: Int) {
         let maxNumberOfCardsToDeal = numberOfCards / numberOfPlayers
         self.init(title: "\(numberOfCards) cards selected", message: nil, preferredStyle: .actionSheet)
+        
+        let shuffleButton = UIAlertAction(title: "Shuffle", style: .default, handler: {
+            (alert) -> Void in
+            self.delegate?.shuffle()
+        })
+        self.addAction(shuffleButton)
+        
         for index in 1...maxNumberOfCardsToDeal {
             let dealButton = UIAlertAction(title: "Deal \(index)", style: .default, handler: { (alert) -> Void in
                 self.delegate?.deal(index)

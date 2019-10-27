@@ -397,6 +397,7 @@ class GameScene: SKScene {
         print("shuffling cards")
         print("old order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
+        let topCardPosition = cards.last?.position
         
         var shuffledCards = cards
         Global.shuffle(&shuffledCards)
@@ -406,7 +407,7 @@ class GameScene: SKScene {
         }
         
         // stacking cards also sends position to other devices
-        self.stack(cards: cards, position: (cards.first?.position)!)
+        self.stack(cards: cards, position: topCardPosition!)
  
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
