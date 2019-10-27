@@ -526,7 +526,7 @@ class GameScene: SKScene {
             if self.selectedNodes.count > 0 {
                 // inertia movement
                 // only if one card is selected
-                if self.selectedNodes.count == 1 && (self.previousMovingSpeed.dx != 0 || self.previousMovingSpeed.dy != 0) {
+                if self.selectedNodes.count == 1 && (self.previousMovingSpeed.dx != 0 || self.previousMovingSpeed.dy != 0) && self.previousMovingSpeed.direction == self.currentMovingSpeed.direction {
                     DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
                         self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
                     }

@@ -57,6 +57,9 @@
 		57C626122346E6D6008A9872 /* CardSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C626112346E6D6008A9872 /* CardSlider.swift */; };
 		57C626132346E6DB008A9872 /* CardSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C626112346E6D6008A9872 /* CardSlider.swift */; };
 		57C626142346E6DB008A9872 /* CardSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C626112346E6D6008A9872 /* CardSlider.swift */; };
+		57D6560423651BA000DA69C4 /* CGVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D6560323651BA000DA69C4 /* CGVector.swift */; };
+		57D6560523651BBD00DA69C4 /* CGVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D6560323651BA000DA69C4 /* CGVector.swift */; };
+		57D6560623651BBE00DA69C4 /* CGVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D6560323651BA000DA69C4 /* CGVector.swift */; };
 		57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */; };
 		57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */; };
 		57E0935D212730E500D4E4F6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF71E85652400B1D4A6 /* Config.swift */; };
@@ -117,6 +120,7 @@
 		57BB31D42353BA8700AE2CDC /* PlayerStatusLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStatusLabel.swift; sourceTree = "<group>"; };
 		57BB31DC23569DA200AE2CDC /* SettingsTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
 		57C626112346E6D6008A9872 /* CardSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSlider.swift; sourceTree = "<group>"; };
+		57D6560323651BA000DA69C4 /* CGVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGVector.swift; sourceTree = "<group>"; };
 		57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingDirection.swift; sourceTree = "<group>"; };
 		57E97B091E7368B3000243B2 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Position.swift; path = Enums/Position.swift; sourceTree = "<group>"; };
 		57E97B0C1E7479F5000243B2 /* BottomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
@@ -178,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				574050541E5F82AA00316AEB /* UIDevice.swift */,
+				57D6560323651BA000DA69C4 /* CGVector.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -449,6 +454,7 @@
 				570C397523369C4D00A2882C /* Player.swift in Sources */,
 				57B054171E4E766A0057E62F /* Math.swift in Sources */,
 				57BB31DD23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
+				57D6560423651BA000DA69C4 /* CGVector.swift in Sources */,
 				570C3973233697E200A2882C /* GameGoFish.swift in Sources */,
 				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
@@ -471,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57D6560523651BBD00DA69C4 /* CGVector.swift in Sources */,
 				578B1C551E7EF960008B8381 /* GameViewController.swift in Sources */,
 				578B1C631E7EFBE4008B8381 /* Suit.swift in Sources */,
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
@@ -502,6 +509,7 @@
 			files = (
 				57C626142346E6DB008A9872 /* CardSlider.swift in Sources */,
 				57B053FB1E4E3BD20057E62F /* CardsMultiUITests.swift in Sources */,
+				57D6560623651BBE00DA69C4 /* CGVector.swift in Sources */,
 				57B87330234584D5001A54DD /* Switch.swift in Sources */,
 				57BB31D72353BAA200AE2CDC /* PlayerStatusLabel.swift in Sources */,
 				57BB31DF23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
