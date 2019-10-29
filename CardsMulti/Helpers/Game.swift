@@ -104,32 +104,40 @@ class Global {
     }
     */
 
-    static func cardDictionary(for cardNode: CardSpriteNode, cardPosition: CGPoint, playerPosition: Position, width: CGFloat, yOffset: CGFloat, moveToFront: Bool, animate: Bool) -> NSDictionary {
+    static func cardDictionary(for cardNode: CardSpriteNode, cardPosition: CGPoint, cardRotation: CGFloat, faceUp: Bool, playerPosition: Position, width: CGFloat, yOffset: CGFloat, moveToFront: Bool, animate: Bool) -> NSDictionary {
         let newPositionRelative = CGPoint(x: cardPosition.x / width, y: (cardPosition.y - yOffset) / width)
         var newPositionTransposed = CGPoint()
+        var newRotationTransposed = CGFloat()
         
         switch playerPosition {
         case .bottom :
             newPositionTransposed = newPositionRelative
+            newRotationTransposed = cardRotation
         case .top :
             newPositionTransposed.x = 1 - newPositionRelative.x
             newPositionTransposed.y = 1 - newPositionRelative.y
+            newRotationTransposed = cardRotation - CGFloat.pi
         case .left :
+            // UNTESTED
             newPositionTransposed.x = newPositionRelative.y
             newPositionTransposed.y = 1 - newPositionRelative.x
+            newRotationTransposed = CGFloat.pi / 2 + cardRotation
         case .right:
+            // UNTESTED
             newPositionTransposed.x = 1 - newPositionRelative.y
             newPositionTransposed.y = newPositionRelative.x
+            newRotationTransposed = CGFloat.pi / 2 - cardRotation
         default:
             break
         }
         
         let cardDictionary: NSDictionary = [
             "c": (cardNode.card?.symbol())! as String,
-            "f": cardNode.faceUp,
+            "f": faceUp,
             "p": NSCoder.string(for: newPositionTransposed),
             "m": moveToFront,
-            "a": animate
+            "a": animate,
+            "r": newRotationTransposed
             //"zPosition": cardNode.zPosition
         ]
         
@@ -139,34 +147,7 @@ class Global {
     static func cardDictionaryArray(with cardNodes: [CardSpriteNode], playerPosition: Position, width: CGFloat, yOffset: CGFloat, moveToFront: Bool, animate: Bool) -> [NSDictionary] {
         var cardDictionaryArray = [NSDictionary]()
         for cardNode in cardNodes.sorted(by: { $0.zPosition < $1.zPosition }) {
-            let newPositionRelative = CGPoint(x: cardNode.position.x / width, y: (cardNode.position.y - yOffset) / width)
-            var newPositionTransposed = CGPoint()
-            
-            switch playerPosition {
-            case .bottom :
-                newPositionTransposed = newPositionRelative
-            case .top :
-                newPositionTransposed.x = 1 - newPositionRelative.x
-                newPositionTransposed.y = 1 - newPositionRelative.y
-            case .left :
-                newPositionTransposed.x = newPositionRelative.y
-                newPositionTransposed.y = 1 - newPositionRelative.x
-            case .right:
-                newPositionTransposed.x = 1 - newPositionRelative.y
-                newPositionTransposed.y = newPositionRelative.x
-            default:
-                break
-            }
-            
-            let cardDictionary: NSDictionary = [
-                "c": (cardNode.card?.symbol())! as String,
-                "f": cardNode.faceUp,
-                "p": NSCoder.string(for: newPositionTransposed),
-                "m": moveToFront,
-                "a": animate
-                //"zPosition": cardNode.zPosition
-            ]
-            
+            let cardDictionary = Global.cardDictionary(for: cardNode, cardPosition: cardNode.position, cardRotation: cardNode.zRotation, faceUp: cardNode.faceUp, playerPosition: playerPosition, width: width, yOffset: yOffset, moveToFront: moveToFront, animate: animate)
             cardDictionaryArray.append(cardDictionary)
         }
         

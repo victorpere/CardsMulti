@@ -213,7 +213,7 @@ class GameScene: SKScene {
             
             DispatchQueue.main.async {
                 cardToDeal?.moveToFront()
-                cardToDeal?.moveAndFlip(to: newLocation, faceUp: false, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+                cardToDeal?.moveAndFlip(to: newLocation, rotateToAngle: cardToDeal!.zRotation, faceUp: false, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
             }
             // remove the dealt card from the stack
             cardsSorted.remove(at: 0)
@@ -268,7 +268,7 @@ class GameScene: SKScene {
         for (cardNumber, card) in cardsSorted.enumerated() {
             let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
             let newPosition = CGPoint(x: position.x + cardOffset, y: position.y - cardOffset)
-            card.moveAndFlip(to: newPosition, faceUp: card.faceUp, duration: resetDuration, sendPosition: false)
+            card.moveAndFlip(to: newPosition, rotateToAngle: card.zRotation, faceUp: card.faceUp, duration: resetDuration, sendPosition: false)
             
             let cardCopy = card.copy() as! CardSpriteNode
             cardCopy.position = newPosition
@@ -332,7 +332,7 @@ class GameScene: SKScene {
             let node_x = ((usableWidth - cardNode.frame.size.width) / CGFloat(hand.count)) * CGFloat(nodeNumber)
             let newPosition = CGPoint(x: cardNode.frame.size.width / 2 + node_x + border, y: cardNode.frame.size.height / 2 + border)
             cardNode.moveToFront()
-            cardNode.moveAndFlip(to: newPosition, faceUp: true, duration: self.resetDuration, sendPosition: true)
+            cardNode.moveAndFlip(to: newPosition, rotateToAngle: cardNode.zRotation, faceUp: true, duration: self.resetDuration, sendPosition: true)
         }
     }
     
@@ -423,9 +423,9 @@ class GameScene: SKScene {
         
         let topCardPosition = (cards.last?.position)!
         
-        for (cardNumber, card) in cards.sorted(by: { $0.zPosition > $1.zPosition }).enumerated() {
-            //let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(cards.count - 1) / 2)
-            let offset: CGFloat = (CGFloat(cards.count - 1) / 2) - CGFloat(cardNumber)
+        for (cardNumber, card) in cards.sorted(by: { $0.zPosition < $1.zPosition }).enumerated() {
+            let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(cards.count - 1) / 2)
+            //let offset: CGFloat =  (CGFloat(cards.count - 1) / 2) - CGFloat(cardNumber)
             let angle: CGFloat = radianPerCard * offset
             
             let dx: CGFloat = fanRadius * sin(angle)
@@ -439,8 +439,8 @@ class GameScene: SKScene {
             print("New Position: \(newPosition)")
             print("Angle: \(angle)")
             
-            card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
-            card.moveAndFlip(to: newPosition, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+            //card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
+            card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
         }
         
         self.deselectNodeForTouch()
@@ -683,21 +683,30 @@ class GameScene: SKScene {
                     let cardSymbol = cardDictionary["c"] as! String
                     let cardNode = self.allCards.filter { $0.card?.symbol() == cardSymbol }.first
 
-                    let newPositionRelative = NSCoder.cgPoint(for: cardDictionary["p"] as! String)
+                    let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
                     var newPositionTransposed = CGPoint()
+                    
+                    let newRotationRelative = cardDictionary["r"] != nil ? cardDictionary["r"] as! CGFloat : CGFloat()
+                    var newRotation = CGFloat()
                     
                     switch self.playerPosition {
                     case .bottom :
                         newPositionTransposed = newPositionRelative
+                        newRotation = newRotationRelative
                     case .top :
                         newPositionTransposed.x = 1 - newPositionRelative.x
                         newPositionTransposed.y = 1 - newPositionRelative.y
+                        newRotation = newRotationRelative - CGFloat.pi
                     case .left :
+                        // UNTESTED
                         newPositionTransposed.x = 1 - newPositionRelative.y
                         newPositionTransposed.y = newPositionRelative.x
+                        newRotation = newRotationRelative + CGFloat.pi / 2
                     case .right:
+                        // UNTESTED
                         newPositionTransposed.x = newPositionRelative.y
                         newPositionTransposed.y = 1 - newPositionRelative.x
+                        newRotation = CGFloat.pi / 2 - newRotationRelative - CGFloat.pi / 2
                     default:
                         break
                     }
@@ -705,17 +714,19 @@ class GameScene: SKScene {
                     let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
                     //let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
                 
-                    cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
-                    //cardNode?.zPosition = cardDictionary["zPosition"] as! CGFloat
+                    let faceUp = cardDictionary["f"] as! Bool
                     
                     if (cardDictionary["m"] as! Bool) {
                         cardNode?.moveToFront()
+                        Global.displayCards([cardNode!])
                     }
                     
                     if cardDictionary["a"] as! Bool {
-                        cardNode?.moveAndFlip(to: newPosition, faceUp: (cardNode?.faceUp)!, duration: resetDuration, sendPosition: false)
+                        cardNode?.moveAndFlip(to: newPosition, rotateToAngle: newRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
                     } else {
+                        cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
                         cardNode?.position = newPosition
+                        cardNode?.zRotation = newRotation
                     }
                 }
             } catch {
@@ -739,8 +750,8 @@ extension GameScene : CardSpriteNodeDelegate {
         self.lastSelectedNode = cardNode
     }
     
-    func sendFuture(position futurePosition: CGPoint, of cardNode: CardSpriteNode, moveToFront: Bool) {
-        let cardDictionary = Global.cardDictionary(for: cardNode, cardPosition: futurePosition, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: true)
+    func sendFuture(position futurePosition: CGPoint, rotation futureRotation: CGFloat, faceUp futureFaceUp: Bool, of cardNode: CardSpriteNode, moveToFront: Bool) {
+        let cardDictionary = Global.cardDictionary(for: cardNode, cardPosition: futurePosition, cardRotation: futureRotation, faceUp: futureFaceUp, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: true)
         
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: [cardDictionary])

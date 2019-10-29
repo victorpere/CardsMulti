@@ -171,21 +171,22 @@ class CardSpriteNode : SKSpriteNode {
         }
     }
     
-    func moveAndFlip(to newPosition: CGPoint, faceUp: Bool, duration: Double, sendPosition: Bool, animateReceiver: Bool = false) {
+    func moveAndFlip(to newPosition: CGPoint, rotateToAngle newRotation: CGFloat, faceUp: Bool, duration: Double, sendPosition: Bool, animateReceiver: Bool = false) {
         
         //if we're animating at the receiver end, send the position first
         //so that the animations happen simultaneously
-        if sendPosition && animateReceiver && self.faceUp == faceUp {
-            self.delegate!.sendFuture(position: newPosition, of: self, moveToFront: true)
+        if sendPosition && animateReceiver {
+            self.delegate!.sendFuture(position: newPosition, rotation: newRotation, faceUp: faceUp, of: self, moveToFront: true)
         }
         
         self.moving = true
         let movement = SKAction.move(to: newPosition, duration: duration)
-        let actionGroup = SKAction.group([movement, self.moveSound])
+        let rotation = SKAction.rotate(toAngle: newRotation, duration: duration)
+        let actionGroup = SKAction.group([movement, rotation, self.moveSound])
         self.delegate!.makeMoveSound()
         self.run(actionGroup) {
             if self.faceUp != faceUp {
-                self.flip(sendPosition: sendPosition)
+                self.flip(sendPosition: sendPosition && !animateReceiver)
             } else if sendPosition && !animateReceiver {
                 self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
             }
@@ -197,7 +198,7 @@ class CardSpriteNode : SKSpriteNode {
         let movement = SKAction.rotate(toAngle: angle, duration: duration, shortestUnitArc: true)
         self.run(movement) {
             if sendPosition {
-                self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
+                self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
             }
         }
     }
@@ -206,7 +207,7 @@ class CardSpriteNode : SKSpriteNode {
         let movement = SKAction.rotate(byAngle: angle, duration: duration)
         self.run(movement) {
             if sendPosition {
-                self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
+                self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
             }
         }
     }
@@ -286,7 +287,7 @@ class CardSpriteNode : SKSpriteNode {
 
 protocol CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode)
-    func sendFuture(position futurePosition: CGPoint, of cardNode: CardSpriteNode, moveToFront: Bool)
+    func sendFuture(position futurePosition: CGPoint, rotation futureRotation: CGFloat, faceUp futureFaceUp: Bool, of cardNode: CardSpriteNode, moveToFront: Bool)
     func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool)
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode]
     func isOnTopOfPile(_ cardNode: CardSpriteNode) -> Bool
