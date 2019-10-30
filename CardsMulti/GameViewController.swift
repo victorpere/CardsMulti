@@ -408,6 +408,10 @@ extension GameViewController : SettingsViewControllerDelegate, SettingsTableCont
 // MARK: - PopUpMenuDelegate
 
 extension GameViewController : PopUpMenuDelegate {
+    func stack() {
+        self.scene.stackSelectedCards()
+    }
+    
     func fan() {
         self.scene.fan(cards: self.scene.selectedNodes, faceUp: true)
     }

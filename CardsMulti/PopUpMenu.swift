@@ -18,6 +18,12 @@ class PopUpMenu : UIAlertController {
         let maxNumberOfCardsToDeal = numberOfCards / numberOfPlayers
         self.init(title: "\(numberOfCards) cards selected", message: nil, preferredStyle: .actionSheet)
         
+        let stackButton = UIAlertAction(title: "Stack", style: .default, handler: {
+            (alert) -> Void in
+            self.delegate?.stack()
+        })
+        self.addAction(stackButton)
+        
         let shuffleButton = UIAlertAction(title: "Shuffle", style: .default, handler: {
             (alert) -> Void in
             self.delegate?.shuffle()
@@ -50,5 +56,6 @@ protocol PopUpMenuDelegate {
     func deal(_ cards: Int)
     func fan()
     func shuffle()
+    func stack()
     func cancel()
 }

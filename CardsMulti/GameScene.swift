@@ -280,13 +280,21 @@ class GameScene: SKScene {
         return CGPoint(x: transposedX, y: transposedY)
     }
     
-    func stack(cards: [CardSpriteNode], position: CGPoint) {
+    func stackSelectedCards() {
+        if self.selectedNodes.count > 0 {
+            let cardsSorted = self.selectedNodes.sorted { $0.zPosition > $1.zPosition }
+            let topCardPosition = (cardsSorted.last?.position)!
+            self.stack(cards: cardsSorted, position: topCardPosition)
+        }
+    }
+    
+    func stack(cards: [CardSpriteNode], position: CGPoint, flip: Bool = false, faceUp: Bool = false) {
         let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
         var cardsCopy = [CardSpriteNode]()
         for (cardNumber, card) in cardsSorted.enumerated() {
             let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
             let newPosition = CGPoint(x: position.x + cardOffset, y: position.y - cardOffset)
-            card.moveAndFlip(to: newPosition, rotateToAngle: card.zRotation, faceUp: card.faceUp, duration: resetDuration, sendPosition: false)
+            card.moveAndFlip(to: newPosition, rotateToAngle: 0, faceUp: flip ? faceUp : card.faceUp, duration: resetDuration, sendPosition: false)
             
             let cardCopy = card.copy() as! CardSpriteNode
             cardCopy.position = newPosition
@@ -428,7 +436,7 @@ class GameScene: SKScene {
         }
         
         // stacking cards also sends position to other devices
-        self.stack(cards: cards, position: topCardPosition!)
+        self.stack(cards: cards, position: topCardPosition!, flip: true, faceUp: false)
  
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
@@ -458,7 +466,7 @@ class GameScene: SKScene {
             print("Angle: \(angle)")
             
             //card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
-            card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+            card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: false, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
         }
         
         self.deselectNodeForTouch()
