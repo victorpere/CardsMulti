@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let viewController = self.window?.rootViewController as! GameViewController? {
             viewController.connectionService.stopAdvertising()
             viewController.connectionService.stopBrowsing()
+            viewController.saveGame()
         }
     }
 
@@ -58,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let viewController = self.window?.rootViewController as! GameViewController? {
             viewController.connectionService.stopAdvertising()
             viewController.connectionService.stopBrowsing()
+            viewController.saveGame()
         }
     }
 

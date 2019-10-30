@@ -86,7 +86,8 @@ class GameScene: SKScene {
         
         //connectionService.delegate = self
 
-        self.resetGame(sync: false)
+        //self.resetGame(sync: false, loadSaved: false)
+        self.resetGame(sync: false, loadSaved: true)
     }
     
     override func sceneDidLoad() {
@@ -127,7 +128,11 @@ class GameScene: SKScene {
 
     // MARK: - Game methods
     
-    func resetGame(sync: Bool) {
+    func saveGame() {
+        GameState.instance.cardNodes = self.allCards
+    }
+    
+    func resetGame(sync: Bool, loadSaved: Bool = false) {
         self.removeAllChildren()
         
         connectionLabel = SKLabelNode(text: "Connections: ")
@@ -147,17 +152,33 @@ class GameScene: SKScene {
         self.dividerLine.strokeColor = Config.mainColor
         self.addChild(self.dividerLine)
         
-        self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
+        let loadedCards = GameState.instance.cardNodes
+        if loadSaved && loadedCards.count > 0 {
+            self.allCards = loadedCards
+        } else {
+            self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
+        }
         
         for cardNode in self.allCards {
             self.addChild(cardNode)
             self.addChild(cardNode.shadowNode)
         }
 
-        self.resetCards(sync: false)
+        self.initCards()
+        
+        if !loadSaved || loadedCards.count == 0 {
+            self.resetCards(sync: false)
+        }
         
         if sync {
             self.syncToMe()
+        }
+    }
+    
+    func initCards() {
+        for cardNode in self.allCards {
+            cardNode.delegate = self
+            cardNode.selectable = true
         }
     }
     
@@ -165,9 +186,6 @@ class GameScene: SKScene {
         Global.shuffle(&self.allCards)
         
         for (cardNumber, cardNode) in self.allCards.enumerated() {
-            cardNode.delegate = self
-            
-            cardNode.selectable = true
             cardNode.zRotation = 0
             cardNode.moveToFront()
             let cardOffset = CGFloat(Double(cardNumber) * self.verticalHeight)

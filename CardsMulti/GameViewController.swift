@@ -142,6 +142,10 @@ class GameViewController: UIViewController {
     
     // MARK: - Public methods
     
+    func saveGame() {
+        self.scene.saveGame()
+    }
+    
     func startGame() {
 
         //connectionsLabel.isHidden = true

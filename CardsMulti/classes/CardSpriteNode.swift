@@ -9,6 +9,9 @@
 import GameplayKit
 
 class CardSpriteNode : SKSpriteNode {
+    
+    // MARK: - Properties
+    
     var delegate:CardSpriteNodeDelegate! = nil
     
     let accelerationMultiplier = 4.0
@@ -40,6 +43,22 @@ class CardSpriteNode : SKSpriteNode {
     var shadowNode: SKSpriteNode!
     var shadowFlipAction: SKAction!
     
+    var cardInfo: NSDictionary {
+        get {
+            return NSDictionary(dictionary: [
+                "name": self.name!,
+                "symbol": self.card!.symbol(),
+                "suit": self.card!.suit.rawValue,
+                "rank": self.card!.rank.rawValue,
+                "faceUp": self.faceUp,
+                "rotation": self.zRotation,
+                "x": self.position.x,
+                "y": self.position.y,
+                "z": self.zPosition
+            ])
+        }
+    }
+    
     // MARK: - Initializers
     
     required init?(coder aDecoder: NSCoder) {
@@ -52,12 +71,25 @@ class CardSpriteNode : SKSpriteNode {
         self.setScale(cardScale)
     }
     
-    init(card: Card, name: String) {
+    convenience init(cardInfo: NSDictionary) {
+        let name = cardInfo["name"] as! String
+        let card = Card(suit: Suit(rawValue: cardInfo["suit"] as! Int)! , rank: Rank(rawValue: cardInfo["rank"] as! Int)!)
+        let faceUp = cardInfo["faceUp"] as! Bool
+        self.init(card: card, name: name, faceUp: faceUp)
+        
+        self.position = CGPoint(x: cardInfo["x"] as! CGFloat, y: cardInfo["y"] as! CGFloat)
+        self.zPosition = cardInfo["z"] as! CGFloat
+        self.zRotation = cardInfo["rotation"] as! CGFloat
+    }
+    
+    init(card: Card, name: String, faceUp: Bool = false) {
         self.frontTexture = SKTexture(imageNamed: card.spriteName)
         self.frontTexture?.filteringMode = SKTextureFilteringMode.nearest
         self.backTexture = SKTexture(imageNamed: self.backImageName)
         self.backTexture?.filteringMode = SKTextureFilteringMode.nearest
-        super.init(texture: self.frontTexture, color: .clear, size: (self.frontTexture?.size())!)
+        self.faceUp = faceUp
+        
+        super.init(texture: faceUp ? self.frontTexture : self.backTexture, color: .clear, size: (self.frontTexture?.size())!)
 
         self.card = card
         self.name = name

@@ -8,8 +8,8 @@
 
 import Foundation
 
-class Settings : NSObject, NSCoding {
-    let userDefaults = UserDefaults.standard
+class Settings : SettingsBase, NSCoding {
+    
     let defaultMinRank = 2
     let defaultMaxRank = 10
     
@@ -107,34 +107,12 @@ class Settings : NSObject, NSCoding {
     // MARK: - NSCoding methods
     
     func encode(with aCoder: NSCoder) {
-        aCoder.encode(minRank, forKey: "minRank")
-        aCoder.encode(maxRank, forKey: "maxRank")
-        aCoder.encode(jack, forKey: "jack")
-        aCoder.encode(queen, forKey: "queen")
-        aCoder.encode(king, forKey: "king")
-        aCoder.encode(ace, forKey: "ace")
-    }
-    
-    // MARK: - Private functions
-    
-    private func setting<T>(forKey key: String) throws -> T {
-        if let value = self.userDefaults.value(forKey: key) as? T {
-            return value
-        }
-        throw SettingsErrors.settingNotFound
-    }
-    
-    private func settingOrDefault<T>(forKey key: String, defaultValue: T) -> T {
-        if let value = self.userDefaults.value(forKey: key) as? T {
-            return value
-        }
-        self.setSetting(forKey: key, toValue: defaultValue)
-        return defaultValue
-    }
-    
-    private func setSetting<T>(forKey key: String, toValue value: T) {
-        self.userDefaults.setValue(value, forKey: key)
-        self.userDefaults.synchronize()
+        aCoder.encode(self.minRank, forKey: "minRank")
+        aCoder.encode(self.maxRank, forKey: "maxRank")
+        aCoder.encode(self.jack, forKey: "jack")
+        aCoder.encode(self.queen, forKey: "queen")
+        aCoder.encode(self.king, forKey: "king")
+        aCoder.encode(self.ace, forKey: "ace")
     }
 }
 
