@@ -57,8 +57,6 @@ class GameScene: SKScene {
     
     var forceTouch = false
     var forceTouchActivated = false
-    var forceTouchReleased = false
-    var forceTouchActivatedAgain = false
     
     var gameSceneDelegate: GameSceneDelegate?
     
@@ -466,7 +464,7 @@ class GameScene: SKScene {
             print("Angle: \(angle)")
             
             //card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
-            card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: false, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+            card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
         }
         
         self.deselectNodeForTouch()
@@ -508,16 +506,7 @@ class GameScene: SKScene {
                         if (self.selectedNodes.count > 1) {
                             AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
                         }
-                    } else if self.selectedNodes.count > 1 && self.forceTouchReleased && !self.forceTouchActivatedAgain {
-                        // force touch activated again: stack selected cards
-                        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
-                        self.forceTouchReleased = false
-                        self.forceTouchActivatedAgain = true
-                        self.stack(cards: self.selectedNodes, position: currentPosition)
                     }
-                } else if self.forceTouchActivated && !self.forceTouchReleased && !self.forceTouchActivatedAgain {
-                    // force touch activated, then released while still touching
-                    self.forceTouchReleased = true
                 }
             }
             
@@ -545,17 +534,6 @@ class GameScene: SKScene {
                         self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
                     }
                     
-                    // logic to detect shuffling
-                    if self.selectedNodes.count > 1 {
-                        // detect change of direction
-                        let newMovingDirection = MovingDirection(transformation: transformation)
-                        if self.movingDirection != newMovingDirection {
-                            print("direction reversed \(self.movingDirection) \(String(describing: newMovingDirection))")
-                            self.movingDirectionReversed += 1
-                        }
-                        self.movingDirection = newMovingDirection!
-                    }
-                    
                 } else {
                     if self.cutting {
                         let transformationFromStart = CGPoint(x: currentPosition.x - self.cutStartPosition.x, y: currentPosition.y - cutStartPosition.y)
@@ -567,15 +545,8 @@ class GameScene: SKScene {
                         }
                     }
                 }
-            } else {
-                // no movement
-                if self.movingDirectionReversed > 4 {
-                    // shuffle
-                    self.movingDirectionReversed = 0
-                    self.shuffle(cards: self.selectedNodes)
-                }
-                self.movingDirectionReversed = 0
             }
+            
             self.lastTouchTimestamp = t.timestamp
         }        
     }
@@ -583,8 +554,6 @@ class GameScene: SKScene {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
             self.forceTouchActivated = false
-            self.forceTouchReleased = false
-            self.forceTouchActivatedAgain = false
             self.movingDirectionReversed = 0
             
             if self.selectedNodes.count > 0 {
@@ -619,9 +588,7 @@ class GameScene: SKScene {
                 }
             }
         }
-        
-
-        
+                
         self.deselectNodeForTouch()
     }
     
