@@ -53,6 +53,7 @@ class GameScene: SKScene {
     var lastTouchMoveTimestamp = 0.0
     var touchesBeganTimestamp = 0.0
     var rotating = false
+    var canDoubleTap = true
     
     var allCards = [CardSpriteNode]()
     
@@ -373,7 +374,7 @@ class GameScene: SKScene {
                 //touchedCardNode.moveToFront()
                 self.selectedNodes = [touchedCardNode]
 
-                if tapCount > 1 {
+                if tapCount > 1 && self.canDoubleTap {
                     // this is the second tap - flip the card
                     touchedCardNode.moveToFront()
                     touchedCardNode.flip(sendPosition: true)
@@ -383,6 +384,7 @@ class GameScene: SKScene {
                     self.rotating = true
                 }
                 
+                self.canDoubleTap = true
                 //print("Cards under touched node: ", terminator: "")
                 //displayCards(self.getCards(under: self.selectedNode))
                 self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
@@ -525,6 +527,7 @@ class GameScene: SKScene {
             }
             
             if transformation.x != 0 || transformation.y != 0 {
+                self.canDoubleTap = false
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
 
@@ -542,7 +545,7 @@ class GameScene: SKScene {
                         
                         if self.rotating {
                             // handle rotation
-                            self.selectedNodes[0].rotate(from: previousPosition, to: currentPosition)                            
+                            self.selectedNodes[0].rotate(from: previousPosition, to: currentPosition)
                         }
                     }
                     
