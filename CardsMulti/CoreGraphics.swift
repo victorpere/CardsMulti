@@ -27,6 +27,19 @@ extension CGPoint {
         
         return CGPoint(x: newRelPoint.x + center.x, y: newRelPoint.y + center.y)
     }
+    
+    func angleBetween(pointA: CGPoint, pointB: CGPoint) -> CGFloat {
+        let relPointA = CGPoint(x: pointA.x - self.x, y: pointA.y - self.y)
+        let relToPoint = CGPoint(x: pointB.x - self.x, y: pointB.y - self.y)
+        
+        let tanFrom = relPointA.x / relPointA.y
+        let tanTo = relToPoint.x / relToPoint.y
+        
+        let fromAngle = atan(tanFrom)
+        let toAngle = atan(tanTo)
+        
+        return toAngle - fromAngle
+    }
 }
 
 extension CGRect {

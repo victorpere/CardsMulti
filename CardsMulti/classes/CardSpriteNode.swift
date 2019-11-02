@@ -23,6 +23,7 @@ class CardSpriteNode : SKSpriteNode {
     let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
     let flipDuration = 0.2
     let backImageName = "back"
+    let cornerSizeRatio: CGFloat = 0.25  // relative to width
     
     var cardScale: CGFloat = 0.25
     var popScaleBy: CGFloat = 1.1
@@ -42,6 +43,35 @@ class CardSpriteNode : SKSpriteNode {
     
     var shadowNode: SKSpriteNode!
     var shadowFlipAction: SKAction!
+    
+    // MARK: - Computed properties
+    
+    var cardWidth: CGFloat { return self.cardWidthFullSizePixels * self.cardScale }
+    var cardHeight: CGFloat { return self.cardHeightFullSizePixels * self.cardScale }
+    var cardSize: CGSize { return CGSize(width: self.cardWidth, height: self.cardHeight) }
+    
+    var bottomLeftCorner: CGPoint {
+        return CGPoint(x: self.position.x - self.cardSize.width / 2, y: self.position.y - self.cardSize.height / 2)
+    }
+    
+    var bottomRightCorner: CGPoint {
+        return CGPoint(x: self.position.x + self.cardSize.width / 2, y: self.position.y - self.cardSize.height / 2 )
+    }
+    
+    var topLeftCorner: CGPoint {
+        return CGPoint(x: self.position.x - self.cardSize.width / 2, y: self.position.y + self.cardSize.height / 2)
+    }
+    
+    var topRightCorner: CGPoint {
+        return CGPoint(x: self.position.x + self.cardSize.width / 2, y : self.position.y + self.cardSize.height / 2)
+    }
+    
+    var cornerSideSize: CGFloat { return self.cardSize.width * self.cornerSizeRatio }
+    var cornerRectSize: CGSize { return CGSize(width: self.cornerSideSize, height: self.cornerSideSize) }
+    var bottomLeftRect: CGRect { return CGRect(origin: self.bottomLeftCorner, size: self.cornerRectSize) }
+    var bottomRightRect: CGRect { return CGRect(origin: CGPoint(x: self.bottomRightCorner.x - self.cornerSideSize, y: self.bottomRightCorner.y), size: self.cornerRectSize) }
+    var topLeftRect: CGRect { return CGRect(origin: CGPoint(x: self.topLeftCorner.x, y: self.topLeftCorner.y - self.cornerSideSize), size: self.cornerRectSize)}
+    var topRightRect: CGRect { return CGRect(origin: CGPoint(x: self.topRightCorner.x - self.cornerSideSize, y: self.topRightCorner.y - self.cornerSideSize), size: self.cornerRectSize)}
     
     var cardInfo: NSDictionary {
         get {
@@ -244,6 +274,15 @@ class CardSpriteNode : SKSpriteNode {
         }
     }
     
+    /* Rotate about centre by the angle between the centre and the two points */
+    func rotate(fromPoint: CGPoint, toPoint: CGPoint) {
+        let angle = self.position.angleBetween(pointA: fromPoint, pointB: toPoint)
+        
+        print("initial rotation: \(self.zRotation)")
+        print("minus angle: \(angle)")
+        self.zRotation -= angle
+    }
+    
     // MARK: - Public methods - ranking/scoring
     
     func includesRank(among cardNodes: [CardSpriteNode]) -> Bool {
@@ -286,30 +325,44 @@ class CardSpriteNode : SKSpriteNode {
         return self.delegate!.isOnTopOfPile(self);
     }
     
-    func bottomLeftCorner() -> CGPoint {
-        return CGPoint(x: self.position.x - self.frame.width / 2, y: self.position.y - self.frame.height / 2)
-    }
     
-    func bottomRightCorner() -> CGPoint {
-        return CGPoint(x: self.position.x + self.frame.width / 2, y: self.position.y - self.frame.height / 2 )
-    }
     
-    func topLeftCorner() -> CGPoint {
-        return CGPoint(x: self.position.x - self.frame.width / 2, y: self.position.y + self.frame.height / 2)
-    }
-    
-    func topRightCorner() -> CGPoint {
-        return CGPoint(x: self.position.x + self.frame.width / 2, y : self.position.y + self.frame.height / 2)
+    /* returns true if the point is within the card node */
+    func pointInCard(_ point: CGPoint) -> Bool {
+        let transposedPoint = point.rotateAbout(point: self.position, byAngle: -self.zRotation)
+        let cardRect = CGRect(center: self.position, size: self.cardSize)
+        return cardRect.contains(transposedPoint)
     }
     
     /* returns true if the point in the mid section of the card node */
-    func isPointInMidSection(_ point: CGPoint) -> Bool {
+    func pointInMidSection(_ point: CGPoint) -> Bool {
         let transposedPoint = point.rotateAbout(point: self.position, byAngle: -self.zRotation)
-        let midSection = CGRect(center: self.position, size: CGSize(width: self.frame.width, height: self.frame.height / 2))
+        let midSection = CGRect(center: self.position, size: CGSize(width: self.cardSize.width, height: self.cardSize.height / 2))
         
-        if (midSection.contains(transposedPoint)) {
+        return midSection.contains(transposedPoint)
+    }
+    
+    /* returns true if the point is in one of the corners of the card node */
+    func pointInCorner(_ point: CGPoint) -> Bool {
+        let transposedPoint = point.rotateAbout(point: self.position, byAngle: -self.zRotation)
+
+        if self.bottomLeftRect.contains(transposedPoint) {
+            //print("bottom left")
             return true
         }
+        if self.bottomRightRect.contains(transposedPoint) {
+            //print("bottom right")
+            return true
+        }
+        if self.topLeftRect.contains(transposedPoint) {
+            //print("top left")
+            return true
+        }
+        if self.topRightRect.contains(transposedPoint) {
+            //print("top right")
+            return true
+        }
+        
         return false
     }
 }

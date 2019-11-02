@@ -52,6 +52,7 @@ class GameScene: SKScene {
     var lastSendPositionTimestamp = 0.0
     var lastTouchMoveTimestamp = 0.0
     var touchesBeganTimestamp = 0.0
+    var rotating = false
     
     var allCards = [CardSpriteNode]()
     
@@ -283,6 +284,7 @@ class GameScene: SKScene {
             let cardsSorted = self.selectedNodes.sorted { $0.zPosition > $1.zPosition }
             let topCardPosition = (cardsSorted.last?.position)!
             self.stack(cards: cardsSorted, position: topCardPosition)
+            self.deselectNodeForTouch()
         }
     }
     
@@ -375,6 +377,10 @@ class GameScene: SKScene {
                     // this is the second tap - flip the card
                     touchedCardNode.moveToFront()
                     touchedCardNode.flip(sendPosition: true)
+                } else if touchedCardNode.pointInCorner(touchLocation) {
+                    // touched in the corner of the card
+                    // select for rotation
+                    self.rotating = true
                 }
                 
                 //print("Cards under touched node: ", terminator: "")
@@ -417,6 +423,13 @@ class GameScene: SKScene {
     
     func deselectNodeForTouch() {
         self.selectedNodes.removeAll()
+    }
+    
+    func shuffleSelectedCards() {
+        if self.selectedNodes.count > 1 {
+            self.shuffle(cards: self.selectedNodes)
+        }
+        self.deselectNodeForTouch()
     }
     
     // shuffle cards function - work in progress...
@@ -493,7 +506,6 @@ class GameScene: SKScene {
             // determine speed of last move
             let timeInterval = t.timestamp - self.lastTouchTimestamp
             self.setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
-            print("\(timeInterval) \(self.currentMovingSpeed)")
             
             if forceTouch {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
@@ -503,31 +515,47 @@ class GameScene: SKScene {
                         
                         self.forceTouchActivated = true
                         self.selectMultipleNodesForTouch(touchLocation: currentPosition)
-                        if (self.selectedNodes.count > 1) {
-                            AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+                        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+                        
+                        if self.selectedNodes.count == 1 {
+                            self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
                         }
                     }
                 }
             }
             
             if transformation.x != 0 || transformation.y != 0 {
-                // rotate back to zero
-                if (!self.forceTouchActivated && self.selectedNodes.count == 1 && self.selectedNodes[0].zRotation != 0) {
-                    self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
-                }
-                
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
                     
-                    // check if the card now has no cards over it,
-                    // if it doesn't move it to the top
-                    if self.selectedNodes.count == 1 && self.selectedNodes[0] != self.lastSelectedNode {
-                        if self.selectedNodes[0].isOnTopOfPile() {
+                    
+
+                    if !self.rotating {
+                        self.selectedNodes.move(transformation: transformation)
+                    }
+                    
+                    if self.selectedNodes.count == 1 {
+                        // check if the card now has no cards over it,
+                        // if it doesn't move it to the top
+                        if self.selectedNodes[0] != self.lastSelectedNode && self.selectedNodes[0].isOnTopOfPile() {
                             self.selectedNodes[0].moveToFront()
                             self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
                         }
+                        
+                        if self.rotating {
+                            // handle rotation
+                            self.selectedNodes[0].rotate(fromPoint: previousPosition, toPoint: currentPosition)
+                            if !self.selectedNodes[0].pointInCorner(currentPosition) {
+                                self.rotating = false
+                            }
+                        } else if (self.selectedNodes[0].zRotation != 0) {
+                            // rotate back to zero
+                            //self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
+                        } else if self.selectedNodes[0].pointInCorner(currentPosition) {
+                            self.rotating = true
+                        }
                     }
-                    self.selectedNodes.move(transformation: transformation)
+                    
                     let timeElapsed = t.timestamp - self.lastSendPositionTimestamp
                     if timeElapsed >= 0.1 || (self.selectedNodes.count <= 2 && timeElapsed >= 0.05) {
                         self.lastSendPositionTimestamp = t.timestamp
@@ -589,6 +617,7 @@ class GameScene: SKScene {
             }
         }
                 
+        self.rotating = false
         self.deselectNodeForTouch()
     }
     
@@ -773,10 +802,9 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func isOnTopOfPile(_ card: CardSpriteNode) -> Bool {
-        let cardsOnTopOfCard = self.allCards.filter { (card.frame.contains($0.bottomLeftCorner()) ||
-                                                       card.frame.contains($0.bottomRightCorner()) ||
-                                                       card.frame.contains($0.topLeftCorner()) ||
-                                                       card.frame.contains($0.topRightCorner()))
+        let cardsOnTopOfCard = self.allCards.filter { (card.frame.contains($0.bottomLeftCorner) || card.frame.contains($0.bottomRightCorner) ||
+            card.frame.contains($0.topLeftCorner) ||
+            card.frame.contains($0.topRightCorner))
                                                         && $0.zPosition > card.zPosition }
         return cardsOnTopOfCard.count == 0;
     }
