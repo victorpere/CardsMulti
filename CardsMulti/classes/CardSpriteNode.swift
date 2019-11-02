@@ -275,12 +275,34 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     /* Rotate about centre by the angle between the centre and the two points */
-    func rotate(fromPoint: CGPoint, toPoint: CGPoint) {
+    func rotate(from fromPoint: CGPoint, to toPoint: CGPoint) {
         let angle = self.position.angleBetween(pointA: fromPoint, pointB: toPoint)
-        
-        print("initial rotation: \(self.zRotation)")
-        print("minus angle: \(angle)")
         self.zRotation -= angle
+    }
+    
+    /* Rotate about the specified point by the angle between the centre and the two points */
+    func rotate(from fromPoint: CGPoint, to toPoint: CGPoint, about centrePoint: CGPoint) {
+        let angle = centrePoint.angleBetween(pointA: fromPoint, pointB: toPoint)
+        self.zRotation -= angle
+    }
+    
+    func rotate(towards towardsAngle: CGFloat, by byAngle: CGFloat) {
+        if self.zRotation == towardsAngle {
+            return
+        }
+        
+        var newAngle = self.zRotation
+        if newAngle < towardsAngle {
+            newAngle += byAngle
+            if newAngle < towardsAngle {
+                self.zRotation = newAngle
+            }
+        } else {
+            newAngle -= byAngle
+            if newAngle > towardsAngle {
+                self.zRotation = newAngle
+            }
+        }   
     }
     
     // MARK: - Public methods - ranking/scoring

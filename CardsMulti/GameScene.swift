@@ -527,8 +527,6 @@ class GameScene: SKScene {
             if transformation.x != 0 || transformation.y != 0 {
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
-                    
-                    
 
                     if !self.rotating {
                         self.selectedNodes.move(transformation: transformation)
@@ -544,15 +542,7 @@ class GameScene: SKScene {
                         
                         if self.rotating {
                             // handle rotation
-                            self.selectedNodes[0].rotate(fromPoint: previousPosition, toPoint: currentPosition)
-                            if !self.selectedNodes[0].pointInCorner(currentPosition) {
-                                self.rotating = false
-                            }
-                        } else if (self.selectedNodes[0].zRotation != 0) {
-                            // rotate back to zero
-                            //self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
-                        } else if self.selectedNodes[0].pointInCorner(currentPosition) {
-                            self.rotating = true
+                            self.selectedNodes[0].rotate(from: previousPosition, to: currentPosition)                            
                         }
                     }
                     
@@ -576,7 +566,7 @@ class GameScene: SKScene {
             }
             
             self.lastTouchTimestamp = t.timestamp
-        }        
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

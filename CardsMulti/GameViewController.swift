@@ -113,6 +113,7 @@ class GameViewController: UIViewController {
         skView.ignoresSiblingOrder = true
         skView.allowsTransparency = true
         
+        //self.skView.isMultipleTouchEnabled = true
         self.startGame()
     }
     
