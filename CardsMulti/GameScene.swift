@@ -636,6 +636,16 @@ class GameScene: SKScene {
             }
         }
         
+        // Debug labels
+        DispatchQueue.global(qos: .default).async {
+            for cardNode in self.allCards {
+                DispatchQueue.main.async {
+                    //cardNode.debugLabel.zRotation = 0
+                    //cardNode.debugLabel.text = "\(Double(round(cardNode.zRotation*100)/100))"
+                }
+            }
+        }
+        
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime

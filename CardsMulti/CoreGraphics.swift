@@ -32,13 +32,15 @@ extension CGPoint {
         let relPointA = CGPoint(x: pointA.x - self.x, y: pointA.y - self.y)
         let relToPoint = CGPoint(x: pointB.x - self.x, y: pointB.y - self.y)
         
-        let tanFrom = relPointA.x / relPointA.y
-        let tanTo = relToPoint.x / relToPoint.y
+        let tanFrom = relPointA.x / abs(relPointA.y)
+        let tanTo = relToPoint.x / abs(relToPoint.y)
         
         let fromAngle = atan(tanFrom)
         let toAngle = atan(tanTo)
+    
+        let multiplier: CGFloat = relToPoint.y.sign == .minus ? -1 : 1
         
-        return toAngle - fromAngle
+        return (toAngle - fromAngle) * multiplier
     }
 }
 

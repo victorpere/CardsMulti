@@ -44,6 +44,8 @@ class CardSpriteNode : SKSpriteNode {
     var shadowNode: SKSpriteNode!
     var shadowFlipAction: SKAction!
     
+    var debugLabel: SKLabelNode!
+    
     // MARK: - Computed properties
     
     var cardWidth: CGFloat { return self.cardWidthFullSizePixels * self.cardScale }
@@ -152,6 +154,20 @@ class CardSpriteNode : SKSpriteNode {
         self.shadowNode.alpha = 0.5
         self.shadowNode.setScale(cardScale)
         self.shadowNode.isHidden = true
+        
+        self.debugLabel = SKLabelNode(text: "")
+        if #available(iOS 11.0, *) {
+            self.debugLabel.numberOfLines = 0
+        } else {
+            // Fallback on earlier versions
+        }
+        self.debugLabel.fontColor = UIColor.green
+        self.debugLabel.fontSize = 100
+        self.debugLabel.fontName = "Helvetica"
+        self.debugLabel.position = CGPoint(x: 0, y: self.cardHeightFullSizePixels / 2 + 20)
+        self.debugLabel.zPosition = 1000
+        self.debugLabel.isUserInteractionEnabled = false
+        self.addChild(self.debugLabel)
     }
     
     // MARK: - Private methods
@@ -277,6 +293,7 @@ class CardSpriteNode : SKSpriteNode {
     /* Rotate about centre by the angle between the centre and the two points */
     func rotate(from fromPoint: CGPoint, to toPoint: CGPoint) {
         let angle = self.position.angleBetween(pointA: fromPoint, pointB: toPoint)
+        self.debugLabel.text = "\(Double(round(self.zRotation*100)/100))\n\(Double(round(angle*100)/100))\n\(Double(round((self.zRotation - angle)*100)/100))"
         self.zRotation -= angle
     }
     
