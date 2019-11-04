@@ -161,6 +161,11 @@ class CardSpriteNode : SKSpriteNode {
         } else {
             // Fallback on earlier versions
         }
+        #if DEBUG
+        self.debugLabel.isHidden = false
+        #else
+        self.debugLabel.isHidden = true
+        #endif
         self.debugLabel.fontColor = UIColor.green
         self.debugLabel.fontSize = 100
         self.debugLabel.fontName = "Helvetica"
