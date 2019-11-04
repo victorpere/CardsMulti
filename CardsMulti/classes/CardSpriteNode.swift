@@ -145,7 +145,7 @@ class CardSpriteNode : SKSpriteNode {
             self.shadowFlipAction = SKAction.sequence([flipFirstHalfFlip, flipSecondHalfFlip])
         }
         
-        self.popAction = Actions.getPopAction(originalScale: cardScale, scaleBy: popScaleBy, duration: flipDuration)
+        self.popAction = Actions.getPopAction(originalScale: self.cardScale, scaleBy: self.popScaleBy, duration: flipDuration)
         self.moveSound = Actions.getCardMoveSound()
         
         self.shadowNode = SKSpriteNode(texture: SKTexture(imageNamed: backImageName))
