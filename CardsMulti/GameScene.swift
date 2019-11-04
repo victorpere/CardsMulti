@@ -125,6 +125,12 @@ class GameScene: SKScene {
     func numberOfCards(inPosition position: Position) -> Int {
         return cards(inPosition: position).count
     }
+    
+    func updateUISettings() {
+        for card in self.allCards {
+            card.updateScale()
+        }
+    }
 
     // MARK: - Game methods
     
@@ -161,7 +167,7 @@ class GameScene: SKScene {
         
         for cardNode in self.allCards {
             self.addChild(cardNode)
-            self.addChild(cardNode.shadowNode)
+            //self.addChild(cardNode.shadowNode)
         }
 
         self.initCards()

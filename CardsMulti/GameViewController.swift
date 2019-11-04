@@ -400,6 +400,9 @@ extension GameViewController : GameSceneDelegate {
 // MARK: - SettingsViewControllerDelegate
 
 extension GameViewController : SettingsViewControllerDelegate, SettingsTableControllerDelegate {
+    func uiSettingsChanged() {
+        self.scene.updateUISettings()
+    }
     
     func settingsChanged() {
         self.scene.resetGame(sync: true)

@@ -20,7 +20,7 @@ class CardSpriteNode : SKSpriteNode {
     let cardWidthFullSizePixels: CGFloat = 500.0
     let cardWidthsPerScreen: CGFloat = 6.0
     let cardHeightFullSizePixels: CGFloat = 726.0
-    let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
+    //let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
     let flipDuration = 0.2
     let backImageName = "back"
     let cornerSizeRatio: CGFloat = 0.25  // relative to width
@@ -152,8 +152,10 @@ class CardSpriteNode : SKSpriteNode {
         self.shadowNode.color = .black
         self.shadowNode.colorBlendFactor = 1.0
         self.shadowNode.alpha = 0.5
-        self.shadowNode.setScale(cardScale)
+        //self.shadowNode.setScale(cardScale)
         self.shadowNode.isHidden = true
+        self.shadowNode.zPosition = -0.5
+        self.addChild(self.shadowNode)
         
         self.debugLabel = SKLabelNode(text: "")
         if #available(iOS 11.0, *) {
@@ -179,21 +181,30 @@ class CardSpriteNode : SKSpriteNode {
     
     private func getScale() -> CGFloat {
         let screenSize: CGRect = UIScreen.main.bounds
+        let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
 
-        //let screenWidthPixels = screenSize.width * 2
         let cardWidthPixels = screenSize.width / cardWidthsPerScreen
-        return cardWidthPixels / cardWidthFullSizePixels
+        return cardWidthPixels / self.cardWidthFullSizePixels
+    }
+    
+    // MARK: - Public methods
+    
+    public func updateScale() {
+        let screenSize: CGRect = UIScreen.main.bounds
+        let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
+
+        let cardWidthPixels = screenSize.width / cardWidthsPerScreen
+        self.cardScale = cardWidthPixels / self.cardWidthFullSizePixels
         
-        //let screenHeightPixels = screenSize.height * 2
-        //let cardHeightPixels = screenHeightPixels / cardHeightsPerScreen
-        //return cardHeightPixels / cardHeightFullSizePixels
+        self.setScale(self.cardScale)
+        //self.shadowNode.setScale(self.cardScale)
     }
     
     // MARK: - Public methods - movement
     
     func flip(sendPosition: Bool) {
-        self.shadowNode.position = self.position
-        self.shadowNode.zPosition = self.zPosition - 0.5
+        //self.shadowNode.position = self.position
+        //self.shadowNode.zPosition = self.zPosition - 0.5
         self.shadowNode.isHidden = false
         
         if faceUp {

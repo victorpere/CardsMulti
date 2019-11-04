@@ -10,14 +10,24 @@ import Foundation
 
 class Settings : SettingsBase, NSCoding {
     
-    let defaultMinRank = 2
-    let defaultMaxRank = 10
+    // MARK: - Singleton
+    
+    static let instance = Settings()
+    
+    // MARK: - Defaults
+    
+    static let defaultMinRank = 2
+    static let defaultMaxRank = 10
+    
+    static let defaultCardWidthsPerScreen: Float = 6
+    static let minCardWidthsPerScreen: Float = 3
+    static let maxCardWidthsPerScreen: Float = 10
     
     // MARK: - Properties
     
     var minRank: Int {
         get {
-            return self.settingOrDefault(forKey: "minRank", defaultValue: self.defaultMinRank)
+            return self.settingOrDefault(forKey: "minRank", defaultValue: Settings.defaultMinRank)
         }
         set(value) {
             self.setSetting(forKey: "minRank", toValue: value)
@@ -26,7 +36,7 @@ class Settings : SettingsBase, NSCoding {
     
     var maxRank: Int {
         get {
-            return self.settingOrDefault(forKey: "maxRank", defaultValue: self.defaultMaxRank)
+            return self.settingOrDefault(forKey: "maxRank", defaultValue: Settings.defaultMaxRank)
         }
         set(value) {
             self.setSetting(forKey: "maxRank", toValue: value)
@@ -78,6 +88,15 @@ class Settings : SettingsBase, NSCoding {
         }
     }
     
+    var cardWidthsPerScreen: Float {
+        get {
+            return self.settingOrDefault(forKey: "cardWidthsPerScreen", defaultValue: Settings.defaultCardWidthsPerScreen)
+        }
+        set(value) {
+            self.setSetting(forKey: "cardWidthsPerScreen", toValue: value)
+        }
+    }
+    
     // MARK: - Initializers
     
     override init() {}
@@ -102,6 +121,9 @@ class Settings : SettingsBase, NSCoding {
         if let value = aDecoder.decodeObject(forKey: "ace") as? Bool {
             self.ace = value
         }
+        if let value = aDecoder.decodeObject(forKey: "cardWidthsPerScreen") as? Float {
+            self.cardWidthsPerScreen = value
+        }
     }
     
     // MARK: - NSCoding methods
@@ -113,6 +135,7 @@ class Settings : SettingsBase, NSCoding {
         aCoder.encode(self.queen, forKey: "queen")
         aCoder.encode(self.king, forKey: "king")
         aCoder.encode(self.ace, forKey: "ace")
+        aCoder.encode(self.cardWidthsPerScreen, forKey: "cardWidthsPerScreen")
     }
 }
 

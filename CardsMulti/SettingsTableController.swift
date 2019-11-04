@@ -12,7 +12,7 @@ class SettingsTableContoller : UIViewController {
     let stadardRowHeight: CGFloat = 44
     let sliderRowHeight:CGFloat = 53
     
-    let numberOfSections = 2
+    let numberOfSections = 3
     let settings = Settings()
     
     var tableView: UITableView!
@@ -25,6 +25,8 @@ class SettingsTableContoller : UIViewController {
     var queenSwitch: Switch!
     var kingSwitch: Switch!
     var aceSwitch: Switch!
+    
+    var cardScaleSlider: UISlider!
     
     // MARK: - View methods
     
@@ -54,6 +56,11 @@ class SettingsTableContoller : UIViewController {
         self.kingSwitch.isOn = self.settings.king
         self.aceSwitch.isOn = self.settings.ace
         
+        self.cardScaleSlider = UISlider()
+        self.cardScaleSlider.minimumValue = Settings.minCardWidthsPerScreen
+        self.cardScaleSlider.maximumValue = Settings.maxCardWidthsPerScreen
+        self.cardScaleSlider.value = Settings.instance.cardWidthsPerScreen
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
         
         self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height), style: UITableView.Style.grouped)
@@ -70,6 +77,7 @@ class SettingsTableContoller : UIViewController {
             self.saveSettings()
         }
 
+        self.saveUISettings()
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -102,6 +110,13 @@ class SettingsTableContoller : UIViewController {
         
         self.delegate?.settingsChanged()
     }
+    
+    private func saveUISettings() {
+        if Settings.instance.cardWidthsPerScreen != self.cardScaleSlider.value {
+            Settings.instance.cardWidthsPerScreen = self.cardScaleSlider.value
+            self.delegate?.uiSettingsChanged()
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate
@@ -122,6 +137,8 @@ extension SettingsTableContoller : UITableViewDataSource {
             return 3
         case 1:
             return 4
+        case 2:
+            return 1
         default:
             return 0
         }
@@ -171,6 +188,10 @@ extension SettingsTableContoller : UITableViewDataSource {
             default:
                 break
             }
+        case 2:
+            cell.selectionStyle = .none
+            cell.textLabel?.text = "Card size"
+            cell.accessoryView = self.cardScaleSlider
         default:
             break
         }
@@ -185,4 +206,5 @@ extension SettingsTableContoller : UITableViewDataSource {
 
 protocol SettingsTableControllerDelegate {
     func settingsChanged()
+    func uiSettingsChanged()
 }
