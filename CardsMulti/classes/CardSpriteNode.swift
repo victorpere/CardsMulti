@@ -190,14 +190,20 @@ class CardSpriteNode : SKSpriteNode {
     // MARK: - Public methods
     
     public func updateScale() {
-        let screenSize: CGRect = UIScreen.main.bounds
-        let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
+        DispatchQueue.global(qos: .default).async {
+            let screenSize: CGRect = UIScreen.main.bounds
+            let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
 
-        let cardWidthPixels = screenSize.width / cardWidthsPerScreen
-        self.cardScale = cardWidthPixels / self.cardWidthFullSizePixels
+            let cardWidthPixels = screenSize.width / cardWidthsPerScreen
+            self.cardScale = cardWidthPixels / self.cardWidthFullSizePixels
+            
+            DispatchQueue.main.async {
+                self.setScale(self.cardScale)
+            }
+            
+            self.popAction = Actions.getPopAction(originalScale: self.cardScale, scaleBy: self.popScaleBy, duration: self.flipDuration)
+        }
         
-        self.setScale(self.cardScale)
-        //self.shadowNode.setScale(self.cardScale)
     }
     
     // MARK: - Public methods - movement
