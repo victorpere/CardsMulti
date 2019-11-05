@@ -218,6 +218,7 @@ class GameViewController: UIViewController {
         presentationController?.permittedArrowDirections = .down
         presentationController?.sourceView = self.settingsButton
         presentationController?.sourceRect = self.settingsButton.bounds
+        presentationController?.canOverlapSourceViewRect = true
         
         self.present(navSettingsViewController, animated: true, completion: nil)
     }

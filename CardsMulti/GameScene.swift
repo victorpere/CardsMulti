@@ -119,6 +119,18 @@ class GameScene: SKScene {
             return self.allCards.filter { $0.position.x > self.frame.width }
         }
     }
+    
+    private func didForceOrLongTouch(at location: CGPoint) {
+        // multiple cards are selected
+        
+        self.forceTouchActivated = true
+        self.selectMultipleNodesForTouch(touchLocation: location)
+        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+        
+        if self.selectedNodes.count == 1 {
+            self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
+        }
+    }
         
     // MARK: - Public methods
     
@@ -519,15 +531,7 @@ class GameScene: SKScene {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     // Force touch activated
                     if !self.forceTouchActivated {
-                        // multiple cards are selected
-                        
-                        self.forceTouchActivated = true
-                        self.selectMultipleNodesForTouch(touchLocation: currentPosition)
-                        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
-                        
-                        if self.selectedNodes.count == 1 {
-                            self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
-                        }
+                        self.didForceOrLongTouch(at: currentPosition)
                     }
                 }
             }
@@ -602,7 +606,7 @@ class GameScene: SKScene {
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 &&
                     self.currentMovingSpeed.dx == 0 && self.currentMovingSpeed.dy == 0 &&
-                    timeSinceTouchesBegan < self.timeToPopUpMenu {
+                    (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouch) {
                     self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: t.location(in: self))
                     return
                 }
@@ -669,9 +673,7 @@ class GameScene: SKScene {
         
         if !forceTouch {
             if selectedNodes.count == 1 && !forceTouchActivated && lastTouchMoveTimestamp != 0.0 && currentTime - lastTouchMoveTimestamp >= timeToSelectMultipleNodes {
-                // select multiple nodes for devices with no force touch
-                forceTouchActivated = true
-                selectMultipleNodesForTouch(touchLocation: selectedNodes[0].position)
+                self.didForceOrLongTouch(at: selectedNodes[0].position)
             }
         }
     }
