@@ -48,6 +48,7 @@ class GameScene: SKScene {
     var lastSelectedNode = CardSpriteNode()
     var currentMovingSpeed = CGVector()
     var previousMovingSpeed = CGVector()
+    var firstTouchLocation = CGPoint()
     var lastTouchTimestamp = 0.0
     var lastSendPositionTimestamp = 0.0
     var lastTouchMoveTimestamp = 0.0
@@ -509,6 +510,7 @@ class GameScene: SKScene {
         for t in touches {
             self.selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
             
+            self.firstTouchLocation = t.location(in: self)
             self.touchesBeganTimestamp = t.timestamp
             self.lastTouchTimestamp = t.timestamp
             self.lastTouchMoveTimestamp = t.timestamp
@@ -598,6 +600,7 @@ class GameScene: SKScene {
                 
                 self.lastTouchTimestamp = 0.0
                 self.lastTouchMoveTimestamp = 0.0
+                let touchLocation = t.location(in: self)
                 
                 // pop up cotextual menu, if multiple cards were selected
                 // and the cards were't being moved
@@ -605,9 +608,9 @@ class GameScene: SKScene {
                 // should contain: deal, shuffle
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 &&
-                    self.currentMovingSpeed.dx == 0 && self.currentMovingSpeed.dy == 0 &&
+                self.firstTouchLocation == touchLocation &&
                     (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouch) {
-                    self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: t.location(in: self))
+                    self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: touchLocation)
                     return
                 }
                 

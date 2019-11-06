@@ -384,8 +384,19 @@ extension GameViewController : GameSceneDelegate {
     }
     
     func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint) {
+        print("touch location: \(location)")
         let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, numberOfPlayers: numberOfPlayers)
         popUpMenu.delegate = self
+        
+        let sourceRect = CGRect(center: CGPoint(x: location.x, y: self.skView.frame.height - location.y), size: CGSize(width: 1, height: 1))
+        
+        print("rect: \(sourceRect)")
+        
+        let presentationController = popUpMenu.popoverPresentationController
+        presentationController?.permittedArrowDirections = .any
+        presentationController?.sourceView = self.skView
+        presentationController?.sourceRect = sourceRect
+        
         self.present(popUpMenu, animated: true, completion: nil)
     }
     
