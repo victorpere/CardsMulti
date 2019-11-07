@@ -33,6 +33,12 @@ class SettingsTableContoller : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let popOverVC = self.parent?.popoverPresentationController {
+            if UIPopoverArrowDirection.unknown.rawValue > popOverVC.arrowDirection.rawValue {
+                self.view.frame = CGRect(origin: self.view.frame.origin, size: CGSize(width: 375, height: self.view.frame.height))
+            }
+        }
+        
         self.view.backgroundColor = .white
         self.title = "Settings"
         
@@ -82,6 +88,10 @@ class SettingsTableContoller : UIViewController {
     }
     
     // MARK: - Public methods
+    
+    func setFrameSize(to size: CGSize) {
+        self.tableView.frame = CGRect(origin: self.tableView.frame.origin, size: size)
+    }
     
     func settingsHaveChanged() -> Bool {
         if self.settings.minRank != self.minSlider.rank ||

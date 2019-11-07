@@ -213,12 +213,12 @@ class GameViewController: UIViewController {
         settingsViewController.delegate = self
         let navSettingsViewController = UINavigationController(rootViewController: settingsViewController)
         navSettingsViewController.modalPresentationStyle = .popover
+        settingsViewController.preferredContentSize = CGSize(width: 375, height: 676)
         
         let presentationController = navSettingsViewController.popoverPresentationController
         presentationController?.permittedArrowDirections = .down
         presentationController?.sourceView = self.settingsButton
         presentationController?.sourceRect = self.settingsButton.bounds
-        presentationController?.canOverlapSourceViewRect = true
         
         self.present(navSettingsViewController, animated: true, completion: nil)
     }
@@ -396,6 +396,7 @@ extension GameViewController : GameSceneDelegate {
         presentationController?.permittedArrowDirections = .any
         presentationController?.sourceView = self.skView
         presentationController?.sourceRect = sourceRect
+        presentationController?.canOverlapSourceViewRect = true
         
         self.present(popUpMenu, animated: true, completion: nil)
     }

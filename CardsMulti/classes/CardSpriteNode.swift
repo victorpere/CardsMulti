@@ -174,7 +174,8 @@ class CardSpriteNode : SKSpriteNode {
         self.debugLabel.position = CGPoint(x: 0, y: self.cardHeightFullSizePixels / 2 + 20)
         self.debugLabel.zPosition = 1000
         self.debugLabel.isUserInteractionEnabled = false
-        self.addChild(self.debugLabel)
+        
+        //self.addChild(self.debugLabel)
     }
     
     // MARK: - Private methods
