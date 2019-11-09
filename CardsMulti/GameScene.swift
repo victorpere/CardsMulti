@@ -121,9 +121,13 @@ class GameScene: SKScene {
         }
     }
     
+    /**
+     Selects multiple cards or rotate single card to 0
+     
+     - parameter location: location of the touch
+     */
     private func didForceOrLongTouch(at location: CGPoint) {
-        // multiple cards are selected
-        
+        self.rotating = false
         self.forceTouchActivated = true
         self.selectMultipleNodesForTouch(touchLocation: location)
         AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
@@ -135,10 +139,18 @@ class GameScene: SKScene {
         
     // MARK: - Public methods
     
+    /**
+     Returns the number of cards in the area of the player in the specified position
+     
+     - parameter position: the player's position
+     */
     func numberOfCards(inPosition position: Position) -> Int {
         return cards(inPosition: position).count
     }
     
+    /**
+     Updates the scale of all cards
+     */
     func updateUISettings() {
         for card in self.allCards {
             card.updateScale()
@@ -147,10 +159,20 @@ class GameScene: SKScene {
 
     // MARK: - Game methods
     
+    /**
+     Saves positions of all cards
+     */
     func saveGame() {
         GameState.instance.cardNodes = self.allCards
     }
     
+    /**
+     Resets the scene, re-initializes all nodes and prepares a new shuffled deck
+     
+     - parameters:
+        - sync: whether to synchronize connected devices to this device after the execution
+        - loadSaved: whether to load the save game state
+     */
     func resetGame(sync: Bool, loadSaved: Bool = false) {
         self.removeAllChildren()
         
@@ -194,6 +216,9 @@ class GameScene: SKScene {
         }
     }
     
+    /**
+     Sets the scene as the delegate for all cards and marks all cards as selectable
+     */
     func initCards() {
         for cardNode in self.allCards {
             cardNode.delegate = self
@@ -201,6 +226,11 @@ class GameScene: SKScene {
         }
     }
     
+    /**
+     Shuffles all cards and places the shuffled deck in the middle of the playing area
+     
+     - parameter sync: whether to synchronize with other devices after execution
+     */
     func resetCards(sync: Bool) {
         Global.shuffle(&self.allCards)
         
@@ -216,10 +246,12 @@ class GameScene: SKScene {
         }
     }
     
-    // Deal the specified number of cards into each of the connected players' areas
+    /**
+     Deal the specified number of cards into each of the connected players' areas
+     
+     - parameter numberOfCards: number of cards to deal to each player
+     */
     func deal(numberOfCards: Int) {
-        // deal the cards to each peer
-        
         var cardsToDeal = self.selectedNodes
         self.deselectNodeForTouch()
         
@@ -237,10 +269,16 @@ class GameScene: SKScene {
         }
     }
     
-    // deal one card from the top of the passed pile to the specified position
+    /**
+     Deal one card from the top of the passed pile to the specified position
+     
+     - parameters:
+        - position: player's position to deal the card to
+        - cards: set of cards to deal from
+     
+     - returns: Set of cards without the dealt card
+     */
     func deal(to position: Position, from cards: [CardSpriteNode]) -> [CardSpriteNode] {
-        // deal a single card to the specified position
-        // take the top card in the common area
         if cards.count > 0 {
             //  select top card
             var cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
@@ -261,6 +299,11 @@ class GameScene: SKScene {
         return [CardSpriteNode]()
     }
     
+    /**
+     Returns a random location weighted towards the centre in the specified player's area
+     
+     - parameter position: position of the player
+     */
     func randomLocationForPlayer(in position: Position) -> CGPoint {
         // TODO: move to a CGPoint extension?
         // random point somewhere within the player's area
@@ -299,16 +342,28 @@ class GameScene: SKScene {
         return CGPoint(x: transposedX, y: transposedY)
     }
     
+    /**
+     Stacks selected cards
+     */
     func stackSelectedCards() {
         if self.selectedNodes.count > 0 {
             let cardsSorted = self.selectedNodes.sorted { $0.zPosition > $1.zPosition }
-            let topCardPosition = (cardsSorted.last?.position)!
-            self.stack(cards: cardsSorted, position: topCardPosition)
+            let topCardLocation = (cardsSorted.last?.position)!
+            self.stack(cards: cardsSorted, at: topCardLocation)
             self.deselectNodeForTouch()
         }
     }
     
-    func stack(cards: [CardSpriteNode], position: CGPoint, flip: Bool = false, faceUp: Bool = false) {
+    /**
+     Stacks specified cards at the specified location
+     
+     - parameters:
+        - cards: the set of cards to stack
+        - location: location to stack the cards at (will be bottom card's location)
+        - flip: whether to flip the cards
+        - faceUp: whether to place all cards face up or down
+     */
+    func stack(cards: [CardSpriteNode], at location: CGPoint, flip: Bool = false, faceUp: Bool = false) {
         let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
         var cardsCopy = [CardSpriteNode]()
         for (cardNumber, card) in cardsSorted.enumerated() {
@@ -326,6 +381,11 @@ class GameScene: SKScene {
         self.sendPosition(of: cardsCopy, moveToFront: true, animate: true)
     }
     
+    /**
+     Separates the specified set of cards into two stacks
+     
+     - parameter cards: the set of cards to cut
+     */
     func cut(cards: [CardSpriteNode]) {
         if cards.count > 1 {
             let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
@@ -346,8 +406,8 @@ class GameScene: SKScene {
             let stack2 = Array(cardsSorted.suffix(from: halfIndex))
             
             //stack(cards: cardsSorted, position: originalPosition!)
-            self.stack(cards: stack1, position: position1)
-            self.stack(cards: stack2, position: position2)
+            self.stack(cards: stack1, at: position1)
+            self.stack(cards: stack2, at: position2)
         }
     }
     
@@ -468,7 +528,7 @@ class GameScene: SKScene {
         }
         
         // stacking cards also sends position to other devices
-        self.stack(cards: cards, position: topCardPosition!, flip: true, faceUp: false)
+        self.stack(cards: cards, at: topCardPosition!, flip: true, faceUp: false)
  
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
