@@ -12,6 +12,9 @@ import UIKit
 public final class Config {
     public static let mainColor: UIColor = UIColor(red: 0.7, green: 0.7, blue: 0.5, alpha: 1.0)
 
+    public static let cardBackImageName = "back"
+    public static let cardWidthFullSizePixels: CGFloat = 500.0
+    
     private init(){
         
     }

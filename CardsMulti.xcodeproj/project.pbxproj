@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		570218262373B39600310A67 /* CardSizeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 570218252373B39600310A67 /* CardSizeTableViewCell.xib */; };
+		570218282373B44100310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
+		570218292373B52500310A67 /* CardSizeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 570218252373B39600310A67 /* CardSizeTableViewCell.xib */; };
+		5702182A2373B52600310A67 /* CardSizeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 570218252373B39600310A67 /* CardSizeTableViewCell.xib */; };
+		5702182B2373B6D500310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
+		5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
 		570C3973233697E200A2882C /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
@@ -91,6 +97,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		570218252373B39600310A67 /* CardSizeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CardSizeTableViewCell.xib; sourceTree = "<group>"; };
+		570218272373B44100310A67 /* CardSizeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSizeTableViewCell.swift; sourceTree = "<group>"; };
 		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
 		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		5740504C1E5E890000316AEB /* card_flip.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_flip.m4a; sourceTree = "<group>"; };
@@ -159,6 +167,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		570218242373B35F00310A67 /* Xibs */ = {
+			isa = PBXGroup;
+			children = (
+				570218252373B39600310A67 /* CardSizeTableViewCell.xib */,
+			);
+			path = Xibs;
+			sourceTree = "<group>";
+		};
 		570C3971233697B100A2882C /* GameScenes */ = {
 			isa = PBXGroup;
 			children = (
@@ -224,6 +240,7 @@
 		57B053D31E4E3BD20057E62F /* CardsMulti */ = {
 			isa = PBXGroup;
 			children = (
+				570218242373B35F00310A67 /* Xibs */,
 				570C3971233697B100A2882C /* GameScenes */,
 				57897FF61E85651400B1D4A6 /* Config */,
 				574050531E5F828200316AEB /* Extensions */,
@@ -306,6 +323,7 @@
 				57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */,
 				57BB31D42353BA8700AE2CDC /* PlayerStatusLabel.swift */,
 				57BB31DC23569DA200AE2CDC /* SettingsTableController.swift */,
+				570218272373B44100310A67 /* CardSizeTableViewCell.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -427,6 +445,7 @@
 				57B053E01E4E3BD20057E62F /* Main.storyboard in Resources */,
 				5740504E1E5E890000316AEB /* card_flip.m4a in Resources */,
 				57B053E21E4E3BD20057E62F /* Assets.xcassets in Resources */,
+				570218262373B39600310A67 /* CardSizeTableViewCell.xib in Resources */,
 				57B053E51E4E3BD20057E62F /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -435,6 +454,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				570218292373B52500310A67 /* CardSizeTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +462,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5702182A2373B52600310A67 /* CardSizeTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,6 +488,7 @@
 				570C3973233697E200A2882C /* GameGoFish.swift in Sources */,
 				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
+				570218282373B44100310A67 /* CardSizeTableViewCell.swift in Sources */,
 				57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */,
 				57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */,
 				57E97B0A1E7368B4000243B2 /* Position.swift in Sources */,
@@ -487,6 +509,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5702182B2373B6D500310A67 /* CardSizeTableViewCell.swift in Sources */,
 				57D6560523651BBD00DA69C4 /* CoreGraphics.swift in Sources */,
 				574693532367CBCD00AB6516 /* SettingsBase.swift in Sources */,
 				578B1C551E7EF960008B8381 /* GameViewController.swift in Sources */,
@@ -524,6 +547,7 @@
 				57B87330234584D5001A54DD /* Switch.swift in Sources */,
 				57BB31D72353BAA200AE2CDC /* PlayerStatusLabel.swift in Sources */,
 				57BB31DF23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
+				5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */,
 				574693542367CBCD00AB6516 /* SettingsBase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -17,7 +17,7 @@ class CardSpriteNode : SKSpriteNode {
     let accelerationMultiplier = 4.0
     let accelerationTimeInterval = 0.001
 
-    let cardWidthFullSizePixels: CGFloat = 500.0
+    static let cardWidthFullSizePixels: CGFloat = 500.0
     let cardWidthsPerScreen: CGFloat = 6.0
     let cardHeightFullSizePixels: CGFloat = 726.0
     //let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
@@ -48,7 +48,7 @@ class CardSpriteNode : SKSpriteNode {
     
     // MARK: - Computed properties
     
-    var cardWidth: CGFloat { return self.cardWidthFullSizePixels * self.cardScale }
+    var cardWidth: CGFloat { return CardSpriteNode.cardWidthFullSizePixels * self.cardScale }
     var cardHeight: CGFloat { return self.cardHeightFullSizePixels * self.cardScale }
     var cardSize: CGSize { return CGSize(width: self.cardWidth, height: self.cardHeight) }
     
@@ -178,6 +178,13 @@ class CardSpriteNode : SKSpriteNode {
         //self.addChild(self.debugLabel)
     }
     
+    // MARK: - Static public methods
+    
+    static public func cardWidthPixels(forCardWidthsPerScreen cardWidthsPerScreen: CGFloat) -> CGFloat {
+        let screenSize: CGRect = UIScreen.main.bounds
+        return screenSize.width / cardWidthsPerScreen
+    }
+    
     // MARK: - Private methods
     
     private func getScale() -> CGFloat {
@@ -185,7 +192,7 @@ class CardSpriteNode : SKSpriteNode {
         let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
 
         let cardWidthPixels = screenSize.width / cardWidthsPerScreen
-        return cardWidthPixels / self.cardWidthFullSizePixels
+        return cardWidthPixels / CardSpriteNode.cardWidthFullSizePixels
     }
     
     // MARK: - Public methods
@@ -196,7 +203,7 @@ class CardSpriteNode : SKSpriteNode {
             let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
 
             let cardWidthPixels = screenSize.width / cardWidthsPerScreen
-            self.cardScale = cardWidthPixels / self.cardWidthFullSizePixels
+            self.cardScale = cardWidthPixels / CardSpriteNode.cardWidthFullSizePixels
             
             DispatchQueue.main.async {
                 self.setScale(self.cardScale)
