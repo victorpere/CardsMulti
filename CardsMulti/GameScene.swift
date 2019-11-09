@@ -48,6 +48,7 @@ class GameScene: SKScene {
     var lastSelectedNode = CardSpriteNode()
     var currentMovingSpeed = CGVector()
     var previousMovingSpeed = CGVector()
+    var currentRotationSpeed: CGFloat = 0
     var firstTouchLocation = CGPoint()
     var lastTouchTimestamp = 0.0
     var lastSendPositionTimestamp = 0.0
@@ -617,7 +618,8 @@ class GameScene: SKScene {
                         
                         if self.rotating {
                             // handle rotation
-                            self.selectedNodes[0].rotate(from: previousPosition, to: currentPosition)
+                            let angle = self.selectedNodes[0].rotate(from: previousPosition, to: currentPosition)
+                            self.currentRotationSpeed = angle / CGFloat(timeInterval)
                         }
                     }
                     
@@ -653,8 +655,12 @@ class GameScene: SKScene {
                 // inertia movement
                 // only if one card is selected
                 if self.selectedNodes.count == 1 && (self.previousMovingSpeed.dx != 0 || self.previousMovingSpeed.dy != 0) && self.previousMovingSpeed.direction == self.currentMovingSpeed.direction {
-                    DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
-                        self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
+                    if self.rotating {
+                        self.selectedNodes[0].stopRotating(startSpeed: self.currentRotationSpeed)
+                    } else {
+                        DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
+                            self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
+                        }
                     }
                 }
                 

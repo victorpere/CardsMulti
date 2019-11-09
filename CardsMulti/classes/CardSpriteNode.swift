@@ -14,7 +14,7 @@ class CardSpriteNode : SKSpriteNode {
     
     var delegate:CardSpriteNodeDelegate! = nil
     
-    let accelerationMultiplier = 4.0
+    let dragCoefficient = 4.0
     let accelerationTimeInterval = 0.001
 
     static let cardWidthFullSizePixels: CGFloat = 500.0
@@ -195,6 +195,15 @@ class CardSpriteNode : SKSpriteNode {
         return cardWidthPixels / CardSpriteNode.cardWidthFullSizePixels
     }
     
+    fileprivate func performMovements(_ movements: [SKAction]) {
+        let movementSequence = SKAction.sequence(movements)
+        self.delegate!.makeMoveSound()
+        self.run(movementSequence) {
+            self.moving = false
+            self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
+        }
+    }
+    
     // MARK: - Public methods
     
     public func updateScale() {
@@ -251,12 +260,17 @@ class CardSpriteNode : SKSpriteNode {
         self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
     }
     
+    /**
+     Decelerates moving card
+     
+     - parameter startSpeed: initial speed
+     */
     func stopMoving(startSpeed: CGVector) {
         self.moving = true
         
         var currentSpeed = startSpeed
         var linearSpeed = Math.hypotenuse(from: currentSpeed)
-        let linearAcceleration = linearSpeed * self.accelerationMultiplier
+        let linearAcceleration = linearSpeed * self.dragCoefficient
         let acceleration = Math.acceleration2d(linearAcceleration: linearAcceleration, speed: currentSpeed)
         
         var movements = [SKAction]()
@@ -268,12 +282,32 @@ class CardSpriteNode : SKSpriteNode {
             linearSpeed -= accelerationTimeInterval * linearAcceleration
         }
         if movements.count > 0 {
-            let movementSequence = SKAction.sequence(movements)
-            self.delegate!.makeMoveSound()
-            self.run(movementSequence) {
-                self.moving = false
-                self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
-            }
+            self.performMovements(movements)
+        } else {
+            self.moving = false
+        }
+    }
+    
+    /**
+     Decelerates rotating card
+     
+     - parameter startSpeed: initial rotation speed
+     */
+    func stopRotating(startSpeed: CGFloat) {
+        self.moving = true
+        var currentSpeed = startSpeed
+        let acceleration = currentSpeed * CGFloat(self.dragCoefficient)
+        
+        var movements = [SKAction]()
+        while currentSpeed.sign == startSpeed.sign {
+            let angle = currentSpeed * CGFloat(self.accelerationTimeInterval)
+            let movement = SKAction.rotate(byAngle: -angle, duration: self.accelerationTimeInterval)
+            movements.append(movement)
+            currentSpeed -= acceleration * CGFloat(self.accelerationTimeInterval)
+        }
+        
+        if movements.count > 0 {
+            self.performMovements(movements)
         } else {
             self.moving = false
         }
@@ -320,11 +354,20 @@ class CardSpriteNode : SKSpriteNode {
         }
     }
     
-    /* Rotate about centre by the angle between the centre and the two points */
-    func rotate(from fromPoint: CGPoint, to toPoint: CGPoint) {
+    /**
+     Rotate about centre by the angle between the centre and the two points
+     
+     - parameters:
+        - fromPoint: point to rotate from
+        - toPoint: point to rotate to
+     
+     -  returns: Angle the card was rotated by
+     */
+    func rotate(from fromPoint: CGPoint, to toPoint: CGPoint) -> CGFloat {
         let angle = self.position.angleBetween(pointA: fromPoint, pointB: toPoint)
         self.debugLabel.text = "\(Double(round(self.zRotation*100)/100))\n\(Double(round(angle*100)/100))\n\(Double(round((self.zRotation - angle)*100)/100))"
         self.zRotation -= angle
+        return angle
     }
     
     /* Rotate about the specified point by the angle between the centre and the two points */
