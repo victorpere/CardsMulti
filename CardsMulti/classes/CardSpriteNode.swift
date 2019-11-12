@@ -199,6 +199,7 @@ class CardSpriteNode : SKSpriteNode {
         let movementSequence = SKAction.sequence(movements)
         self.delegate!.makeMoveSound()
         self.run(movementSequence) {
+            self.delegate.snap(self)
             self.moving = false
             self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
         }
@@ -323,7 +324,7 @@ class CardSpriteNode : SKSpriteNode {
         
         self.moving = true
         let movement = SKAction.move(to: newPosition, duration: duration)
-        let rotation = SKAction.rotate(toAngle: newRotation, duration: duration)
+        let rotation = SKAction.rotate(toAngle: newRotation, duration: duration, shortestUnitArc: true)
         let actionGroup = SKAction.group([movement, rotation, self.moveSound])
         self.delegate!.makeMoveSound()
         self.run(actionGroup) {
@@ -437,9 +438,13 @@ class CardSpriteNode : SKSpriteNode {
         return self.delegate!.isOnTopOfPile(self);
     }
     
-    
-    
-    /* returns true if the point is within the card node */
+    /**
+     Determins whether the specified point if within this card node
+     
+     - parameter point: the point to examine
+     
+     - returns: true if the point is within the card node
+     */
     func pointInCard(_ point: CGPoint) -> Bool {
         let transposedPoint = point.rotateAbout(point: self.position, byAngle: -self.zRotation)
         let cardRect = CGRect(center: self.position, size: self.cardSize)
@@ -492,6 +497,7 @@ protocol CardSpriteNodeDelegate {
     //func play(_ cardNode: CardSpriteNode) -> CGPoint
     func makeMoveSound()
     func makeFlipSound()
+    func snap(_ cardNode: CardSpriteNode)
 }
 
 

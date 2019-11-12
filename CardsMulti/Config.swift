@@ -15,6 +15,8 @@ public final class Config {
     public static let cardBackImageName = "back"
     public static let cardWidthFullSizePixels: CGFloat = 500.0
     
+    public static let snapDistance: CGFloat = 20
+    
     private init(){
         
     }

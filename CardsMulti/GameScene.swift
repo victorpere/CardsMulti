@@ -12,6 +12,7 @@ import MultipeerConnectivity
 import AudioToolbox
 
 class GameScene: SKScene {
+    /// MCPeerID of this device
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     
     let numberOfCards = 0
@@ -44,7 +45,9 @@ class GameScene: SKScene {
     var connectionLabel : SKLabelNode!
     var dividerLine: SKShapeNode!
 
+    /// Set of cards currently selected for manipulation
     var selectedNodes = [CardSpriteNode]()
+    
     var lastSelectedNode = CardSpriteNode()
     var currentMovingSpeed = CGVector()
     var previousMovingSpeed = CGVector()
@@ -57,11 +60,16 @@ class GameScene: SKScene {
     var rotating = false
     var canDoubleTap = true
     
+    /// All the cards in the scene
     var allCards = [CardSpriteNode]()
     
+    /// Whether force touch is available on this device
     var forceTouch = false
+    
+    /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
     
+    /// The delegate of the scene (should be the view controller)
     var gameSceneDelegate: GameSceneDelegate?
     
     var moveSound = Actions.getCardMoveSound()
@@ -76,6 +84,9 @@ class GameScene: SKScene {
     var peers: [MCPeerID?]!
     
     var playersHands = [0, 0, 0, 0]
+    
+    /// Locations to which cards should snap to if moved to within a close distance
+    var snapLocations: [SnapLocation]!
     
     // MARK: - Initializers
         
@@ -100,28 +111,6 @@ class GameScene: SKScene {
     
     // MARK: - Private methods
     
-    private func numberOfPlayers() -> Int {
-        if self.peers == nil {
-            return 1
-        }
-        return self.peers.filter { $0 != nil }.count
-    }
-    
-    private func cards(inPosition position: Position) -> [CardSpriteNode] {
-        switch position {
-        case .left:
-            return self.allCards.filter { $0.position.x < 0 }
-        case .error:
-            return []
-        case .bottom:
-            return self.allCards.filter { $0.position.y < self.dividerLine.position.y }
-        case .top:
-            return self.allCards.filter { $0.position.y > self.frame.height }
-        case .right:
-            return self.allCards.filter { $0.position.x > self.frame.width }
-        }
-    }
-    
     /**
      Selects multiple cards or rotate single card to 0
      
@@ -137,7 +126,17 @@ class GameScene: SKScene {
             self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
         }
     }
-        
+     
+    /**
+     Sets the scene as the delegate for all cards and marks all cards as selectable
+     */
+    private func initCards() {
+        for cardNode in self.allCards {
+            cardNode.delegate = self
+            cardNode.selectable = true
+        }
+    }
+    
     // MARK: - Public methods
     
     /**
@@ -146,7 +145,37 @@ class GameScene: SKScene {
      - parameter position: the player's position
      */
     func numberOfCards(inPosition position: Position) -> Int {
-        return cards(inPosition: position).count
+        return self.cards(inPosition: position).count
+    }
+    
+    /**
+     Returns the number of connected players
+     */
+    func numberOfPlayers() -> Int {
+        if self.peers == nil {
+            return 1
+        }
+        return self.peers.filter { $0 != nil }.count
+    }
+    
+    /**
+     Returns the set of cards in the specified player's area
+     
+     - parameter position: position of the player
+     */
+    func cards(inPosition position: Position) -> [CardSpriteNode] {
+        switch position {
+        case .left:
+            return self.allCards.filter { $0.position.x < 0 }
+        case .error:
+            return []
+        case .bottom:
+            return self.allCards.filter { $0.position.y < self.dividerLine.position.y }
+        case .top:
+            return self.allCards.filter { $0.position.y > self.frame.height }
+        case .right:
+            return self.allCards.filter { $0.position.x > self.frame.width }
+        }
     }
     
     /**
@@ -215,16 +244,20 @@ class GameScene: SKScene {
         if sync {
             self.syncToMe()
         }
-    }
-    
-    /**
-     Sets the scene as the delegate for all cards and marks all cards as selectable
-     */
-    func initCards() {
-        for cardNode in self.allCards {
-            cardNode.delegate = self
-            cardNode.selectable = true
-        }
+        
+        // trying a snap location
+        // TEMPORARY
+        /*
+        let sl1 = SnapLocation(location: CGPoint(x: 80, y: self.dividerLine.position.y + 80), snapSize: self.allCards[0].size)
+        sl1.yOffset = -20
+        sl1.snapAreaIncludesCards = true
+        self.snapLocations = [sl1]
+        
+        let snapNode = SKShapeNode(rect: sl1.snapRect)
+        snapNode.zPosition = -1000
+        snapNode.strokeColor = .green
+        self.addChild(snapNode)
+ */
     }
     
     /**
@@ -361,15 +394,15 @@ class GameScene: SKScene {
      - parameters:
         - cards: the set of cards to stack
         - location: location to stack the cards at (will be bottom card's location)
-        - flip: whether to flip the cards
-        - faceUp: whether to place all cards face up or down
+        - flip: whether to flip the cards (default is false)
+        - faceUp: whether to place all cards face up or down (default is false)
      */
     func stack(cards: [CardSpriteNode], at location: CGPoint, flip: Bool = false, faceUp: Bool = false) {
         let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
         var cardsCopy = [CardSpriteNode]()
         for (cardNumber, card) in cardsSorted.enumerated() {
             let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
-            let newPosition = CGPoint(x: position.x + cardOffset, y: position.y - cardOffset)
+            let newPosition = CGPoint(x: location.x + cardOffset, y: location.y - cardOffset)
             card.moveAndFlip(to: newPosition, rotateToAngle: 0, faceUp: flip ? faceUp : card.faceUp, duration: resetDuration, sendPosition: false)
             
             let cardCopy = card.copy() as! CardSpriteNode
@@ -423,6 +456,11 @@ class GameScene: SKScene {
         self.cut(cards: cards)
     }
     
+    /**
+     Lines up cards inside the player's area
+     
+     - parameter sort: whether to order cards by suit and rank
+     */
     func resetHand(sort: Bool) {
         let usableWidth = self.frame.size.width - (self.border * 2)
 
@@ -439,10 +477,17 @@ class GameScene: SKScene {
             let node_x = ((usableWidth - cardNode.frame.size.width) / CGFloat(hand.count)) * CGFloat(nodeNumber)
             let newPosition = CGPoint(x: cardNode.frame.size.width / 2 + node_x + border, y: cardNode.frame.size.height / 2 + border)
             cardNode.moveToFront()
-            cardNode.moveAndFlip(to: newPosition, rotateToAngle: cardNode.zRotation, faceUp: true, duration: self.resetDuration, sendPosition: true)
+            cardNode.moveAndFlip(to: newPosition, rotateToAngle: 0, faceUp: true, duration: self.resetDuration, sendPosition: true)
         }
     }
     
+    /**
+     Selects a single node at the touch location
+     
+     - parameters:
+        - touchLocation: location of the touch
+        - tapCount: number of taps to detect double tap
+     */
     func selectNodeForTouch(touchLocation: CGPoint, tapCount: Int) {
         let touchedNode = self.atPoint(touchLocation)
         
@@ -453,6 +498,7 @@ class GameScene: SKScene {
             if touchedCardNode.selectable {
                 //touchedCardNode.moveToFront()
                 self.selectedNodes = [touchedCardNode]
+                self.unSnap(self.selectedNodes)
 
                 if tapCount > 1 && self.canDoubleTap {
                     // this is the second tap - flip the card
@@ -476,6 +522,11 @@ class GameScene: SKScene {
         }
     }
     
+    /**
+     Selects multiple cards at the touch location
+     
+     - parameter touchLocation: location of the touch
+     */
     func selectMultipleNodesForTouch(touchLocation: CGPoint) {
         let touchedNode = self.atPoint(touchLocation)
         if touchedNode is CardSpriteNode {
@@ -483,6 +534,7 @@ class GameScene: SKScene {
             
             let touchedCardNode = touchedNode as! CardSpriteNode
             self.selectedNodes = self.getCards(under: touchedCardNode)
+            self.unSnap(self.selectedNodes)
             
             for cardNode in self.selectedNodes {
                 cardNode.pop()
@@ -496,6 +548,19 @@ class GameScene: SKScene {
             self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
         }
     }
+    
+    /**
+     Removes the specified cards from snap locations
+     
+     - parameter cardNodes: the cards to unsnap
+     */
+    func unSnap(_ cardNodes: [CardSpriteNode]) {
+        DispatchQueue.global(qos: .default).async {
+            for snapLocation in self.snapLocations {
+                snapLocation.unSnap(cardNodes)
+            }
+        }
+    }
 
     func setMovingSpeed(startPosition: CGPoint, endPosition: CGPoint, time: Double) {
         self.previousMovingSpeed = self.currentMovingSpeed
@@ -503,10 +568,16 @@ class GameScene: SKScene {
         self.currentMovingSpeed.dy = (endPosition.y - startPosition.y) / CGFloat(time)
     }
     
+    /**
+     Deselects all cards
+     */
     func deselectNodeForTouch() {
         self.selectedNodes.removeAll()
     }
     
+    /**
+     Shuffles selected cards and deselects them
+     */
     func shuffleSelectedCards() {
         if self.selectedNodes.count > 1 {
             self.shuffle(cards: self.selectedNodes)
@@ -514,8 +585,14 @@ class GameScene: SKScene {
         self.deselectNodeForTouch()
     }
     
-    // shuffle cards function - work in progress...
+    /**
+     Shuffles a set of cards
+     
+     - parameter cards: set of cards to be shuffled
+     */
     func shuffle(cards: [CardSpriteNode]) {
+        // TODO: flip before shuffling
+        // TODO: shuffling animation
         print("shuffling cards")
         print("old order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
@@ -535,7 +612,15 @@ class GameScene: SKScene {
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
     }
     
+    /**
+     Lines up cards in the shape of a fan
+     
+     - parameters:
+        - cards: set of cards to be lined up
+        - faceUp: whether to flip all cards face up
+     */
     func fan(cards: [CardSpriteNode], faceUp: Bool) {
+        // TODO: fan radius and dist between cards based on number of cards
         let fanRadius: CGFloat = 100
         let radianPerCard: CGFloat = 0.2
         //let arcSize = CGFloat(cards.count) * radianPerCard
@@ -662,8 +747,10 @@ class GameScene: SKScene {
                             self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
                         }
                     }
+                } else if self.selectedNodes.count == 1 {
+                    self.snap(self.selectedNodes[0])
                 }
-                
+                                
                 self.lastTouchTimestamp = 0.0
                 self.lastTouchMoveTimestamp = 0.0
                 let touchLocation = t.location(in: self)
@@ -747,6 +834,11 @@ class GameScene: SKScene {
         }
     }
     
+    // MARK: - Network sync methods
+    
+    /**
+     Synchronizes all connected devices to this one
+     */
     func syncToMe() {
         self.syncDeckReset()
         self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
@@ -763,7 +855,11 @@ class GameScene: SKScene {
         self.gameSceneDelegate!.sendData(data: encodedData)
     }
     
-    
+    /**
+     Handles received sychronization data (settings or cards)
+     
+     - parameter data: data containing synchronization dictionary
+     */
     func receivedData(data: Data) {
         
         if let receivedSettings = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSDictionary {
@@ -899,6 +995,17 @@ extension GameScene : CardSpriteNodeDelegate {
         if !self.hasActions() {
             self.run(self.flipSound)
         }
+    }
+    
+    func snap(_ cardNode: CardSpriteNode) {
+        DispatchQueue.global(qos: .default).async {
+            for snapLocation in self.snapLocations {
+                if snapLocation.shouldSnap(cardNode: cardNode) {
+                    snapLocation.snap(cardNode)
+                    break
+                }
+            }
+        }        
     }
 }
 

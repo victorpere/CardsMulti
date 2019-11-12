@@ -39,6 +39,10 @@
 		578B1C621E7EFBE1008B8381 /* Rank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B0540B1E4E75B10057E62F /* Rank.swift */; };
 		578B1C631E7EFBE4008B8381 /* Suit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B0540C1E4E75B10057E62F /* Suit.swift */; };
 		578B1C641E7EFBE7008B8381 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
+		578F40C423778D9300719821 /* Solitaire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C323778D9300719821 /* Solitaire.swift */; };
+		578F40C62377923100719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
+		578F40C72377924400719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
+		578F40C82377924400719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
 		57B053D51E4E3BD20057E62F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053D41E4E3BD20057E62F /* AppDelegate.swift */; };
 		57B053DB1E4E3BD20057E62F /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DA1E4E3BD20057E62F /* GameScene.swift */; };
 		57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DC1E4E3BD20057E62F /* GameViewController.swift */; };
@@ -108,6 +112,8 @@
 		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
 		57897FF71E85652400B1D4A6 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		57897FF91E85658D00B1D4A6 /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
+		578F40C323778D9300719821 /* Solitaire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solitaire.swift; sourceTree = "<group>"; };
+		578F40C52377923100719821 /* SnapLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLocation.swift; sourceTree = "<group>"; };
 		57B053D11E4E3BD20057E62F /* CardsMulti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsMulti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57B053D41E4E3BD20057E62F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		57B053DA1E4E3BD20057E62F /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -179,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				570C3972233697E200A2882C /* GameGoFish.swift */,
+				578F40C323778D9300719821 /* Solitaire.swift */,
 			);
 			name = GameScenes;
 			sourceTree = "<group>";
@@ -300,6 +307,7 @@
 				570C397423369C4D00A2882C /* Player.swift */,
 				574693512367CB9D00AB6516 /* SettingsBase.swift */,
 				574693552367CD4600AB6516 /* GameState.swift */,
+				578F40C52377923100719821 /* SnapLocation.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -495,9 +503,11 @@
 				57E97B0F1E748244000243B2 /* SettingsViewController.swift in Sources */,
 				574050551E5F82AA00316AEB /* UIDevice.swift in Sources */,
 				57E97B111E74A651000243B2 /* Settings.swift in Sources */,
+				578F40C423778D9300719821 /* Solitaire.swift in Sources */,
 				574693562367CD4600AB6516 /* GameState.swift in Sources */,
 				57B0540D1E4E75B10057E62F /* Rank.swift in Sources */,
 				57B0540E1E4E75B10057E62F /* Suit.swift in Sources */,
+				578F40C62377923100719821 /* SnapLocation.swift in Sources */,
 				57B054141E4E75F30057E62F /* CardSpriteNode.swift in Sources */,
 				57E97B0D1E7479F6000243B2 /* BottomButton.swift in Sources */,
 				57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */,
@@ -523,6 +533,7 @@
 				578B1C621E7EFBE1008B8381 /* Rank.swift in Sources */,
 				578B1C641E7EFBE7008B8381 /* UIDevice.swift in Sources */,
 				578B1C581E7EFB0A008B8381 /* GameScene.swift in Sources */,
+				578F40C72377924400719821 /* SnapLocation.swift in Sources */,
 				578B1C571E7EFB04008B8381 /* ConnectionServiceManager.swift in Sources */,
 				578B1C5F1E7EFBD6008B8381 /* Game.swift in Sources */,
 				57E0935D212730E500D4E4F6 /* Config.swift in Sources */,
@@ -548,6 +559,7 @@
 				57BB31D72353BAA200AE2CDC /* PlayerStatusLabel.swift in Sources */,
 				57BB31DF23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
 				5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */,
+				578F40C82377924400719821 /* SnapLocation.swift in Sources */,
 				574693542367CBCD00AB6516 /* SettingsBase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

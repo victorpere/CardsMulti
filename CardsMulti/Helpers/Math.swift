@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import GameplayKit
+import CoreGraphics
 
 class Math {
     static func hypotenuse(from vector: CGVector) -> Double {
@@ -21,5 +21,18 @@ class Math {
 
     static func degToRad(degree: Double) -> CGFloat {
         return CGFloat(Double(degree) / 180.0 * Double.pi)
+    }
+    
+    /**
+     Returns distace between two points
+     
+     - parameters:
+        - pointA: first point
+        - pointB: second point
+     */
+    static func distance(between pointA: CGPoint, and pointB: CGPoint) -> CGFloat {
+        let dx = pointB.x - pointA.x
+        let dy = pointB.y - pointA.y
+        return abs(hypot(dx, dy))
     }
 }

@@ -20,4 +20,16 @@ enum Suit: Int {
             return "♣️"
         }
     }
+    var color: SuitColor {
+        switch self {
+        case .spades, .clubs:
+            return SuitColor.black
+        case .hearts, .diamonds:
+            return SuitColor.red
+        }
+    }
+}
+
+enum SuitColor: Int {
+    case black, red
 }
