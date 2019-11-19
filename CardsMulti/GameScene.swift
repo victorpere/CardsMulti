@@ -86,7 +86,7 @@ class GameScene: SKScene {
     var playersHands = [0, 0, 0, 0]
     
     /// Locations to which cards should snap to if moved to within a close distance
-    var snapLocations: [SnapLocation]!
+    var snapLocations = [SnapLocation]()
     
     // MARK: - Initializers
         
@@ -124,16 +124,6 @@ class GameScene: SKScene {
         
         if self.selectedNodes.count == 1 {
             self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
-        }
-    }
-     
-    /**
-     Sets the scene as the delegate for all cards and marks all cards as selectable
-     */
-    private func initCards() {
-        for cardNode in self.allCards {
-            cardNode.delegate = self
-            cardNode.selectable = true
         }
     }
     
@@ -179,6 +169,17 @@ class GameScene: SKScene {
     }
     
     /**
+     Sets the scene as the delegate for all cards and marks all cards as selectable
+     */
+    func initCards() {
+        for cardNode in self.allCards {
+            cardNode.delegate = self
+            cardNode.selectable = true
+            self.addChild(cardNode)
+        }
+    }
+    
+    /**
      Updates the scale of all cards
      */
     func updateUISettings() {
@@ -197,6 +198,46 @@ class GameScene: SKScene {
     }
     
     /**
+     Load cards from a saved state or start over with a new deck
+     
+     - parameter fromSaved: whether to load from a saved state
+     */
+    func loadCards(fromSaved loadSaved: Bool) {
+        let loadedCards = GameState.instance.cardNodes
+        if loadSaved && loadedCards.count > 0 {
+            self.allCards = loadedCards
+            self.initCards()
+        } else {
+            self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
+            self.initCards()
+            self.resetCards(sync: false)
+        }
+    }
+    
+    /**
+     Draws a green rectangle node
+     */
+    func drawNode(rectangle: CGRect) {
+        let rectNode = SKShapeNode(rect: rectangle)
+        rectNode.zPosition = -1000
+        rectNode.strokeColor = .green
+        self.addChild(rectNode)
+    }
+    
+    /**
+     Initializes the line dividig the common playing area and the player's area
+     */
+    func initDividerLine(hidden: Bool) {
+        var points = [CGPoint(x: 0, y: 0), CGPoint(x: self.frame.width, y: 0)]
+        self.dividerLine = SKShapeNode(points: &points, count: points.count)
+        self.dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
+        self.dividerLine.zPosition = -100
+        self.dividerLine.strokeColor = Config.mainColor
+        self.dividerLine.isHidden = hidden
+        self.addChild(self.dividerLine)
+    }
+    
+    /**
      Resets the scene, re-initializes all nodes and prepares a new shuffled deck
      
      - parameters:
@@ -212,52 +253,25 @@ class GameScene: SKScene {
         connectionLabel.fontName = "Helvetica"
         connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: self.frame.height - connectionLabel.frame.height / 2 - border)
         connectionLabel.zPosition = 100
-        //self.addChild(connectionLabel)
+        self.initDividerLine(hidden: false)
         
+        self.loadCards(fromSaved: loadSaved)
         
-        //var points = [CGPoint(x: 0, y: self.frame.height - self.frame.width), CGPoint(x: self.frame.width, y: self.frame.height - self.frame.width)]
-        var points = [CGPoint(x: 0, y: 0), CGPoint(x: self.frame.width, y: 0)]
-        self.dividerLine = SKShapeNode(points: &points, count: points.count)
-        self.dividerLine.position = CGPoint(x: 0, y: self.frame.height - self.frame.width)
-        self.dividerLine.zPosition = -100
-        self.dividerLine.strokeColor = Config.mainColor
-        self.addChild(self.dividerLine)
-        
-        let loadedCards = GameState.instance.cardNodes
-        if loadSaved && loadedCards.count > 0 {
-            self.allCards = loadedCards
-        } else {
-            self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
-        }
-        
-        for cardNode in self.allCards {
-            self.addChild(cardNode)
-            //self.addChild(cardNode.shadowNode)
-        }
-
-        self.initCards()
-        
-        if !loadSaved || loadedCards.count == 0 {
-            self.resetCards(sync: false)
-        }
         
         if sync {
             self.syncToMe()
         }
-        
         // trying a snap location
         // TEMPORARY
         /*
-        let sl1 = SnapLocation(location: CGPoint(x: 80, y: self.dividerLine.position.y + 80), snapSize: self.allCards[0].size)
-        sl1.yOffset = -20
-        sl1.snapAreaIncludesCards = true
-        self.snapLocations = [sl1]
+         let sl1 = SnapLocation(location: CGPoint(x: 80, y: self.dividerLine.position.y + 80), snapSize: self.allCards[0].size)
+         sl1.yOffset = -20
+         sl1.snapAreaIncludesCards = true
+         self.snapLocations = [sl1]
+         */
         
-        let snapNode = SKShapeNode(rect: sl1.snapRect)
-        snapNode.zPosition = -1000
-        snapNode.strokeColor = .green
-        self.addChild(snapNode)
- */
+        //draw()
+ 
     }
     
     /**
@@ -733,6 +747,10 @@ class GameScene: SKScene {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
+            if t.tapCount > 1 {
+                return
+            }
+            
             self.forceTouchActivated = false
             self.movingDirectionReversed = 0
             
@@ -807,7 +825,7 @@ class GameScene: SKScene {
             for cardNode in self.allCards {
                 DispatchQueue.main.async {
                     //cardNode.debugLabel.zRotation = 0
-                    //cardNode.debugLabel.text = "\(Double(round(cardNode.zRotation*100)/100))"
+                    cardNode.debugLabel.text = "\(Double(round(cardNode.zPosition*100)/100))"
                 }
             }
         }
@@ -941,11 +959,18 @@ class GameScene: SKScene {
 
 extension GameScene : CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode) {
-        for eachCardNode in allCards {
+        for eachCardNode in self.allCards.filter({ $0.zPosition >= cardNode.zPosition }) {
             eachCardNode.zPosition -= 1
         }
         cardNode.zPosition = self.lastSelectedNode.zPosition + 1
         self.lastSelectedNode = cardNode
+    }
+    
+    func moveToBack(_ cardNode: CardSpriteNode) {
+        for eachCardNode in self.allCards {
+            eachCardNode.zPosition += 1
+        }
+        cardNode.zPosition = self.allCards.min { $0.zPosition < $1.zPosition }!.zPosition - 1
     }
     
     func sendFuture(position futurePosition: CGPoint, rotation futureRotation: CGFloat, faceUp futureFaceUp: Bool, of cardNode: CardSpriteNode, moveToFront: Bool) {
