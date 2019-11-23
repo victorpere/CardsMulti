@@ -60,6 +60,9 @@ class GameScene: SKScene {
     var rotating = false
     var canDoubleTap = true
     
+    /// Whether the currently selected cards have been moved from the initial touch point
+    var cardsMoved = false
+    
     /// All the cards in the scene
     var allCards = [CardSpriteNode]()
     
@@ -512,7 +515,6 @@ class GameScene: SKScene {
             if touchedCardNode.selectable {
                 //touchedCardNode.moveToFront()
                 self.selectedNodes = [touchedCardNode]
-                self.unSnap(self.selectedNodes)
 
                 if tapCount > 1 && self.canDoubleTap {
                     // this is the second tap - flip the card
@@ -548,7 +550,6 @@ class GameScene: SKScene {
             
             let touchedCardNode = touchedNode as! CardSpriteNode
             self.selectedNodes = self.getCards(under: touchedCardNode)
-            self.unSnap(self.selectedNodes)
             
             for cardNode in self.selectedNodes {
                 cardNode.pop()
@@ -702,7 +703,11 @@ class GameScene: SKScene {
                 self.canDoubleTap = false
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
-
+                    self.cardsMoved = true
+                    
+                    // unsnap the moved cards
+                    self.unSnap(self.selectedNodes)
+                    
                     if !self.rotating {
                         self.selectedNodes.move(transformation: transformation)
                     }
@@ -765,7 +770,7 @@ class GameScene: SKScene {
                             self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
                         }
                     }
-                } else if self.selectedNodes.count == 1 {
+                } else if self.selectedNodes.count == 1 && self.cardsMoved {
                     self.snap(self.selectedNodes[0])
                 }
                                 
@@ -795,10 +800,13 @@ class GameScene: SKScene {
         }
                 
         self.rotating = false
+        self.cardsMoved = false
         self.deselectNodeForTouch()
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.rotating = false
+        self.cardsMoved = false
         self.deselectNodeForTouch()
     }
     

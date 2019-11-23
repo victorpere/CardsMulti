@@ -19,7 +19,7 @@ class CardSpriteNode : SKSpriteNode {
 
     static let cardWidthFullSizePixels: CGFloat = 500.0
     let cardWidthsPerScreen: CGFloat = 6.0
-    let cardHeightFullSizePixels: CGFloat = 726.0
+    static let cardHeightFullSizePixels: CGFloat = 726.0
     //let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
     let flipDuration = 0.2
     let backImageName = "back"
@@ -49,7 +49,7 @@ class CardSpriteNode : SKSpriteNode {
     // MARK: - Computed properties
     
     var cardWidth: CGFloat { return CardSpriteNode.cardWidthFullSizePixels * self.cardScale }
-    var cardHeight: CGFloat { return self.cardHeightFullSizePixels * self.cardScale }
+    var cardHeight: CGFloat { return CardSpriteNode.cardHeightFullSizePixels * self.cardScale }
     var cardSize: CGSize { return CGSize(width: self.cardWidth, height: self.cardHeight) }
     
     var bottomLeftCorner: CGPoint {
@@ -171,11 +171,11 @@ class CardSpriteNode : SKSpriteNode {
         self.debugLabel.fontColor = UIColor.green
         self.debugLabel.fontSize = 100
         self.debugLabel.fontName = "Helvetica"
-        self.debugLabel.position = CGPoint(x: 0, y: self.cardHeightFullSizePixels / 2 + 20)
+        self.debugLabel.position = CGPoint(x: 0, y: CardSpriteNode.cardHeightFullSizePixels / 2 + 20)
         self.debugLabel.zPosition = 1000
         self.debugLabel.isUserInteractionEnabled = false
         
-        //self.addChild(self.debugLabel)
+        self.addChild(self.debugLabel)
     }
     
     // MARK: - Static public methods
@@ -183,6 +183,12 @@ class CardSpriteNode : SKSpriteNode {
     static public func cardWidthPixels(forCardWidthsPerScreen cardWidthsPerScreen: CGFloat) -> CGFloat {
         let screenSize: CGRect = UIScreen.main.bounds
         return screenSize.width / cardWidthsPerScreen
+    }
+    
+    static public func cardHeightPixels(forCardWidthsPerScreen cardWidthsPerScreen: CGFloat) -> CGFloat {
+        let cardWidthPixels = CardSpriteNode.cardWidthPixels(forCardWidthsPerScreen: cardWidthsPerScreen)
+        let scale = cardWidthPixels / CardSpriteNode.cardWidthFullSizePixels
+        return CardSpriteNode.cardHeightFullSizePixels * scale
     }
     
     // MARK: - Private methods
@@ -366,7 +372,7 @@ class CardSpriteNode : SKSpriteNode {
      */
     func rotate(from fromPoint: CGPoint, to toPoint: CGPoint) -> CGFloat {
         let angle = self.position.angleBetween(pointA: fromPoint, pointB: toPoint)
-        self.debugLabel.text = "\(Double(round(self.zRotation*100)/100))\n\(Double(round(angle*100)/100))\n\(Double(round((self.zRotation - angle)*100)/100))"
+        //self.debugLabel.text = "\(Double(round(self.zRotation*100)/100))\n\(Double(round(angle*100)/100))\n\(Double(round((self.zRotation - angle)*100)/100))"
         self.zRotation -= angle
         return angle
     }
@@ -424,6 +430,10 @@ class CardSpriteNode : SKSpriteNode {
     
     func moveToFront() {
         delegate!.moveToFront(self)
+    }
+    
+    func moveToBack() {
+        delegate!.moveToBack(self)
     }
     
     func pop() {
@@ -489,6 +499,7 @@ class CardSpriteNode : SKSpriteNode {
 
 protocol CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode)
+    func moveToBack(_ cardNode: CardSpriteNode)
     func sendFuture(position futurePosition: CGPoint, rotation futureRotation: CGFloat, faceUp futureFaceUp: Bool, of cardNode: CardSpriteNode, moveToFront: Bool)
     func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool)
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode]
