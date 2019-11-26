@@ -205,7 +205,7 @@ class CardSpriteNode : SKSpriteNode {
         let movementSequence = SKAction.sequence(movements)
         self.delegate!.makeMoveSound()
         self.run(movementSequence) {
-            self.delegate.snap(self)
+            self.delegate.snap([self])
             self.moving = false
             self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
         }
@@ -508,7 +508,7 @@ protocol CardSpriteNodeDelegate {
     //func play(_ cardNode: CardSpriteNode) -> CGPoint
     func makeMoveSound()
     func makeFlipSound()
-    func snap(_ cardNode: CardSpriteNode)
+    func snap(_ cardNodes: [CardSpriteNode])
 }
 
 

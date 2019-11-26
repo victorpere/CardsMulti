@@ -770,8 +770,8 @@ class GameScene: SKScene {
                             self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
                         }
                     }
-                } else if self.selectedNodes.count == 1 && self.cardsMoved {
-                    self.snap(self.selectedNodes[0])
+                } else if self.cardsMoved {
+                    self.snap(self.selectedNodes)
                 }
                                 
                 self.lastTouchTimestamp = 0.0
@@ -1030,12 +1030,15 @@ extension GameScene : CardSpriteNodeDelegate {
         }
     }
     
-    func snap(_ cardNode: CardSpriteNode) {
+    func snap(_ cardNodes: [CardSpriteNode]) {
         DispatchQueue.global(qos: .default).async {
-            for snapLocation in self.snapLocations {
-                if snapLocation.shouldSnap(cardNode: cardNode) {
-                    snapLocation.snap(cardNode)
-                    break
+            let cardNodesSorted = cardNodes.sorted { $0.zPosition < $1.zPosition }
+            if let bottomCard = cardNodesSorted.first {
+                for snapLocation in self.snapLocations {
+                    if snapLocation.shouldSnap(cardNode: bottomCard) {
+                        snapLocation.snap(cardNodes)
+                        break
+                    }
                 }
             }
         }        
