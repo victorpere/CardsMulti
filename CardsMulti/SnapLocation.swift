@@ -65,6 +65,9 @@ class SnapLocation {
     /// Set of cards snapped to this location
     var snappedCards: [CardSpriteNode]
     
+    /// Designated location where cards from this location can be moved
+    var destinationSnapLocation: SnapLocation?
+    
     /// Duration of snapping animation
     var duration: Double = 0.2
     
@@ -205,6 +208,18 @@ class SnapLocation {
         
         print("added to snapped \(self.name)")
         Global.displayCards(self.snappedCards)
+    }
+    
+    /**
+     Snaps multiple cards to this location
+     
+     - parameter cardNodes: array of cards to snap
+     */
+    func snap(_ cardNodes: [CardSpriteNode]) {
+        let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
+        for card in sortedCards {
+            self.snap(card)
+        }
     }
     
     /**

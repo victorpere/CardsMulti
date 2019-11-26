@@ -130,9 +130,12 @@ class Solitaire : GameScene {
                 card.flip(faceUp: false, sendPosition: false)
             }
             
+            for tableauLocation in self.tableauLocations {
+                tableauLocation.faceUp = false
+            }
+            
             for row in 0...6 {
                 for (tableauNumber, tableauLocation) in self.tableauLocations.enumerated() {
-                    tableauLocation.faceUp = false
                     if row <= tableauNumber {
                         if let topCard = sortedCards.popLast() {
                             if row == tableauNumber {
