@@ -21,7 +21,7 @@ class CardSpriteNode : SKSpriteNode {
     let cardWidthsPerScreen: CGFloat = 6.0
     static let cardHeightFullSizePixels: CGFloat = 726.0
     //let cardHeightsPerScreen: CGFloat = CGFloat(1334.0 / 145.2) // 181.5)
-    let flipDuration = 0.2
+    static let flipDuration = 0.2
     let backImageName = "back"
     let cornerSizeRatio: CGFloat = 0.25  // relative to width
     
@@ -45,6 +45,9 @@ class CardSpriteNode : SKSpriteNode {
     var shadowFlipAction: SKAction!
     
     var debugLabel: SKLabelNode!
+    
+    /// The location this card is snapped to
+    var snapLocation: SnapLocation?
     
     // MARK: - Computed properties
     
@@ -129,13 +132,13 @@ class CardSpriteNode : SKSpriteNode {
         self.setScale(self.cardScale)
         
         if #available(iOS 10.0, *) {
-            self.flipToFrontAction = Actions.getFlipAction(texture: self.frontTexture!, duration: self.flipDuration)
-            self.flipToBackAction = Actions.getFlipAction(texture: self.backTexture!, duration: self.flipDuration)
+            self.flipToFrontAction = Actions.getFlipAction(texture: self.frontTexture!, duration: CardSpriteNode.flipDuration)
+            self.flipToBackAction = Actions.getFlipAction(texture: self.backTexture!, duration: CardSpriteNode.flipDuration)
             
-            self.shadowFlipAction = Actions.getShadowFlipAction(duration: self.flipDuration)
+            self.shadowFlipAction = Actions.getShadowFlipAction(duration: CardSpriteNode.flipDuration)
         } else {
-            let flipFirstHalfFlip = SKAction.scaleX(to: 0.0, duration: self.flipDuration)
-            let flipSecondHalfFlip = SKAction.scaleX(to: self.cardScale, duration: flipDuration)
+            let flipFirstHalfFlip = SKAction.scaleX(to: 0.0, duration: CardSpriteNode.flipDuration)
+            let flipSecondHalfFlip = SKAction.scaleX(to: self.cardScale, duration: CardSpriteNode.flipDuration)
             let textureChangeToFront = SKAction.setTexture(self.frontTexture!)
             let textureChangeToBack = SKAction.setTexture(self.backTexture!)
             
@@ -145,7 +148,7 @@ class CardSpriteNode : SKSpriteNode {
             self.shadowFlipAction = SKAction.sequence([flipFirstHalfFlip, flipSecondHalfFlip])
         }
         
-        self.popAction = Actions.getPopAction(originalScale: self.cardScale, scaleBy: self.popScaleBy, duration: flipDuration)
+        self.popAction = Actions.getPopAction(originalScale: self.cardScale, scaleBy: self.popScaleBy, duration: CardSpriteNode.flipDuration)
         self.moveSound = Actions.getCardMoveSound()
         
         self.shadowNode = SKSpriteNode(texture: SKTexture(imageNamed: backImageName))
@@ -225,7 +228,7 @@ class CardSpriteNode : SKSpriteNode {
                 self.setScale(self.cardScale)
             }
             
-            self.popAction = Actions.getPopAction(originalScale: self.cardScale, scaleBy: self.popScaleBy, duration: self.flipDuration)
+            self.popAction = Actions.getPopAction(originalScale: self.cardScale, scaleBy: self.popScaleBy, duration: CardSpriteNode.flipDuration)
         }
         
     }

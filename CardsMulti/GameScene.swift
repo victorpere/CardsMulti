@@ -546,12 +546,17 @@ class GameScene: SKScene {
     func selectMultipleNodesForTouch(touchLocation: CGPoint) {
         let touchedNode = self.atPoint(touchLocation)
         if touchedNode is CardSpriteNode {
-            //AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
-            
             let touchedCardNode = touchedNode as! CardSpriteNode
-            self.selectedNodes = self.getCards(under: touchedCardNode)
             
-            for cardNode in self.selectedNodes {
+            if let snapLocation = touchedCardNode.snapLocation {
+                // if the card is snapped, select all movable cards from the snap location
+                self.selectedNodes = snapLocation.movableCardNodes()
+            } else {
+                // otherwise select cards normally
+                self.selectedNodes = self.getCards(under: touchedCardNode)
+            }
+            
+            for cardNode in self.selectedNodes.sorted(by: { $0.zPosition < $1.zPosition }) {
                 cardNode.pop()
                 cardNode.moveToFront()
             }
@@ -559,7 +564,6 @@ class GameScene: SKScene {
             print("force touched to drag cards: ", terminator: "")
             Global.displayCards(self.selectedNodes)
             
-            //self.stack(cards: self.selectedNodes, position: touchedCardNode.position)
             self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
         }
     }

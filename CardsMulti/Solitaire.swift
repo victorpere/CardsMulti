@@ -83,6 +83,18 @@ class Solitaire : GameScene {
             foundation.xOffset = CGFloat(self.verticalHeight)
             foundation.yOffset = CGFloat(self.verticalHeight)
             
+            // conditions for adding cards to the foundations
+            foundation.snappableConditionMet = { (_ foundation, _ card) in
+                if foundation.topCard == nil {
+                    return card.card?.rank == Rank.ace
+                }
+                
+                return foundation.topCard!.card?.suit == card.card?.suit && (foundation.topCard!.card?.rank.rawValue)! + 1 == card.card?.rank.rawValue
+            }
+            
+            // cards snapped to foundations are not movable
+            foundation.movableConditionMet = { (_, _) in return false}
+            
             self.snapLocations.append(foundation)
         }
         
@@ -95,6 +107,11 @@ class Solitaire : GameScene {
             tableau.snapAreaIncludesCards = true
             tableau.shouldFlip = true
             tableau.faceUp = false
+            
+            // only face up cards are movable
+            tableau.movableConditionMet = { (_, _ card) in
+                return card.faceUp
+            }
             
             self.snapLocations.append(tableau)
             self.tableauLocations.append(tableau)
@@ -129,6 +146,8 @@ class Solitaire : GameScene {
             for card in self.allCards {
                 card.flip(faceUp: false, sendPosition: false)
             }
+            
+            usleep(useconds_t(CardSpriteNode.flipDuration * 1000000))
             
             for tableauLocation in self.tableauLocations {
                 tableauLocation.faceUp = false

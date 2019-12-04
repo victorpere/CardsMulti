@@ -10,7 +10,6 @@ import CoreGraphics
 
 /// An object describing a location and rules that cards should snap to when moved within a close distance
 class SnapLocation {
-    // TODO: Rules about snapping such as suit, rank, etc.
     
     // MARK: - Properties
     
@@ -70,6 +69,12 @@ class SnapLocation {
     
     /// Duration of snapping animation
     var duration: Double = 0.2
+    
+    /// Closure defining the rule for snapping a new card to this location. Default returns true for all
+    var snappableConditionMet: (SnapLocation, CardSpriteNode) -> Bool = { (_, _) in return true }
+    
+    /// Closure defining the rule for whether a card can be selected to be moved. Default returns true for all
+    var movableConditionMet: (SnapLocation, CardSpriteNode) -> Bool = { (_, _) in return true }
     
     // MARK: - Computed properties
     
@@ -150,7 +155,7 @@ class SnapLocation {
      - returns: True if the card should snap
      */
     func shouldSnap(cardNode: CardSpriteNode) -> Bool {
-        return self.shouldSnap(atLocation: cardNode.position)
+        return self.snappableConditionMet(self, cardNode) && self.shouldSnap(atLocation: cardNode.position)
     }
     
     /**
@@ -165,7 +170,7 @@ class SnapLocation {
         if self.canAddCards && self.canSnapMultiple && self.snappedCards.count + cardNodes.count <= self.maxCards {
             let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
             if let bottomCard = sortedCards.first {
-                return self.shouldSnap(atLocation: bottomCard.position)
+                return self.shouldSnap(cardNode: bottomCard)
             }
         }
         return false
@@ -205,6 +210,7 @@ class SnapLocation {
         cardNode.moveAndFlip(to: newLocation, rotateToAngle: newRotation, faceUp: newFaceUp, duration: self.duration, sendPosition: true, animateReceiver: false)
         
         self.snappedCards.append(cardNode)
+        cardNode.snapLocation = self
         
         print("added to snapped \(self.name)")
         Global.displayCards(self.snappedCards)
@@ -228,6 +234,10 @@ class SnapLocation {
      - parameter cardNodes: set of cards to unsnap
      */
     func unSnap(_ cardNodes: [CardSpriteNode]) {
+        for cardNode in cardNodes {
+            cardNode.snapLocation = nil
+        }
+        
         let snappedCardsCount = self.snappedCards.count
         self.snappedCards = Array(Set(self.snappedCards).subtracting(cardNodes))
         
@@ -241,11 +251,22 @@ class SnapLocation {
      Removes all cards from this location
      */
     func unSnapAll() {
+        for cardNode in self.snappedCards {
+            cardNode.snapLocation = nil
+        }
         self.snappedCards.removeAll()
         
         print("removed all from snapped \(self.name)")
     }
     
+    /**
+     Selects all selectable cards
+     
+     - returns: All snapped cards that are selectable
+     */
+    func movableCardNodes() -> [CardSpriteNode] {
+        return self.snappedCards.filter { self.movableConditionMet(self, $0) }
+    }
 }
 
 
