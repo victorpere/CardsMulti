@@ -517,9 +517,16 @@ class GameScene: SKScene {
                 self.selectedNodes = [touchedCardNode]
 
                 if tapCount > 1 && self.canDoubleTap {
-                    // this is the second tap - flip the card
-                    touchedCardNode.moveToFront()
-                    touchedCardNode.flip(sendPosition: true)
+                    // this is the second tap
+                    if let snapLocation = touchedCardNode.snapLocation {
+                        // if the card is snapped to a location, perform that location's double tap action
+                        print("performing double tap action for \(snapLocation.name)")
+                        snapLocation.doubleTapAction(snapLocation)
+                    } else {
+                        // otherwise, flip the card
+                        touchedCardNode.moveToFront()
+                        touchedCardNode.flip(sendPosition: true)
+                    }
                 } else if touchedCardNode.pointInCorner(touchLocation) {
                     // touched in the corner of the card
                     // select for rotation
@@ -527,8 +534,6 @@ class GameScene: SKScene {
                 }
                 
                 self.canDoubleTap = true
-                //print("Cards under touched node: ", terminator: "")
-                //displayCards(self.getCards(under: self.selectedNode))
                 self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
             }
         } else {

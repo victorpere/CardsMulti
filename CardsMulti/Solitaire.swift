@@ -89,7 +89,7 @@ class Solitaire : GameScene {
                     return card.card?.rank == Rank.ace
                 }
                 
-                return foundation.topCard!.card?.suit == card.card?.suit && (foundation.topCard!.card?.rank.rawValue)! + 1 == card.card?.rank.rawValue
+                return foundation.topCard!.card?.suit == card.card?.suit && ((foundation.topCard!.card?.rank.rawValue)! + 1 == card.card?.rank.rawValue || (foundation.topCard!.card?.rank == Rank.ace && card.card?.rank == Rank.two))
             }
             
             // cards snapped to foundations are not movable

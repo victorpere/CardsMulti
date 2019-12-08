@@ -76,6 +76,13 @@ class SnapLocation {
     /// Closure defining the rule for whether a card can be selected to be moved. Default returns true for all
     var movableConditionMet: (SnapLocation, CardSpriteNode) -> Bool = { (_, _) in return true }
     
+    /// Action to perform when the snap location is doulbe-tapped. Default is flip top card
+    var doubleTapAction: (SnapLocation) -> Void = { (_ snapLocation) in
+        if let topCard = snapLocation.topCard {
+            topCard.flip(faceUp: !topCard.faceUp, sendPosition: true)
+        }
+    }
+    
     // MARK: - Computed properties
     
     /// The topmost card of the snapped cards
@@ -119,7 +126,7 @@ class SnapLocation {
     // MARK: - Public methods
     
     /**
-    Determines whether a card should snap to this location
+    Determines whether a card at the specified location should snap to this location
     
     - parameters:
        - location: the location to examine
@@ -240,6 +247,11 @@ class SnapLocation {
         
         let snappedCardsCount = self.snappedCards.count
         self.snappedCards = Array(Set(self.snappedCards).subtracting(cardNodes))
+        
+        // flip the top card if needed
+        if self.topCard != nil && self.shouldFlip {
+            self.topCard!.flip(faceUp: self.faceUp, sendPosition: true)
+        }
         
         if snappedCardsCount > self.snappedCards.count {
             print("removed from snapped \(self.name)")

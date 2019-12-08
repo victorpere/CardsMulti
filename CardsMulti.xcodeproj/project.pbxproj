@@ -15,6 +15,7 @@
 		5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
 		570C3973233697E200A2882C /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
+		573FD5862399F30C009BDBF9 /* Games.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573FD5852399F30C009BDBF9 /* Games.swift */; };
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
 		574050551E5F82AA00316AEB /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
 		574693522367CB9D00AB6516 /* SettingsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* SettingsBase.swift */; };
@@ -33,7 +34,7 @@
 		578B1C5C1E7EFB37008B8381 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B091E7368B3000243B2 /* Position.swift */; };
 		578B1C5D1E7EFBCB008B8381 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B101E74A651000243B2 /* Settings.swift */; };
 		578B1C5E1E7EFBD3008B8381 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054161E4E766A0057E62F /* Math.swift */; };
-		578B1C5F1E7EFBD6008B8381 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054181E4E7AC70057E62F /* Game.swift */; };
+		578B1C5F1E7EFBD6008B8381 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054181E4E7AC70057E62F /* Global.swift */; };
 		578B1C601E7EFBD9008B8381 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054111E4E75F30057E62F /* Card.swift */; };
 		578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B9C8F31E58FAA900F8E25B /* Actions.swift */; };
 		578B1C621E7EFBE1008B8381 /* Rank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B0540B1E4E75B10057E62F /* Rank.swift */; };
@@ -57,7 +58,7 @@
 		57B054131E4E75F30057E62F /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054111E4E75F30057E62F /* Card.swift */; };
 		57B054141E4E75F30057E62F /* CardSpriteNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054121E4E75F30057E62F /* CardSpriteNode.swift */; };
 		57B054171E4E766A0057E62F /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054161E4E766A0057E62F /* Math.swift */; };
-		57B054191E4E7AC70057E62F /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054181E4E7AC70057E62F /* Game.swift */; };
+		57B054191E4E7AC70057E62F /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054181E4E7AC70057E62F /* Global.swift */; };
 		57B8732F234584D4001A54DD /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF91E85658D00B1D4A6 /* Switch.swift */; };
 		57B87330234584D5001A54DD /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF91E85658D00B1D4A6 /* Switch.swift */; };
 		57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B9C8F31E58FAA900F8E25B /* Actions.swift */; };
@@ -105,6 +106,7 @@
 		570218272373B44100310A67 /* CardSizeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSizeTableViewCell.swift; sourceTree = "<group>"; };
 		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
 		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		573FD5852399F30C009BDBF9 /* Games.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Games.swift; sourceTree = "<group>"; };
 		5740504C1E5E890000316AEB /* card_flip.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_flip.m4a; sourceTree = "<group>"; };
 		574050541E5F82AA00316AEB /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDevice.swift; path = Extensions/UIDevice.swift; sourceTree = "<group>"; };
 		574693512367CB9D00AB6516 /* SettingsBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBase.swift; sourceTree = "<group>"; };
@@ -134,7 +136,7 @@
 		57B054111E4E75F30057E62F /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Card.swift; path = classes/Card.swift; sourceTree = "<group>"; };
 		57B054121E4E75F30057E62F /* CardSpriteNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CardSpriteNode.swift; path = classes/CardSpriteNode.swift; sourceTree = "<group>"; };
 		57B054161E4E766A0057E62F /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Math.swift; path = Helpers/Math.swift; sourceTree = "<group>"; };
-		57B054181E4E7AC70057E62F /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = Helpers/Game.swift; sourceTree = "<group>"; };
+		57B054181E4E7AC70057E62F /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Global.swift; path = Helpers/Global.swift; sourceTree = "<group>"; };
 		57B9C8F31E58FAA900F8E25B /* Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actions.swift; sourceTree = "<group>"; };
 		57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpMenu.swift; sourceTree = "<group>"; };
 		57BB31D42353BA8700AE2CDC /* PlayerStatusLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStatusLabel.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 				57B0540C1E4E75B10057E62F /* Suit.swift */,
 				57E97B091E7368B3000243B2 /* Position.swift */,
 				57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */,
+				573FD5852399F30C009BDBF9 /* Games.swift */,
 			);
 			name = Enums;
 			sourceTree = "<group>";
@@ -315,7 +318,7 @@
 		57B054151E4E76340057E62F /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				57B054181E4E7AC70057E62F /* Game.swift */,
+				57B054181E4E7AC70057E62F /* Global.swift */,
 				57B054161E4E766A0057E62F /* Math.swift */,
 			);
 			name = Helpers;
@@ -483,7 +486,7 @@
 			files = (
 				57BB31D3234BFC0C00AE2CDC /* PopUpMenu.swift in Sources */,
 				57B053DB1E4E3BD20057E62F /* GameScene.swift in Sources */,
-				57B054191E4E7AC70057E62F /* Game.swift in Sources */,
+				57B054191E4E7AC70057E62F /* Global.swift in Sources */,
 				57BB31D52353BA8700AE2CDC /* PlayerStatusLabel.swift in Sources */,
 				57B054091E4E40750057E62F /* ConnectionServiceManager.swift in Sources */,
 				57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */,
@@ -500,6 +503,7 @@
 				57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */,
 				57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */,
 				57E97B0A1E7368B4000243B2 /* Position.swift in Sources */,
+				573FD5862399F30C009BDBF9 /* Games.swift in Sources */,
 				57E97B0F1E748244000243B2 /* SettingsViewController.swift in Sources */,
 				574050551E5F82AA00316AEB /* UIDevice.swift in Sources */,
 				57E97B111E74A651000243B2 /* Settings.swift in Sources */,
@@ -535,7 +539,7 @@
 				578B1C581E7EFB0A008B8381 /* GameScene.swift in Sources */,
 				578F40C72377924400719821 /* SnapLocation.swift in Sources */,
 				578B1C571E7EFB04008B8381 /* ConnectionServiceManager.swift in Sources */,
-				578B1C5F1E7EFBD6008B8381 /* Game.swift in Sources */,
+				578B1C5F1E7EFBD6008B8381 /* Global.swift in Sources */,
 				57E0935D212730E500D4E4F6 /* Config.swift in Sources */,
 				578B1C601E7EFBD9008B8381 /* Card.swift in Sources */,
 				57BB31DE23569DA200AE2CDC /* SettingsTableController.swift in Sources */,

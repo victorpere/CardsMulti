@@ -25,6 +25,15 @@ class Settings : SettingsBase, NSCoding {
     
     // MARK: - Properties
     
+    var game: Int {
+        get {
+            return self.settingOrDefault(forKey: "game", defaultValue: Games.FreePlay.rawValue)
+        }
+        set(value) {
+            self.setSetting(forKey: "game", toValue: value)
+        }
+    }
+    
     var minRank: Int {
         get {
             return self.settingOrDefault(forKey: "minRank", defaultValue: Settings.defaultMinRank)
@@ -103,6 +112,9 @@ class Settings : SettingsBase, NSCoding {
     
     required init?(coder aDecoder: NSCoder) {
         super.init()
+        if let value = aDecoder.decodeObject(forKey: "game") as? Int {
+            self.game = value
+        }
         if let value = aDecoder.decodeObject(forKey: "minRank") as? Int {
             self.minRank = value
         }
@@ -129,6 +141,7 @@ class Settings : SettingsBase, NSCoding {
     // MARK: - NSCoding methods
     
     func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.game, forKey: "game")
         aCoder.encode(self.minRank, forKey: "minRank")
         aCoder.encode(self.maxRank, forKey: "maxRank")
         aCoder.encode(self.jack, forKey: "jack")

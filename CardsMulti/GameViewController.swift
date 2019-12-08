@@ -151,7 +151,9 @@ class GameViewController: UIViewController {
 
         //connectionsLabel.isHidden = true
         
-        scene = GameScene(size: skView.frame.size)
+        //scene = GameScene(size: skView.frame.size)
+        scene = Solitaire(size: skView.frame.size)
+        
         checkForceTouch()
         scene.gameSceneDelegate = self
         self.updateScenePlayers()

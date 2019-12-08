@@ -12,7 +12,6 @@ class SettingsTableContoller : UIViewController {
     let stadardRowHeight: CGFloat = 44
     let sliderRowHeight:CGFloat = 53
     
-    let numberOfSections = 3
     let settings = Settings()
     
     var tableView: UITableView!
@@ -138,16 +137,18 @@ extension SettingsTableContoller : UITableViewDelegate {
 // MARK: - UITableViewDataSource
 extension SettingsTableContoller : UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.numberOfSections
+        return SettingsSection.allCases.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0:
+        case SettingsSection.game.rawValue:
+            return Games.allCases.count
+        case SettingsSection.cards1.rawValue:
             return 3
-        case 1:
+        case SettingsSection.cards2.rawValue:
             return 4
-        case 2:
+        case SettingsSection.size.rawValue:
             return 1
         default:
             return 0
@@ -155,7 +156,7 @@ extension SettingsTableContoller : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 && (indexPath.row == 1 || indexPath.row == 2) {
+        if indexPath.section == SettingsSection.cards1.rawValue && (indexPath.row == 1 || indexPath.row == 2) {
             return self.sliderRowHeight
         }
         return self.stadardRowHeight
@@ -165,7 +166,10 @@ extension SettingsTableContoller : UITableViewDataSource {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: nil)
         
         switch indexPath.section {
-        case 0:
+        case SettingsSection.game.rawValue:
+            cell.textLabel?.text = Games(rawValue: indexPath.row)?.name
+            break
+        case SettingsSection.cards1.rawValue:
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
@@ -180,7 +184,7 @@ extension SettingsTableContoller : UITableViewDataSource {
             default:
                 break
             }
-        case 1:
+        case SettingsSection.cards2.rawValue:
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
@@ -198,7 +202,7 @@ extension SettingsTableContoller : UITableViewDataSource {
             default:
                 break
             }
-        case 2:
+        case SettingsSection.size.rawValue:
             cell.selectionStyle = .none
             cell.textLabel?.text = "Card size"
             cell.accessoryView = self.cardScaleSlider
@@ -217,4 +221,13 @@ extension SettingsTableContoller : UITableViewDataSource {
 protocol SettingsTableControllerDelegate {
     func settingsChanged()
     func uiSettingsChanged()
+}
+
+// MARK: - Enum sections
+
+/**
+ Enumeration of settings sections
+ */
+enum SettingsSection: Int, CaseIterable {
+    case game = 0, cards1, cards2, size
 }
