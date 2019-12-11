@@ -23,6 +23,9 @@ class Solitaire : GameScene {
     /// The margin between piles or piles and screen edge
     let margin: CGFloat = 5
     
+    /// Additional margin at the top
+    let topMargin: CGFloat = 50
+    
     /// Vertical offset of cards in the tableau
     let tableauOffset: CGFloat = -20
     
@@ -32,6 +35,7 @@ class Solitaire : GameScene {
     // MARK: - Properties
     
     var tableauLocations = [SnapLocation]()
+    var foundations = [SnapLocation]()
     var stockPile: SnapLocation!
     
     // MARK: - Computed properties
@@ -63,7 +67,7 @@ class Solitaire : GameScene {
         let snapLocationSize = CGSize(width: self.cardWidthPixels, height: self.cardHeightPixels)
         
         // Stock pile
-        self.stockPile = SnapLocation(location: CGPoint(x: self.cardWidthPixels / 2 + self.margin, y: self.frame.height - self.cardWidthPixels - self.margin), snapSize: snapLocationSize)
+        self.stockPile = SnapLocation(location: CGPoint(x: self.cardWidthPixels / 2 + self.margin, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin), snapSize: snapLocationSize)
         self.stockPile.name = "Stock Pile"
         self.stockPile.xOffset = CGFloat(self.verticalHeight)
         self.stockPile.yOffset = CGFloat(self.verticalHeight)
@@ -77,7 +81,7 @@ class Solitaire : GameScene {
         
         // Foundations
         for col in 1...4 {
-            let location = CGPoint(x: self.frame.width - self.margin * CGFloat(col) - self.cardWidthPixels * CGFloat(col) + self.cardWidthPixels / 2, y: self.frame.height - self.cardWidthPixels - self.margin)
+            let location = CGPoint(x: self.frame.width - self.margin * CGFloat(col) - self.cardWidthPixels * CGFloat(col) + self.cardWidthPixels / 2, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin)
             let foundation = SnapLocation(location: location, snapSize: snapLocationSize)
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
@@ -96,11 +100,12 @@ class Solitaire : GameScene {
             foundation.movableConditionMet = { (_, _) in return false}
             
             self.snapLocations.append(foundation)
+            self.foundations.append(foundation)
         }
         
         // Tableau
         for col in 0...6 {
-            let location = CGPoint(x: self.cardWidthPixels / 2 + self.margin * CGFloat(col + 1) + self.cardWidthPixels * CGFloat(col), y: self.frame.height - self.cardWidthPixels * 3 - self.margin)
+            let location = CGPoint(x: self.cardWidthPixels / 2 + self.margin * CGFloat(col + 1) + self.cardWidthPixels * CGFloat(col), y: self.frame.height - self.cardWidthPixels * 3 - self.margin - self.topMargin)
             let tableau = SnapLocation(location: location, snapSize: snapLocationSize)
             tableau.name = "Tableau \(col + 1)"
             tableau.yOffset = self.tableauOffset
@@ -111,6 +116,19 @@ class Solitaire : GameScene {
             // only face up cards are movable
             tableau.movableConditionMet = { (_, _ card) in
                 return card.faceUp
+            }
+            
+            // double tap moves the car to a foundation if possible
+            tableau.doubleTapAction = { (_ tableau) in
+                if let topCard = tableau.topCard {
+                    for foundation in self.foundations {
+                        if foundation.snappableConditionMet(foundation, topCard) {
+                            tableau.unSnap([topCard])
+                            foundation.snap(topCard)
+                            return
+                        }
+                    }
+                }
             }
             
             self.snapLocations.append(tableau)
