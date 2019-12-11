@@ -118,6 +118,14 @@ class Solitaire : GameScene {
                 return card.faceUp
             }
             
+            // conditions for adding cards to a tableau
+            tableau.snappableConditionMet = { (_ tableau, _ card) in
+                if let topCard = tableau.topCard {
+                    return topCard.card?.suit.color != card.card?.suit.color && topCard.card?.rank.rawValue == (card.card?.rank.rawValue)! + 1
+                }
+                return card.card?.rank == Rank.king
+            }
+            
             // double tap moves the car to a foundation if possible
             tableau.doubleTapAction = { (_ tableau) in
                 if let topCard = tableau.topCard {
