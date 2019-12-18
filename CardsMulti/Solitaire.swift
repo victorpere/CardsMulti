@@ -45,6 +45,17 @@ class Solitaire : GameScene {
     
     override init(size: CGSize) {
         super.init(size: size)
+        self.doubleTapAction = { (_ card) in
+            for foundation in self.foundations {
+                if foundation.snappableConditionMet(foundation, card) {
+                    if let snapLocation = card.snapLocation {
+                        snapLocation.unSnap(cards: [card])
+                    }
+                    foundation.snap(card)
+                    return
+                }
+            }
+        }
         
         Settings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
     }
@@ -66,22 +77,9 @@ class Solitaire : GameScene {
         
         let snapLocationSize = CGSize(width: self.cardWidthPixels, height: self.cardHeightPixels)
         
-        // Stock pile
-        self.stockPile = SnapLocation(location: CGPoint(x: self.cardWidthPixels / 2 + self.margin, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin), snapSize: snapLocationSize)
-        self.stockPile.name = "Stock Pile"
-        self.stockPile.xOffset = CGFloat(self.verticalHeight)
-        self.stockPile.yOffset = CGFloat(self.verticalHeight)
-        self.stockPile.shouldFlip = true
-        self.stockPile.faceUp = false
-        //self.stockPile.putOnTop = false
-        self.snapLocations.append(self.stockPile)
-        
-        // Waste pile
-        
-        
         // Foundations
         for col in 1...4 {
-            let location = CGPoint(x: self.frame.width - self.margin * CGFloat(col) - self.cardWidthPixels * CGFloat(col) + self.cardWidthPixels / 2, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin)
+            let location = CGPoint(x: self.margin * CGFloat(col) + self.cardWidthPixels * CGFloat(col) - self.cardWidthPixels / 2, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin)
             let foundation = SnapLocation(location: location, snapSize: snapLocationSize)
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
@@ -102,6 +100,25 @@ class Solitaire : GameScene {
             self.snapLocations.append(foundation)
             self.foundations.append(foundation)
         }
+        
+        // Stock pile
+        self.stockPile = SnapLocation(location: CGPoint(x: self.frame.width - self.cardWidthPixels / 2 - self.margin, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin), snapSize: snapLocationSize)
+        self.stockPile.name = "Stock Pile"
+        self.stockPile.xOffset = CGFloat(self.verticalHeight)
+        self.stockPile.yOffset = CGFloat(self.verticalHeight)
+        self.stockPile.shouldFlip = true
+        self.stockPile.faceUp = false
+        
+        self.stockPile.unsnapAction = { (_ unsnappedCards) in
+            for card in unsnappedCards {
+                card.flip(faceUp: true, sendPosition: false)
+            }
+        }
+        
+        self.snapLocations.append(self.stockPile)
+        
+        // Waste pile
+        
         
         // Tableau
         for col in 0...6 {
@@ -131,7 +148,7 @@ class Solitaire : GameScene {
                 if let topCard = tableau.topCard {
                     for foundation in self.foundations {
                         if foundation.snappableConditionMet(foundation, topCard) {
-                            tableau.unSnap([topCard])
+                            tableau.unSnap(cards: [topCard])
                             foundation.snap(topCard)
                             return
                         }
@@ -167,9 +184,9 @@ class Solitaire : GameScene {
             }
             
             Global.shuffle(&self.allCards)
-            var sortedCards = self.allCards.sorted { $0.zPosition < $1.zPosition }
             
             for card in self.allCards {
+                card.moveToFront()
                 card.flip(faceUp: false, sendPosition: false)
             }
             
@@ -179,6 +196,7 @@ class Solitaire : GameScene {
                 tableauLocation.faceUp = false
             }
             
+            var sortedCards = self.allCards.sorted { $0.zPosition < $1.zPosition }
             for row in 0...6 {
                 for (tableauNumber, tableauLocation) in self.tableauLocations.enumerated() {
                     if row <= tableauNumber {

@@ -131,7 +131,20 @@ class SettingsTableContoller : UIViewController {
 // MARK: - UITableViewDelegate
 
 extension SettingsTableContoller : UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case SettingsSection.game.rawValue:
+            // change game
+            if Settings.instance.game != indexPath.row {
+                Settings.instance.game = indexPath.row
+                self.delegate?.gameChanged()
+                self.dismiss(animated: true, completion: nil)
+            }
+            break
+        default:
+            break
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -221,6 +234,7 @@ extension SettingsTableContoller : UITableViewDataSource {
 protocol SettingsTableControllerDelegate {
     func settingsChanged()
     func uiSettingsChanged()
+    func gameChanged()
 }
 
 // MARK: - Enum sections

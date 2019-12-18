@@ -10,9 +10,17 @@ import Foundation
 import MultipeerConnectivity
 
 class Player {
+    // MARK: - Properties
+    
     var peerId: MCPeerID
+    
     var position: Position
+    
+    var score: Float = 0
+    
     var hand = [CardSpriteNode]()
+    
+    // MARK: - Initializers
     
     init(peerId: MCPeerID, position: Position) {
         self.peerId = peerId

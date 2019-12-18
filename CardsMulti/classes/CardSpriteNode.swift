@@ -25,6 +25,9 @@ class CardSpriteNode : SKSpriteNode {
     let backImageName = "back"
     let cornerSizeRatio: CGFloat = 0.25  // relative to width
     
+    /// Vertical and horizontal offset when cards are being stacked on top of eachother
+    static let stackOffset: CGFloat = 0.2
+    
     var cardScale: CGFloat = 0.25
     var popScaleBy: CGFloat = 1.1
     
@@ -527,5 +530,27 @@ extension Array where Element:CardSpriteNode {
         }
     }
     
+    /**
+     Stacks the array of cards at the specified position
+     
+     - parameters:
+        - position: position in the scene at which to stack the cards
+        - flipEachCard: whether to flip each card to the same side or not. Default is false
+        - faceUp: whether to flip cards face up or face down, if flipEachCard is true. Default is false (face down)
+        - reverseStack: whether to stack the cards in reverse order. Default is false.
+        - sendPosition: whether to send the position of all the cards to the peers
+        - animateReceiver: whether to animate the stacking at each peer, if sendPosition is true. Default is false
+     */
+    func stack(atPosition position: CGPoint, flipEachCard: Bool = false, faceUp: Bool = false, reverseStack: Bool = false, sendPosition: Bool, animateReceiver: Bool = false) {
+        let cardsSorted = self.sorted { reverseStack ? $0.zPosition > $1.zPosition : $0.zPosition < $1.zPosition }
+        
+        for (cardNumber, card) in cardsSorted.enumerated() {
+            let cardOffset = CGFloat(cardNumber) * CardSpriteNode.stackOffset
+            let newPosition = CGPoint(x: position.x + cardOffset, y: position.y + cardOffset)
+            
+            card.moveToFront()
+            card.moveAndFlip(to: newPosition, rotateToAngle: 0, faceUp: flipEachCard ? faceUp : card.faceUp, duration: CardSpriteNode.flipDuration, sendPosition: sendPosition, animateReceiver: animateReceiver)
+        }
+    }
 }
 

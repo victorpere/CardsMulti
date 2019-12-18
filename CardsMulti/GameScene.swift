@@ -91,6 +91,11 @@ class GameScene: SKScene {
     /// Locations to which cards should snap to if moved to within a close distance
     var snapLocations = [SnapLocation]()
     
+    var doubleTapAction: (CardSpriteNode) -> Void = { (_ card) in
+        card.moveToFront()
+        card.flip(sendPosition: true)
+    }
+    
     // MARK: - Initializers
         
     required init?(coder aDecoder: NSCoder) {
@@ -288,13 +293,16 @@ class GameScene: SKScene {
         for (cardNumber, cardNode) in self.allCards.enumerated() {
             cardNode.zRotation = 0
             cardNode.moveToFront()
-            let cardOffset = CGFloat(Double(cardNumber) * self.verticalHeight)
-            cardNode.position = CGPoint(x: self.frame.midX - cardOffset, y: self.dividerLine.position.y + self.frame.width / 2 + cardOffset)
-            cardNode.flip(faceUp: false, sendPosition: false)
+            //let cardOffset = CGFloat(Double(cardNumber) * self.verticalHeight)
+            //cardNode.position = CGPoint(x: self.frame.midX - cardOffset, y: self.dividerLine.position.y + self.frame.width / 2 + cardOffset)
+            //cardNode.flip(faceUp: false, sendPosition: false)
         }
-        if sync {
-            self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
-        }
+        //if sync {
+        //    self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
+        //}
+        
+        let centerPoint = CGPoint(x: self.frame.midX, y: self.dividerLine.position.y + self.frame.width / 2)
+        self.allCards.stack(atPosition: centerPoint, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: false)
     }
     
     /**
@@ -400,36 +408,12 @@ class GameScene: SKScene {
         if self.selectedNodes.count > 0 {
             let cardsSorted = self.selectedNodes.sorted { $0.zPosition > $1.zPosition }
             let topCardLocation = (cardsSorted.last?.position)!
-            self.stack(cards: cardsSorted, at: topCardLocation)
+            //self.stack(cards: cardsSorted, at: topCardLocation)
+            
+            self.selectedNodes.stack(atPosition: topCardLocation, sendPosition: true, animateReceiver: true)
+            
             self.deselectNodeForTouch()
         }
-    }
-    
-    /**
-     Stacks specified cards at the specified location
-     
-     - parameters:
-        - cards: the set of cards to stack
-        - location: location to stack the cards at (will be bottom card's location)
-        - flip: whether to flip the cards (default is false)
-        - faceUp: whether to place all cards face up or down (default is false)
-     */
-    func stack(cards: [CardSpriteNode], at location: CGPoint, flip: Bool = false, faceUp: Bool = false) {
-        let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
-        var cardsCopy = [CardSpriteNode]()
-        for (cardNumber, card) in cardsSorted.enumerated() {
-            let cardOffset = CGFloat(Double(cardNumber) * verticalHeight)
-            let newPosition = CGPoint(x: location.x + cardOffset, y: location.y - cardOffset)
-            card.moveAndFlip(to: newPosition, rotateToAngle: 0, faceUp: flip ? faceUp : card.faceUp, duration: resetDuration, sendPosition: false)
-            
-            let cardCopy = card.copy() as! CardSpriteNode
-            cardCopy.position = newPosition
-            cardCopy.card = card.card
-            cardCopy.faceUp = card.faceUp
-            cardCopy.zRotation = 0
-            cardsCopy.append(cardCopy)
-        }
-        self.sendPosition(of: cardsCopy, moveToFront: true, animate: true)
     }
     
     /**
@@ -456,9 +440,8 @@ class GameScene: SKScene {
             let stack1 = Array(cardsSorted.prefix(upTo: halfIndex))
             let stack2 = Array(cardsSorted.suffix(from: halfIndex))
             
-            //stack(cards: cardsSorted, position: originalPosition!)
-            self.stack(cards: stack1, at: position1)
-            self.stack(cards: stack2, at: position2)
+            stack1.stack(atPosition: position1, sendPosition: true, animateReceiver: true)
+            stack2.stack(atPosition: position2, sendPosition: true, animateReceiver: true)
         }
     }
     
@@ -523,9 +506,8 @@ class GameScene: SKScene {
                         print("performing double tap action for \(snapLocation.name)")
                         snapLocation.doubleTapAction(snapLocation)
                     } else {
-                        // otherwise, flip the card
-                        touchedCardNode.moveToFront()
-                        touchedCardNode.flip(sendPosition: true)
+                        // otherwise, perform the scene's double tap action
+                        self.doubleTapAction(touchedCardNode)
                     }
                 } else if touchedCardNode.pointInCorner(touchLocation) {
                     // touched in the corner of the card
@@ -581,7 +563,7 @@ class GameScene: SKScene {
     func unSnap(_ cardNodes: [CardSpriteNode]) {
         DispatchQueue.global(qos: .default).async {
             for snapLocation in self.snapLocations {
-                snapLocation.unSnap(cardNodes)
+                snapLocation.unSnap(cards: cardNodes)
             }
         }
     }
@@ -630,7 +612,7 @@ class GameScene: SKScene {
         }
         
         // stacking cards also sends position to other devices
-        self.stack(cards: cards, at: topCardPosition!, flip: true, faceUp: false)
+        cards.stack(atPosition: topCardPosition!, sendPosition: true, animateReceiver: true)
  
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })

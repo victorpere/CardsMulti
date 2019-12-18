@@ -151,8 +151,14 @@ class GameViewController: UIViewController {
 
         //connectionsLabel.isHidden = true
         
-        //scene = GameScene(size: skView.frame.size)
-        scene = Solitaire(size: skView.frame.size)
+        switch Settings.instance.game {
+        case Games.FreePlay.rawValue:
+            self.scene = GameScene(size: self.skView.frame.size)
+        case Games.Solitare.rawValue:
+            self.scene = Solitaire(size: self.skView.frame.size)
+        default:
+            self.scene = GameScene(size: self.skView.frame.size)
+        }
         
         checkForceTouch()
         scene.gameSceneDelegate = self
@@ -166,15 +172,15 @@ class GameViewController: UIViewController {
     }
     
     func resetGame() {
-        scene.resetCards(sync: true)
+        self.scene.resetCards(sync: true)
     }
     
     func lineUpCards() {
-        scene.resetHand(sort: false)
+        self.scene.resetHand(sort: false)
     }
     
     func sortCards() {
-        scene.resetHand(sort: true)
+        self.scene.resetHand(sort: true)
     }
     
     func browsePeers() {
@@ -421,6 +427,10 @@ extension GameViewController : SettingsViewControllerDelegate, SettingsTableCont
     
     func settingsChanged() {
         self.scene.resetGame(sync: true)
+    }
+    
+    func gameChanged() {
+        self.startGame()
     }
 }
 

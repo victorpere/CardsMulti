@@ -83,6 +83,9 @@ class SnapLocation {
         }
     }
     
+    /// Action to perform on cards when they are unsnapped
+    var unsnapAction: ([CardSpriteNode]) -> Void = { (_) in }
+    
     // MARK: - Computed properties
     
     /// The topmost card of the snapped cards
@@ -117,6 +120,13 @@ class SnapLocation {
         self.snappedCards = []
     }
     
+    /**
+     Initializes location given the size
+     
+     - parameters:
+        - location: co-ordinates of the snap location
+        - snapSize: size of the area to which cards should snap
+     */
     init(location: CGPoint, snapSize: CGSize) {
         self.location = location
         self.snapRect = CGRect(center: location, size: snapSize)
@@ -240,20 +250,22 @@ class SnapLocation {
      
      - parameter cardNodes: set of cards to unsnap
      */
-    func unSnap(_ cardNodes: [CardSpriteNode]) {
-        for cardNode in cardNodes {
+    func unSnap(cards cardsToUnsnap: [CardSpriteNode]) {
+        for cardNode in cardsToUnsnap {
             cardNode.snapLocation = nil
         }
-        
-        let snappedCardsCount = self.snappedCards.count
-        self.snappedCards = Array(Set(self.snappedCards).subtracting(cardNodes))
+
+        let unsnappedCards = Array(Set(self.snappedCards).intersection(cardsToUnsnap))
+        self.snappedCards = Array(Set(self.snappedCards).subtracting(cardsToUnsnap))
         
         // flip the top card if needed
         if self.topCard != nil && self.shouldFlip {
             self.topCard!.flip(faceUp: self.faceUp, sendPosition: true)
         }
         
-        if snappedCardsCount > self.snappedCards.count {
+        self.unsnapAction(unsnappedCards)
+        
+        if unsnappedCards.count > 0 {
             print("removed from snapped \(self.name)")
             Global.displayCards(self.snappedCards)
         }
@@ -266,6 +278,7 @@ class SnapLocation {
         for cardNode in self.snappedCards {
             cardNode.snapLocation = nil
         }
+        self.unsnapAction(self.snappedCards)
         self.snappedCards.removeAll()
         
         print("removed all from snapped \(self.name)")
