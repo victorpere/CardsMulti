@@ -83,8 +83,14 @@ class SnapLocation {
         }
     }
     
-    /// Action to perform on cards when they are unsnapped
+    /// Optional action to performed when a card in the snap location is tapped
+    var tapAction: ((SnapLocation, CardSpriteNode) -> Void)?
+    
+    /// Action to perform on cards when they are unsnapped. Default is nothing
     var unsnapAction: ([CardSpriteNode]) -> Void = { (_) in }
+    
+    /// Cards to be selected when a card in the location is touched. Default is the card itself
+    var selectedCardsWhenTouched: (SnapLocation, CardSpriteNode) -> [CardSpriteNode] = { (_, card)  in return [card] }
     
     // MARK: - Computed properties
     

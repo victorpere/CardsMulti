@@ -26,8 +26,11 @@ class Solitaire : GameScene {
     /// Additional margin at the top
     let topMargin: CGFloat = 50
     
-    /// Vertical offset of cards in the tableau
-    let tableauOffset: CGFloat = -20
+    /// Initial vertical offset of cards in the tableau
+    let initialTableauOffset: CGFloat = -25
+    
+    /// Vertical offset for the tableau for face up cards
+    let tableauOffset: CGFloat = -30
     
     /// Duration to move a card to its starting postion in seconds
     let dealDuration = 0.1
@@ -40,6 +43,14 @@ class Solitaire : GameScene {
     
     // MARK: - Computed properties
 
+    /// Current game score
+    var score: Int {
+        var score = -52
+        for foundation in self.foundations {
+            score += 3 * foundation.snappedCards.count
+        }
+        return score
+    }
     
     // MARK: - Initializers
     
@@ -58,6 +69,9 @@ class Solitaire : GameScene {
         }
         
         Settings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
+        
+        let player = Player(peerId: self.myPeerId, position: Position.bottom)
+        self.players?.append(player)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -72,6 +86,7 @@ class Solitaire : GameScene {
      */
     override func resetGame(sync: Bool, loadSaved: Bool = false) {
         self.removeAllChildren()
+        //self.players![0].score = -52
         
         self.snapLocations.removeAll()
         
@@ -94,8 +109,10 @@ class Solitaire : GameScene {
                 return foundation.topCard!.card?.suit == card.card?.suit && ((foundation.topCard!.card?.rank.rawValue)! + 1 == card.card?.rank.rawValue || (foundation.topCard!.card?.rank == Rank.ace && card.card?.rank == Rank.two))
             }
             
-            // cards snapped to foundations are not movable
-            foundation.movableConditionMet = { (_, _) in return false}
+            // top car in the foudation is movable
+            foundation.movableConditionMet = { (_ foudation, _ card) in
+                return card == foundation.topCard
+            }
             
             self.snapLocations.append(foundation)
             self.foundations.append(foundation)
@@ -156,6 +173,11 @@ class Solitaire : GameScene {
                 }
             }
             
+            // when a card in the tableau is touched, select the card and all cards on top of it
+            tableau.selectedCardsWhenTouched = { (_ tableau, _ touchedCard) in
+                return tableau.snappedCards.filter { $0.faceUp && $0.zPosition >= touchedCard.zPosition }
+            }
+            
             self.snapLocations.append(tableau)
             self.tableauLocations.append(tableau)
         }
@@ -194,6 +216,7 @@ class Solitaire : GameScene {
             
             for tableauLocation in self.tableauLocations {
                 tableauLocation.faceUp = false
+                tableauLocation.yOffset = self.initialTableauOffset
             }
             
             var sortedCards = self.allCards.sorted { $0.zPosition < $1.zPosition }

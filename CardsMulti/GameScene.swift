@@ -85,6 +85,7 @@ class GameScene: SKScene {
     var movingDirectionReversed = 0
     
     var peers: [MCPeerID?]!
+    var players: [Player]?
     
     var playersHands = [0, 0, 0, 0]
     
@@ -496,8 +497,14 @@ class GameScene: SKScene {
             // select card to move
             let touchedCardNode = touchedNode as! CardSpriteNode
             if touchedCardNode.selectable {
-                //touchedCardNode.moveToFront()
-                self.selectedNodes = [touchedCardNode]
+                
+                if let snapLocation = touchedCardNode.snapLocation {
+                    if snapLocation.movableConditionMet(snapLocation, touchedCardNode) {
+                        self.selectedNodes = snapLocation.selectedCardsWhenTouched(snapLocation, touchedCardNode)
+                    }
+                } else {
+                    self.selectedNodes = [touchedCardNode]
+                }
 
                 if tapCount > 1 && self.canDoubleTap {
                     // this is the second tap
