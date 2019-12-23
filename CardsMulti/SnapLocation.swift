@@ -56,7 +56,7 @@ class SnapLocation {
     var snapAreaIncludesCards = false
     
     /// Whether more cards can be snapped to this location. Default is true
-    var canAddCards = true
+    var canAddCards: () -> Bool = { () in return true }
     
     /// maximum number of cards allowed to snap to this location
     var maxCards = Int.max
@@ -71,10 +71,10 @@ class SnapLocation {
     var duration: Double = 0.2
     
     /// Closure defining the rule for snapping a new card to this location. Default returns true for all
-    var snappableConditionMet: (SnapLocation, CardSpriteNode) -> Bool = { (_, _) in return true }
+    var snappableConditionMet: (CardSpriteNode) -> Bool = { (_) in return true }
     
     /// Closure defining the rule for whether a card can be selected to be moved. Default returns true for all
-    var movableConditionMet: (SnapLocation, CardSpriteNode) -> Bool = { (_, _) in return true }
+    var movableConditionMet: (CardSpriteNode) -> Bool = { (_) in return true }
     
     /// Action to perform when the snap location is doulbe-tapped. Default is flip top card
     var doubleTapAction: (SnapLocation) -> Void = { (_ snapLocation) in
@@ -84,13 +84,13 @@ class SnapLocation {
     }
     
     /// Optional action to performed when a card in the snap location is tapped
-    var tapAction: ((SnapLocation, CardSpriteNode) -> Void)?
+    var tapAction: ((CardSpriteNode?) -> Void)?
     
     /// Action to perform on cards when they are unsnapped. Default is nothing
     var unsnapAction: ([CardSpriteNode]) -> Void = { (_) in }
     
     /// Cards to be selected when a card in the location is touched. Default is the card itself
-    var selectedCardsWhenTouched: (SnapLocation, CardSpriteNode) -> [CardSpriteNode] = { (_, card)  in return [card] }
+    var selectedCardsWhenTouched: (CardSpriteNode) -> [CardSpriteNode] = { (_ card)  in return [card] }
     
     // MARK: - Computed properties
     
@@ -150,7 +150,7 @@ class SnapLocation {
     - returns: True if a card should snap
     */
     func shouldSnap(atLocation location: CGPoint) -> Bool {
-        if !self.canAddCards && self.snappedCards.count < self.maxCards {
+        if !self.canAddCards() {
             return false
         }
         
@@ -178,7 +178,7 @@ class SnapLocation {
      - returns: True if the card should snap
      */
     func shouldSnap(cardNode: CardSpriteNode) -> Bool {
-        return self.snappableConditionMet(self, cardNode) && self.shouldSnap(atLocation: cardNode.position)
+        return self.snappableConditionMet(cardNode) && self.shouldSnap(atLocation: cardNode.position)
     }
     
     /**
@@ -190,7 +190,7 @@ class SnapLocation {
     - returns: True if the set of cards should snap
     */
     func shouldSnap(cardNodes: [CardSpriteNode]) -> Bool {
-        if self.canAddCards && self.canSnapMultiple && self.snappedCards.count + cardNodes.count <= self.maxCards {
+        if self.canAddCards() && self.canSnapMultiple && self.snappedCards.count + cardNodes.count <= self.maxCards {
             let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
             if let bottomCard = sortedCards.first {
                 return self.shouldSnap(cardNode: bottomCard)
@@ -296,7 +296,7 @@ class SnapLocation {
      - returns: All snapped cards that are selectable
      */
     func movableCardNodes() -> [CardSpriteNode] {
-        return self.snappedCards.filter { self.movableConditionMet(self, $0) }
+        return self.snappedCards.filter { self.movableConditionMet($0) }
     }
 }
 

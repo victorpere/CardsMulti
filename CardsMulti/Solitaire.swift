@@ -40,6 +40,7 @@ class Solitaire : GameScene {
     var tableauLocations = [SnapLocation]()
     var foundations = [SnapLocation]()
     var stockPile: SnapLocation!
+    var wastePile: SnapLocation!
     
     // MARK: - Computed properties
 
@@ -58,7 +59,7 @@ class Solitaire : GameScene {
         super.init(size: size)
         self.doubleTapAction = { (_ card) in
             for foundation in self.foundations {
-                if foundation.snappableConditionMet(foundation, card) {
+                if foundation.snappableConditionMet(card) {
                     if let snapLocation = card.snapLocation {
                         snapLocation.unSnap(cards: [card])
                     }
@@ -101,7 +102,7 @@ class Solitaire : GameScene {
             foundation.yOffset = CGFloat(self.verticalHeight)
             
             // conditions for adding cards to the foundations
-            foundation.snappableConditionMet = { (_ foundation, _ card) in
+            foundation.snappableConditionMet = { (_ card) in
                 if foundation.topCard == nil {
                     return card.card?.rank == Rank.ace
                 }
@@ -110,7 +111,7 @@ class Solitaire : GameScene {
             }
             
             // top car in the foudation is movable
-            foundation.movableConditionMet = { (_ foudation, _ card) in
+            foundation.movableConditionMet = { (_ card) in
                 return card == foundation.topCard
             }
             
@@ -126,16 +127,49 @@ class Solitaire : GameScene {
         self.stockPile.shouldFlip = true
         self.stockPile.faceUp = false
         
-        self.stockPile.unsnapAction = { (_ unsnappedCards) in
-            for card in unsnappedCards {
-                card.flip(faceUp: true, sendPosition: false)
+        self.stockPile.tapAction = { (_) in
+            if let topCard = self.stockPile.topCard {
+                self.stockPile.unSnap(cards: [topCard])
+                self.wastePile.snap(topCard)
+            } else {
+                let cards = self.wastePile.snappedCards
+                self.wastePile.unSnapAll()
+                cards.reverseOrder()
+                self.stockPile.snap(cards)
             }
+        }
+        
+        self.stockPile.movableConditionMet = { (_ card) in
+            return card == self.stockPile.topCard
+        }
+        
+        // select top 3 cards from the stock pile when touched
+        self.stockPile.selectedCardsWhenTouched = { (_ touchedCard) in
+            /*
+            let selectedCards = Array(self.stockPile.snappedCards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: 3))
+            for card in selectedCards {
+                card.moveToFront()
+            }
+            return selectedCards
+            */
+            //if let topCard = self.stockPile.topCard {
+            //    return [topCard]
+            //}
+            return []
         }
         
         self.snapLocations.append(self.stockPile)
         
         // Waste pile
+        self.wastePile = SnapLocation(location: CGPoint(x: self.stockPile.location.x - self.cardWidthPixels - 3 * self.margin, y: self.stockPile.location.y), snapSize: snapLocationSize)
+        self.wastePile.name = "Waste Pile"
+        self.wastePile.shouldFlip = true
+        self.wastePile.faceUp = true
+        self.wastePile.xOffset = CardSpriteNode.stackOffset
+        self.wastePile.yOffset = CardSpriteNode.stackOffset
+        //self.wastePile.canAddCards = { () in return false }
         
+        self.snapLocations.append(self.wastePile)
         
         // Tableau
         for col in 0...6 {
@@ -148,12 +182,12 @@ class Solitaire : GameScene {
             tableau.faceUp = false
             
             // only face up cards are movable
-            tableau.movableConditionMet = { (_, _ card) in
+            tableau.movableConditionMet = { (card) in
                 return card.faceUp
             }
             
             // conditions for adding cards to a tableau
-            tableau.snappableConditionMet = { (_ tableau, _ card) in
+            tableau.snappableConditionMet = { (_ card) in
                 if let topCard = tableau.topCard {
                     return topCard.card?.suit.color != card.card?.suit.color && topCard.card?.rank.rawValue == (card.card?.rank.rawValue)! + 1
                 }
@@ -164,7 +198,7 @@ class Solitaire : GameScene {
             tableau.doubleTapAction = { (_ tableau) in
                 if let topCard = tableau.topCard {
                     for foundation in self.foundations {
-                        if foundation.snappableConditionMet(foundation, topCard) {
+                        if foundation.snappableConditionMet(topCard) {
                             tableau.unSnap(cards: [topCard])
                             foundation.snap(topCard)
                             return
@@ -174,7 +208,7 @@ class Solitaire : GameScene {
             }
             
             // when a card in the tableau is touched, select the card and all cards on top of it
-            tableau.selectedCardsWhenTouched = { (_ tableau, _ touchedCard) in
+            tableau.selectedCardsWhenTouched = { (_ touchedCard) in
                 return tableau.snappedCards.filter { $0.faceUp && $0.zPosition >= touchedCard.zPosition }
             }
             

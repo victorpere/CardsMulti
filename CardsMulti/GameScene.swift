@@ -499,8 +499,11 @@ class GameScene: SKScene {
             if touchedCardNode.selectable {
                 
                 if let snapLocation = touchedCardNode.snapLocation {
-                    if snapLocation.movableConditionMet(snapLocation, touchedCardNode) {
-                        self.selectedNodes = snapLocation.selectedCardsWhenTouched(snapLocation, touchedCardNode)
+                    if snapLocation.movableConditionMet(touchedCardNode) {
+                        if let tapAction = snapLocation.tapAction {
+                            tapAction(touchedCardNode)
+                        }
+                        self.selectedNodes = snapLocation.selectedCardsWhenTouched(touchedCardNode)
                     }
                 } else {
                     self.selectedNodes = [touchedCardNode]
@@ -526,6 +529,16 @@ class GameScene: SKScene {
                 self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
             }
         } else {
+            
+            // tap action on empty snap locations
+            for snapLocation in self.snapLocations {
+                if snapLocation.snapRect.contains(touchLocation) {
+                    if let tapAction = snapLocation.tapAction {
+                        tapAction(nil)
+                    }
+                }
+            }
+            
             print("cutting started")
             self.cutting = true
             self.cutStartPosition = touchLocation

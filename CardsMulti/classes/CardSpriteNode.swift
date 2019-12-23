@@ -552,5 +552,44 @@ extension Array where Element:CardSpriteNode {
             card.moveAndFlip(to: newPosition, rotateToAngle: 0, faceUp: flipEachCard ? faceUp : card.faceUp, duration: CardSpriteNode.flipDuration, sendPosition: sendPosition, animateReceiver: animateReceiver)
         }
     }
+    
+    /**
+     Reverses the top/bottom order of a set of cards
+     */
+    func reverseOrder() {
+        for card in self.sorted(by: { $0.zPosition > $1.zPosition }) {
+            card.moveToFront()
+        }
+    }
+    
+    /**
+     
+     */
+    func fan(flipEachCard: Bool = false, faceUp: Bool = false, sendPosition: Bool, animateReceiver: Bool = false) {        
+        if let topCardPosition = (self.last?.position) {
+            // TODO: fan radius and dist between cards based on number of cards
+            let fanRadius: CGFloat = 100
+            let radianPerCard: CGFloat = 0.2
+            //let arcSize = CGFloat(cards.count) * radianPerCard
+            
+            for (cardNumber, card) in self.sorted(by: { $0.zPosition < $1.zPosition }).enumerated() {
+                let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(self.count - 1) / 2)
+                let angle: CGFloat = radianPerCard * offset
+                
+                let dx: CGFloat = fanRadius * sin(angle)
+                let dy: CGFloat = (fanRadius * cos(angle)) - fanRadius
+                
+                let newPosition = CGPoint(x: topCardPosition.x + dx, y: topCardPosition.y + dy)
+                
+                Global.displayCards([card])
+                print("Offset: \(offset)")
+                print("Old position: \(topCardPosition)")
+                print("New Position: \(newPosition)")
+                print("Angle: \(angle)")
+                
+                card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: CardSpriteNode.flipDuration, sendPosition: true, animateReceiver: true)
+            }
+        }
+    }
 }
 
