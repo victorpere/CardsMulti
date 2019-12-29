@@ -538,10 +538,6 @@ class GameScene: SKScene {
                     }
                 }
             }
-            
-            print("cutting started")
-            self.cutting = true
-            self.cutStartPosition = touchLocation
         }
     }
     
@@ -744,16 +740,6 @@ class GameScene: SKScene {
                         self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
                     }
                     
-                } else {
-                    if self.cutting {
-                        let transformationFromStart = CGPoint(x: currentPosition.x - self.cutStartPosition.x, y: currentPosition.y - cutStartPosition.y)
-                        if ((transformationFromStart.x < 0) != (transformation.x < 0)) || ((transformationFromStart.y < 0) != (transformation.y < 0)) {
-                            self.cutting = false
-                            print("cutting interrupted")
-                        } else {
-                            print("cutting continued")
-                        }
-                    }
                 }
             }
             
@@ -801,12 +787,6 @@ class GameScene: SKScene {
                     return
                 }
                 
-            } else {
-                if self.cutting {
-                    print("cutting stopped")
-                    self.cutting = false
-                    self.stoppedCutting(touchLocation: t.location(in: self))
-                }
             }
         }
                 
