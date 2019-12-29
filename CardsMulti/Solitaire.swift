@@ -167,7 +167,18 @@ class Solitaire : GameScene {
         self.wastePile.faceUp = true
         self.wastePile.xOffset = CardSpriteNode.stackOffset
         self.wastePile.yOffset = CardSpriteNode.stackOffset
-        //self.wastePile.canAddCards = { () in return false }
+
+        self.wastePile.doubleTapAction = { (wastePile) in
+            if let topCard = wastePile.topCard {
+                for foundation in self.foundations {
+                    if foundation.snappableConditionMet(topCard) {
+                        wastePile.unSnap(cards: [topCard])
+                        foundation.snap(topCard)
+                        return
+                    }
+                }
+            }
+        }
         
         self.snapLocations.append(self.wastePile)
         
