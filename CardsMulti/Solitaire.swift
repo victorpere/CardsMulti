@@ -223,6 +223,13 @@ class Solitaire : GameScene {
                 return tableau.snappedCards.filter { $0.faceUp && $0.zPosition >= touchedCard.zPosition }
             }
             
+            // each card moved off the tableau should be moved on top of other cards
+            tableau.unsnapAction = { (_ unsnappedCards) in
+                for card in unsnappedCards.sorted(by: { $0.zPosition < $1.zPosition }) {
+                    card.moveToFront()
+                }
+            }
+            
             self.snapLocations.append(tableau)
             self.tableauLocations.append(tableau)
         }

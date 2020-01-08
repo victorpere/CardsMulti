@@ -519,6 +519,8 @@ class GameScene: SKScene {
                         // otherwise, perform the scene's double tap action
                         self.doubleTapAction(touchedCardNode)
                     }
+                    
+                    self.deselectNodeForTouch()
                 } else if touchedCardNode.pointInCorner(touchLocation) {
                     // touched in the corner of the card
                     // select for rotation
