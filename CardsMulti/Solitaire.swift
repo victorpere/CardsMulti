@@ -41,6 +41,7 @@ class Solitaire : GameScene {
     var foundations = [SnapLocation]()
     var stockPile: SnapLocation!
     var wastePile: SnapLocation!
+    var playPile: SnapLocation!
     
     // MARK: - Computed properties
 
@@ -128,9 +129,13 @@ class Solitaire : GameScene {
         self.stockPile.faceUp = false
         
         self.stockPile.tapAction = { (_) in
-            if let topCard = self.stockPile.topCard {
-                self.stockPile.unSnap(cards: [topCard])
-                self.wastePile.snap(topCard)
+            self.wastePile.snap(self.playPile.snappedCards)
+            self.playPile.unSnapAll()
+            
+            if self.stockPile.snappedCards.count > 0 {
+                let selectedCards = self.stockPile.selectedCardsWhenTouched(self.stockPile.topCard!)
+                self.stockPile.unSnap(cards: selectedCards)
+                self.playPile.snap(selectedCards)
             } else {
                 let cards = self.wastePile.snappedCards
                 self.wastePile.unSnapAll()
@@ -143,30 +148,38 @@ class Solitaire : GameScene {
             return card == self.stockPile.topCard
         }
         
-        // select top 3 cards from the stock pile when touched
+        // select up to 3 top cards from the stock pile when touched
         self.stockPile.selectedCardsWhenTouched = { (_ touchedCard) in
-            /*
-            let selectedCards = Array(self.stockPile.snappedCards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: 3))
+            let numberToSelect = self.stockPile.snappedCards.count > 3 ? 3 : self.stockPile.snappedCards.count
+            let selectedCards = Array(self.stockPile.snappedCards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: numberToSelect))
             for card in selectedCards {
                 card.moveToFront()
             }
             return selectedCards
-            */
+            
             //if let topCard = self.stockPile.topCard {
             //    return [topCard]
             //}
-            return []
+            //return []
         }
         
         self.snapLocations.append(self.stockPile)
         
         // Waste pile
-        self.wastePile = SnapLocation(location: CGPoint(x: self.stockPile.location.x - self.cardWidthPixels - 3 * self.margin, y: self.stockPile.location.y), snapSize: snapLocationSize)
+        self.wastePile = SnapLocation(location: CGPoint(x: self.stockPile.location.x - self.cardWidthPixels - 10 * self.margin, y: self.stockPile.location.y), snapSize: snapLocationSize)
         self.wastePile.name = "Waste Pile"
         self.wastePile.shouldFlip = true
         self.wastePile.faceUp = true
         self.wastePile.xOffset = CardSpriteNode.stackOffset
         self.wastePile.yOffset = CardSpriteNode.stackOffset
+        
+        self.wastePile.movableConditionMet = { (_ card) in
+            return card == self.wastePile.topCard
+        }
+        
+        self.wastePile.snappableConditionMet = { (_) in
+            return false
+        }
 
         self.wastePile.doubleTapAction = { (wastePile) in
             if let topCard = wastePile.topCard {
@@ -181,6 +194,36 @@ class Solitaire : GameScene {
         }
         
         self.snapLocations.append(self.wastePile)
+        
+        // Play pile
+        self.playPile = SnapLocation(location: self.wastePile.location, snapSize: snapLocationSize)
+        self.playPile.name = "Play Pile"
+        self.playPile.shouldFlip = true
+        self.playPile.faceUp = true
+        self.playPile.xOffset = 20
+        self.playPile.snapAreaIncludesCards = true
+        
+        self.playPile.movableConditionMet = { (_ card) in
+            return card == self.playPile.topCard
+        }
+        
+        self.playPile.snappableConditionMet = { (_) in
+            return self.playPile.snappedCards.count < 3
+        }
+        
+        self.playPile.doubleTapAction = { (pile) in
+            if let topCard = pile.topCard {
+                for foundation in self.foundations {
+                    if foundation.snappableConditionMet(topCard) {
+                        pile.unSnap(cards: [topCard])
+                        foundation.snap(topCard)
+                        return
+                    }
+                }
+            }
+        }
+        
+        self.snapLocations.append(self.playPile)
         
         // Tableau
         for col in 0...6 {

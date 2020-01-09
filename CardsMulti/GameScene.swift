@@ -755,7 +755,7 @@ class GameScene: SKScene {
                 return
             }
             
-            self.forceTouchActivated = false
+            //self.forceTouchActivated = false
             self.movingDirectionReversed = 0
             
             if self.selectedNodes.count > 0 {
@@ -783,8 +783,9 @@ class GameScene: SKScene {
                 // should contain: deal, shuffle
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 &&
-                self.firstTouchLocation == touchLocation &&
+                    self.firstTouchLocation == touchLocation && self.forceTouchActivated &&
                     (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouch) {
+                    self.forceTouchActivated = false
                     self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: touchLocation)
                     return
                 }
@@ -792,6 +793,7 @@ class GameScene: SKScene {
             }
         }
                 
+        self.forceTouchActivated = false
         self.rotating = false
         self.cardsMoved = false
         self.deselectNodeForTouch()
