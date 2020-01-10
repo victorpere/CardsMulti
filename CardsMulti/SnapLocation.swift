@@ -252,6 +252,26 @@ class SnapLocation {
     }
     
     /**
+    Snaps multiple cards to this location with delay between cards
+    
+    - parameters:
+        - cardNodes: array of cards to snap
+        - delay: delay in seconds between snapping each card
+    */
+    func snap(_ cardNodes: [CardSpriteNode], withDelay delay: Double) {
+        let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
+        DispatchQueue.global(qos: .default).async {
+            for card in sortedCards {
+                DispatchQueue.main.async {
+                    self.snap(card)
+                }
+                
+                usleep(useconds_t(delay * 1000000))
+            }
+        }
+    }
+    
+    /**
      Removes the specified set of cards from the set of cards snapped to this location
      
      - parameter cardNodes: set of cards to unsnap

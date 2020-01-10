@@ -135,7 +135,7 @@ class Solitaire : GameScene {
             if self.stockPile.snappedCards.count > 0 {
                 let selectedCards = self.stockPile.selectedCardsWhenTouched(self.stockPile.topCard!)
                 self.stockPile.unSnap(cards: selectedCards)
-                self.playPile.snap(selectedCards)
+                self.playPile.snap(selectedCards, withDelay: 0.05)
             } else {
                 let cards = self.wastePile.snappedCards
                 self.wastePile.unSnapAll()
@@ -156,11 +156,6 @@ class Solitaire : GameScene {
                 card.moveToFront()
             }
             return selectedCards
-            
-            //if let topCard = self.stockPile.topCard {
-            //    return [topCard]
-            //}
-            //return []
         }
         
         self.snapLocations.append(self.stockPile)
@@ -170,8 +165,8 @@ class Solitaire : GameScene {
         self.wastePile.name = "Waste Pile"
         self.wastePile.shouldFlip = true
         self.wastePile.faceUp = true
-        self.wastePile.xOffset = CardSpriteNode.stackOffset
-        self.wastePile.yOffset = CardSpriteNode.stackOffset
+        //self.wastePile.xOffset = CardSpriteNode.stackOffset
+        //self.wastePile.yOffset = CardSpriteNode.stackOffset
         
         self.wastePile.movableConditionMet = { (_ card) in
             return card == self.wastePile.topCard
