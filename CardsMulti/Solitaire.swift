@@ -133,7 +133,7 @@ class Solitaire : GameScene {
             self.playPile.unSnapAll()
             
             if self.stockPile.snappedCards.count > 0 {
-                let selectedCards = self.stockPile.selectedCardsWhenTouched(self.stockPile.topCard!)
+                let selectedCards = self.selectedNodes
                 self.stockPile.unSnap(cards: selectedCards)
                 self.playPile.snap(selectedCards, withDelay: 0.05)
             } else {

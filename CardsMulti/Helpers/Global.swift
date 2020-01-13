@@ -81,7 +81,7 @@ class Global {
     static func displayCards(_ cards: [CardSpriteNode]) {
         for cardNode in cards {
             if let card = cardNode.card {
-                print(" \(card.symbol())", terminator:"")
+                print(" \(card.symbol()) (\(cardNode.zPosition))", terminator:"")
                 //print(" \(card.spriteName)", terminator:"")
             }
         }

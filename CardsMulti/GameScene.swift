@@ -500,10 +500,10 @@ class GameScene: SKScene {
                 
                 if let snapLocation = touchedCardNode.snapLocation {
                     if snapLocation.movableConditionMet(touchedCardNode) {
+                        self.selectedNodes = snapLocation.selectedCardsWhenTouched(touchedCardNode)
                         if let tapAction = snapLocation.tapAction {
                             tapAction(touchedCardNode)
                         }
-                        self.selectedNodes = snapLocation.selectedCardsWhenTouched(touchedCardNode)
                     }
                 } else {
                     self.selectedNodes = [touchedCardNode]
