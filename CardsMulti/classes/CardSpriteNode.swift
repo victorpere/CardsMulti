@@ -51,6 +51,7 @@ class CardSpriteNode : SKSpriteNode {
     
     /// The location this card is snapped to
     var snapLocation: SnapLocation?
+    var snapLocationName: String?
     
     // MARK: - Computed properties
     
@@ -92,7 +93,8 @@ class CardSpriteNode : SKSpriteNode {
                 "rotation": self.zRotation,
                 "x": self.position.x,
                 "y": self.position.y,
-                "z": self.zPosition
+                "z": self.zPosition,
+                "snap": self.snapLocation?.name ?? ""
             ])
         }
     }
@@ -118,6 +120,7 @@ class CardSpriteNode : SKSpriteNode {
         self.position = CGPoint(x: cardInfo["x"] as! CGFloat, y: cardInfo["y"] as! CGFloat)
         self.zPosition = cardInfo["z"] as! CGFloat
         self.zRotation = cardInfo["rotation"] as! CGFloat
+        self.snapLocationName = cardInfo["snap"] as? String
     }
     
     init(card: Card, name: String, faceUp: Bool = false) {
@@ -435,11 +438,11 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     func moveToFront() {
-        delegate!.moveToFront(self)
+        delegate?.moveToFront(self)
     }
     
     func moveToBack() {
-        delegate!.moveToBack(self)
+        delegate?.moveToBack(self)
     }
     
     func pop() {

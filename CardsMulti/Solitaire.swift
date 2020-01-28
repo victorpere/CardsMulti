@@ -86,6 +86,16 @@ class Solitaire : GameScene {
      Resets the game
      
      */
+    override func loadCards(fromSaved loadSaved: Bool) {
+        super.loadCards(fromSaved: loadSaved)
+        
+        if loadSaved {
+            for tableauLocation in self.tableauLocations {
+                tableauLocation.faceUp = true
+            }
+        }
+    }
+    
     override func resetGame(sync: Bool, loadSaved: Bool = false) {
         self.removeAllChildren()
         //self.players![0].score = -52

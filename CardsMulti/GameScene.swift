@@ -216,6 +216,19 @@ class GameScene: SKScene {
         if loadSaved && loadedCards.count > 0 {
             self.allCards = loadedCards
             self.initCards()
+            
+            for card in self.allCards.sorted(by: { $0.zPosition < $1.zPosition }) {
+                if let snapLocationName = card.snapLocationName {
+                    let snapLocations = self.snapLocations.filter { $0.name == snapLocationName }
+                    if snapLocations.count > 0 {
+                        let snapLocation = snapLocations.first
+                        let snapShouldFlip = snapLocation?.shouldFlip
+                        snapLocation?.shouldFlip = false
+                        snapLocation?.snap(card)
+                        snapLocation?.shouldFlip = snapShouldFlip ?? false
+                    }
+                }
+            }
         } else {
             self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
             self.initCards()
@@ -499,12 +512,12 @@ class GameScene: SKScene {
             if touchedCardNode.selectable {
                 
                 if let snapLocation = touchedCardNode.snapLocation {
-                    if snapLocation.movableConditionMet(touchedCardNode) {
+                    //if snapLocation.movableConditionMet(touchedCardNode) {
                         self.selectedNodes = snapLocation.selectedCardsWhenTouched(touchedCardNode)
                         if let tapAction = snapLocation.tapAction {
                             tapAction(touchedCardNode)
                         }
-                    }
+                    //}
                 } else {
                     self.selectedNodes = [touchedCardNode]
                 }
