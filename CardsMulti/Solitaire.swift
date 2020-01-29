@@ -139,9 +139,10 @@ class Solitaire : GameScene {
         self.stockPile.faceUp = false
         
         self.stockPile.tapAction = { (_) in
-            self.wastePile.snap(self.playPile.snappedCards)
+            let playPileCards = self.playPile.snappedCards
             self.playPile.unSnapAll()
-            
+            self.wastePile.snap(playPileCards)
+                        
             if self.stockPile.snappedCards.count > 0 {
                 let selectedCards = self.selectedNodes
                 self.stockPile.unSnap(cards: selectedCards)
