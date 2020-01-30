@@ -236,7 +236,7 @@ class Solitaire : GameScene {
             let location = CGPoint(x: self.cardWidthPixels / 2 + self.margin * CGFloat(col + 1) + self.cardWidthPixels * CGFloat(col), y: self.frame.height - self.cardWidthPixels * 3 - self.margin - self.topMargin)
             let tableau = SnapLocation(location: location, snapSize: snapLocationSize)
             tableau.name = "Tableau \(col + 1)"
-            tableau.yOffset = self.tableauOffset
+            tableau.yOffset = self.initialTableauOffset
             tableau.snapAreaIncludesCards = true
             tableau.shouldFlip = true
             tableau.faceUp = false
