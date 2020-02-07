@@ -144,7 +144,11 @@ class Solitaire : GameScene {
             self.wastePile.snap(playPileCards)
                         
             if self.stockPile.snappedCards.count > 0 {
-                let selectedCards = self.selectedNodes
+                let numberToSelect = self.stockPile.snappedCards.count > 3 ? 3 : self.stockPile.snappedCards.count
+                let selectedCards = Array(self.stockPile.snappedCards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: numberToSelect))
+                for card in selectedCards {
+                    card.moveToFront()
+                }
                 self.stockPile.unSnap(cards: selectedCards)
                 self.playPile.snap(selectedCards, withDelay: 0.05)
             } else {
@@ -156,17 +160,12 @@ class Solitaire : GameScene {
         }
         
         self.stockPile.movableConditionMet = { (_ card) in
-            return card == self.stockPile.topCard
+            return false
         }
         
         // select up to 3 top cards from the stock pile when touched
         self.stockPile.selectedCardsWhenTouched = { (_ touchedCard) in
-            let numberToSelect = self.stockPile.snappedCards.count > 3 ? 3 : self.stockPile.snappedCards.count
-            let selectedCards = Array(self.stockPile.snappedCards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: numberToSelect))
-            for card in selectedCards {
-                card.moveToFront()
-            }
-            return selectedCards
+            return []
         }
         
         self.snapLocations.append(self.stockPile)
