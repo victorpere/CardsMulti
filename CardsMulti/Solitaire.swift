@@ -239,6 +239,7 @@ class Solitaire : GameScene {
             tableau.snapAreaIncludesCards = true
             tableau.shouldFlip = true
             tableau.faceUp = false
+            tableau.snapBack = true
             
             // only face up cards are movable
             tableau.movableConditionMet = { (card) in
@@ -268,7 +269,11 @@ class Solitaire : GameScene {
             
             // when a card in the tableau is touched, select the card and all cards on top of it
             tableau.selectedCardsWhenTouched = { (_ touchedCard) in
-                return tableau.snappedCards.filter { $0.faceUp && $0.zPosition >= touchedCard.zPosition }
+                let selectedCards = tableau.snappedCards.filter { $0.faceUp && $0.zPosition >= touchedCard.zPosition }
+                for card in selectedCards.sorted(by: { $0.zPosition < $1.zPosition }) {
+                    card.moveToFront()
+                }
+                return selectedCards
             }
             
             // each card moved off the tableau should be moved on top of other cards

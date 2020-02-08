@@ -55,6 +55,9 @@ class SnapLocation {
     /// Whether snap area should expand to include the area of cards that are snapped to this location. Default is false
     var snapAreaIncludesCards = false
     
+    /// Whether to snap a card back to this location if it is moved but not snapped to another location. Default is false
+    var snapBack = false
+    
     /// Whether more cards can be snapped to this location. Default is true
     var canAddCards: () -> Bool = { () in return true }
     
@@ -277,12 +280,12 @@ class SnapLocation {
      - parameter cardNodes: set of cards to unsnap
      */
     func unSnap(cards cardsToUnsnap: [CardSpriteNode]) {
-        for cardNode in cardsToUnsnap {
-            cardNode.snapLocation = nil
-        }
-
         let unsnappedCards = Array(Set(self.snappedCards).intersection(cardsToUnsnap))
         self.snappedCards = Array(Set(self.snappedCards).subtracting(cardsToUnsnap))
+        
+        for card in unsnappedCards {
+            card.snapLocation = nil
+        }
         
         // flip the top card if needed
         if self.topCard != nil && self.shouldFlip {
