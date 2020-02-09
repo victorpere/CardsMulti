@@ -248,6 +248,8 @@ class SnapLocation {
      - parameter cardNodes: array of cards to snap
      */
     func snap(_ cardNodes: [CardSpriteNode]) {
+        self.removeFromSnapped(cardNodes)
+        
         let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
         for card in sortedCards {
             self.snap(card)
@@ -262,6 +264,8 @@ class SnapLocation {
         - delay: delay in seconds between snapping each card
     */
     func snap(_ cardNodes: [CardSpriteNode], withDelay delay: Double) {
+        self.removeFromSnapped(cardNodes)
+        
         let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
         DispatchQueue.global(qos: .default).async {
             for card in sortedCards {
@@ -320,6 +324,12 @@ class SnapLocation {
      */
     func movableCardNodes() -> [CardSpriteNode] {
         return self.snappedCards.filter { self.movableConditionMet($0) }
+    }
+    
+    // MARK: - Private methods
+    
+    private func removeFromSnapped(_ cardsToRemove: [CardSpriteNode]) {
+        self.snappedCards = Array(Set(self.snappedCards).subtracting(cardsToRemove))
     }
 }
 
