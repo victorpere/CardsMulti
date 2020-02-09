@@ -153,10 +153,22 @@ class GameViewController: UIViewController {
         
         switch Settings.instance.game {
         case Games.FreePlay.rawValue:
+            self.connectionsLabel.isHidden = false
+            self.playerLeftLabel.isHidden = false
+            self.playerAcrossLabel.isHidden = false
+            self.playerRightLabel.isHidden = false
             self.scene = GameScene(size: self.skView.frame.size)
         case Games.Solitare.rawValue:
+            self.connectionsLabel.isHidden = true
+            self.playerLeftLabel.isHidden = true
+            self.playerAcrossLabel.isHidden = true
+            self.playerRightLabel.isHidden = true
             self.scene = Solitaire(size: self.skView.frame.size)
         default:
+            self.connectionsLabel.isHidden = false
+            self.playerLeftLabel.isHidden = false
+            self.playerAcrossLabel.isHidden = false
+            self.playerRightLabel.isHidden = false
             self.scene = GameScene(size: self.skView.frame.size)
         }
         
