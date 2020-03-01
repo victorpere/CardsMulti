@@ -7,20 +7,37 @@
 //
 
 import Foundation
+import CoreGraphics
 
 class GameGoFish : GameScene {
     
     
-    func deal() {
-        precondition(self.numberOfPlayers() > 1)
+    
+    // MARK: - GameScene override methods
+    
+    override func resetGame(sync: Bool, loadSaved: Bool = false) {
+        super.resetGame(sync: sync, loadSaved: loadSaved)
         
-        switch self.numberOfPlayers() {
-        case 2,3:
-            self.deal(numberOfCards: 7)
-        case 4:
-            self.deal(numberOfCards: 5)
-        default:
-            break
+        self.deal()
+    }
+    
+    override func deal() {
+        var numberOfCardsToDeal: Int
+        switch self.numberOfPlayers {
+            case 2,3:
+                numberOfCardsToDeal = 7
+            case 4:
+                numberOfCardsToDeal = 8
+            default:
+                return
         }
+            
+        let dealResult = self.deal(fromCards: self.allCards, numberOfCards: numberOfCardsToDeal)
+        
+        DispatchQueue.global(qos: .default).async {
+            usleep(useconds_t(dealResult.duration * 1000000))
+            
+            self.pool(cardNodes: dealResult.remainingCards, centeredIn: self.playArea.center, withRadius: self.playArea.height / 3, flipFaceUp: false)
+        }        
     }
 }

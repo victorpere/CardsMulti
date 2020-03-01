@@ -45,8 +45,18 @@ extension CGPoint {
 }
 
 extension CGRect {
+    var center: CGPoint {
+        return CGPoint(x: self.width / 2 + self.origin.x, y: self.height / 2 + self.origin.y)
+    }
+    
     init(center: CGPoint, size: CGSize) {
         let origin = CGPoint(x: center.x - size.width / 2, y: center.y - size.height / 2)
         self.init(origin: origin, size: size)
+    }
+}
+
+extension CGFloat {
+    var degreesToRadians: CGFloat {
+        return self * .pi / 180
     }
 }

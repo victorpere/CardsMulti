@@ -164,6 +164,12 @@ class GameViewController: UIViewController {
             self.playerAcrossLabel.isHidden = true
             self.playerRightLabel.isHidden = true
             self.scene = Solitaire(size: self.skView.frame.size)
+        case Games.GoFish.rawValue:
+            self.connectionsLabel.isHidden = false
+            self.playerLeftLabel.isHidden = false
+            self.playerAcrossLabel.isHidden = false
+            self.playerRightLabel.isHidden = false
+            self.scene = GameGoFish(size: self.skView.frame.size)
         default:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
@@ -442,6 +448,7 @@ extension GameViewController : SettingsViewControllerDelegate, SettingsTableCont
     }
     
     func gameChanged() {
+        self.scene.saveGame()
         self.startGame()
     }
 }

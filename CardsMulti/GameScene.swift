@@ -97,6 +97,21 @@ class GameScene: SKScene {
         card.flip(sendPosition: true)
     }
     
+    // MARK: - Computed properties
+    
+    /// The common are which all players can see
+    var playArea: CGRect {
+        return CGRect(x: 0, y: self.frame.height - self.frame.width, width: self.frame.width, height: self.frame.width)
+    }
+    
+    /// The number of connected players
+    var numberOfPlayers: Int {
+        if self.peers == nil {
+            return 1
+        }
+        return self.peers.filter { $0 != nil }.count
+    }
+    
     // MARK: - Initializers
         
     required init?(coder aDecoder: NSCoder) {
@@ -145,16 +160,6 @@ class GameScene: SKScene {
      */
     func numberOfCards(inPosition position: Position) -> Int {
         return self.cards(inPosition: position).count
-    }
-    
-    /**
-     Returns the number of connected players
-     */
-    func numberOfPlayers() -> Int {
-        if self.peers == nil {
-            return 1
-        }
-        return self.peers.filter { $0 != nil }.count
     }
     
     /**
@@ -320,13 +325,26 @@ class GameScene: SKScene {
     }
     
     /**
+     Default deal method to be overridden by subclasses
+     */
+    func deal() {
+        
+    }
+    
+    /**
      Deal the specified number of cards into each of the connected players' areas
      
      - parameter numberOfCards: number of cards to deal to each player
      */
     func deal(numberOfCards: Int) {
-        var cardsToDeal = self.selectedNodes
+        let _ = deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards)
         self.deselectNodeForTouch()
+    }
+    
+    func deal(fromCards cards: [CardSpriteNode], numberOfCards: Int) -> (remainingCards: [CardSpriteNode], duration: Double) {
+        var cardsToDeal = Array(cards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: numberOfCards * self.numberOfPlayers))
+        let remainingCards = Array(Set(cards).subtracting(cardsToDeal))
+        let duration = Double(numberOfCards * self.numberOfPlayers) * self.resetDuration
         
         DispatchQueue.global(qos: .default).async {
             for _ in 1...numberOfCards {
@@ -334,12 +352,14 @@ class GameScene: SKScene {
                     let nextPositionToDealTo = direction.positionTo(self.playerPosition)
                     
                     if self.peers?[nextPositionToDealTo.rawValue] != nil {
-                        cardsToDeal = self.deal(to: direction, from: cardsToDeal)
+                        cardsToDeal = self.deal(toPosition: direction, fromCards: cardsToDeal)
                         usleep(useconds_t(self.resetDuration * 1000000))
                     }
                 }
             }
         }
+        
+        return (remainingCards, duration)
     }
     
     /**
@@ -351,7 +371,7 @@ class GameScene: SKScene {
      
      - returns: Set of cards without the dealt card
      */
-    func deal(to position: Position, from cards: [CardSpriteNode]) -> [CardSpriteNode] {
+    func deal(toPosition position: Position, fromCards cards: [CardSpriteNode]) -> [CardSpriteNode] {
         if cards.count > 0 {
             //  select top card
             var cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
@@ -371,6 +391,28 @@ class GameScene: SKScene {
         
         return [CardSpriteNode]()
     }
+    
+    /**
+     Spreads cards randomly around the specified area
+     
+     - parameters:
+        - cardNodes: cards to spread
+        - centerPoint: centre point around which to spread the cards
+        - radius: the radius of the area from the centre poit
+        - flipFaceUp: whether to flip the cards face up or down
+     */
+    func pool(cardNodes: [CardSpriteNode], centeredIn centerPoint: CGPoint, withRadius radius: CGFloat, flipFaceUp: Bool) {
+        for card in cardNodes {
+            let angle = CGFloat(Int.random(in: -179...180)).degreesToRadians
+            let distance = CGFloat(Int.random(in: 0...Int(radius)))
+            let rotation = CGFloat(Int.random(in: -89...90)).degreesToRadians
+            
+            let point = CGPoint(x: centerPoint.x, y: centerPoint.y + distance).rotateAbout(point: centerPoint, byAngle: angle)
+            
+            card.moveAndFlip(to: point, rotateToAngle: rotation, faceUp: flipFaceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+        }
+    }
+    
     
     /**
      Returns a random location weighted towards the centre in the specified player's area
@@ -820,7 +862,7 @@ class GameScene: SKScene {
                     self.firstTouchLocation == touchLocation && self.forceTouchActivated &&
                     (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouch) {
                     self.forceTouchActivated = false
-                    self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers(), at: touchLocation)
+                    self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers, at: touchLocation)
                     return
                 }
                 
