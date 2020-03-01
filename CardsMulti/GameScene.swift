@@ -309,19 +309,12 @@ class GameScene: SKScene {
     func resetCards(sync: Bool) {
         Global.shuffle(&self.allCards)
         
-        for (cardNumber, cardNode) in self.allCards.enumerated() {
+        for cardNode in self.allCards {
             cardNode.zRotation = 0
             cardNode.moveToFront()
-            //let cardOffset = CGFloat(Double(cardNumber) * self.verticalHeight)
-            //cardNode.position = CGPoint(x: self.frame.midX - cardOffset, y: self.dividerLine.position.y + self.frame.width / 2 + cardOffset)
-            //cardNode.flip(faceUp: false, sendPosition: false)
         }
-        //if sync {
-        //    self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
-        //}
         
-        let centerPoint = CGPoint(x: self.frame.midX, y: self.dividerLine.position.y + self.frame.width / 2)
-        self.allCards.stack(atPosition: centerPoint, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: false)
+        self.allCards.stack(atPosition: self.playArea.center, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: false)
     }
     
     /**
@@ -341,6 +334,15 @@ class GameScene: SKScene {
         self.deselectNodeForTouch()
     }
     
+    /**
+     Deals the specified number of cards from the specified set of cards to each connnected player
+     
+     - parameters:
+        - cards: the set of cards to deal from
+        - numberOfCards: the number of cards to deal to each player
+     
+     - returns: a tuple containing remaining cards and the duration the deal is going to take
+     */
     func deal(fromCards cards: [CardSpriteNode], numberOfCards: Int) -> (remainingCards: [CardSpriteNode], duration: Double) {
         var cardsToDeal = Array(cards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: numberOfCards * self.numberOfPlayers))
         let remainingCards = Array(Set(cards).subtracting(cardsToDeal))
@@ -418,6 +420,8 @@ class GameScene: SKScene {
      Returns a random location weighted towards the centre in the specified player's area
      
      - parameter position: position of the player
+     
+     - returns: coordinates of the random location
      */
     func randomLocationForPlayer(in position: Position) -> CGPoint {
         // TODO: move to a CGPoint extension?
