@@ -127,6 +127,12 @@ class GameScene: SKScene {
         self.resetGame(sync: false, loadSaved: true)
     }
     
+    init (size: CGSize, loadFromSave: Bool) {
+        super.init(size: size)
+        
+        self.resetGame(sync: false, loadSaved: loadFromSave)
+    }
+    
     override func sceneDidLoad() {
 
         self.lastUpdateTime = 0

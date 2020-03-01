@@ -147,7 +147,7 @@ class GameViewController: UIViewController {
         self.scene.saveGame()
     }
     
-    func startGame() {
+    func startGame(loadFromSave: Bool = true) {
 
         //connectionsLabel.isHidden = true
         
@@ -157,34 +157,34 @@ class GameViewController: UIViewController {
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
-            self.scene = GameScene(size: self.skView.frame.size)
+            self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
         case Games.Solitare.rawValue:
             self.connectionsLabel.isHidden = true
             self.playerLeftLabel.isHidden = true
             self.playerAcrossLabel.isHidden = true
             self.playerRightLabel.isHidden = true
-            self.scene = Solitaire(size: self.skView.frame.size)
+            self.scene = Solitaire(size: self.skView.frame.size, loadFromSave: loadFromSave)
         case Games.GoFish.rawValue:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
-            self.scene = GameGoFish(size: self.skView.frame.size)
+            self.scene = GameGoFish(size: self.skView.frame.size, loadFromSave: loadFromSave)
         default:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
-            self.scene = GameScene(size: self.skView.frame.size)
+            self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
         }
         
         checkForceTouch()
-        scene.gameSceneDelegate = self
+        self.scene.gameSceneDelegate = self
         self.updateScenePlayers()
         
         /* Set the scale mode to scale to fit the window */
-        scene.scaleMode = .aspectFill
-        scene.backgroundColor = UIColor.clear
+        self.scene.scaleMode = .aspectFill
+        self.scene.backgroundColor = UIColor.clear
         
         skView.presentScene(scene)
     }
@@ -449,7 +449,7 @@ extension GameViewController : SettingsViewControllerDelegate, SettingsTableCont
     
     func gameChanged() {
         self.scene.saveGame()
-        self.startGame()
+        self.startGame(loadFromSave: false)
     }
 }
 

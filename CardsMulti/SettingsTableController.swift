@@ -137,9 +137,10 @@ extension SettingsTableContoller : UITableViewDelegate {
             // change game
             if Settings.instance.game != indexPath.row {
                 Settings.instance.game = indexPath.row
-                self.delegate?.gameChanged()
-                self.dismiss(animated: true, completion: nil)
+                self.delegate?.gameChanged()                
             }
+            
+            self.dismiss(animated: true, completion: nil)
             break
         default:
             break
