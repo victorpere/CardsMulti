@@ -137,7 +137,7 @@ extension SettingsTableContoller : UITableViewDelegate {
             // change game
             if Settings.instance.game != indexPath.row {
                 Settings.instance.game = indexPath.row
-                self.delegate?.gameChanged()                
+                self.delegate?.gameChanged()
             }
             
             self.dismiss(animated: true, completion: nil)
@@ -182,6 +182,11 @@ extension SettingsTableContoller : UITableViewDataSource {
         switch indexPath.section {
         case SettingsSection.game.rawValue:
             cell.textLabel?.text = Games(rawValue: indexPath.row)?.name
+            
+            if Settings.instance.game == indexPath.row {
+                cell.accessoryType = .checkmark
+            }
+            
             break
         case SettingsSection.cards1.rawValue:
             cell.selectionStyle = .none
