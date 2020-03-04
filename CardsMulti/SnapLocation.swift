@@ -145,34 +145,6 @@ class SnapLocation {
     // MARK: - Public methods
     
     /**
-    Determines whether a card at the specified location should snap to this location
-    
-    - parameters:
-       - location: the location to examine
-    
-    - returns: True if a card should snap
-    */
-    func shouldSnap(atLocation location: CGPoint) -> Bool {
-        if !self.canAddCards() {
-            return false
-        }
-        
-        if self.snapRect.contains(location) {
-            return true
-        }
-        
-        if self.snapAreaIncludesCards {
-            for card in self.snappedCards {
-                if card.pointInCard(location) {
-                    return true
-                }
-            }
-        }
-        
-        return false
-    }
-    
-    /**
      Determines whether the specified card should snap to this location
      
      - parameters:
@@ -181,7 +153,27 @@ class SnapLocation {
      - returns: True if the card should snap
      */
     func shouldSnap(cardNode: CardSpriteNode) -> Bool {
-        return self.snappableConditionMet(cardNode) && self.shouldSnap(atLocation: cardNode.position)
+        if !self.canAddCards() {
+            return false
+        }
+        
+        if !self.snappableConditionMet(cardNode) {
+            return false
+        }
+        
+        if self.snapRect.contains(cardNode.position) {
+            return true
+        }
+        
+        if self.snapAreaIncludesCards {
+            for snappedCard in self.snappedCards {
+                if snappedCard != cardNode && snappedCard.pointInCard(cardNode.position) {
+                    return true
+                }
+            }
+        }
+        
+        return false
     }
     
     /**

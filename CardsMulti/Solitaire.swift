@@ -111,6 +111,7 @@ class Solitaire : GameScene {
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
             foundation.yOffset = CGFloat(self.verticalHeight)
+            foundation.snapBack = true
             
             // conditions for adding cards to the foundations
             foundation.snappableConditionMet = { (_ card) in
@@ -175,8 +176,7 @@ class Solitaire : GameScene {
         self.wastePile.name = "Waste Pile"
         self.wastePile.shouldFlip = true
         self.wastePile.faceUp = true
-        //self.wastePile.xOffset = CardSpriteNode.stackOffset
-        //self.wastePile.yOffset = CardSpriteNode.stackOffset
+        self.wastePile.snapBack = true
         
         self.wastePile.movableConditionMet = { (_ card) in
             return card == self.wastePile.topCard
@@ -207,6 +207,7 @@ class Solitaire : GameScene {
         self.playPile.faceUp = true
         self.playPile.xOffset = 20
         self.playPile.snapAreaIncludesCards = true
+        self.playPile.snapBack = true
         
         self.playPile.movableConditionMet = { (_ card) in
             return card == self.playPile.topCard
