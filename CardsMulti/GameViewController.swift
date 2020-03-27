@@ -152,19 +152,19 @@ class GameViewController: UIViewController {
         //connectionsLabel.isHidden = true
         
         switch Settings.instance.game {
-        case Games.FreePlay.rawValue:
+        case GameType.FreePlay.rawValue:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
             self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
-        case Games.Solitare.rawValue:
+        case GameType.Solitare.rawValue:
             self.connectionsLabel.isHidden = true
             self.playerLeftLabel.isHidden = true
             self.playerAcrossLabel.isHidden = true
             self.playerRightLabel.isHidden = true
             self.scene = Solitaire(size: self.skView.frame.size, loadFromSave: loadFromSave)
-        case Games.GoFish.rawValue:
+        case GameType.GoFish.rawValue:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
@@ -450,6 +450,10 @@ extension GameViewController : SettingsViewControllerDelegate, SettingsTableCont
     func gameChanged() {
         self.scene.saveGame()
         self.startGame(loadFromSave: false)
+    }
+    
+    func resetScores() {
+        self.scene.resetScores()
     }
 }
 

@@ -27,7 +27,7 @@ class Settings : SettingsBase, NSCoding {
     
     var game: Int {
         get {
-            return self.settingOrDefault(forKey: "game", defaultValue: Games.FreePlay.rawValue)
+            return self.settingOrDefault(forKey: "game", defaultValue: GameType.FreePlay.rawValue)
         }
         set(value) {
             self.setSetting(forKey: "game", toValue: value)

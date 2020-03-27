@@ -13,8 +13,25 @@ class GameState : SettingsBase {
     // MARK: - Singleton
     
     static let instance = GameState()
+    static let solitare = GameState(.Solitare)
+    
+    // MARK: - Initializers
+    
+    override init() {
+        super.init()
+    }
+    
+    init(_ gameType: GameType) {
+        super.init()
+        self.gameType = gameType
+    }
     
     // MARK: - Properties
+    
+    var gameType: GameType?
+    
+    // MARK: - Stored properties
+    
     var cardNodes: [CardSpriteNode] {
         get {
             let cardSymbols = self.settingOrDefault(forKey: "cardSymbols", defaultValue: NSArray())
@@ -31,6 +48,25 @@ class GameState : SettingsBase {
             for cardNode in value {
                 let cardInfo = cardNode.cardInfo
                 self.setSetting(forKey: (cardNode.card?.symbol())!, toValue: cardInfo)
+            }
+        }
+    }
+    
+    var scores: [Score] {
+        get {
+            let scoreIds = self.settingOrDefault(forKey: "scores", defaultValue: NSArray())
+            var scores: [Score] = []
+            for scoreId in scoreIds {
+                let scoreInfo = self.settingOrDefault(forKey: scoreId as! String, defaultValue: NSDictionary())
+                scores.append(Score(scoreInfo: scoreInfo))
+            }
+            return scores
+        }
+        set(value) {
+            let scoreIds = NSArray(array: value.map { $0.scoreId as Any })
+            self.setSetting(forKey: "scores", toValue: scoreIds)
+            for score in value {
+                self.setSetting(forKey: score.scoreId, toValue: score.scoreInfo)
             }
         }
     }

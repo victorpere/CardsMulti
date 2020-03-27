@@ -134,8 +134,12 @@ extension SettingsTableContoller : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case SettingsSection.game.rawValue:
+            // reset score
+            // TODO: create a score page
+            self.delegate.resetScores()
+            
             // change game
-            if Settings.instance.game != indexPath.row {
+            if true || Settings.instance.game != indexPath.row {
                 Settings.instance.game = indexPath.row
                 self.delegate?.gameChanged()
             }
@@ -157,7 +161,7 @@ extension SettingsTableContoller : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case SettingsSection.game.rawValue:
-            return Games.allCases.count
+            return GameType.allCases.count
         case SettingsSection.cards1.rawValue:
             return 3
         case SettingsSection.cards2.rawValue:
@@ -181,7 +185,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         
         switch indexPath.section {
         case SettingsSection.game.rawValue:
-            cell.textLabel?.text = Games(rawValue: indexPath.row)?.name
+            cell.textLabel?.text = GameType(rawValue: indexPath.row)?.name
             
             if Settings.instance.game == indexPath.row {
                 cell.accessoryType = .checkmark
@@ -241,6 +245,7 @@ protocol SettingsTableControllerDelegate {
     func settingsChanged()
     func uiSettingsChanged()
     func gameChanged()
+    func resetScores()
 }
 
 // MARK: - Enum sections

@@ -58,6 +58,8 @@ class Solitaire : GameScene {
     
     override init(size: CGSize, loadFromSave: Bool) {
         super.init(size: size, loadFromSave: loadFromSave)
+        
+        self.gameType = .Solitare
         self.doubleTapAction = { (_ card) in
             for foundation in self.foundations {
                 if foundation.snappableConditionMet(card) {
@@ -71,9 +73,6 @@ class Solitaire : GameScene {
         }
         
         Settings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
-        
-        let player = Player(peerId: self.myPeerId, position: Position.bottom)
-        self.players?.append(player)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -98,7 +97,22 @@ class Solitaire : GameScene {
     
     override func resetGame(sync: Bool, loadSaved: Bool = false) {
         self.removeAllChildren()
-        //self.players![0].score = -52
+        
+        self.scoreLabel = SKLabelNode()
+        self.scoreLabel.fontColor = UIColor.green
+        self.scoreLabel.fontSize = 15
+        self.scoreLabel.fontName = "Helvetica"
+        self.scoreLabel.position = CGPoint(x: self.border, y: self.frame.height - self.border)
+        self.scoreLabel.zPosition = 100
+        self.scoreLabel.horizontalAlignmentMode = .left
+        self.scoreLabel.verticalAlignmentMode = .top
+        self.addChild(self.scoreLabel)
+        
+        if self.scores.count == 0 {
+            let score = Score(peerId: self.myPeerId, name: "RunningScore", gameType: self.gameType)
+            score.label = self.scoreLabel
+            self.scores.append(score)
+        }
         
         self.snapLocations.removeAll()
         
@@ -125,6 +139,20 @@ class Solitaire : GameScene {
             // top car in the foudation is movable
             foundation.movableConditionMet = { (_ card) in
                 return card == foundation.topCard
+            }
+            
+            foundation.snapAction = { (_) in
+                if let score = self.scores.first {
+                    score.score += 3
+                    self.updateScoreLabel()
+                }
+            }
+            
+            foundation.unsnapAction = { (cards) in
+                if let score = self.scores.first {
+                    score.score -= Double(3 * cards.count)
+                    self.updateScoreLabel()
+                }
             }
             
             self.snapLocations.append(foundation)
@@ -303,6 +331,14 @@ class Solitaire : GameScene {
     override func resetCards(sync: Bool) {
         
         DispatchQueue.global(qos: .default).async {
+            self.scores[0].score -= 52
+            
+            for foundation in self.foundations {
+                self.scores[0].score += Double(foundation.snappedCards.count) * 3
+            }
+            
+            self.updateScoreLabel()
+            
             for snapLocation in self.snapLocations {
                 snapLocation.unSnapAll()
             }
@@ -348,4 +384,8 @@ class Solitaire : GameScene {
         }
         
     }
+    
+    // MARK: - Private methods
+    
+
 }

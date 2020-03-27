@@ -34,10 +34,12 @@ class GameGoFish : GameScene {
             
         let dealResult = self.deal(fromCards: self.allCards, numberOfCards: numberOfCardsToDeal)
         
+        /*
         DispatchQueue.global(qos: .default).async {
             usleep(useconds_t(dealResult.duration * 1000000))
             
             self.pool(cardNodes: dealResult.remainingCards, centeredIn: self.playArea.center, withRadius: self.playArea.height / 3, flipFaceUp: false)
-        }        
+        }
+         */
     }
 }

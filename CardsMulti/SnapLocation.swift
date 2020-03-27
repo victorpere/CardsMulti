@@ -89,6 +89,9 @@ class SnapLocation {
     /// Optional action to performed when a card in the snap location is tapped
     var tapAction: ((CardSpriteNode?) -> Void)?
     
+    /// Action to perform when a card is snapped. Default is nothing
+    var snapAction: (CardSpriteNode) -> Void = { (_) in }
+    
     /// Action to perform on cards when they are unsnapped. Default is nothing
     var unsnapAction: ([CardSpriteNode]) -> Void = { (_) in }
     
@@ -230,6 +233,8 @@ class SnapLocation {
         self.snappedCards.append(cardNode)
         cardNode.snapLocation = self
         
+        self.snapAction(cardNode)
+        
         print("added to snapped \(self.name)")
         Global.displayCards(self.snappedCards)
     }
@@ -320,6 +325,11 @@ class SnapLocation {
     
     // MARK: - Private methods
     
+    /**
+     Removes the specified set of cards from the array of snapped cards
+     
+     - parameter cardsToRemove: cards to be removed from snapped array
+     */
     private func removeFromSnapped(_ cardsToRemove: [CardSpriteNode]) {
         self.snappedCards = Array(Set(self.snappedCards).subtracting(cardsToRemove))
     }

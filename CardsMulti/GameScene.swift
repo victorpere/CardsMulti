@@ -10,6 +10,7 @@ import SpriteKit
 import GameplayKit
 import MultipeerConnectivity
 import AudioToolbox
+import SwiftUI
 
 class GameScene: SKScene {
     /// MCPeerID of this device
@@ -32,6 +33,8 @@ class GameScene: SKScene {
     let timeToPopUpMenu: TimeInterval = 1.1
     
     //let connectionService = ConnectionServiceManager()
+    
+    var gameType: GameType = GameType.FreePlay
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -86,6 +89,8 @@ class GameScene: SKScene {
     
     var peers: [MCPeerID?]!
     var players: [Player]?
+    var scores = [Score]()
+    var scoreLabel : SKLabelNode!
     
     var playersHands = [0, 0, 0, 0]
     
@@ -207,6 +212,26 @@ class GameScene: SKScene {
             card.updateScale()
         }
     }
+    
+    /**
+     Updates the score label
+     */
+    func updateScoreLabel() {
+        if let score = self.scores.first {
+            if let scoreLabel = self.scoreLabel {
+                scoreLabel.text = score.scoreText
+            }
+        }
+    }
+    
+    /**
+     Resets all of the games scores to zero
+     */
+    func resetScores() {
+        for score in self.scores {
+            score.reset()
+        }
+    }
 
     // MARK: - Game methods
     
@@ -215,17 +240,18 @@ class GameScene: SKScene {
      */
     func saveGame() {
         GameState.instance.cardNodes = self.allCards
+        GameState.instance.scores = self.scores
     }
     
     /**
      Load cards from a saved state or start over with a new deck
      
-     - parameter fromSaved: whether to load from a saved state
+     - parameter loadSaved: whether to load from a saved state
      */
     func loadCards(fromSaved loadSaved: Bool) {
-        let loadedCards = GameState.instance.cardNodes
-        if loadSaved && loadedCards.count > 0 {
-            self.allCards = loadedCards
+        let savedCards = GameState.instance.cardNodes
+        if loadSaved && savedCards.count > 0 {
+            self.allCards = savedCards
             self.initCards()
             
             for card in self.allCards.sorted(by: { $0.zPosition < $1.zPosition }) {
@@ -240,10 +266,23 @@ class GameScene: SKScene {
                     }
                 }
             }
+            
+            self.loadScores()
         } else {
             self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
             self.initCards()
             self.resetCards(sync: false)
+        }
+    }
+    
+    /**
+     Loads game scores from saved state
+     */
+    func loadScores() {
+        let savedScores = GameState.instance.scores
+        if savedScores.count > 0 {
+            self.scores = savedScores
+            self.updateScoreLabel()
         }
     }
     

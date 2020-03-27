@@ -14,8 +14,10 @@ class Player {
     
     var peerId: MCPeerID
     
+    /// The player's position in relation to the table
     var position: Position
     
+    var scores: [Score]!
     var score: Float = 0
     
     var hand = [CardSpriteNode]()
