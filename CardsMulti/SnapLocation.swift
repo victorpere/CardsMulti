@@ -55,6 +55,9 @@ class SnapLocation {
     /// Whether snap area should expand to include the area of cards that are snapped to this location. Default is false
     var snapAreaIncludesCards = false
     
+    /// Whether to unsnap a card as soon as it moves, or wait until it has stopped moving. Default is true
+    var unsnapWhenMoved = true
+    
     /// Whether to snap a card back to this location if it is moved but not snapped to another location. Default is false
     var snapBack = false
     

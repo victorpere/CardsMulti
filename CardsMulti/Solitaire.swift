@@ -268,6 +268,7 @@ class Solitaire : GameScene {
             tableau.snapAreaIncludesCards = true
             tableau.shouldFlip = true
             tableau.faceUp = false
+            tableau.unsnapWhenMoved = false
             tableau.snapBack = true
             
             // only face up cards are movable

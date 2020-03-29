@@ -686,7 +686,10 @@ class GameScene: SKScene {
         DispatchQueue.global(qos: .default).async {
             for card in cardNodes {
                 if let snapLocation = card.snapLocation {
-                    snapLocation.unSnap(cards: [card])
+                    if snapLocation.unsnapWhenMoved {
+                        snapLocation.unSnap(cards: [card])
+                    }
+                    
                     if snapLocation.snapBack {
                         card.snapBackToLocation = snapLocation
                     }
@@ -1142,18 +1145,18 @@ extension GameScene : CardSpriteNodeDelegate {
             if let bottomCard = cardNodesSorted.first {
                 for snapLocation in self.snapLocations {
                     if snapLocation.shouldSnap(cardNode: bottomCard) {
-                        //if let previousSnapLocation = bottomCard.snapBackToLocation {
-                        //    previousSnapLocation.unSnap(cards: cardNodes)
-                        //}
+                        if let previousSnapLocation = bottomCard.snapBackToLocation {
+                            previousSnapLocation.unSnap(cards: cardNodes)
+                        }
                         snapLocation.snap(cardNodes)
                         snappedToNewLocation = true
                         break
                     }
                 }
                 
-                if let previousSnapLocation = bottomCard.snapBackToLocation {
-                    if !snappedToNewLocation && previousSnapLocation.snapBack {                    
-                        previousSnapLocation.snap(cardNodes)
+                if let snapBackToLocation = bottomCard.snapBackToLocation {
+                    if !snappedToNewLocation && snapBackToLocation.snapBack {                    
+                        snapBackToLocation.snap(cardNodes)
                     }
                 }
             }
