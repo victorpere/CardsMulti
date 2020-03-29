@@ -684,32 +684,17 @@ class GameScene: SKScene {
      */
     func unSnap(_ cardNodes: [CardSpriteNode]) {
         DispatchQueue.global(qos: .default).async {
-            for snapLocation in self.snapLocations {
-                if (!snapLocation.snapBack) {
-                    snapLocation.unSnap(cards: cardNodes)
+            for card in cardNodes {
+                if let snapLocation = card.snapLocation {
+                    snapLocation.unSnap(cards: [card])
+                    if snapLocation.snapBack {
+                        card.snapBackToLocation = snapLocation
+                    }
                 }
             }
         }
     }
     
-    /**
-     Snaps cards back to their original snap location
-     
-     - parameter cardNodes: the cards to snap back
-     */
-    func snapBack(_ cardNodes: [CardSpriteNode]) {
-        var cardsToDeselect = [CardSpriteNode]()
-        for card in cardNodes {
-            if let snapLocation = card.snapLocation {
-                DispatchQueue.global(qos: .default).async {
-                    snapLocation.snap(card)
-                }
-                
-                cardsToDeselect.append(card)
-            }
-        }
-        self.selectedNodes = Array(Set(self.selectedNodes).subtracting(cardsToDeselect))
-    }
 
     func setMovingSpeed(startPosition: CGPoint, endPosition: CGPoint, time: Double) {
         self.previousMovingSpeed = self.currentMovingSpeed
@@ -1157,16 +1142,16 @@ extension GameScene : CardSpriteNodeDelegate {
             if let bottomCard = cardNodesSorted.first {
                 for snapLocation in self.snapLocations {
                     if snapLocation.shouldSnap(cardNode: bottomCard) {
-                        if let previousSnapLocation = bottomCard.snapLocation {
-                            previousSnapLocation.unSnap(cards: cardNodes)
-                        }
+                        //if let previousSnapLocation = bottomCard.snapBackToLocation {
+                        //    previousSnapLocation.unSnap(cards: cardNodes)
+                        //}
                         snapLocation.snap(cardNodes)
                         snappedToNewLocation = true
                         break
                     }
                 }
                 
-                if let previousSnapLocation = bottomCard.snapLocation {
+                if let previousSnapLocation = bottomCard.snapBackToLocation {
                     if !snappedToNewLocation && previousSnapLocation.snapBack {                    
                         previousSnapLocation.snap(cardNodes)
                     }

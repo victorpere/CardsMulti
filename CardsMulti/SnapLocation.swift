@@ -232,6 +232,7 @@ class SnapLocation {
         
         self.snappedCards.append(cardNode)
         cardNode.snapLocation = self
+        cardNode.snapBackToLocation = nil
         
         self.snapAction(cardNode)
         

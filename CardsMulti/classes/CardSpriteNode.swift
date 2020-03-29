@@ -53,6 +53,8 @@ class CardSpriteNode : SKSpriteNode {
     var snapLocation: SnapLocation?
     var snapLocationName: String?
     
+    var snapBackToLocation: SnapLocation?
+    
     // MARK: - Computed properties
     
     var cardWidth: CGFloat { return CardSpriteNode.cardWidthFullSizePixels * self.cardScale }
