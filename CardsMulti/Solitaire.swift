@@ -127,6 +127,8 @@ class Solitaire : GameScene {
             foundation.yOffset = CGFloat(self.verticalHeight)
             foundation.snapBack = true
             
+            foundation.doubleTapAction = { (_) in }
+            
             // conditions for adding cards to the foundations
             foundation.snappableConditionMet = { (_ card) in
                 if foundation.topCard == nil {
@@ -192,6 +194,10 @@ class Solitaire : GameScene {
             return false
         }
         
+        self.stockPile.snappableConditionMet = { (_) in
+            return false
+        }
+        
         // select up to 3 top cards from the stock pile when touched
         self.stockPile.selectedCardsWhenTouched = { (_ touchedCard) in
             return []
@@ -204,6 +210,7 @@ class Solitaire : GameScene {
         self.wastePile.name = "Waste Pile"
         self.wastePile.shouldFlip = true
         self.wastePile.faceUp = true
+        self.wastePile.unsnapWhenMoved = false
         self.wastePile.snapBack = true
         
         self.wastePile.movableConditionMet = { (_ card) in
@@ -235,6 +242,7 @@ class Solitaire : GameScene {
         self.playPile.faceUp = true
         self.playPile.xOffset = 20
         self.playPile.snapAreaIncludesCards = true
+        self.playPile.unsnapWhenMoved = false
         self.playPile.snapBack = true
         
         self.playPile.movableConditionMet = { (_ card) in
