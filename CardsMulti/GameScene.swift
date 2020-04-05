@@ -1145,6 +1145,10 @@ extension GameScene : CardSpriteNodeDelegate {
             if let bottomCard = cardNodesSorted.first {
                 for snapLocation in self.snapLocations {
                     if snapLocation.shouldSnap(cardNode: bottomCard) {
+                        if let currentSnapLocation = bottomCard.snapLocation {
+                            currentSnapLocation.unSnap(cards: cardNodes)
+                        }
+                        
                         if let previousSnapLocation = bottomCard.snapBackToLocation {
                             previousSnapLocation.unSnap(cards: cardNodes)
                         }
