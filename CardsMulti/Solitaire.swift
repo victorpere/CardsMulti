@@ -57,9 +57,8 @@ class Solitaire : GameScene {
     // MARK: - Initializers
     
     override init(size: CGSize, loadFromSave: Bool) {
-        super.init(size: size, loadFromSave: loadFromSave)
+        super.init(size: size, gameType: .Solitare, loadFromSave: loadFromSave)
         
-        self.gameType = .Solitare
         self.doubleTapAction = { (_ card) in
             for foundation in self.foundations {
                 if foundation.snappableConditionMet(card) {

@@ -34,7 +34,8 @@ class GameScene: SKScene {
     
     //let connectionService = ConnectionServiceManager()
     
-    var gameType: GameType = GameType.FreePlay
+    var gameType: GameType
+    var loadSaved: Bool
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -124,24 +125,34 @@ class GameScene: SKScene {
     }
     
     override init(size: CGSize) {
+        self.loadSaved = true
+        self.gameType = .FreePlay
         super.init(size: size)
-        
-        //connectionService.delegate = self
-
-        //self.resetGame(sync: false, loadSaved: false)
-        self.resetGame(sync: false, loadSaved: true)
+                
+        //self.resetGame(sync: false, loadSaved: true)
     }
     
-    init (size: CGSize, loadFromSave: Bool) {
+    init(size: CGSize, loadFromSave: Bool) {
+        self.gameType = .FreePlay
+        self.loadSaved = loadFromSave
         super.init(size: size)
-        
-        self.resetGame(sync: false, loadSaved: loadFromSave)
+    }
+    
+    init(size: CGSize, gameType: GameType) {
+        self.gameType = gameType
+        self.loadSaved = true
+        super.init(size: size)
+    }
+    
+    init (size: CGSize, gameType: GameType, loadFromSave: Bool) {
+        self.gameType = gameType
+        self.loadSaved = loadFromSave
+        super.init(size: size)
     }
     
     override func sceneDidLoad() {
-
+        self.resetGame(sync: false, loadSaved: self.loadSaved)
         self.lastUpdateTime = 0
-        
     }
     
     // MARK: - Private methods
@@ -249,8 +260,9 @@ class GameScene: SKScene {
      - parameter loadSaved: whether to load from a saved state
      */
     func loadCards(fromSaved loadSaved: Bool) {
+        let continueGameType = GameState.instance.gameType == self.gameType
         let savedCards = GameState.instance.cardNodes
-        if loadSaved && savedCards.count > 0 {
+        if continueGameType && loadSaved && savedCards.count > 0 {
             self.allCards = savedCards
             self.initCards()
             
@@ -269,7 +281,7 @@ class GameScene: SKScene {
             
             self.loadScores()
         } else {
-            self.allCards = Global.newShuffledDeck(name: "deck", settings: self.settings)
+            self.allCards = Global.newShuffledDeck(name: "deck", settings: Settings.instance)
             self.initCards()
             self.resetCards(sync: false)
         }
