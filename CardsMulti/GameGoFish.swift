@@ -11,7 +11,17 @@ import CoreGraphics
 
 class GameGoFish : GameScene {
     
+    var stockPile: [CardSpriteNode]?
     
+    // MARK: - Initializers
+    
+    override init(size: CGSize, loadFromSave: Bool) {
+        super.init(size: size, gameType: .GoFish, loadFromSave: loadFromSave)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - GameScene override methods
     
@@ -22,6 +32,15 @@ class GameGoFish : GameScene {
     }
     
     override func deal() {
+        
+        for peerId in self.peers {
+            if peerId != nil {
+                let score = Score(peerId: peerId!, name: "Books", gameType: .GoFish)
+                self.scores.append(score)
+            }
+        }
+        
+        
         var numberOfCardsToDeal: Int
         switch self.numberOfPlayers {
             case 2,3:
@@ -33,6 +52,8 @@ class GameGoFish : GameScene {
         }
             
         let dealResult = self.deal(fromCards: self.allCards, numberOfCards: numberOfCardsToDeal)
+        
+        self.stockPile = dealResult.remainingCards
         
         /*
         DispatchQueue.global(qos: .default).async {

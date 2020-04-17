@@ -23,6 +23,7 @@
 		574693532367CBCD00AB6516 /* SettingsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* SettingsBase.swift */; };
 		574693542367CBCD00AB6516 /* SettingsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* SettingsBase.swift */; };
 		574693562367CD4600AB6516 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693552367CD4600AB6516 /* GameState.swift */; };
+		574725C8243C072E0094FF39 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574725C7243C072E0094FF39 /* GridView.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
 		57897FF81E85652400B1D4A6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF71E85652400B1D4A6 /* Config.swift */; };
 		57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF91E85658D00B1D4A6 /* Switch.swift */; };
@@ -86,6 +87,8 @@
 		57E97B0D1E7479F6000243B2 /* BottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0C1E7479F5000243B2 /* BottomButton.swift */; };
 		57E97B0F1E748244000243B2 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0E1E748244000243B2 /* SettingsViewController.swift */; };
 		57E97B111E74A651000243B2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B101E74A651000243B2 /* Settings.swift */; };
+		57F70561243A7A35009552AB /* ScoresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F70560243A7A35009552AB /* ScoresViewController.swift */; };
+		57F70567243A857B009552AB /* ScoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F70566243A857B009552AB /* ScoreCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +119,7 @@
 		574050541E5F82AA00316AEB /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDevice.swift; path = Extensions/UIDevice.swift; sourceTree = "<group>"; };
 		574693512367CB9D00AB6516 /* SettingsBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBase.swift; sourceTree = "<group>"; };
 		574693552367CD4600AB6516 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		574725C7243C072E0094FF39 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
 		57897FF71E85652400B1D4A6 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		57897FF91E85658D00B1D4A6 /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
@@ -154,6 +158,8 @@
 		57E97B0C1E7479F5000243B2 /* BottomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
 		57E97B0E1E748244000243B2 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		57E97B101E74A651000243B2 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = classes/Settings.swift; sourceTree = "<group>"; };
+		57F70560243A7A35009552AB /* ScoresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoresViewController.swift; sourceTree = "<group>"; };
+		57F70566243A857B009552AB /* ScoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,6 +349,9 @@
 				57BB31D42353BA8700AE2CDC /* PlayerStatusLabel.swift */,
 				57BB31DC23569DA200AE2CDC /* SettingsTableController.swift */,
 				570218272373B44100310A67 /* CardSizeTableViewCell.swift */,
+				57F70560243A7A35009552AB /* ScoresViewController.swift */,
+				57F70566243A857B009552AB /* ScoreCell.swift */,
+				574725C7243C072E0094FF39 /* GridView.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -508,6 +517,7 @@
 				570C3973233697E200A2882C /* GameGoFish.swift in Sources */,
 				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
+				57F70561243A7A35009552AB /* ScoresViewController.swift in Sources */,
 				570218282373B44100310A67 /* CardSizeTableViewCell.swift in Sources */,
 				57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */,
 				57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */,
@@ -522,7 +532,9 @@
 				57B0540D1E4E75B10057E62F /* Rank.swift in Sources */,
 				57B0540E1E4E75B10057E62F /* Suit.swift in Sources */,
 				578F40C62377923100719821 /* SnapLocation.swift in Sources */,
+				57F70567243A857B009552AB /* ScoreCell.swift in Sources */,
 				57B054141E4E75F30057E62F /* CardSpriteNode.swift in Sources */,
+				574725C8243C072E0094FF39 /* GridView.swift in Sources */,
 				57E97B0D1E7479F6000243B2 /* BottomButton.swift in Sources */,
 				57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */,
 				57B053D51E4E3BD20057E62F /* AppDelegate.swift in Sources */,

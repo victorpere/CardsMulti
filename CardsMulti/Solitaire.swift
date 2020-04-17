@@ -114,6 +114,8 @@ class Solitaire : GameScene {
         }
         
         self.snapLocations.removeAll()
+        self.foundations.removeAll()
+        self.tableauLocations.removeAll()
         
         let snapLocationSize = CGSize(width: self.cardWidthPixels, height: self.cardHeightPixels)
         

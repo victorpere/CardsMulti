@@ -36,6 +36,7 @@ class GameViewController: UIViewController {
     var numberOfPlayersButton: BottomButton!
     var lineUpCardsButton: BottomButton!
     var sortCardsButton: BottomButton!
+    var scoresButton: BottomButton!
     
     // MARK: - View methods
 
@@ -100,6 +101,10 @@ class GameViewController: UIViewController {
         restartButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         view.addSubview(restartButton)
         
+        self.scoresButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.view.frame, buttonNumber: 5, numberOfButtons: self.numberOfButtons, tag: 6)
+        self.scoresButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        //view.addSubview(self.scoresButton)
+        
         //let skView = self.view as! SKView
         let sceneFrame = CGRect(x: view.frame.minX, y: view.frame.minY, width: view.frame.width, height: view.frame.height - barHeight)
         skView = SKView(frame: sceneFrame)
@@ -136,7 +141,10 @@ class GameViewController: UIViewController {
             self.openSettings()
         case 5:
             self.sortCards()
-            
+        case 6:
+            // scores
+            self.openScores()
+            break
         default: break
         }
     }
@@ -247,6 +255,21 @@ class GameViewController: UIViewController {
         presentationController?.sourceRect = self.settingsButton.bounds
         
         self.present(navSettingsViewController, animated: true, completion: nil)
+    }
+    
+    func openScores() {
+        let scoresViewController = ScoresViewController(withScene: self.scene)
+        
+        let navScoresViewController = UINavigationController(rootViewController: scoresViewController)
+        navScoresViewController.modalPresentationStyle = .popover
+        scoresViewController.preferredContentSize = CGSize(width: 375, height: 676)
+        
+        let presentationConroller = navScoresViewController.popoverPresentationController
+        presentationConroller?.permittedArrowDirections = .down
+        presentationConroller?.sourceView = self.scoresButton
+        presentationConroller?.sourceRect = self.scoresButton.bounds
+        
+        self.present(navScoresViewController, animated: true, completion: nil)
     }
     
     func checkForceTouch() {
