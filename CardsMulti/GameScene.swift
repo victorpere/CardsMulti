@@ -260,7 +260,7 @@ class GameScene: SKScene {
      - parameter loadSaved: whether to load from a saved state
      */
     func loadCards(fromSaved loadSaved: Bool) {
-        let continueGameType = GameState.instance.gameType == self.gameType
+        let continueGameType = Settings.instance.game == self.gameType.rawValue
         let savedCards = GameState.instance.cardNodes
         if continueGameType && loadSaved && savedCards.count > 0 {
             self.allCards = savedCards
