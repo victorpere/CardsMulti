@@ -22,12 +22,19 @@ import MultipeerConnectivity
 
 class ConnectionServiceManager : NSObject {
     
-    private let ConnectionServiceType = "cards-multi"
+    private let connectionServiceType = "cards-multi"
     
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
+    let myself: Player
+    
+    /// Websockets game ID
+    var gameId: String?
     
     var hostPeerID: MCPeerID!
     var players: [MCPeerID?] = [nil, nil, nil, nil]
+    
+    var host: Player!
+    var players_: [Player?] = [nil, nil, nil, nil]
     
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
     let serviceBrowser : MCNearbyServiceBrowser
@@ -45,14 +52,17 @@ class ConnectionServiceManager : NSObject {
     // MARK: - Initializers
     
     override init() {
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: ConnectionServiceType)
-        self.serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: ConnectionServiceType)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerId, discoveryInfo: nil, serviceType: self.connectionServiceType)
+        self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerId, serviceType: self.connectionServiceType)
+        self.myself = Player(peerId: self.myPeerId)
         
         super.init()
         
         self.hostPeerID = self.myPeerId
-        //self.playerBottom = self.myPeerId
+        self.host = self.myself
+        
         players[Position.bottom.rawValue] = self.myPeerId
+        self.players_[Position.bottom.rawValue] = self.myself
         
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
@@ -102,21 +112,35 @@ class ConnectionServiceManager : NSObject {
     
     func invitePeer(_ peerID: MCPeerID) {
         self.hostPeerID = peerID
+        self.host = self.myself
         self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 15)
     }
     
     func disconnect() {
         self.hostPeerID = self.myPeerId
+        self.host = self.myself
         self.session.disconnect()
     }
     
     func isHost() -> Bool {
+        // OLD WAY
         return self.hostPeerID == self.myPeerId
+        
+        // NEW WAY
+        return self.host === self.myself
     }
     
     func myPosition() -> Position {
+        // OLD WAY
         for i in 0..<self.players.count {
             if self.players[i] == myPeerId {
+                return Position(rawValue: i)!
+            }
+        }
+        
+        // NEW WAY
+        for i in 0..<self.players_.count {
+            if self.players_[i] === self.myself {
                 return Position(rawValue: i)!
             }
         }
@@ -124,8 +148,13 @@ class ConnectionServiceManager : NSObject {
     }
     
     func reassignHost() {
+        // OLD WAY
         let allPeers = self.players.filter { $0 != nil }
         self.hostPeerID = allPeers.first!
+        
+        // NEW WAY
+        let allPlayers = self.players_.filter { $0 != nil }
+        self.host = allPlayers.first!
     }
 }
 
@@ -284,6 +313,7 @@ extension MCSessionState {
             case .notConnected: return "NotConnected"
             case .connecting: return "Connecting"
             case .connected: return "Connected"
+            default: return "Unknown"
         }
     }
     

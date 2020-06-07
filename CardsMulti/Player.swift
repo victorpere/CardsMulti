@@ -12,20 +12,25 @@ import MultipeerConnectivity
 class Player {
     // MARK: - Properties
     
-    var peerId: MCPeerID
+    /// MultipeerConnectivity ID
+    var peerId: MCPeerID?
+    
+    /// Websockets connection ID
+    var connectionId: String?
+    
+    /// Websockets game ID
+    var gameId: String?
     
     /// The player's position in relation to the table
-    var position: Position
-    
-    var scores: [Score]!
-    var score: Float = 0
-    
-    var hand = [CardSpriteNode]()
+    var position: Position?
     
     // MARK: - Initializers
     
-    init(peerId: MCPeerID, position: Position) {
+    init(peerId: MCPeerID) {
         self.peerId = peerId
-        self.position = position
+    }
+    
+    init(connectionId: String) {
+        self.connectionId = connectionId
     }
 }
