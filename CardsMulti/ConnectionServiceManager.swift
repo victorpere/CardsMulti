@@ -18,6 +18,11 @@ import MultipeerConnectivity
     @objc optional func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     
     @objc optional func updatePositions()
+    
+    // AWS
+    @objc optional func didConnectAWS()
+    @objc optional func didDisconnectAWS()
+    @objc optional func didReceiveTextMessageAWS(_ message: String, from sender: String)
 }
 
 class ConnectionServiceManager : NSObject {
@@ -58,6 +63,9 @@ class ConnectionServiceManager : NSObject {
         
         super.init()
         
+        WsRequestSender.instance.delegate = self
+        WsRequestSender.instance.connect()
+        
         self.hostPeerID = self.myPeerId
         self.host = self.myself
         
@@ -74,6 +82,8 @@ class ConnectionServiceManager : NSObject {
     deinit {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
+        
+        WsRequestSender.instance.disconnect()
     }
     
     // MARK: - Public methods
@@ -317,4 +327,32 @@ extension MCSessionState {
         }
     }
     
+}
+
+// MARK: - Extension WsRequestSenderDelegate
+
+extension ConnectionServiceManager : WsRequestSenderDelegate {
+    func didConnect() {
+        self.delegate?.didConnectAWS?()
+    }
+    
+    func didDisconnect() {
+        self.delegate?.didDisconnectAWS?()
+    }
+    
+    func didReceiveGamesList() {
+        
+    }
+    
+    func didReceiveConnectionStatus() {
+        
+    }
+    
+    func didReceiveTextMessage(_ message: String, from sender: String) {
+        self.delegate?.didReceiveTextMessageAWS?(message, from: sender)
+    }
+    
+    func didReceiveGameData(data: Data) {
+        
+    }
 }

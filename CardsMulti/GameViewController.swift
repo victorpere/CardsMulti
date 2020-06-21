@@ -25,6 +25,7 @@ class GameViewController: UIViewController {
     var playerLeftLabel: PlayerStatusLabel!
     var playerAcrossLabel: PlayerStatusLabel!
     var playerRightLabel: PlayerStatusLabel!
+    var awsStatusLabel: UILabel!
     
     var backGroundView: UIView!
     var skView: SKView!
@@ -60,6 +61,11 @@ class GameViewController: UIViewController {
         connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
+        
+        self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - 15, y: self.view.frame.width, width: 15, height: 15))
+        self.awsStatusLabel.textColor = UIColor.green
+        self.awsStatusLabel.font = UIFont(name: "Helvetica", size: 12)
+        self.view.addSubview(self.awsStatusLabel)
         
         playerAcrossLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .top)
         view.addSubview(playerAcrossLabel)
@@ -142,8 +148,12 @@ class GameViewController: UIViewController {
         case 5:
             self.sortCards()
         case 6:
+            // test websockets
+            //WsRequestSender.instnc.connect()
+            //WsRequestSender.instance.disconnect()
+            
             // scores
-            self.openScores()
+            //self.openScores()
             break
         default: break
         }
@@ -165,24 +175,28 @@ class GameViewController: UIViewController {
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
+            self.awsStatusLabel.isHidden = false
             self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
         case GameType.Solitare.rawValue:
             self.connectionsLabel.isHidden = true
             self.playerLeftLabel.isHidden = true
             self.playerAcrossLabel.isHidden = true
             self.playerRightLabel.isHidden = true
+            self.awsStatusLabel.isHidden = true
             self.scene = Solitaire(size: self.skView.frame.size, loadFromSave: loadFromSave)
         case GameType.GoFish.rawValue:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
+            self.awsStatusLabel.isHidden = false
             self.scene = GameGoFish(size: self.skView.frame.size, loadFromSave: loadFromSave)
         default:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
+            self.awsStatusLabel.isHidden = false
             self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
         }
         
@@ -412,6 +426,26 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             invitationAlert.addAction(allow)
             invitationAlert.addAction(cancelButton)
             self.present(invitationAlert, animated: true, completion: nil)
+        }
+    }
+    
+    // AWS
+    
+    func didConnectAWS() {
+        self.awsStatusLabel.text = "⚡︎"
+    }
+    
+    func didDisconnectAWS() {
+        self.awsStatusLabel.text = ""
+    }
+    
+    func didReceiveTextMessageAWS(_ message: String, from sender: String) {
+        DispatchQueue.main.async {
+            let messageAlert = UIAlertController(title: "Message from \(sender)", message: message, preferredStyle: .alert)
+            let cancelButton = UIAlertAction(title: "OK", style: .cancel) { (alert) -> Void in }
+            
+            messageAlert.addAction(cancelButton)
+            self.present(messageAlert, animated: true, completion: nil)
         }
     }
 }
