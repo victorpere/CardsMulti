@@ -6,7 +6,7 @@
 //  Copyright © 2017 Victorius Software Inc. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class Settings : SettingsBase, NSCoding {
     
@@ -38,6 +38,15 @@ class Settings : SettingsBase, NSCoding {
 
     
     // MARK: - Properties
+    
+    var displayName: String {
+        get {
+            return self.settingOrDefault(forKey: "displayName", defaultValue: UIDevice.current.name)
+        }
+        set(value) {
+            self.setSetting(forKey: "displayName", toValue: value)
+        }
+    }
     
     var game: Int {
         get {

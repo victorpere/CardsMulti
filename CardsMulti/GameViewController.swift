@@ -62,7 +62,7 @@ class GameViewController: UIViewController {
         connectionsLabel.text = "Connections: "
         view.addSubview(connectionsLabel)
         
-        self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - 15, y: self.view.frame.width, width: 15, height: 15))
+        self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - 35, y: self.view.frame.width, width: 35, height: 15))
         self.awsStatusLabel.textColor = UIColor.green
         self.awsStatusLabel.font = UIFont(name: "Helvetica", size: 12)
         self.view.addSubview(self.awsStatusLabel)
@@ -136,7 +136,7 @@ class GameViewController: UIViewController {
         case 1:
             self.resetGame()
         case 2:
-            if self.connectionService.session.connectedPeers.count > 0 {
+            if self.connectionService.connected {
                 self.disconnectFromPeer()
             } else {
                 self.browsePeers()
@@ -232,6 +232,22 @@ class GameViewController: UIViewController {
             } )
             peerBrowser.addAction(peerAction)
         }
+        
+        // button to create AWS game
+        let createGameAction = UIAlertAction(title: "Create game", style: .default,
+                                             handler: { (alert) -> Void in
+                                                self.connectionService.createGame()
+        })
+        peerBrowser.addAction(createGameAction)
+        
+        // button to join AWS game
+        let joinGameAction = UIAlertAction(title: "Join game", style: .default, handler: { (alert) -> Void in
+            self.showTextDialog(title: "Join game", text: "Game code", okAction: { (gameCode) -> Void in
+                self.connectionService.findGames(gameCode: gameCode)
+            })
+        })
+        peerBrowser.addAction(joinGameAction)
+        
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
         peerBrowser.addAction(cancelButton)
         
@@ -246,6 +262,7 @@ class GameViewController: UIViewController {
     func disconnectFromPeer() {
         let connectionAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let disconnectButton = UIAlertAction(title: "Disconnect from the game", style: .default, handler: { (alert) -> Void in
+            self.connectionService.disconnectFromGame()
             self.connectionService.disconnect()
         } )
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
@@ -359,8 +376,64 @@ class GameViewController: UIViewController {
         self.scene.peers = self.connectionService.players
     }
     
+    // MARK: - Private methods
     
-    // MARK : - System method overrides
+    /**
+     Displays information alert with OK button that dismisses the alert
+     */
+    private func showAlert(title: String, text: String?) {
+        DispatchQueue.main.async {
+            let messageAlert = UIAlertController(title: title, message: text, preferredStyle: .alert)
+            let cancelButton = UIAlertAction(title: "OK", style: .cancel) { (alert) -> Void in }
+            
+            messageAlert.addAction(cancelButton)
+            self.present(messageAlert, animated: true, completion: nil)
+        }
+    }
+    
+    /**
+     Displays an alert with a text entry and OK and Cancel buttons
+     */
+    private func showTextDialog(title: String, text: String, okAction: @escaping ((String) -> Void)) {
+        let textInputAlert = UIAlertController(title: title, message: text, preferredStyle: .alert)
+        textInputAlert.addTextField()
+        
+        let okButton = UIAlertAction(title: "OK", style: .default) { (alert) -> Void in
+            if let inputText = textInputAlert.textFields![0].text {
+                okAction(inputText)
+            }
+        }
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
+        
+        textInputAlert.addAction(okButton)
+        textInputAlert.addAction(cancelButton)
+        
+        DispatchQueue.main.async {
+            self.present(textInputAlert, animated: true, completion: nil)
+        }
+    }
+    
+    /**
+     Displays an alert with OK and Cancel buttons
+     */
+    private func showActionDialog(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void)) {
+        let alert = UIAlertController(title: title, message: text, preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: actionTitle, style: .default) { (alert) -> Void in
+            action()
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alert.addAction(action)
+        alert.addAction(cancelAction)
+        
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    
+    // MARK: - System method overrides
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -371,6 +444,12 @@ class GameViewController: UIViewController {
 // MARK: - ConnectionServiceManagerDelegate
 
 extension GameViewController : ConnectionServiceManagerDelegate {
+    
+    func newPlayerConnected(player: Player, connectedPlayers: [Player]) {
+        let connectedPlayerNames = connectedPlayers.map({$0.displayName})
+        self.connectionsLabel.text = "Connections: \(connectedPlayerNames)"
+    }
+    
     
     func syncToMe() {
         self.scene.syncToMe()
@@ -439,14 +518,35 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         self.awsStatusLabel.text = ""
     }
     
-    func didReceiveTextMessageAWS(_ message: String, from sender: String) {
-        DispatchQueue.main.async {
-            let messageAlert = UIAlertController(title: "Message from \(sender)", message: message, preferredStyle: .alert)
-            let cancelButton = UIAlertAction(title: "OK", style: .cancel) { (alert) -> Void in }
-            
-            messageAlert.addAction(cancelButton)
-            self.present(messageAlert, animated: true, completion: nil)
+    func didGreateGameAWS(gameCode: String) {
+        self.awsStatusLabel.text = gameCode
+        self.showAlert(title: "Game Created", text: "Game code: \(gameCode)")
+    }
+    
+    func didFindGamesAWS(gameIds: [(String, String)]) {
+        if gameIds.count > 0 {
+            //self.showAlert(title: "Found games", text: gameIds[0].1)
+            self.showActionDialog(title: "Found game", text: "Created by \(gameIds[0].1)", actionTitle: "Join", action: { () -> Void in
+                self.connectionService.joinGame(gameId: gameIds[0].0)
+            })
+        } else {
+            self.showAlert(title: "No games found", text: "")
         }
+    }
+    
+    func didJoinGameAWS(gameId: String, gameCode: String, creator: String) {
+        self.awsStatusLabel.text = gameCode
+        self.showAlert(title: "Joined game code \(gameCode)", text: "Created by \(creator)")
+    }
+    
+    func didDisconnectFromGameAWS() {
+        self.awsStatusLabel.text = "⚡︎"
+        self.showAlert(title: "Disconnected from game", text: nil)
+    }
+    
+    func didReceiveTextMessageAWS(_ message: String, from sender: String) {
+        self.showAlert(title: "Message from \(sender)", text: message)
+        
     }
 }
 

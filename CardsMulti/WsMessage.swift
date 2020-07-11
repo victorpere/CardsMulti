@@ -15,14 +15,24 @@ struct WsMessage {
     var text = ""
     var recipients = ""
     var data: Data?
+    var connectionId = ""
+    var gameId = ""
+    var gameCode = ""
+    var gameIds: [(String, String)] = []
+    var creator = ""
     
     var messageType: WsMessageType {
         switch status {
         case "GamesList":
             return .GamesList
+        case "Created":
+            return .GameCreated
+        case "Joined":
+            return .GameJoined
+        case "Disconnected game":
+            return .GameDisconnected
         case "New Connection",
-             "Connections update",
-             "Created":
+             "Connections update":
             return .ConnectionsUpdate
         case "Message":
             return .TextMessage
@@ -38,6 +48,11 @@ struct WsMessage {
         case sender = "sender"
         case text = "message"
         case recipients = "recepients"
+        case connectionId = "connectionId"
+        case gameId = "gameId"
+        case gameCode = "gameCode"
+        case gameIds = "gameIds"
+        case creator = "creator"
     }
         
     init(with data: Data) throws {
@@ -56,6 +71,27 @@ struct WsMessage {
             if let value = messageDictionary[Key.recipients.rawValue] as? String {
                 self.recipients = value
             }
+            if let value = messageDictionary[Key.connectionId.rawValue] as? String {
+                self.connectionId = value
+            }
+            if let value = messageDictionary[Key.gameId.rawValue] as? String {
+                self.gameId = value
+            }
+            if let value = messageDictionary[Key.gameCode.rawValue] as? String {
+                self.gameCode = value
+            }
+            if let value = messageDictionary[Key.gameIds.rawValue] as? [NSDictionary] {
+                for gameIdDict in value {
+                    if let gameId = gameIdDict["gameId"] as? String {
+                        if let creator = gameIdDict["creator"] as? String {
+                            self.gameIds.append((gameId, creator))
+                        }
+                    }
+                }
+            }
+            if let value = messageDictionary[Key.creator.rawValue] as? String {
+                self.creator = value
+            }
         } catch {
             throw WsMessageError.FailedToDecodeMessageError
         }
@@ -64,6 +100,9 @@ struct WsMessage {
 
 enum WsMessageType {
     case GamesList
+    case GameCreated
+    case GameJoined
+    case GameDisconnected
     case ConnectionsUpdate
     case TextMessage
     case GameData

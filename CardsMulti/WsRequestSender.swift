@@ -53,22 +53,52 @@ class WsRequestSender {
      Create a new game
      */
     func createGame() {
+        let payload: NSDictionary = [
+            "action": WsAction.onCreateGame.rawValue,
+            "creator": Settings.instance.displayName
+        ]
         
+        self.sendPayload(payload)
     }
     
     /**
      Find game IDs matching the specified game code
+     - parameter gameCode: the game code to find
      */
-    func findGames(gameCode: String) -> [String] {
+    func findGames(gameCode: String) {
+        let payload: NSDictionary = [
+            "action": WsAction.onFindGame.rawValue,
+            "gameCode": gameCode
+        ]
         
-        return []
+        self.sendPayload(payload)
     }
     
     /**
      Join an existing game by game ID
+     - parameter gameID:ID of the game to join
      */
     func joinGame(gameId: String) {
+        let payload: NSDictionary = [
+            "action": WsAction.onJoinGame.rawValue,
+            "playerName": Settings.instance.displayName,
+            "gameId": gameId
+        ]
         
+        self.sendPayload(payload)
+    }
+    
+    /**
+     Disconnect from game
+     */
+    func disconnectFromGame(gameId: String) {
+        let payload: NSDictionary = [
+            "action": WsAction.onDisconnectGame.rawValue,
+            "playerName": Settings.instance.displayName,
+            "gameId": gameId
+        ]
+        
+        self.sendPayload(payload)
     }
     
     /**
@@ -91,7 +121,7 @@ class WsRequestSender {
      */
     func sendMessage(sender: String, text: String, recepients: String) {
         let payload: NSDictionary = [
-            "action": "onMessage",
+            "action": WsAction.onMessage.rawValue,
             "sender": sender,
             "message": text,
             "recepients": recepients
@@ -106,13 +136,32 @@ class WsRequestSender {
     
     // MARK: - Private methods
     
+    fileprivate func sendPayload(_ payload: NSDictionary) {
+        do {
+            let payloadData = try JSONSerialization.data(withJSONObject: payload)
+            if let payloadString = String(data: payloadData, encoding: .utf8) {
+                self.webSocket.write(string: payloadString)
+            } else {
+                print("Error converting data into string")
+            }
+        } catch {
+            print("Error serializing message into json")
+        }
+    }
+    
     fileprivate func handleReceivedData(_ data: Data) throws {
         do {
             let wsMessage = try WsMessage(with: data)
             
             switch wsMessage.messageType {
+            case .GameCreated:
+                self.delegate?.didCreateGame(connectionId: wsMessage.connectionId, gameId: wsMessage.gameId, gameCode: wsMessage.gameCode)
             case .GamesList:
-                self.delegate?.didReceiveGamesList()
+                self.delegate?.didReceiveGamesList(gameIds: wsMessage.gameIds)
+            case .GameJoined:
+                self.delegate?.didJoinGame(connectionId: wsMessage.connectionId, gameId: wsMessage.gameId, gameCode: wsMessage.gameCode, creator: wsMessage.creator)
+            case .GameDisconnected:
+                self.delegate?.didDisconnectFromGame()
             case .ConnectionsUpdate:
                 self.delegate?.didReceiveConnectionStatus()
             case .TextMessage:
@@ -168,7 +217,10 @@ extension WsRequestSender : WebSocketDelegate {
 protocol WsRequestSenderDelegate {
     func didConnect()
     func didDisconnect()
-    func didReceiveGamesList()
+    func didCreateGame(connectionId: String, gameId: String, gameCode: String)
+    func didReceiveGamesList(gameIds: [(String, String)])
+    func didJoinGame(connectionId: String, gameId: String, gameCode: String, creator: String)
+    func didDisconnectFromGame()
     func didReceiveConnectionStatus()
     func didReceiveTextMessage(_ message: String, from sender: String)
     func didReceiveGameData(data: Data)
@@ -178,4 +230,14 @@ protocol WsRequestSenderDelegate {
 
 enum WsRquestSenderError : Error {
     case FailedToDecodeJson
+}
+
+// MARK: - WsAction enum
+
+enum WsAction : String {
+    case onCreateGame = "onCreateGame"
+    case onFindGame = "onFindGame"
+    case onJoinGame = "onJoinGame"
+    case onDisconnectGame = "onDisconnectGame"
+    case onMessage = "onMessage"
 }

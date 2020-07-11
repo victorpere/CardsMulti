@@ -24,13 +24,18 @@ class Player {
     /// The player's position in relation to the table
     var position: Position?
     
+    /// The player's display name
+    var displayName: String
+    
     // MARK: - Initializers
     
     init(peerId: MCPeerID) {
         self.peerId = peerId
+        self.displayName = peerId.displayName
     }
     
-    init(connectionId: String) {
+    init(connectionId: String, displayName: String) {
         self.connectionId = connectionId
+        self.displayName = displayName
     }
 }
