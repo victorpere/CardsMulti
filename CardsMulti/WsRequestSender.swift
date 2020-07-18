@@ -107,8 +107,17 @@ class WsRequestSender {
         - data: data to send
         - recepients: recipients in a comma-separated string
      */
-    func sendGameData(data: Data, recepients: String) {
+    func sendGameData(sender: String, data: Data, recepients: String) {
+        if let dataString = String(data: data, encoding: .utf8) {
+            let payload: NSDictionary = [
+                "action": WsAction.onData.rawValue,
+                "sender": sender,
+                "data": dataString,
+                "recepients": recepients
+            ]
         
+            self.sendPayload(payload)
+        }
     }
     
     /**
@@ -162,12 +171,14 @@ class WsRequestSender {
                 self.delegate?.didJoinGame(connectionId: wsMessage.connectionId, gameId: wsMessage.gameId, gameCode: wsMessage.gameCode, creator: wsMessage.creator)
             case .GameDisconnected:
                 self.delegate?.didDisconnectFromGame()
+            case .NewConnection:
+                self.delegate?.didReceiveNewConnection(connectionId: wsMessage.connectionId, playerName: wsMessage.playerName, connections: wsMessage.connections)
             case .ConnectionsUpdate:
                 self.delegate?.didReceiveConnectionStatus()
             case .TextMessage:
                 self.delegate?.didReceiveTextMessage(wsMessage.text, from: wsMessage.sender)
             case .GameData:
-                self.delegate?.didReceiveGameData(data: wsMessage.data ?? Data())
+                self.delegate?.didReceiveGameData(data: wsMessage.data)
             default:
                 break
             }
@@ -221,9 +232,10 @@ protocol WsRequestSenderDelegate {
     func didReceiveGamesList(gameIds: [(String, String)])
     func didJoinGame(connectionId: String, gameId: String, gameCode: String, creator: String)
     func didDisconnectFromGame()
+    func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo])
     func didReceiveConnectionStatus()
     func didReceiveTextMessage(_ message: String, from sender: String)
-    func didReceiveGameData(data: Data)
+    func didReceiveGameData(data: Data?)
 }
 
 // MARK: - WsRequestSenderError enum
@@ -239,5 +251,6 @@ enum WsAction : String {
     case onFindGame = "onFindGame"
     case onJoinGame = "onJoinGame"
     case onDisconnectGame = "onDisconnectGame"
+    case onData = "onData"
     case onMessage = "onMessage"
 }

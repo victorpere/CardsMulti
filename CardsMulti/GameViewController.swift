@@ -224,8 +224,12 @@ class GameViewController: UIViewController {
     }
     
     func browsePeers() {
+        var title = "Create or join a game"
+        if self.connectionService.foundPeers.count > 0 {
+            title = "Join a nearby device, or create or join a remote game"
+        }
         
-        let peerBrowser = UIAlertController(title: "Select device to join:", message: nil, preferredStyle: .actionSheet)
+        let peerBrowser = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         for peerID in self.connectionService.foundPeers {
             let peerAction = UIAlertAction(title: peerID.displayName, style: .default, handler: { (alert) -> Void in
                 self.connectionService.invitePeer(peerID)
@@ -234,15 +238,15 @@ class GameViewController: UIViewController {
         }
         
         // button to create AWS game
-        let createGameAction = UIAlertAction(title: "Create game", style: .default,
+        let createGameAction = UIAlertAction(title: "Create a new game", style: .default,
                                              handler: { (alert) -> Void in
                                                 self.connectionService.createGame()
         })
         peerBrowser.addAction(createGameAction)
         
         // button to join AWS game
-        let joinGameAction = UIAlertAction(title: "Join game", style: .default, handler: { (alert) -> Void in
-            self.showTextDialog(title: "Join game", text: "Game code", okAction: { (gameCode) -> Void in
+        let joinGameAction = UIAlertAction(title: "Join a game", style: .default, handler: { (alert) -> Void in
+            self.showTextDialog(title: "Join a game", text: "Game code", okAction: { (gameCode) -> Void in
                 self.connectionService.findGames(gameCode: gameCode)
             })
         })
@@ -260,7 +264,12 @@ class GameViewController: UIViewController {
     }
     
     func disconnectFromPeer() {
-        let connectionAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        var title: String?
+        if let gameCode = self.connectionService.gameCode {
+            title = "Connected to game \(gameCode)"
+        }
+        
+        let connectionAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         let disconnectButton = UIAlertAction(title: "Disconnect from the game", style: .default, handler: { (alert) -> Void in
             self.connectionService.disconnectFromGame()
             self.connectionService.disconnect()
@@ -444,10 +453,12 @@ class GameViewController: UIViewController {
 // MARK: - ConnectionServiceManagerDelegate
 
 extension GameViewController : ConnectionServiceManagerDelegate {
-    
-    func newPlayerConnected(player: Player, connectedPlayers: [Player]) {
-        let connectedPlayerNames = connectedPlayers.map({$0.displayName})
-        self.connectionsLabel.text = "Connections: \(connectedPlayerNames)"
+
+    func newPlayerConnected(player: Player, connectedPlayers: [Player?]) {
+        //let connectedPlayerNames = connectedPlayers.map({$0.displayName})
+        //self.connectionsLabel.text = "Connections: \(connectedPlayerNames)"
+        
+        self.showAlert(title: "", text: "\(player.displayName) joined the game")
     }
     
     

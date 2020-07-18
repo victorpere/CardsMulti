@@ -20,6 +20,8 @@ struct WsMessage {
     var gameCode = ""
     var gameIds: [(String, String)] = []
     var creator = ""
+    var playerName = ""
+    var connections: [ConnectionInfo] = []
     
     var messageType: WsMessageType {
         switch status {
@@ -31,8 +33,9 @@ struct WsMessage {
             return .GameJoined
         case "Disconnected game":
             return .GameDisconnected
-        case "New Connection",
-             "Connections update":
+        case "New connection":
+            return .NewConnection
+        case "Connections update":
             return .ConnectionsUpdate
         case "Message":
             return .TextMessage
@@ -53,6 +56,8 @@ struct WsMessage {
         case gameCode = "gameCode"
         case gameIds = "gameIds"
         case creator = "creator"
+        case playerName = "playerName"
+        case players = "players"
     }
         
     init(with data: Data) throws {
@@ -82,8 +87,8 @@ struct WsMessage {
             }
             if let value = messageDictionary[Key.gameIds.rawValue] as? [NSDictionary] {
                 for gameIdDict in value {
-                    if let gameId = gameIdDict["gameId"] as? String {
-                        if let creator = gameIdDict["creator"] as? String {
+                    if let gameId = gameIdDict[Key.gameId.rawValue] as? String {
+                        if let creator = gameIdDict[Key.creator.rawValue] as? String {
                             self.gameIds.append((gameId, creator))
                         }
                     }
@@ -91,6 +96,18 @@ struct WsMessage {
             }
             if let value = messageDictionary[Key.creator.rawValue] as? String {
                 self.creator = value
+            }
+            if let value = messageDictionary[Key.playerName.rawValue] as? String {
+                self.playerName = value
+            }
+            if let value = messageDictionary[Key.players.rawValue] as? [NSDictionary] {
+                for playerDict in value {
+                    if let connectionId = playerDict[Key.connectionId.rawValue] as? String {
+                        if let playerName = playerDict[Key.playerName.rawValue] as? String {
+                            self.connections.append(ConnectionInfo(connectionId: connectionId, name: playerName))
+                        }
+                    }
+                }
             }
         } catch {
             throw WsMessageError.FailedToDecodeMessageError
@@ -103,6 +120,7 @@ enum WsMessageType {
     case GameCreated
     case GameJoined
     case GameDisconnected
+    case NewConnection
     case ConnectionsUpdate
     case TextMessage
     case GameData
@@ -111,4 +129,9 @@ enum WsMessageType {
 
 enum WsMessageError : Error {
     case FailedToDecodeMessageError
+}
+
+struct ConnectionInfo {
+    var connectionId: String
+    var name: String
 }

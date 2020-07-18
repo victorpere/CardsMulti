@@ -15,7 +15,7 @@ import MultipeerConnectivity
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
     func syncToMe()
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
-    func newPlayerConnected(player: Player, connectedPlayers: [Player])
+    func newPlayerConnected(player: Player, connectedPlayers: [Player?])
     func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     
     func updatePositions()
@@ -47,7 +47,7 @@ class ConnectionServiceManager : NSObject {
     var players: [MCPeerID?] = [nil, nil, nil, nil]
     
     var host: Player!
-    var players_: [Player?] = [nil, nil, nil, nil]
+    var playersAWS: [Player?] = [nil, nil, nil, nil]
     
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
     let serviceBrowser : MCNearbyServiceBrowser
@@ -82,7 +82,7 @@ class ConnectionServiceManager : NSObject {
         self.host = self.myself
         
         players[Position.bottom.rawValue] = self.myPeerId
-        self.players_[Position.bottom.rawValue] = self.myself
+        self.playersAWS[Position.bottom.rawValue] = self.myself
         
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
@@ -161,8 +161,8 @@ class ConnectionServiceManager : NSObject {
         }
         
         // NEW WAY
-        for i in 0..<self.players_.count {
-            if self.players_[i] === self.myself {
+        for i in 0..<self.playersAWS.count {
+            if self.playersAWS[i] === self.myself {
                 return Position(rawValue: i)!
             }
         }
@@ -175,7 +175,7 @@ class ConnectionServiceManager : NSObject {
         self.hostPeerID = allPeers.first!
         
         // NEW WAY
-        let allPlayers = self.players_.filter { $0 != nil }
+        let allPlayers = self.playersAWS.filter { $0 != nil }
         self.host = allPlayers.first!
     }
     
@@ -206,6 +206,9 @@ class ConnectionServiceManager : NSObject {
         WsRequestSender.instance.joinGame(gameId: gameId)
     }
     
+    /**
+     Sends a request to AWS to disconnect from the game
+     */
     func disconnectFromGame() {
         if (self.gameId != nil) {
             WsRequestSender.instance.disconnectFromGame(gameId: self.gameId!)
@@ -420,6 +423,13 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.delegate?.didDisconnectFromGameAWS()
     }
     
+    func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo]) {
+        
+        let newPlayer = Player(connectionId: connectionId, displayName: playerName)
+        
+        self.delegate?.newPlayerConnected(player: newPlayer, connectedPlayers: self.playersAWS)
+    }
+    
     func didReceiveConnectionStatus() {
         
     }
@@ -428,7 +438,9 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.delegate?.didReceiveTextMessageAWS(message, from: sender)
     }
     
-    func didReceiveGameData(data: Data) {
-        self.delegate?.receivedData(manager: self, data: data)
+    func didReceiveGameData(data: Data?) {
+        if data != nil {
+            self.delegate?.receivedData(manager: self, data: data!)
+        }
     }
 }
