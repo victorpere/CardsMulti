@@ -82,7 +82,7 @@ class CardsMultiTests: XCTestCase {
             card.zPosition = CGFloat(cardIndex)
         }
         
-        let newDeckDictionaryArray = Global.cardDictionaryArray(with: newDeck, position: .left, width: (scene?.frame.width)!, yOffset: (scene?.dividerLine.position.y)!, moveToFront: true, animate: false)
+        let newDeckDictionaryArray = Global.cardDictionaryArray(with: newDeck, playerPosition: .left, width: (scene?.frame.width)!, yOffset: (scene?.dividerLine.position.y)!, moveToFront: true, animate: false)
         
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: newDeckDictionaryArray)

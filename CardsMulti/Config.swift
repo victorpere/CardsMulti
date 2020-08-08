@@ -22,6 +22,8 @@ public final class Config {
     
     public static let snapDistance: CGFloat = 20
     
+    public static let maxPlayers: Int = 4
+    
     private init(){
         
     }

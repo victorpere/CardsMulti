@@ -24,26 +24,7 @@ struct WsMessage {
     var connections: [ConnectionInfo] = []
     
     var messageType: WsMessageType {
-        switch status {
-        case "GamesList":
-            return .GamesList
-        case "Created":
-            return .GameCreated
-        case "Joined":
-            return .GameJoined
-        case "Disconnected game":
-            return .GameDisconnected
-        case "New connection":
-            return .NewConnection
-        case "Connections update":
-            return .ConnectionsUpdate
-        case "Message":
-            return .TextMessage
-        case "Data":
-            return .GameData
-        default:
-            return .Unknown
-        }
+        return WsMessageType(rawValue: status) ?? WsMessageType.Unknown
     }
     
     enum Key : String {
@@ -58,6 +39,7 @@ struct WsMessage {
         case creator = "creator"
         case playerName = "playerName"
         case players = "players"
+        case data = "data"
     }
         
     init(with data: Data) throws {
@@ -109,27 +91,38 @@ struct WsMessage {
                     }
                 }
             }
+            if let value = messageDictionary[Key.data.rawValue] as? String {
+                self.data = value.data(using: .utf8)
+            }
         } catch {
             throw WsMessageError.FailedToDecodeMessageError
         }
     }
 }
 
-enum WsMessageType {
-    case GamesList
-    case GameCreated
-    case GameJoined
-    case GameDisconnected
-    case NewConnection
-    case ConnectionsUpdate
-    case TextMessage
-    case GameData
-    case Unknown
+// MARK: - WsMessageType enum
+
+enum WsMessageType : String {
+    case GamesList = "GamesList"
+    case GameCreated = "Created"
+    case GameJoined = "Joined"
+    case GameDisconnected = "Disconnected game"
+    case NewConnection = "New connection"
+    case Disconnection = "Disconnection"
+    case ConnectionsUpdate = "Connections update"
+    case TextMessage = "Message"
+    case GameData = "GameData"
+    case PlayerData = "PlayerData"
+    case Unknown = "Unknown"
 }
+
+// MARK: - WsMessageError enum
 
 enum WsMessageError : Error {
     case FailedToDecodeMessageError
 }
+
+// MARK: - ConnectionInfo struct
 
 struct ConnectionInfo {
     var connectionId: String

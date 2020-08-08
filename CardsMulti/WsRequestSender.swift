@@ -107,11 +107,12 @@ class WsRequestSender {
         - data: data to send
         - recepients: recipients in a comma-separated string
      */
-    func sendGameData(sender: String, data: Data, recepients: String) {
+    func sendData(sender: String, type: WsDataType, data: Data, recepients: String) {
         if let dataString = String(data: data, encoding: .utf8) {
             let payload: NSDictionary = [
                 "action": WsAction.onData.rawValue,
                 "sender": sender,
+                "type": type.rawValue,
                 "data": dataString,
                 "recepients": recepients
             ]
@@ -161,6 +162,7 @@ class WsRequestSender {
     fileprivate func handleReceivedData(_ data: Data) throws {
         do {
             let wsMessage = try WsMessage(with: data)
+            print("Received \(wsMessage.messageType.rawValue) at \(Date())")
             
             switch wsMessage.messageType {
             case .GameCreated:
@@ -173,12 +175,16 @@ class WsRequestSender {
                 self.delegate?.didDisconnectFromGame()
             case .NewConnection:
                 self.delegate?.didReceiveNewConnection(connectionId: wsMessage.connectionId, playerName: wsMessage.playerName, connections: wsMessage.connections)
+            case .Disconnection:
+                self.delegate?.didReceiveDisconnnection(connectionId: wsMessage.connectionId, playerName: wsMessage.playerName, connections: wsMessage.connections)
             case .ConnectionsUpdate:
-                self.delegate?.didReceiveConnectionStatus()
+                self.delegate?.didReceiveConnectionsUpdate(connections: wsMessage.connections)
             case .TextMessage:
                 self.delegate?.didReceiveTextMessage(wsMessage.text, from: wsMessage.sender)
             case .GameData:
                 self.delegate?.didReceiveGameData(data: wsMessage.data)
+            case .PlayerData:
+                self.delegate?.didReceivePlayerData(data: wsMessage.data)
             default:
                 break
             }
@@ -233,9 +239,11 @@ protocol WsRequestSenderDelegate {
     func didJoinGame(connectionId: String, gameId: String, gameCode: String, creator: String)
     func didDisconnectFromGame()
     func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo])
-    func didReceiveConnectionStatus()
+    func didReceiveDisconnnection(connectionId: String, playerName: String, connections: [ConnectionInfo])
+    func didReceiveConnectionsUpdate(connections: [ConnectionInfo])
     func didReceiveTextMessage(_ message: String, from sender: String)
     func didReceiveGameData(data: Data?)
+    func didReceivePlayerData(data: Data?)
 }
 
 // MARK: - WsRequestSenderError enum
@@ -253,4 +261,12 @@ enum WsAction : String {
     case onDisconnectGame = "onDisconnectGame"
     case onData = "onData"
     case onMessage = "onMessage"
+}
+
+// MARK: - WsDataType enum
+
+enum WsDataType : String {
+    case player = "PlayerData"
+    case game = "GameData"
+    case settings = "SettingsData"
 }

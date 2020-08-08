@@ -459,6 +459,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         //self.connectionsLabel.text = "Connections: \(connectedPlayerNames)"
         
         self.showAlert(title: "", text: "\(player.displayName) joined the game")
+        self.scene.playerPosition = self.connectionService.myPositionAWS()
     }
     
     
@@ -479,6 +480,11 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         
     }
     
+    func playerDisconnected(player: Player, connectedPlayers: [Player?]) {
+        
+        self.showAlert(title: "", text: "\(player.displayName) disconnected")
+    }
+    
     func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
         DispatchQueue.main.async {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
@@ -490,14 +496,14 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         self.updateScenePlayers()
     }
     
-    func updatePositions() {
+    func updatePositions(myPosition: Position) {
         DispatchQueue.main.async {
             let connectedDevicesNames = self.connectionService.session.connectedPeers.map({$0.displayName})
             self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
             self.updateLabels()
             self.updatePlayerLabels()
         }
-        self.scene.playerPosition = self.connectionService.myPosition()
+        self.scene.playerPosition = myPosition
         self.updateScenePlayers()
     }
     
@@ -601,6 +607,7 @@ extension GameViewController : GameSceneDelegate {
         
     func sendData(data: Data) {
         self.connectionService.sendData(data: data)
+        self.connectionService.sendDataAWS(data: data)
     }
 }
 
