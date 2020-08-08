@@ -246,7 +246,7 @@ class GameViewController: UIViewController {
         
         // button to join AWS game
         let joinGameAction = UIAlertAction(title: "Join a game", style: .default, handler: { (alert) -> Void in
-            self.showTextDialog(title: "Join a game", text: "Game code", okAction: { (gameCode) -> Void in
+            self.showTextDialog(title: "Join a game", text: "Game code", keyboardType: .numberPad, okAction: { (gameCode) -> Void in
                 self.connectionService.findGames(gameCode: gameCode)
             })
         })
@@ -403,9 +403,10 @@ class GameViewController: UIViewController {
     /**
      Displays an alert with a text entry and OK and Cancel buttons
      */
-    private func showTextDialog(title: String, text: String, okAction: @escaping ((String) -> Void)) {
+    private func showTextDialog(title: String, text: String, keyboardType: UIKeyboardType, okAction: @escaping ((String) -> Void)) {
         let textInputAlert = UIAlertController(title: title, message: text, preferredStyle: .alert)
         textInputAlert.addTextField()
+        textInputAlert.textFields![0].keyboardType = keyboardType
         
         let okButton = UIAlertAction(title: "OK", style: .default) { (alert) -> Void in
             if let inputText = textInputAlert.textFields![0].text {
