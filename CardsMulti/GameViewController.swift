@@ -508,8 +508,8 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         self.updateScenePlayers()
     }
     
-    func receivedData(manager: ConnectionServiceManager, data: Data) {
-        self.scene.receivedData(data: data)
+    func receivedData(manager: ConnectionServiceManager, data: Data, type dataType: WsDataType?) {
+        self.scene.receivedData(data: data, type: dataType)
     }
     
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
@@ -606,9 +606,9 @@ extension GameViewController : GameSceneDelegate {
         return self.connectionService.players
     }
         
-    func sendData(data: Data) {
+    func sendData(data: Data, type dataType: WsDataType) {
         self.connectionService.sendData(data: data)
-        self.connectionService.sendDataAWS(data: data)
+        self.connectionService.sendDataAWS(data: data, type: dataType)
     }
 }
 

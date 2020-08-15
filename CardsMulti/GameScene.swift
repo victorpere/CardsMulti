@@ -998,7 +998,15 @@ class GameScene: SKScene {
                                    "king" : self.settings.king,
                                    "ace" : self.settings.ace] as [String : Any]
         let encodedData = NSKeyedArchiver.archivedData(withRootObject: settingsDictionary)
-        self.gameSceneDelegate!.sendData(data: encodedData)
+        
+        do {
+            let settingsData = try Settings.instance.jsonData()
+            self.gameSceneDelegate?.sendData(data: settingsData, type: .settings)
+        } catch {
+            // Coundn't seralize settings
+        }
+        
+        self.gameSceneDelegate!.sendData(data: encodedData, type: .settings)
     }
     
     /**
@@ -1006,80 +1014,115 @@ class GameScene: SKScene {
      
      - parameter data: data containing synchronization dictionary
      */
-    func receivedData(data: Data) {
+    func receivedData(data: Data, type dataType: WsDataType?) {
         
-        if let receivedSettings = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSDictionary {
-            self.settings.minRank = (receivedSettings["minRank"] as? Int)!
-            self.settings.maxRank = (receivedSettings["maxRank"] as? Int)!
-            self.settings.jack = (receivedSettings["jack"] as? Bool)!
-            self.settings.queen = (receivedSettings["queen"] as? Bool)!
-            self.settings.king = (receivedSettings["king"] as? Bool)!
-            self.settings.ace = (receivedSettings["ace"] as? Bool)!
-            self.resetGame(sync: false)
-        } else {
-        
+        switch dataType {
+        case .settings:
+            // settings received from AWS
             do {
-                let cardDictionaryArray = try JSONSerialization.jsonObject(with: data) as! NSArray
-                
-                for cardDictionaryArrayElement in cardDictionaryArray {
-                    let cardDictionary = cardDictionaryArrayElement as! NSDictionary
-                    
-                    let cardSymbol = cardDictionary["c"] as! String
-                    let cardNode = self.allCards.filter { $0.card?.symbol() == cardSymbol }.first
-
-                    let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
-                    var newPositionTransposed = CGPoint()
-                    
-                    let newRotationRelative = cardDictionary["r"] != nil ? cardDictionary["r"] as! CGFloat : CGFloat()
-                    var newRotation = CGFloat()
-                    
-                    switch self.playerPosition {
-                    case .bottom :
-                        newPositionTransposed = newPositionRelative
-                        newRotation = newRotationRelative
-                    case .top :
-                        newPositionTransposed.x = 1 - newPositionRelative.x
-                        newPositionTransposed.y = 1 - newPositionRelative.y
-                        newRotation = newRotationRelative - CGFloat.pi
-                    case .left :
-                        // UNTESTED
-                        newPositionTransposed.x = 1 - newPositionRelative.y
-                        newPositionTransposed.y = newPositionRelative.x
-                        newRotation = newRotationRelative + CGFloat.pi / 2
-                    case .right:
-                        // UNTESTED
-                        newPositionTransposed.x = newPositionRelative.y
-                        newPositionTransposed.y = 1 - newPositionRelative.x
-                        newRotation = CGFloat.pi / 2 - newRotationRelative - CGFloat.pi / 2
-                    default:
-                        break
-                    }
-                    
-                    let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
-                    //let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
-                
-                    let faceUp = cardDictionary["f"] as! Bool
-                    
-                    if (cardDictionary["m"] as! Bool) {
-                        cardNode?.moveToFront()
-                        Global.displayCards([cardNode!])
-                    }
-                    
-                    if cardDictionary["a"] as! Bool {
-                        cardNode?.moveAndFlip(to: newPosition, rotateToAngle: newRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
-                    } else {
-                        cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
-                        cardNode?.position = newPosition
-                        cardNode?.zRotation = newRotation
-                    }
-                }
+                let receivedSettings = try Settings(with: data)
+                print("Received settings as json with data type")
+                Settings.instance.minRank = receivedSettings.minRank
+                Settings.instance.maxRank = receivedSettings.maxRank
+                Settings.instance.pips = receivedSettings.pips
+                Settings.instance.jack = receivedSettings.jack
+                Settings.instance.queen = receivedSettings.queen
+                Settings.instance.king = receivedSettings.king
+                Settings.instance.ace = receivedSettings.ace
+                self.resetGame(sync: false)
             } catch {
-                print("Error deserializing json data \(error)")
+                // Failed to deserialize settings
+                print("Failed to deserialize json settings")
             }
+            
+            break
+        case .game, nil:
+            // settings receive from local
+            if let receivedSettings = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSDictionary {
+                print("Received settings as archived")
+                self.settings.minRank = (receivedSettings["minRank"] as? Int)!
+                self.settings.maxRank = (receivedSettings["maxRank"] as? Int)!
+                self.settings.jack = (receivedSettings["jack"] as? Bool)!
+                self.settings.queen = (receivedSettings["queen"] as? Bool)!
+                self.settings.king = (receivedSettings["king"] as? Bool)!
+                self.settings.ace = (receivedSettings["ace"] as? Bool)!
+                self.resetGame(sync: false)
+            } else if let receivedSettings = try? Settings(with: data) {
+                print("Received settings as json with no dataType")
+                Settings.instance.minRank = receivedSettings.minRank
+                Settings.instance.maxRank = receivedSettings.maxRank
+                Settings.instance.pips = receivedSettings.pips
+                Settings.instance.jack = receivedSettings.jack
+                Settings.instance.queen = receivedSettings.queen
+                Settings.instance.king = receivedSettings.king
+                Settings.instance.ace = receivedSettings.ace
+                self.resetGame(sync: false)
+            } else {
+                do {
+                    let cardDictionaryArray = try JSONSerialization.jsonObject(with: data) as! NSArray
+                    
+                    print("Received game data")
+                    
+                    for cardDictionaryArrayElement in cardDictionaryArray {
+                        let cardDictionary = cardDictionaryArrayElement as! NSDictionary
+                        
+                        let cardSymbol = cardDictionary["c"] as! String
+                        let cardNode = self.allCards.filter { $0.card?.symbol() == cardSymbol }.first
+
+                        let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
+                        var newPositionTransposed = CGPoint()
+                        
+                        let newRotationRelative = cardDictionary["r"] != nil ? cardDictionary["r"] as! CGFloat : CGFloat()
+                        var newRotation = CGFloat()
+                        
+                        switch self.playerPosition {
+                        case .bottom :
+                            newPositionTransposed = newPositionRelative
+                            newRotation = newRotationRelative
+                        case .top :
+                            newPositionTransposed.x = 1 - newPositionRelative.x
+                            newPositionTransposed.y = 1 - newPositionRelative.y
+                            newRotation = newRotationRelative - CGFloat.pi
+                        case .left :
+                            // UNTESTED
+                            newPositionTransposed.x = 1 - newPositionRelative.y
+                            newPositionTransposed.y = newPositionRelative.x
+                            newRotation = newRotationRelative + CGFloat.pi / 2
+                        case .right:
+                            // UNTESTED
+                            newPositionTransposed.x = newPositionRelative.y
+                            newPositionTransposed.y = 1 - newPositionRelative.x
+                            newRotation = CGFloat.pi / 2 - newRotationRelative - CGFloat.pi / 2
+                        default:
+                            break
+                        }
+                        
+                        let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
+                        //let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
+                    
+                        let faceUp = cardDictionary["f"] as! Bool
+                        
+                        if (cardDictionary["m"] as! Bool) {
+                            cardNode?.moveToFront()
+                            Global.displayCards([cardNode!])
+                        }
+                        
+                        if cardDictionary["a"] as! Bool {
+                            cardNode?.moveAndFlip(to: newPosition, rotateToAngle: newRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
+                        } else {
+                            cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
+                            cardNode?.position = newPosition
+                            cardNode?.zRotation = newRotation
+                        }
+                    }
+                } catch {
+                    print("Error deserializing json data \(error)")
+                }
+            }
+        default:
+            break
         }
     }
-    
-
 }
 
 
@@ -1106,7 +1149,7 @@ extension GameScene : CardSpriteNodeDelegate {
         
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: [cardDictionary])
-            self.gameSceneDelegate!.sendData(data: jsonData)
+            self.gameSceneDelegate!.sendData(data: jsonData, type: .game)
         } catch {
             print("Error serializing json data: \(error)")
         }
@@ -1118,7 +1161,7 @@ extension GameScene : CardSpriteNodeDelegate {
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: cardDictionaryArray)
-            self.gameSceneDelegate!.sendData(data: jsonData)
+            self.gameSceneDelegate!.sendData(data: jsonData, type: .game)
         } catch {
             print("Error serializing json data: \(error)")
         }
@@ -1184,7 +1227,7 @@ extension GameScene : CardSpriteNodeDelegate {
 
 protocol GameSceneDelegate {
     
-    func sendData(data: Data)
+    func sendData(data: Data, type dataType: WsDataType)
 
     func peers() -> [MCPeerID?]
     

@@ -11,7 +11,7 @@ import MultipeerConnectivity
 
  protocol ConnectionServiceManagerDelegate {
     
-    func receivedData(manager: ConnectionServiceManager, data: Data)
+    func receivedData(manager: ConnectionServiceManager, data: Data, type dataType: WsDataType?)
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
     func syncToMe()
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
@@ -130,10 +130,10 @@ class ConnectionServiceManager : NSObject {
     /**
      Sends game data to all the other AWS players
      */
-    func sendDataAWS(data: Data) {
+    func sendDataAWS(data: Data, type dataType: WsDataType) {
         if let myConnectionId = self.myself.connectionId {
             let recipients = Array(self.playersAWS.filter({ $0?.connectionId != myConnectionId })).connectionIds
-            WsRequestSender.instance.sendData(sender: myConnectionId, type: .game, data: data, recepients: recipients)
+            WsRequestSender.instance.sendData(sender: myConnectionId, type: dataType, data: data, recepients: recipients)
         }
     }
     
@@ -371,7 +371,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
             self.reassignHost()
             self.delegate?.updatePositions(myPosition: self.myPosition())
         } else {
-            self.delegate?.receivedData(manager: self, data: data)
+            self.delegate?.receivedData(manager: self, data: data, type: .game)
         }
 
     }
@@ -504,9 +504,14 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.delegate?.didReceiveTextMessageAWS(message, from: sender)
     }
     
-    func didReceiveGameData(data: Data?) {
-        if let receivedData = data {
-            self.delegate?.receivedData(manager: self, data: receivedData)
+    func didReceiveGameData(data: Data?, type dataType: WsDataType?) {
+        switch dataType {
+        case .player:
+            self.didReceivePlayerData(data: data)
+        default:
+            if let receivedData = data {
+                self.delegate?.receivedData(manager: self, data: receivedData, type: dataType)
+            }
         }
     }
     

@@ -22,6 +22,7 @@ struct WsMessage {
     var creator = ""
     var playerName = ""
     var connections: [ConnectionInfo] = []
+    var dataType: WsDataType?
     
     var messageType: WsMessageType {
         return WsMessageType(rawValue: status) ?? WsMessageType.Unknown
@@ -40,6 +41,7 @@ struct WsMessage {
         case playerName = "playerName"
         case players = "players"
         case data = "data"
+        case dataType = "dataType"
     }
         
     init(with data: Data) throws {
@@ -93,6 +95,9 @@ struct WsMessage {
             }
             if let value = messageDictionary[Key.data.rawValue] as? String {
                 self.data = value.data(using: .utf8)
+            }
+            if let value = messageDictionary[Key.dataType.rawValue] as? String {
+                self.dataType = WsDataType.init(rawValue: value)
             }
         } catch {
             throw WsMessageError.FailedToDecodeMessageError

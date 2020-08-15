@@ -134,6 +134,22 @@ class Settings : SettingsBase, NSCoding {
         }
     }
     
+    // MARK: - Computed properties
+    
+    var settingsDictionary: NSDictionary {
+        return NSDictionary(dictionary: [
+            SettingsKey.game.rawValue : self.game,
+            SettingsKey.minRank.rawValue : self.minRank,
+            SettingsKey.maxRank.rawValue : self.maxRank,
+            SettingsKey.pips.rawValue : self.pips,
+            SettingsKey.jack.rawValue : self.jack,
+            SettingsKey.queen.rawValue : self.queen,
+            SettingsKey.king.rawValue : self.king,
+            SettingsKey.ace.rawValue : self.ace,
+            SettingsKey.cardWidthsPerScreen.rawValue : self.cardWidthsPerScreen
+        ])
+    }
+    
     // MARK: - Initializers
     
     override init() {}
@@ -166,6 +182,57 @@ class Settings : SettingsBase, NSCoding {
         }
     }
     
+    init(with data: Data) throws {
+        super.init()
+        do {
+            if let settingsDictionary = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
+                
+                if let value = settingsDictionary[SettingsKey.game.rawValue] as? Int {
+                    self.game = value
+                }
+                if let value = settingsDictionary[SettingsKey.minRank.rawValue] as? Int {
+                    self.minRank = value
+                }
+                if let value = settingsDictionary[SettingsKey.maxRank.rawValue] as? Int {
+                    self.maxRank = value
+                }
+                if let value = settingsDictionary[SettingsKey.pips.rawValue] as? Bool {
+                    self.pips = value
+                }
+                if let value = settingsDictionary[SettingsKey.jack.rawValue] as? Bool {
+                    self.jack = value
+                }
+                if let value = settingsDictionary[SettingsKey.queen.rawValue] as? Bool {
+                    self.queen = value
+                }
+                if let value = settingsDictionary[SettingsKey.king.rawValue] as? Bool {
+                    self.king = value
+                }
+                if let value = settingsDictionary[SettingsKey.ace.rawValue] as? Bool {
+                    self.ace = value
+                }
+                if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen] as? Float {
+                    self.cardWidthsPerScreen = value
+                }
+            } else {
+                throw SettingsErrors.FailedToDecodeSettings
+            }
+        } catch {
+            throw SettingsErrors.FailedToDecodeSettings
+        }
+    }
+    
+    // MARK: - Public methods
+    
+    func jsonData() throws -> Data {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: self.settingsDictionary)
+            return jsonData
+        } catch {
+            throw SettingsErrors.FailedToEncodeSettings
+        }
+    }
+    
     // MARK: - NSCoding methods
     
     func encode(with aCoder: NSCoder) {
@@ -184,4 +251,21 @@ class Settings : SettingsBase, NSCoding {
 
 enum SettingsErrors : Error {
     case settingNotFound
+    case FailedToDecodeSettings
+    case FailedToEncodeSettings
+}
+
+// MARK: - SettingsKey enum
+
+enum SettingsKey : String {
+    case displayName = "displayName"
+    case game = "game"
+    case minRank = "minRank"
+    case maxRank = "maxRank"
+    case pips = "pips"
+    case jack = "jack"
+    case queen = "queen"
+    case king = "king"
+    case ace = "ace"
+    case cardWidthsPerScreen = "cardWidthsPerScreen"
 }
