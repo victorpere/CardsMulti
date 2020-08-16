@@ -89,7 +89,7 @@ class GameScene: SKScene {
     var movingDirectionReversed = 0
     
     var peers: [MCPeerID?]!
-    var players: [Player]?
+    var players: [Player?]?
     var scores = [Score]()
     var scoreLabel : SKLabelNode!
     
@@ -112,10 +112,10 @@ class GameScene: SKScene {
     
     /// The number of connected players
     var numberOfPlayers: Int {
-        if self.peers == nil {
+        if self.players == nil {
             return 1
         }
-        return self.peers.filter { $0 != nil }.count
+        return self.players!.filter { $0 != nil }.count
     }
     
     // MARK: - Initializers
@@ -410,7 +410,7 @@ class GameScene: SKScene {
                 for direction in [Position.left, Position.top, Position.right, Position.bottom] {
                     let nextPositionToDealTo = direction.positionTo(self.playerPosition)
                     
-                    if self.peers?[nextPositionToDealTo.rawValue] != nil {
+                    if self.players?[nextPositionToDealTo.rawValue] != nil {
                         cardsToDeal = self.deal(toPosition: direction, fromCards: cardsToDeal)
                         usleep(useconds_t(self.resetDuration * 1000000))
                     }

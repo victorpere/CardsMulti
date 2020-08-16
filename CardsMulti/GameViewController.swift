@@ -383,6 +383,7 @@ class GameViewController: UIViewController {
 
     func updateScenePlayers(){
         self.scene.peers = self.connectionService.players
+        self.scene.players = self.connectionService.playersAWS
     }
     
     // MARK: - Private methods
