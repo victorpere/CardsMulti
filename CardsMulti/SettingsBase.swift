@@ -30,4 +30,9 @@ class SettingsBase : NSObject {
         self.userDefaults.setValue(value, forKey: key)
         self.userDefaults.synchronize()
     }
+    
+    func removeSetting(forKey key: String) {
+        self.userDefaults.removeObject(forKey: key)
+        self.userDefaults.synchronize()
+    }
 }

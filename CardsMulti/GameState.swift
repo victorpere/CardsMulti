@@ -30,6 +30,14 @@ class GameState : SettingsBase {
     
     var gameType: GameType?
     
+    // MARK: - Enums
+    
+    enum Key : String {
+        case cardNodes = "cardNodes"
+        case scores = "scores"
+        case gameId = "gameId"
+    }
+    
     // MARK: - Stored properties
     
     var cardNodes: [CardSpriteNode] {
@@ -67,6 +75,19 @@ class GameState : SettingsBase {
             self.setSetting(forKey: "scores", toValue: scoreIds)
             for score in value {
                 self.setSetting(forKey: score.scoreId, toValue: score.scoreInfo)
+            }
+        }
+    }
+    
+    var gameId: String? {
+        get {
+            return self.settingOrDefault(forKey: Key.gameId.rawValue, defaultValue: nil)
+        }
+        set(value) {
+            if value != nil {
+                self.setSetting(forKey: Key.gameId.rawValue, toValue: value)
+            } else {
+                self.removeSetting(forKey: Key.gameId.rawValue)
             }
         }
     }

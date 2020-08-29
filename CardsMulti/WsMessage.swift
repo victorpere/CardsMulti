@@ -111,6 +111,7 @@ enum WsMessageType : String {
     case GamesList = "GamesList"
     case GameCreated = "Created"
     case GameJoined = "Joined"
+    case GameNotFound = "Game not found"
     case GameDisconnected = "Disconnected game"
     case NewConnection = "New connection"
     case Disconnection = "Disconnection"

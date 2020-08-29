@@ -175,6 +175,8 @@ class WsRequestSender {
                 self.delegate?.didReceiveGamesList(gameIds: wsMessage.gameIds)
             case .GameJoined:
                 self.delegate?.didJoinGame(connectionId: wsMessage.connectionId, gameId: wsMessage.gameId, gameCode: wsMessage.gameCode, creator: wsMessage.creator)
+            case .GameNotFound:
+                self.delegate?.didNotFindGame(gameId: wsMessage.gameId)
             case .GameDisconnected:
                 self.delegate?.didDisconnectFromGame()
             case .NewConnection:
@@ -239,6 +241,7 @@ protocol WsRequestSenderDelegate {
     func didCreateGame(connectionId: String, gameId: String, gameCode: String)
     func didReceiveGamesList(gameIds: [(String, String)])
     func didJoinGame(connectionId: String, gameId: String, gameCode: String, creator: String)
+    func didNotFindGame(gameId: String)
     func didDisconnectFromGame()
     func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo])
     func didReceiveDisconnnection(connectionId: String, playerName: String, connections: [ConnectionInfo])

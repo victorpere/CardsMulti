@@ -531,6 +531,13 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     
     func didConnectAWS() {
         self.awsStatusLabel.text = "⚡︎"
+        
+        // reconnect to AWS game
+        if let gameId = GameState.instance.gameId {
+            self.showActionDialog(title: "Do you want to reconnect to last game?", text: nil, actionTitle: "Reconnect", action: { () -> Void in
+                self.connectionService.joinGame(gameId: gameId)
+            })
+        }
     }
     
     func didDisconnectAWS() {
@@ -540,6 +547,10 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     func didGreateGameAWS(gameCode: String) {
         self.awsStatusLabel.text = gameCode
         self.showAlert(title: "Game Created", text: "Game code: \(gameCode)")
+    }
+    
+    func didNotFindGame() {
+        self.showAlert(title: "Could not find game", text: nil)
     }
     
     func didFindGamesAWS(gameIds: [(String, String)]) {

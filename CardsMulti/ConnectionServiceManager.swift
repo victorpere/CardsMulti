@@ -25,6 +25,7 @@ import MultipeerConnectivity
     func didConnectAWS()
     func didDisconnectAWS()
     func didGreateGameAWS(gameCode: String)
+    func didNotFindGame()
     func didFindGamesAWS(gameIds: [(String, String)])
     func didJoinGameAWS(gameId: String, gameCode: String, creator: String)
     func didDisconnectFromGameAWS()
@@ -436,7 +437,20 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.gameCode = gameCode
         self.myself.position = .bottom
         self.host = self.myself
+        
+        GameState.instance.gameId = gameId
+        
         self.delegate?.didGreateGameAWS(gameCode: gameCode)
+    }
+    
+    func didNotFindGame(gameId: String) {
+        self.gameId = nil
+        self.gameCode = nil
+        self.host = nil
+        
+        GameState.instance.gameId = nil
+        
+        self.delegate?.didNotFindGame()
     }
     
     func didReceiveGamesList(gameIds: [(String,String)]) {
@@ -449,6 +463,8 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.gameCode = gameCode
         self.host = nil
         self.delegate?.didJoinGameAWS(gameId: gameId, gameCode: gameCode, creator: creator)
+        
+        GameState.instance.gameId = gameId
     }
     
     func didDisconnectFromGame() {
@@ -456,6 +472,8 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.gameCode = nil
         self.host = nil
         self.delegate?.didDisconnectFromGameAWS()
+        
+        GameState.instance.gameId = nil
     }
     
     func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo]) {
