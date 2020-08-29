@@ -44,6 +44,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let viewController = self.window?.rootViewController as! GameViewController? {
             viewController.connectionService.startAdvertising()
             viewController.connectionService.startBrowsing()
+            
+            if !WsRequestSender.instance.isConnected {
+                WsRequestSender.instance.connect()
+            }
         }
     }
 

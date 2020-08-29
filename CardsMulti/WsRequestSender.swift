@@ -20,6 +20,10 @@ class WsRequestSender {
     
     var delegate: WsRequestSenderDelegate?
     
+    var isConnected: Bool {
+        return self.webSocket.isConnected
+    }
+    
     // MARK: - Private properties
     
     private var webSocket: WebSocket
