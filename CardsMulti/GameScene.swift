@@ -371,7 +371,7 @@ class GameScene: SKScene {
             cardNode.moveToFront()
         }
         
-        self.allCards.stack(atPosition: self.playArea.center, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: false)
+        self.allCards.stack(atPosition: self.playArea.center, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: true)
     }
     
     /**
@@ -1067,52 +1067,53 @@ class GameScene: SKScene {
                         let cardDictionary = cardDictionaryArrayElement as! NSDictionary
                         
                         let cardSymbol = cardDictionary["c"] as! String
-                        let cardNode = self.allCards.filter { $0.card?.symbol() == cardSymbol }.first
-
-                        let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
-                        var newPositionTransposed = CGPoint()
+                        if let cardNode = self.allCards.filter({ $0.card?.symbol() == cardSymbol }).first {
+                            
+                            let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
+                            var newPositionTransposed = CGPoint()
+                            
+                            let newRotationRelative = cardDictionary["r"] != nil ? cardDictionary["r"] as! CGFloat : CGFloat()
+                            var newRotation = CGFloat()
+                            
+                            switch self.playerPosition {
+                            case .bottom :
+                                newPositionTransposed = newPositionRelative
+                                newRotation = newRotationRelative
+                            case .top :
+                                newPositionTransposed.x = 1 - newPositionRelative.x
+                                newPositionTransposed.y = 1 - newPositionRelative.y
+                                newRotation = newRotationRelative - CGFloat.pi
+                            case .left :
+                                // UNTESTED
+                                newPositionTransposed.x = 1 - newPositionRelative.y
+                                newPositionTransposed.y = newPositionRelative.x
+                                newRotation = newRotationRelative + CGFloat.pi / 2
+                            case .right:
+                                // UNTESTED
+                                newPositionTransposed.x = newPositionRelative.y
+                                newPositionTransposed.y = 1 - newPositionRelative.x
+                                newRotation = CGFloat.pi / 2 - newRotationRelative - CGFloat.pi / 2
+                            default:
+                                break
+                            }
+                            
+                            let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
                         
-                        let newRotationRelative = cardDictionary["r"] != nil ? cardDictionary["r"] as! CGFloat : CGFloat()
-                        var newRotation = CGFloat()
-                        
-                        switch self.playerPosition {
-                        case .bottom :
-                            newPositionTransposed = newPositionRelative
-                            newRotation = newRotationRelative
-                        case .top :
-                            newPositionTransposed.x = 1 - newPositionRelative.x
-                            newPositionTransposed.y = 1 - newPositionRelative.y
-                            newRotation = newRotationRelative - CGFloat.pi
-                        case .left :
-                            // UNTESTED
-                            newPositionTransposed.x = 1 - newPositionRelative.y
-                            newPositionTransposed.y = newPositionRelative.x
-                            newRotation = newRotationRelative + CGFloat.pi / 2
-                        case .right:
-                            // UNTESTED
-                            newPositionTransposed.x = newPositionRelative.y
-                            newPositionTransposed.y = 1 - newPositionRelative.x
-                            newRotation = CGFloat.pi / 2 - newRotationRelative - CGFloat.pi / 2
-                        default:
-                            break
-                        }
-                        
-                        let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
-                        //let newPositionInverted = CGPoint(x: self.frame.width - newPosition.x, y: self.frame.height - newPosition.y + self.dividerLine.position.y)
-                    
-                        let faceUp = cardDictionary["f"] as! Bool
-                        
-                        if (cardDictionary["m"] as! Bool) {
-                            cardNode?.moveToFront()
-                            Global.displayCards([cardNode!])
-                        }
-                        
-                        if cardDictionary["a"] as! Bool {
-                            cardNode?.moveAndFlip(to: newPosition, rotateToAngle: newRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
-                        } else {
-                            cardNode?.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
-                            cardNode?.position = newPosition
-                            cardNode?.zRotation = newRotation
+                            let faceUp = cardDictionary["f"] as! Bool
+                            
+                            
+                            if (cardDictionary["m"] as! Bool) {
+                                cardNode.moveToFront()
+                                Global.displayCards([cardNode])
+                            }
+                            
+                            if cardDictionary["a"] as! Bool {
+                                cardNode.moveAndFlip(to: newPosition, rotateToAngle: newRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
+                            } else {
+                                cardNode.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
+                                cardNode.position = newPosition
+                                cardNode.zRotation = newRotation
+                            }
                         }
                     }
                 } catch {

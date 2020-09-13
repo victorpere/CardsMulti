@@ -46,7 +46,9 @@ class GameState : SettingsBase {
             var cardNodes: [CardSpriteNode] = []
             for cardSymbol in cardSymbols {
                 let cardInfo = self.settingOrDefault(forKey: cardSymbol as! String, defaultValue: NSDictionary())
-                cardNodes.append(CardSpriteNode(cardInfo: cardInfo))
+                if cardInfo.allKeys.count > 0 {
+                    cardNodes.append(CardSpriteNode(cardInfo: cardInfo))
+                }
             }
             return cardNodes
         }
