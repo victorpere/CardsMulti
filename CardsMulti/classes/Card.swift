@@ -12,17 +12,17 @@ class Card {
     
     var spriteName: String {
         get {
-            return self.rank.name() + "_of_" + String(describing: self.suit)
+            return self.rank.name + "_of_" + String(describing: self.suit)
         }
+    }
+    
+    var symbol: String {
+        return (self.suit.symbol + self.rank.symbol)
     }
     
     init(suit: Suit, rank:Rank) {
         self.suit = suit
         self.rank = rank
-    }
-    
-    func symbol() -> String {
-        return (suit.symbol() + rank.symbol())
     }
     
     func beats(_ card: Card, trump: Card) -> Bool {

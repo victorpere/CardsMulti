@@ -80,7 +80,7 @@ class GameViewController: UIViewController {
         positionLabel.textColor = UIColor.green
         positionLabel.font = UIFont(name: "Helvetica", size: 10)
         positionLabel.numberOfLines = 0
-        positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
+        positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition)\n"
         for player in self.connectionService.players {
             positionLabel.text?.append("\(String(describing: player))\n")
         }
@@ -345,7 +345,7 @@ class GameViewController: UIViewController {
 
     func updateLabels() {
         DispatchQueue.main.async {
-            self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition())\n"
+            self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition)\n"
             for player in self.connectionService.players {
                 self.positionLabel.text?.append("\(String(describing: player))\n")
             }
@@ -354,9 +354,9 @@ class GameViewController: UIViewController {
     
     func updatePlayerLabels() {
         DispatchQueue.global(qos: .default).async {
-            let positionToLeft = self.connectionService.myPosition().positionToLeft()
-            let positionAcross = self.connectionService.myPosition().positionAcross()
-            let positionToRight = self.connectionService.myPosition().positionToRight()
+            let positionToLeft = self.connectionService.myPosition.positionToLeft
+            let positionAcross = self.connectionService.myPosition.positionAcross
+            let positionToRight = self.connectionService.myPosition.positionToRight
             if let playerToLeft = self.connectionService.players[positionToLeft.rawValue] {
                 //self.playerLeftLabel.text = playerToLeft.displayName
                 self.playerLeftLabel.update(playerName: playerToLeft.displayName)
@@ -461,7 +461,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         //self.connectionsLabel.text = "Connections: \(connectedPlayerNames)"
         
         self.showAlert(title: "", text: "\(player.displayName) joined the game")
-        self.scene.playerPosition = self.connectionService.myPositionAWS()
+        self.scene.playerPosition = self.connectionService.myPositionAWS
     }
     
     
@@ -477,7 +477,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             self.updatePlayerLabels()
         }
         
-        self.scene.playerPosition = self.connectionService.myPosition()
+        self.scene.playerPosition = self.connectionService.myPosition
         self.updateScenePlayers()
         
     }
@@ -494,7 +494,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             self.updateLabels()
             self.updatePlayerLabels()
         }
-        self.scene.playerPosition = self.connectionService.myPosition()
+        self.scene.playerPosition = self.connectionService.myPosition
         self.updateScenePlayers()
     }
     

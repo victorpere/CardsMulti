@@ -371,7 +371,7 @@ class GameScene: SKScene {
             cardNode.moveToFront()
         }
         
-        self.allCards.stack(atPosition: self.playArea.center, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: true)
+        self.allCards.stack(atPosition: self.playArea.center, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: true, delegate: self)
     }
     
     /**
@@ -527,7 +527,7 @@ class GameScene: SKScene {
             let topCardLocation = (cardsSorted.last?.position)!
             //self.stack(cards: cardsSorted, at: topCardLocation)
             
-            self.selectedNodes.stack(atPosition: topCardLocation, sendPosition: true, animateReceiver: true)
+            self.selectedNodes.stack(atPosition: topCardLocation, sendPosition: true, animateReceiver: true, delegate: self)
             
             self.deselectNodeForTouch()
         }
@@ -557,8 +557,8 @@ class GameScene: SKScene {
             let stack1 = Array(cardsSorted.prefix(upTo: halfIndex))
             let stack2 = Array(cardsSorted.suffix(from: halfIndex))
             
-            stack1.stack(atPosition: position1, sendPosition: true, animateReceiver: true)
-            stack2.stack(atPosition: position2, sendPosition: true, animateReceiver: true)
+            stack1.stack(atPosition: position1, sendPosition: true, animateReceiver: true, delegate: self)
+            stack2.stack(atPosition: position2, sendPosition: true, animateReceiver: true, delegate: self)
         }
     }
     
@@ -755,7 +755,7 @@ class GameScene: SKScene {
         }
         
         // stacking cards also sends position to other devices
-        cards.stack(atPosition: topCardPosition!, sendPosition: true, animateReceiver: true)
+        cards.stack(atPosition: topCardPosition!, sendPosition: true, animateReceiver: true, delegate: self)
  
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
@@ -1058,6 +1058,58 @@ class GameScene: SKScene {
                 Settings.instance.ace = receivedSettings.ace
                 self.resetGame(sync: false)
             } else {
+                
+                if let cardDictionary = try? JSONSerialization.jsonObject(with: data) as? Dictionary<String, Any> {
+                    print("Received dictionary (zPosition)")
+                    for card in self.allCards {
+                        if let zPosition = cardDictionary[card.card!.symbol] as? CGFloat {
+                            card.zPosition = zPosition
+                        }
+                    }
+                    //Global.displayCards(self.allCards)
+                    
+                } else if let receivedArray = try? JSONSerialization.jsonObject(with: data) as? NSArray {
+                    print("Received array (cards)")
+                    
+                    for arrayElement in receivedArray {
+                        if let cardSymbol = arrayElement as? String {
+                            guard let cardNode = self.allCards.filter({ $0.card?.symbol == cardSymbol}).first else { break }
+                            cardNode.moveToFront()
+                            Global.displayCards([cardNode])
+                        }
+                        
+                        else if let cardDictionary = arrayElement as? NSDictionary {
+                            guard let cardSymbol = cardDictionary["c"] as? String else { break }
+                            guard let cardNode = self.allCards.filter({ $0.card?.symbol == cardSymbol}).first else { break }
+                            guard let codedPosition = cardDictionary["p"] as? String else { break }
+                            let position = NSCoder.cgPoint(for: codedPosition)
+                            guard let rotation = cardDictionary["r"] as? CGFloat else { break }
+                            guard let animate = cardDictionary["a"] as? Bool else { break }
+                            guard let moveToFront = cardDictionary["m"] as? Bool else { break }
+                            guard let faceUp = cardDictionary["f"] as? Bool else { break }
+                            
+                            let transposedPosition = self.playerPosition.transpose(position: position)
+                            let transposedRotation = self.playerPosition.transpose(rotation: rotation)
+                            
+                            if moveToFront {
+                                cardNode.moveToFront()
+                                //Global.displayCards([cardNode])
+                            }
+                            
+                            let newPosition = CGPoint(x: transposedPosition.x * self.frame.width, y: transposedPosition.y * self.frame.width + self.dividerLine.position.y)
+                            
+                            if animate {
+                                cardNode.moveAndFlip(to: newPosition, rotateToAngle: transposedRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
+                            } else {
+                                cardNode.flip(faceUp: faceUp, sendPosition: false)
+                                cardNode.position = newPosition
+                                cardNode.zRotation = transposedRotation
+                            }
+                        }
+                    }
+                    
+                }
+                /*
                 do {
                     let cardDictionaryArray = try JSONSerialization.jsonObject(with: data) as! NSArray
                     
@@ -1067,7 +1119,7 @@ class GameScene: SKScene {
                         let cardDictionary = cardDictionaryArrayElement as! NSDictionary
                         
                         let cardSymbol = cardDictionary["c"] as! String
-                        if let cardNode = self.allCards.filter({ $0.card?.symbol() == cardSymbol }).first {
+                        if let cardNode = self.allCards.filter({ $0.card?.symbol == cardSymbol }).first {
                             
                             let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
                             var newPositionTransposed = CGPoint()
@@ -1119,6 +1171,7 @@ class GameScene: SKScene {
                 } catch {
                     print("Error deserializing json data \(error)")
                 }
+                 */
             }
         default:
             break
@@ -1167,6 +1220,35 @@ extension GameScene : CardSpriteNodeDelegate {
             print("Error serializing json data: \(error)")
         }
 
+    }
+    
+    /**
+     Sends the z positions of all cards to sychroize vertical order
+     */
+    func sendZPositions() {
+        print("Sending z positions")
+        
+        /*
+         var zPositionsDictionary = Dictionary<String,Int8>()
+        for card in self.allCards {
+            //zPositionsArray.append([String(cardNumber) : card.card?.symbol() ?? ""])
+            if card.card != nil {
+                zPositionsDictionary[card.card!.symbol] = Int8(card.zPosition)
+            }
+            Global.displayCards([card])
+        }
+         */
+        
+        let cardsSorted = self.allCards.sorted { $0.zPosition < $1.zPosition }
+        let zPositionsArray = cardsSorted.map { $0.card?.symbol }
+                
+        do {
+            //let jsonData = try JSONSerialization.data(withJSONObject: zPositionsDictionary)
+            let jsonData = try JSONSerialization.data(withJSONObject: zPositionsArray)
+            self.gameSceneDelegate?.sendData(data: jsonData, type: .game)
+        } catch {
+            print("failed to serialize zposition data")
+        }
     }
     
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode] {

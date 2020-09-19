@@ -58,6 +58,8 @@ class ConnectionServiceManager : NSObject {
     
     var delegate: ConnectionServiceManagerDelegate?
     
+    // MARK: - Computed properties
+    
     lazy var session : MCSession = {
         let session = MCSession(peer: self.myPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.required)
         session.delegate = self
@@ -66,6 +68,34 @@ class ConnectionServiceManager : NSObject {
     
     var connected: Bool {
         return self.session.connectedPeers.count > 0 || self.gameId != nil
+    }
+    
+    var isHost: Bool {
+        // OLD WAY
+        return self.hostPeerID == self.myPeerId
+    }
+    
+    var isHostAWS: Bool {
+        return self.host?.connectionId == self.myself.connectionId
+    }
+    
+    var myPosition: Position {
+        // OLD WAY
+        for i in 0..<self.players.count {
+            if self.players[i] == myPeerId {
+                return Position(rawValue: i)!
+            }
+        }
+        return .error
+    }
+    
+    var myPositionAWS: Position {
+        for i in 0..<self.playersAWS.count {
+            if self.playersAWS[i]?.connectionId == self.myself.connectionId {
+                return Position(rawValue: i)!
+            }
+        }
+        return .error
     }
     
     // MARK: - Initializers
@@ -172,33 +202,7 @@ class ConnectionServiceManager : NSObject {
         self.session.disconnect()
     }
     
-    func isHost() -> Bool {
-        // OLD WAY
-        return self.hostPeerID == self.myPeerId
-    }
-    
-    func isHostAWS() -> Bool {
-        return self.host?.connectionId == self.myself.connectionId
-    }
-    
-    func myPosition() -> Position {
-        // OLD WAY
-        for i in 0..<self.players.count {
-            if self.players[i] == myPeerId {
-                return Position(rawValue: i)!
-            }
-        }
-        return .error
-    }
-    
-    func myPositionAWS() -> Position {
-        for i in 0..<self.playersAWS.count {
-            if self.playersAWS[i]?.connectionId == self.myself.connectionId {
-                return Position(rawValue: i)!
-            }
-        }
-        return .error
-    }
+
     
     func reassignHost() {
         // OLD WAY
@@ -320,7 +324,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 self.stopAdvertising()
             }
             
-            if self.isHost() {
+            if self.isHost {
                 for i in 0..<self.players.count {
                     if self.players[i] == nil {
                         self.players[i] = peerID
@@ -329,7 +333,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 }
 
                 self.sendPlayerData()
-                self.delegate?.updatePositions(myPosition: self.myPosition())
+                self.delegate?.updatePositions(myPosition: self.myPosition)
                 self.delegate?.syncToMe()
                 self.reassignHost()
             }
@@ -370,7 +374,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
         if let receivedPlayers = NSKeyedUnarchiver.unarchiveObject(with: data) as? [MCPeerID?] {
             self.players = receivedPlayers
             self.reassignHost()
-            self.delegate?.updatePositions(myPosition: self.myPosition())
+            self.delegate?.updatePositions(myPosition: self.myPosition)
         } else {
             self.delegate?.receivedData(manager: self, data: data, type: .game)
         }
@@ -481,7 +485,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         if connectionId != self.myself.connectionId {
             let newPlayer = Player(connectionId: connectionId, displayName: playerName)
             
-            if self.isHostAWS() {
+            if self.isHostAWS {
                 for i in 0..<self.playersAWS.count {
                     if self.playersAWS[i] == nil {
                         newPlayer.position = Position(rawValue: i) ?? .bottom
@@ -491,7 +495,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                 }
 
                 self.sendPlayerDataAWS()
-                self.delegate?.updatePositions(myPosition: self.myPositionAWS())
+                self.delegate?.updatePositions(myPosition: self.myPositionAWS)
                 self.delegate?.syncToMe()
                 self.reassignHost()
             }
@@ -548,7 +552,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                     
                     self.playersAWS = playersAWS
                     self.reassignHost()
-                    self.delegate?.updatePositions(myPosition: self.myPositionAWS())
+                    self.delegate?.updatePositions(myPosition: self.myPositionAWS)
                 }
             } catch {
                 print("Error deserializing player data")
