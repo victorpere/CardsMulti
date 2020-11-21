@@ -10,7 +10,6 @@ import SpriteKit
 import GameplayKit
 import MultipeerConnectivity
 import AudioToolbox
-import SwiftUI
 
 class GameScene: SKScene {
     /// MCPeerID of this device
@@ -1059,16 +1058,7 @@ class GameScene: SKScene {
                 self.resetGame(sync: false)
             } else {
                 
-                if let cardDictionary = try? JSONSerialization.jsonObject(with: data) as? Dictionary<String, Any> {
-                    print("Received dictionary (zPosition)")
-                    for card in self.allCards {
-                        if let zPosition = cardDictionary[card.card!.symbol] as? CGFloat {
-                            card.zPosition = zPosition
-                        }
-                    }
-                    //Global.displayCards(self.allCards)
-                    
-                } else if let receivedArray = try? JSONSerialization.jsonObject(with: data) as? NSArray {
+                if let receivedArray = try? JSONSerialization.jsonObject(with: data) as? NSArray {
                     print("Received array (cards)")
                     
                     for arrayElement in receivedArray {
@@ -1107,71 +1097,7 @@ class GameScene: SKScene {
                             }
                         }
                     }
-                    
                 }
-                /*
-                do {
-                    let cardDictionaryArray = try JSONSerialization.jsonObject(with: data) as! NSArray
-                    
-                    print("Received game data")
-                    
-                    for cardDictionaryArrayElement in cardDictionaryArray {
-                        let cardDictionary = cardDictionaryArrayElement as! NSDictionary
-                        
-                        let cardSymbol = cardDictionary["c"] as! String
-                        if let cardNode = self.allCards.filter({ $0.card?.symbol == cardSymbol }).first {
-                            
-                            let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
-                            var newPositionTransposed = CGPoint()
-                            
-                            let newRotationRelative = cardDictionary["r"] != nil ? cardDictionary["r"] as! CGFloat : CGFloat()
-                            var newRotation = CGFloat()
-                            
-                            switch self.playerPosition {
-                            case .bottom :
-                                newPositionTransposed = newPositionRelative
-                                newRotation = newRotationRelative
-                            case .top :
-                                newPositionTransposed.x = 1 - newPositionRelative.x
-                                newPositionTransposed.y = 1 - newPositionRelative.y
-                                newRotation = newRotationRelative - CGFloat.pi
-                            case .left :
-                                // UNTESTED
-                                newPositionTransposed.x = 1 - newPositionRelative.y
-                                newPositionTransposed.y = newPositionRelative.x
-                                newRotation = newRotationRelative + CGFloat.pi / 2
-                            case .right:
-                                // UNTESTED
-                                newPositionTransposed.x = newPositionRelative.y
-                                newPositionTransposed.y = 1 - newPositionRelative.x
-                                newRotation = CGFloat.pi / 2 - newRotationRelative - CGFloat.pi / 2
-                            default:
-                                break
-                            }
-                            
-                            let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
-                        
-                            let faceUp = cardDictionary["f"] as! Bool
-                            
-                            
-                            if (cardDictionary["m"] as! Bool) {
-                                cardNode.moveToFront()
-                                Global.displayCards([cardNode])
-                            }
-                            
-                            if cardDictionary["a"] as! Bool {
-                                cardNode.moveAndFlip(to: newPosition, rotateToAngle: newRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
-                            } else {
-                                cardNode.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
-                                cardNode.position = newPosition
-                                cardNode.zRotation = newRotation
-                            }
-                        }
-                    }
-                } catch {
-                    print("Error deserializing json data \(error)")
-                }
-                 */
             }
         default:
             break
@@ -1228,22 +1154,10 @@ extension GameScene : CardSpriteNodeDelegate {
     func sendZPositions() {
         print("Sending z positions")
         
-        /*
-         var zPositionsDictionary = Dictionary<String,Int8>()
-        for card in self.allCards {
-            //zPositionsArray.append([String(cardNumber) : card.card?.symbol() ?? ""])
-            if card.card != nil {
-                zPositionsDictionary[card.card!.symbol] = Int8(card.zPosition)
-            }
-            Global.displayCards([card])
-        }
-         */
-        
         let cardsSorted = self.allCards.sorted { $0.zPosition < $1.zPosition }
         let zPositionsArray = cardsSorted.map { $0.card?.symbol }
                 
         do {
-            //let jsonData = try JSONSerialization.data(withJSONObject: zPositionsDictionary)
             let jsonData = try JSONSerialization.data(withJSONObject: zPositionsArray)
             self.gameSceneDelegate?.sendData(data: jsonData, type: .game)
         } catch {
