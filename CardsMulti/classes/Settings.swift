@@ -187,39 +187,20 @@ class Settings : SettingsBase, NSCoding {
         do {
             if let settingsDictionary = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
                 
-                if let value = settingsDictionary[SettingsKey.game.rawValue] as? Int {
-                    self.game = value
-                }
-                if let value = settingsDictionary[SettingsKey.minRank.rawValue] as? Int {
-                    self.minRank = value
-                }
-                if let value = settingsDictionary[SettingsKey.maxRank.rawValue] as? Int {
-                    self.maxRank = value
-                }
-                if let value = settingsDictionary[SettingsKey.pips.rawValue] as? Bool {
-                    self.pips = value
-                }
-                if let value = settingsDictionary[SettingsKey.jack.rawValue] as? Bool {
-                    self.jack = value
-                }
-                if let value = settingsDictionary[SettingsKey.queen.rawValue] as? Bool {
-                    self.queen = value
-                }
-                if let value = settingsDictionary[SettingsKey.king.rawValue] as? Bool {
-                    self.king = value
-                }
-                if let value = settingsDictionary[SettingsKey.ace.rawValue] as? Bool {
-                    self.ace = value
-                }
-                if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen] as? Float {
-                    self.cardWidthsPerScreen = value
-                }
+                self.initialize(withDictionary: settingsDictionary)
+                
             } else {
                 throw SettingsErrors.FailedToDecodeSettings
             }
         } catch {
             throw SettingsErrors.FailedToDecodeSettings
         }
+    }
+    
+    init(withDictionary settingsDictionary: NSDictionary) {
+        super.init()
+        
+        self.initialize(withDictionary: settingsDictionary)
     }
     
     // MARK: - Public methods
@@ -230,6 +211,42 @@ class Settings : SettingsBase, NSCoding {
             return jsonData
         } catch {
             throw SettingsErrors.FailedToEncodeSettings
+        }
+    }
+    
+    func syncTo(settingsDictionary receivedSettingsDictionary: NSDictionary) {
+        self.initialize(withDictionary: receivedSettingsDictionary)
+    }
+    
+    // MARK: - Private methods
+    
+    private func initialize(withDictionary settingsDictionary: NSDictionary) {
+        if let value = settingsDictionary[SettingsKey.game.rawValue] as? Int {
+            self.game = value
+        }
+        if let value = settingsDictionary[SettingsKey.minRank.rawValue] as? Int {
+            self.minRank = value
+        }
+        if let value = settingsDictionary[SettingsKey.maxRank.rawValue] as? Int {
+            self.maxRank = value
+        }
+        if let value = settingsDictionary[SettingsKey.pips.rawValue] as? Bool {
+            self.pips = value
+        }
+        if let value = settingsDictionary[SettingsKey.jack.rawValue] as? Bool {
+            self.jack = value
+        }
+        if let value = settingsDictionary[SettingsKey.queen.rawValue] as? Bool {
+            self.queen = value
+        }
+        if let value = settingsDictionary[SettingsKey.king.rawValue] as? Bool {
+            self.king = value
+        }
+        if let value = settingsDictionary[SettingsKey.ace.rawValue] as? Bool {
+            self.ace = value
+        }
+        if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen] as? Float {
+            self.cardWidthsPerScreen = value
         }
     }
     

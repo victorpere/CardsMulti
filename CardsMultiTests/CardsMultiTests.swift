@@ -68,39 +68,5 @@ class CardsMultiTests: XCTestCase {
             XCTAssertNotNil(card.card, "Card object is null")
         }
     }
-    
-    func testReceivedCards() {
-        let scene = self.vc!.scene
-        //displayCards((scene?.allCards.sorted { $0.zPosition < $1.zPosition })!)
-        
-        var newDeck = Global.newShuffledDeck(name: "deck", settings: settings)
-        
-        newDeck.sort { ($0.card?.rank.rawValue)! < ($1.card?.rank.rawValue)! }
-        newDeck.sort { ($0.card?.suit.rawValue)! < ($1.card?.suit.rawValue)! }
-        
-        for (cardIndex, card) in newDeck.enumerated() {
-            card.zPosition = CGFloat(cardIndex)
-        }
-        
-        let newDeckDictionaryArray = Global.cardDictionaryArray(with: newDeck, playerPosition: .left, width: (scene?.frame.width)!, yOffset: (scene?.dividerLine.position.y)!, moveToFront: true, animate: false)
-        
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: newDeckDictionaryArray)
-            scene?.receivedData(data: jsonData)
-            
-            let sceneDeck = scene?.allCards.sorted { $0.zPosition < $1.zPosition }
-            
-            //displayCards(sceneDeck!)
-            
-            for (cardIndex,card) in newDeck.enumerated() {
-                XCTAssertTrue(card.card?.symbol() == sceneDeck?[cardIndex].card?.symbol(), "zPosition doens't match")
-                
-            }
-            
-        } catch {
-            print("Error serializing json data: \(error)")
-        }
-        
-    }
  
 }

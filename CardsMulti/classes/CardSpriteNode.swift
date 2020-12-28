@@ -527,6 +527,13 @@ protocol CardSpriteNodeDelegate {
 // MARK: - Array of CardSpriteNode extension
 
 extension Array where Element:CardSpriteNode {
+    
+    /// Returns a string array representing the card symbols in order of their zPositions
+    var zPositionsArray: [String?] {
+        let cardsSorted = self.sorted { $0.zPosition < $1.zPosition }
+        let zPositionsArray = cardsSorted.map { $0.card?.symbol }
+        return zPositionsArray
+    }
 
     func move(transformation: CGPoint) {
         for cardNode in self.sorted(by: { $0.zPosition < $1.zPosition }) {
@@ -599,6 +606,50 @@ extension Array where Element:CardSpriteNode {
                 print("Angle: \(angle)")
                 
                 card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: CardSpriteNode.flipDuration, sendPosition: true, animateReceiver: true)
+            }
+        }
+    }
+    
+    /**
+     Handles received array of card data
+     */
+    func handle(recievedCardDictionaryArray cardDictionaryArray: NSArray, forScene scene: GameScene) {
+        
+        for arrayElement in cardDictionaryArray {
+            if let cardSymbol = arrayElement as? String {
+                guard let cardNode = self.filter({ $0.card?.symbol == cardSymbol}).first else { break }
+                cardNode.moveToFront()
+                Global.displayCards([cardNode])
+            }
+            
+            else if let cardDictionary = arrayElement as? NSDictionary {
+                guard let cardSymbol = cardDictionary["c"] as? String else { break }
+                guard let cardNode = self.filter({ $0.card?.symbol == cardSymbol}).first else { break }
+                guard let codedPosition = cardDictionary["p"] as? String else { break }
+                let position = NSCoder.cgPoint(for: codedPosition)
+                guard let rotation = cardDictionary["r"] as? CGFloat else { break }
+                guard let animate = cardDictionary["a"] as? Bool else { break }
+                guard let moveToFront = cardDictionary["m"] as? Bool else { break }
+                guard let faceUp = cardDictionary["f"] as? Bool else { break }
+                
+                let transposedPosition = scene.playerPosition.transpose(position: position)
+                let transposedRotation = scene.playerPosition.transpose(rotation: rotation)
+                
+                if moveToFront {
+                    cardNode.moveToFront()
+                }
+                
+                let newPosition = CGPoint(x: transposedPosition.x * scene.frame.width, y: transposedPosition.y * scene.frame.width + scene.dividerLine.position.y)
+                
+                if animate {
+                    cardNode.moveAndFlip(to: newPosition, rotateToAngle: transposedRotation, faceUp: faceUp, duration: scene.resetDuration, sendPosition: false)
+                } else {
+                    cardNode.flip(faceUp: faceUp, sendPosition: false)
+                    cardNode.position = newPosition
+                    cardNode.zRotation = transposedRotation
+                }
+                
+                Global.displayCards([cardNode])
             }
         }
     }

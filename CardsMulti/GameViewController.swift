@@ -212,7 +212,7 @@ class GameViewController: UIViewController {
     }
     
     func resetGame() {
-        self.scene.resetCards(sync: true)
+        self.scene.shuffleAndStackAllCards(sync: true)
     }
     
     func lineUpCards() {
@@ -465,8 +465,12 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     }
     
     
-    func syncToMe() {
-        self.scene.syncToMe()
+    func syncToMe(recipients: [Player]?) {
+        //self.scene.syncSettingsToMe()
+        if let syncData = self.scene.syncSettingsAndGameData() {
+            self.connectionService.sendData(data: syncData)
+            self.connectionService.sendDataAWS(data: syncData, type: .game)
+        }
     }
     
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
@@ -509,8 +513,15 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         self.updateScenePlayers()
     }
     
+    
     func receivedData(manager: ConnectionServiceManager, data: Data, type dataType: WsDataType?) {
-        self.scene.receivedData(data: data, type: dataType)
+        //self.scene.receivedData(data: data, type: dataType)
+        
+    }
+    
+    func didReceive(data receivedData: Data) {
+        let dataHandler = ReceivedDataHandler(withScene: self.scene, connectionServiceManager: self.connectionService)
+        dataHandler.handle(data: receivedData)
     }
     
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
