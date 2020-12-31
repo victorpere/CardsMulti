@@ -145,8 +145,9 @@ class ConnectionServiceManager : NSObject {
     }
     
     func stopService() {
-        self.serviceAdvertiser.startAdvertisingPeer()
-        self.serviceBrowser.startBrowsingForPeers()
+        self.serviceAdvertiser.stopAdvertisingPeer()
+        self.serviceBrowser.stopBrowsingForPeers()
+        self.foundPeers.removeAll()
         self.wsRequestSender.disconnect()
     }
     
@@ -535,6 +536,10 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                 if self.playersAWS[i]?.connectionId == connectionId {
                     self.playersAWS[i] = nil
                 }
+            }
+            
+            if self.host?.connectionId == connectionId {
+                self.reassignHost()
             }
         }
     }
