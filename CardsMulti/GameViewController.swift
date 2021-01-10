@@ -513,12 +513,6 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         self.updateScenePlayers()
     }
     
-    
-    func receivedData(manager: ConnectionServiceManager, data: Data, type dataType: WsDataType?) {
-        //self.scene.receivedData(data: data, type: dataType)
-        
-    }
-    
     func didReceive(data receivedData: Data) {
         let dataHandler = ReceivedDataHandler(withScene: self.scene, connectionServiceManager: self.connectionService)
         dataHandler.handle(data: receivedData)

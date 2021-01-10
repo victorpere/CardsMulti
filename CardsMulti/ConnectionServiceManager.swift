@@ -11,8 +11,6 @@ import MultipeerConnectivity
 
  protocol ConnectionServiceManagerDelegate {
     
-    /// will be deprecated
-    func receivedData(manager: ConnectionServiceManager, data: Data, type dataType: WsDataType?)
     /// new method
     func didReceive(data: Data)
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
@@ -504,12 +502,16 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
     
     func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo]) {
         
-        if connectionId != self.myself.connectionId {
+        if connectionId != self.myself.connectionId || connections.count == 1 {
             let newPlayer = Player(connectionId: connectionId, displayName: playerName)
+            
+            if connections.count == 1 && connections[0].connectionId == self.myself.connectionId {
+                self.host = newPlayer
+            }
             
             if self.isHostAWS {
                 for i in 0..<self.playersAWS.count {
-                    if self.playersAWS[i] == nil {
+                    if self.playersAWS[i] == nil || self.playersAWS[i]?.connectionId == newPlayer.connectionId {
                         newPlayer.position = Position(rawValue: i) ?? .bottom
                         self.playersAWS[i] = newPlayer
                         break

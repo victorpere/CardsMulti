@@ -8,13 +8,18 @@
 
 import Foundation
 
-/// Class responsible for encoding and decoding received and sent game data
+/// An object representing received and sent game data structure
 class RequestData {
     
     // MARK: - Properties
     
+    /// Type of request
     let type: RequestType
+    
+    /// Sender of the request (peerId or connectionId)
     let sender: String?
+    
+    let destination: String?
     
     // MARK: - Private properties
     
@@ -22,6 +27,7 @@ class RequestData {
     
     // MARK: - Computed properties
     
+    /// Dictionary representing the request data
     var dataDictionary: NSDictionary? {
         if let dataDictionary = self.data as? NSDictionary {
             return dataDictionary
@@ -29,6 +35,7 @@ class RequestData {
         return nil
     }
     
+    /// Array representing the request data
     var dataArray: NSArray? {
         if let dataArray = self.data as? NSArray {
             return dataArray
@@ -38,7 +45,7 @@ class RequestData {
     
     // MARK: - Initializers
     
-    init(withType type: RequestType, andSender sender: Player) {
+    init(withType type: RequestType, andSender sender: Player, andRecipient destination: Player) {
         self.type = type
         
         if let playerConnectionId = sender.connectionId {
@@ -48,49 +55,22 @@ class RequestData {
         } else {
             self.sender = nil
         }
+        
+        self.destination = nil
     }
     
     init(withType type: RequestType, andDictionary dataDictionary: NSDictionary) {
         self.type = type
         self.sender = nil
+        self.destination = nil
         self.data = dataDictionary
     }
     
     init(withType type: RequestType, andArray dataArray: Array<Any>) {
         self.type = type
         self.sender = nil
+        self.destination = nil
         self.data = NSArray(array: dataArray)
-    }
-    
-    init(withData data: Data) throws {
-        do {
-            let dataDictionary = try JSONSerialization.jsonObject(with: data) as! NSDictionary
-
-            if let value = dataDictionary[dataKey.type.rawValue] as? String {
-                if let type = RequestType.init(rawValue: value) {
-                    self.type = type
-                } else {
-                    self.type = .unknown
-                }
-            } else {
-                throw GameDataError.MissingGameDataTypeError
-            }
-            
-            if let value = dataDictionary[dataKey.sender.rawValue] as? String {
-                self.sender = value
-            } else {
-                self.sender = nil
-            }
-            
-            if let value = dataDictionary[dataKey.data.rawValue] as? NSDictionary {
-                self.data = value
-            } else if let value = dataDictionary[dataKey.data.rawValue] as? NSArray {
-                self.data = value
-            }
-            
-        } catch {
-            throw GameDataError.FailedToDecodeGameDataError
-        }
     }
     
     init(withDecodedData dataDictionary: NSDictionary) throws {
@@ -110,10 +90,25 @@ class RequestData {
             self.sender = nil
         }
         
+        if let value = dataDictionary[dataKey.destination.rawValue] as? String {
+            self.destination = value
+        } else {
+            self.destination = nil
+        }
+        
         if let value = dataDictionary[dataKey.data.rawValue] as? NSDictionary {
             self.data = value
         } else if let value = dataDictionary[dataKey.data.rawValue] as? NSArray {
             self.data = value
+        }
+    }
+    
+    convenience init(withData data: Data) throws {
+        do {
+            let dataDictionary = try JSONSerialization.jsonObject(with: data) as! NSDictionary
+            try self.init(withDecodedData: dataDictionary)
+        } catch {
+            throw GameDataError.FailedToDecodeGameDataError
         }
     }
     
@@ -134,6 +129,9 @@ class RequestData {
         }
     }
     
+    /**
+     Returns a dictionary representing the request structure
+     */
     func dictionary() -> NSDictionary {
         let requestDictionary = NSMutableDictionary()
         
@@ -156,6 +154,7 @@ class RequestData {
         case type = "type"
         case data = "data"
         case sender = "sender"
+        case destination = "destination"
     }
 }
 
