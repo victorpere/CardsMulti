@@ -495,6 +495,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.gameId = nil
         self.gameCode = nil
         self.host = nil
+        self.playersAWS = [nil, nil, nil, nil]
         self.delegate?.didDisconnectFromGameAWS()
         
         GameState.instance.gameId = nil
