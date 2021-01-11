@@ -17,7 +17,14 @@ extension CGVector {
 }
 
 extension CGPoint {
-    /* return point rotated about the specified centre by the specified angle */
+    
+    var isNonZero: Bool {
+        return self.x != 0 || self.y != 0
+    }
+    
+    /**
+     returns point rotated about the specified centre by the specified angle
+    */
     func rotateAbout(point center: CGPoint, byAngle angle: CGFloat) -> CGPoint {
         let c = cos(angle)
         let s = sin(angle)

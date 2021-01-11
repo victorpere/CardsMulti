@@ -70,7 +70,7 @@ class GameScene: SKScene {
     var allCards = [CardSpriteNode]()
     
     /// Whether force touch is available on this device
-    var forceTouch = false
+    var forceTouchEnabled = false
     
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
@@ -343,7 +343,7 @@ class GameScene: SKScene {
         - loadSaved: whether to load the save game state
      */
     func resetGame(sync: Bool, loadSaved: Bool = false) {
-        resetNodes()
+        self.resetNodes()
         
         self.loadCards(fromSaved: loadSaved)
  
@@ -353,7 +353,7 @@ class GameScene: SKScene {
      Resets the scene and re-initializes all nodes, but doesn't position the new cards
      */
     func resetCards() {
-        resetNodes()
+        self.resetNodes()
         self.allCards = Global.newShuffledDeck(name: "deck", settings: Settings.instance)
         self.initCards()
     }
@@ -387,7 +387,7 @@ class GameScene: SKScene {
      - parameter numberOfCards: number of cards to deal to each player
      */
     func deal(numberOfCards: Int) {
-        let _ = deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards)
+        let _ = self.deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards)
         self.deselectNodeForTouch()
     }
     
@@ -436,7 +436,7 @@ class GameScene: SKScene {
             var cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
             let cardToDeal = cardsSorted.first
             // deal the card to somewhere in the area
-            let newLocation = randomLocationForPlayer(in: position)
+            let newLocation = self.randomLocationForPlayer(in: position)
             
             DispatchQueue.main.async {
                 cardToDeal?.moveToFront()
@@ -542,15 +542,15 @@ class GameScene: SKScene {
         if cards.count > 1 {
             let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
             let originalPosition  = cardsSorted.first?.position
-            var position1 = CGPoint(x: (originalPosition?.x)! - (cardsSorted.first?.frame.size.width)! / 2 - xOffset, y: (originalPosition?.y)!)
-            var position2 = CGPoint(x: (originalPosition?.x)! + (cardsSorted.first?.frame.size.width)! / 2 + xOffset, y: (originalPosition?.y)!)
+            var position1 = CGPoint(x: (originalPosition?.x)! - (cardsSorted.first?.frame.size.width)! / 2 - self.xOffset, y: (originalPosition?.y)!)
+            var position2 = CGPoint(x: (originalPosition?.x)! + (cardsSorted.first?.frame.size.width)! / 2 + self.xOffset, y: (originalPosition?.y)!)
             
-            if position1.x < (cardsSorted.first?.frame.width)! / 2 + xOffset {
-                position1.x = (cardsSorted.first?.frame.width)! / 2 + border
-                position2.x = position1.x + (cardsSorted.first?.frame.width)! + 2 * xOffset
-            } else if position2.x > self.frame.width - (cardsSorted.first?.frame.width)! / 2 - xOffset {
-                position2.x = self.frame.width - (cardsSorted.first?.frame.width)! / 2 - border
-                position1.x = position2.x - (cardsSorted.first?.frame.width)! - 2 * xOffset
+            if position1.x < (cardsSorted.first?.frame.width)! / 2 + self.xOffset {
+                position1.x = (cardsSorted.first?.frame.width)! / 2 + self.border
+                position2.x = position1.x + (cardsSorted.first?.frame.width)! + 2 * self.xOffset
+            } else if position2.x > self.frame.width - (cardsSorted.first?.frame.width)! / 2 - self.xOffset {
+                position2.x = self.frame.width - (cardsSorted.first?.frame.width)! / 2 - self.border
+                position1.x = position2.x - (cardsSorted.first?.frame.width)! - 2 * self.xOffset
             }
             
             let halfIndex: Int = cardsSorted.count / 2
@@ -563,11 +563,11 @@ class GameScene: SKScene {
     }
     
     func stoppedCutting(touchLocation: CGPoint) {
-        print ("cutting \(cutStartPosition) -> \(touchLocation)")
+        print ("cutting \(self.cutStartPosition) -> \(touchLocation)")
         
-        let origin = CGPoint(x: min(touchLocation.x, cutStartPosition.x), y: min(touchLocation.y, cutStartPosition.y))
-        let width = abs(touchLocation.x - cutStartPosition.x)
-        let height = abs(touchLocation.y - cutStartPosition.y)
+        let origin = CGPoint(x: min(touchLocation.x, self.cutStartPosition.x), y: min(touchLocation.y, self.cutStartPosition.y))
+        let width = abs(touchLocation.x - self.cutStartPosition.x)
+        let height = abs(touchLocation.y - self.cutStartPosition.y)
         let cutRect = CGRect(x: origin.x, y: origin.y, width: width, height: height)
         let cards = self.allCards.filter { cutRect.contains($0.position) }
         self.cut(cards: cards)
@@ -824,7 +824,7 @@ class GameScene: SKScene {
             let timeInterval = t.timestamp - self.lastTouchTimestamp
             self.setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
             
-            if forceTouch {
+            if self.forceTouchEnabled {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     // Force touch activated
                     if !self.forceTouchActivated {
@@ -833,7 +833,7 @@ class GameScene: SKScene {
                 }
             }
             
-            if transformation.x != 0 || transformation.y != 0 {
+            if transformation.isNonZero {
                 self.canDoubleTap = false
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
@@ -909,7 +909,7 @@ class GameScene: SKScene {
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 &&
                     self.firstTouchLocation == touchLocation && self.forceTouchActivated &&
-                    (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouch) {
+                    (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouchEnabled) {
                     self.forceTouchActivated = false
                     self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers, at: touchLocation)
                     return
@@ -973,7 +973,7 @@ class GameScene: SKScene {
         
         self.lastUpdateTime = currentTime
         
-        if !forceTouch {
+        if !forceTouchEnabled {
             if selectedNodes.count == 1 && !forceTouchActivated && lastTouchMoveTimestamp != 0.0 && currentTime - lastTouchMoveTimestamp >= timeToSelectMultipleNodes {
                 self.didForceOrLongTouch(at: selectedNodes[0].position)
             }

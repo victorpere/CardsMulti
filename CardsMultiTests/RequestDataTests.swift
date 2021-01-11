@@ -71,7 +71,7 @@ class RequestDataTests: XCTestCase {
         let requestData1 = RequestData(withType: .game, andDictionary: cardDictionary)
         
         let player = Player(connectionId: "connectionId", displayName: "displayName")
-        let requestData2 = RequestData(withType: .requestToSync, andSender: player)
+        let requestData2 = RequestData(withType: .requestToSync, andSender: player, andRecipient: player)
         
         let requestDataArray = [requestData1, requestData2]
         let requestData = try? requestDataArray.encodedData()

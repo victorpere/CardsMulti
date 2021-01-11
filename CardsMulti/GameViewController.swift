@@ -43,7 +43,7 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        connectionService.delegate = self
+        self.connectionService.delegate = self
         
         // Configure the view.
         
@@ -51,78 +51,77 @@ class GameViewController: UIViewController {
         
         let barHeight = (playersIcon?.size.height)! + 2 * buttonMargin
         
-        backGroundView = UIView(frame: view.frame)
-        backGroundView.backgroundColor = UIColor.black
-        backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
-        view.addSubview(backGroundView)
+        self.backGroundView = UIView(frame: view.frame)
+        self.backGroundView.backgroundColor = UIColor.black
+        self.backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
+        view.addSubview(self.backGroundView)
         
-        connectionsLabel = UILabel(frame: CGRect(x: 0, y: self.view.frame.width, width: self.view.frame.width, height: 15))
-        connectionsLabel.textColor = UIColor.green
-        connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
-        connectionsLabel.text = "Connections: "
-        view.addSubview(connectionsLabel)
+        self.connectionsLabel = UILabel(frame: CGRect(x: 0, y: self.view.frame.width, width: self.view.frame.width, height: 15))
+        self.connectionsLabel.textColor = UIColor.green
+        self.connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
+        self.connectionsLabel.text = "Connections: "
+        view.addSubview(self.connectionsLabel)
         
         self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - 35, y: self.view.frame.width, width: 35, height: 15))
         self.awsStatusLabel.textColor = UIColor.green
         self.awsStatusLabel.font = UIFont(name: "Helvetica", size: 12)
         self.view.addSubview(self.awsStatusLabel)
         
-        playerAcrossLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .top)
-        view.addSubview(playerAcrossLabel)
+        self.playerAcrossLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .top)
+        self.view.addSubview(self.playerAcrossLabel)
         
-        playerLeftLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .left)
-        view.addSubview(playerLeftLabel)
+        self.playerLeftLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .left)
+        self.view.addSubview(self.playerLeftLabel)
         
-        playerRightLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .right)
-        view.addSubview(playerRightLabel)
+        self.playerRightLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .right)
+        self.view.addSubview(self.playerRightLabel)
 
-        positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
-        positionLabel.textColor = UIColor.green
-        positionLabel.font = UIFont(name: "Helvetica", size: 10)
-        positionLabel.numberOfLines = 0
-        positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition)\n"
+        self.positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
+        self.positionLabel.textColor = UIColor.green
+        self.positionLabel.font = UIFont(name: "Helvetica", size: 10)
+        self.positionLabel.numberOfLines = 0
+        self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition)\n"
         for player in self.connectionService.players {
-            positionLabel.text?.append("\(String(describing: player))\n")
+            self.positionLabel.text?.append("\(String(describing: player))\n")
         }
-        view.addSubview(positionLabel)
-        positionLabel.isHidden = true
+        self.view.addSubview(self.positionLabel)
+        self.positionLabel.isHidden = true
         
-        lineUpCardsButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.view.frame, buttonNumber: 0, numberOfButtons: numberOfButtons, tag: 3)
-        lineUpCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        view.addSubview(lineUpCardsButton)
+        self.lineUpCardsButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.view.frame, buttonNumber: 0, numberOfButtons: self.numberOfButtons, tag: 3)
+        self.lineUpCardsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.view.addSubview(self.lineUpCardsButton)
         
-        sortCardsButton = BottomButton(withIconNamed: "icon_cards_sort", viewFrame: self.view.frame, buttonNumber: 1, numberOfButtons: numberOfButtons, tag: 5)
-        sortCardsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        view.addSubview(sortCardsButton)
+        self.sortCardsButton = BottomButton(withIconNamed: "icon_cards_sort", viewFrame: self.view.frame, buttonNumber: 1, numberOfButtons: self.numberOfButtons, tag: 5)
+        self.sortCardsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.view.addSubview(self.sortCardsButton)
         
-        settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.view.frame, buttonNumber: 2, numberOfButtons: numberOfButtons, tag: 4)
-        settingsButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        view.addSubview(settingsButton)
+        self.settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.view.frame, buttonNumber: 2, numberOfButtons: self.numberOfButtons, tag: 4)
+        self.settingsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.view.addSubview(self.settingsButton)
         
-        numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.view.frame, buttonNumber: 3, numberOfButtons: numberOfButtons, tag: 2)
-        numberOfPlayersButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        view.addSubview(numberOfPlayersButton)
+        self.numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.view.frame, buttonNumber: 3, numberOfButtons: self.numberOfButtons, tag: 2)
+        self.numberOfPlayersButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.view.addSubview(self.numberOfPlayersButton)
         
-        restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.view.frame, buttonNumber: 4, numberOfButtons: numberOfButtons, tag: 1)
-        restartButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        view.addSubview(restartButton)
+        self.restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.view.frame, buttonNumber: 4, numberOfButtons: self.numberOfButtons, tag: 1)
+        self.restartButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.view.addSubview(self.restartButton)
         
         self.scoresButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.view.frame, buttonNumber: 5, numberOfButtons: self.numberOfButtons, tag: 6)
         self.scoresButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
         //view.addSubview(self.scoresButton)
         
         //let skView = self.view as! SKView
-        let sceneFrame = CGRect(x: view.frame.minX, y: view.frame.minY, width: view.frame.width, height: view.frame.height - barHeight)
-        skView = SKView(frame: sceneFrame)
-        //skView = SKView(frame: view.frame)
-        view.addSubview(skView)
+        let sceneFrame = CGRect(x: self.view.frame.minX, y: self.view.frame.minY, width: self.view.frame.width, height: self.view.frame.height - barHeight)
+        self.skView = SKView(frame: sceneFrame)
+        self.view.addSubview(self.skView)
         
-        skView.showsFPS = false
-        skView.showsNodeCount = false
+        self.skView.showsFPS = false
+        self.skView.showsNodeCount = false
         
         /* Sprite Kit applies additional optimizations to improve rendering performance */
-        skView.ignoresSiblingOrder = true
-        skView.allowsTransparency = true
+        self.skView.ignoresSiblingOrder = true
+        self.skView.allowsTransparency = true
         
         //self.skView.isMultipleTouchEnabled = true
         self.startGame()
@@ -200,7 +199,7 @@ class GameViewController: UIViewController {
             self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
         }
         
-        checkForceTouch()
+        self.checkForceTouch()
         self.scene.gameSceneDelegate = self
         self.updateScenePlayers()
         
@@ -208,7 +207,7 @@ class GameViewController: UIViewController {
         self.scene.scaleMode = .aspectFill
         self.scene.backgroundColor = UIColor.clear
         
-        skView.presentScene(scene)
+        self.skView.presentScene(self.scene)
     }
     
     func resetGame() {
@@ -316,7 +315,7 @@ class GameViewController: UIViewController {
         if self.traitCollection.forceTouchCapability == UIForceTouchCapability.available {
             print("force touch available")
             if self.scene != nil {
-                self.scene.forceTouch = true
+                self.scene.forceTouchEnabled = true
             }
         }
     }
