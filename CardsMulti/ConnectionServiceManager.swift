@@ -11,14 +11,14 @@ import MultipeerConnectivity
 
  protocol ConnectionServiceManagerDelegate {
     
-    /// new method
     func didReceive(data: Data)
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
     func syncToMe(recipients: [Player]?)
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
     func newPlayerConnected(player: Player, connectedPlayers: [Player?])
     func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
-    func playerDisconnected(player: Player, connectedPlayers: [Player?]) 
+    func playerDisconnected(player: Player, connectedPlayers: [Player?])
+    func updatePlayers()
     
     func updatePositions(myPosition: Position)
     
@@ -520,7 +520,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                 }
 
                 self.sendPlayerDataAWS()
-                self.delegate?.updatePositions(myPosition: self.myPositionAWS)
+                self.delegate?.updatePlayers()
                 self.delegate?.syncToMe(recipients: [newPlayer])
                 self.reassignHost()
             }
@@ -533,6 +533,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         
         if let disconnectedPlayer = self.playersAWS.first(where: { $0?.connectionId == connectionId }) {
             
+            self.delegate?.updatePlayers()
             self.delegate?.playerDisconnected(player: disconnectedPlayer!, connectedPlayers: self.playersAWS)
             
             for i in 0..<self.playersAWS.count {
@@ -583,7 +584,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                     
                     self.playersAWS = playersAWS
                     self.reassignHost()
-                    self.delegate?.updatePositions(myPosition: self.myPositionAWS)
+                    self.delegate?.updatePlayers()
                 }
             } catch {
                 print("Error deserializing player data")

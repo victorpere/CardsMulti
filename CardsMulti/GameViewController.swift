@@ -54,13 +54,13 @@ class GameViewController: UIViewController {
         self.backGroundView = UIView(frame: view.frame)
         self.backGroundView.backgroundColor = UIColor.black
         self.backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
-        view.addSubview(self.backGroundView)
+        self.view.addSubview(self.backGroundView)
         
         self.connectionsLabel = UILabel(frame: CGRect(x: 0, y: self.view.frame.width, width: self.view.frame.width, height: 15))
         self.connectionsLabel.textColor = UIColor.green
         self.connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
         self.connectionsLabel.text = "Connections: "
-        view.addSubview(self.connectionsLabel)
+        self.view.addSubview(self.connectionsLabel)
         
         self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - 35, y: self.view.frame.width, width: 35, height: 15))
         self.awsStatusLabel.textColor = UIColor.green
@@ -379,11 +379,6 @@ class GameViewController: UIViewController {
             }
         }
     }
-
-    func updateScenePlayers(){
-        self.scene.peers = self.connectionService.players
-        self.scene.players = self.connectionService.playersAWS
-    }
     
     // MARK: - Private methods
     
@@ -442,6 +437,21 @@ class GameViewController: UIViewController {
         }
     }
     
+    fileprivate func updateConnectionLabels() {
+        DispatchQueue.main.async {
+            let connectedPlayerNames = self.connectionService.playersAWS.filter({$0 != nil}).map({$0!.displayName})
+            let connectionLabels = connectedPlayerNames.count == 0 ? "" : "\(connectedPlayerNames)"
+            self.connectionsLabel.text = "Connections: \(connectionLabels)"
+            self.updateLabels()
+            self.updatePlayerLabels()
+        }
+    }
+    
+    fileprivate func updateScenePlayers() {
+        self.scene.peers = self.connectionService.players
+        self.scene.players = self.connectionService.playersAWS
+        self.scene.playerPosition = self.connectionService.myPositionAWS
+    }
     
     // MARK: - System method overrides
     
@@ -456,11 +466,7 @@ class GameViewController: UIViewController {
 extension GameViewController : ConnectionServiceManagerDelegate {
 
     func newPlayerConnected(player: Player, connectedPlayers: [Player?]) {
-        //let connectedPlayerNames = connectedPlayers.map({$0.displayName})
-        //self.connectionsLabel.text = "Connections: \(connectedPlayerNames)"
-        
         self.showAlert(title: "", text: "\(player.displayName) joined the game")
-        self.scene.playerPosition = self.connectionService.myPositionAWS
     }
     
     
@@ -486,7 +492,6 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     }
     
     func playerDisconnected(player: Player, connectedPlayers: [Player?]) {
-        
         self.showAlert(title: "", text: "\(player.displayName) disconnected")
     }
     
@@ -531,6 +536,12 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         }
     }
     
+    func updatePlayers() {
+        print("updatePlayers")
+        self.updateConnectionLabels()
+        self.updateScenePlayers()
+    }
+    
     // AWS
     
     func didConnectAWS() {
@@ -546,6 +557,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     
     func didDisconnectAWS() {
         self.awsStatusLabel.text = ""
+        self.updateConnectionLabels()
     }
     
     func didGreateGameAWS(gameCode: String) {
@@ -575,6 +587,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     
     func didDisconnectFromGameAWS() {
         self.awsStatusLabel.text = "⚡︎"
+        self.updateConnectionLabels()
         self.showAlert(title: "Disconnected from game", text: nil)
     }
     
