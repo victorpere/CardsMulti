@@ -9,12 +9,8 @@
 import Foundation
 import Starscream
 
-/// A singleton class for sending and receiving game data to/from AWS
+/// A class for sending and receiving game data to/from AWS
 class WsRequestSender {
-    
-    // MARK: - Singleton
-    
-    static let instance = WsRequestSender()
     
     // MARK: - Public properties
     
@@ -30,7 +26,7 @@ class WsRequestSender {
     
     // MARK: - Initializer
     
-    private init() {
+    init() {
         let url = URL(string: Config.awsEndpoint)
         let request = URLRequest(url: url!)
         self.webSocket = WebSocket(request: request)
@@ -193,7 +189,7 @@ class WsRequestSender {
                 break
             }
         } catch {
-            throw WsRquestSenderError.FailedToDecodeJson
+            throw WsRequestSenderError.FailedToDecodeJson
         }
     }
 }
@@ -253,7 +249,7 @@ protocol WsRequestSenderDelegate {
 
 // MARK: - WsRequestSenderError enum
 
-enum WsRquestSenderError : Error {
+enum WsRequestSenderError : Error {
     case FailedToDecodeJson
 }
 

@@ -80,6 +80,15 @@ class Player {
         }
     }
     
+    // MARK: - Operator overloads
+    
+    static func ==(left: Player, right: Player) -> Bool {
+        if left.peerId == right.peerId || left.connectionId == right.connectionId {
+            return true
+        }
+        
+        return false
+    }
 }
 
 // MARK: - Player array extension

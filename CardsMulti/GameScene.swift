@@ -10,7 +10,6 @@ import SpriteKit
 import GameplayKit
 import MultipeerConnectivity
 import AudioToolbox
-import SwiftUI
 
 class GameScene: SKScene {
     /// MCPeerID of this device
@@ -71,7 +70,7 @@ class GameScene: SKScene {
     var allCards = [CardSpriteNode]()
     
     /// Whether force touch is available on this device
-    var forceTouch = false
+    var forceTouchEnabled = false
     
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
@@ -166,7 +165,10 @@ class GameScene: SKScene {
         self.rotating = false
         self.forceTouchActivated = true
         self.selectMultipleNodesForTouch(touchLocation: location)
-        AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+        //AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
+        
+        let generator = UISelectionFeedbackGenerator()
+        generator.selectionChanged()
         
         if self.selectedNodes.count == 1 {
             self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
@@ -283,7 +285,7 @@ class GameScene: SKScene {
         } else {
             self.allCards = Global.newShuffledDeck(name: "deck", settings: Settings.instance)
             self.initCards()
-            self.resetCards(sync: false)
+            self.shuffleAndStackAllCards(sync: false)
         }
     }
     
@@ -321,14 +323,7 @@ class GameScene: SKScene {
         self.addChild(self.dividerLine)
     }
     
-    /**
-     Resets the scene, re-initializes all nodes and prepares a new shuffled deck
-     
-     - parameters:
-        - sync: whether to synchronize connected devices to this device after the execution
-        - loadSaved: whether to load the save game state
-     */
-    func resetGame(sync: Bool, loadSaved: Bool = false) {
+    fileprivate func resetNodes() {
         self.removeAllChildren()
         
         connectionLabel = SKLabelNode(text: "Connections: ")
@@ -338,24 +333,29 @@ class GameScene: SKScene {
         connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: self.frame.height - connectionLabel.frame.height / 2 - border)
         connectionLabel.zPosition = 100
         self.initDividerLine(hidden: false)
+    }
+    
+    /**
+     Resets the scene, re-initializes all nodes and prepares a new shuffled deck
+     
+     - parameters:
+        - sync: whether to synchronize connected devices to this device after the execution
+        - loadSaved: whether to load the save game state
+     */
+    func resetGame(sync: Bool, loadSaved: Bool = false) {
+        self.resetNodes()
         
         self.loadCards(fromSaved: loadSaved)
-        
-        
-        if sync {
-            self.syncToMe()
-        }
-        // trying a snap location
-        // TEMPORARY
-        /*
-         let sl1 = SnapLocation(location: CGPoint(x: 80, y: self.dividerLine.position.y + 80), snapSize: self.allCards[0].size)
-         sl1.yOffset = -20
-         sl1.snapAreaIncludesCards = true
-         self.snapLocations = [sl1]
-         */
-        
-        //draw()
  
+    }
+    
+    /**
+     Resets the scene and re-initializes all nodes, but doesn't position the new cards
+     */
+    func resetCards() {
+        self.resetNodes()
+        self.allCards = Global.newShuffledDeck(name: "deck", settings: Settings.instance)
+        self.initCards()
     }
     
     /**
@@ -363,7 +363,7 @@ class GameScene: SKScene {
      
      - parameter sync: whether to synchronize with other devices after execution
      */
-    func resetCards(sync: Bool) {
+    func shuffleAndStackAllCards(sync: Bool) {
         Global.shuffle(&self.allCards)
         
         for cardNode in self.allCards {
@@ -371,7 +371,7 @@ class GameScene: SKScene {
             cardNode.moveToFront()
         }
         
-        self.allCards.stack(atPosition: self.playArea.center, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: true)
+        self.allCards.stack(atPosition: self.playArea.center, flipEachCard: true, faceUp: false, reverseStack: false, sendPosition: sync, animateReceiver: true, delegate: self)
     }
     
     /**
@@ -387,7 +387,7 @@ class GameScene: SKScene {
      - parameter numberOfCards: number of cards to deal to each player
      */
     func deal(numberOfCards: Int) {
-        let _ = deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards)
+        let _ = self.deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards)
         self.deselectNodeForTouch()
     }
     
@@ -436,7 +436,7 @@ class GameScene: SKScene {
             var cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
             let cardToDeal = cardsSorted.first
             // deal the card to somewhere in the area
-            let newLocation = randomLocationForPlayer(in: position)
+            let newLocation = self.randomLocationForPlayer(in: position)
             
             DispatchQueue.main.async {
                 cardToDeal?.moveToFront()
@@ -527,7 +527,7 @@ class GameScene: SKScene {
             let topCardLocation = (cardsSorted.last?.position)!
             //self.stack(cards: cardsSorted, at: topCardLocation)
             
-            self.selectedNodes.stack(atPosition: topCardLocation, sendPosition: true, animateReceiver: true)
+            self.selectedNodes.stack(atPosition: topCardLocation, sendPosition: true, animateReceiver: true, delegate: self)
             
             self.deselectNodeForTouch()
         }
@@ -542,32 +542,32 @@ class GameScene: SKScene {
         if cards.count > 1 {
             let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
             let originalPosition  = cardsSorted.first?.position
-            var position1 = CGPoint(x: (originalPosition?.x)! - (cardsSorted.first?.frame.size.width)! / 2 - xOffset, y: (originalPosition?.y)!)
-            var position2 = CGPoint(x: (originalPosition?.x)! + (cardsSorted.first?.frame.size.width)! / 2 + xOffset, y: (originalPosition?.y)!)
+            var position1 = CGPoint(x: (originalPosition?.x)! - (cardsSorted.first?.frame.size.width)! / 2 - self.xOffset, y: (originalPosition?.y)!)
+            var position2 = CGPoint(x: (originalPosition?.x)! + (cardsSorted.first?.frame.size.width)! / 2 + self.xOffset, y: (originalPosition?.y)!)
             
-            if position1.x < (cardsSorted.first?.frame.width)! / 2 + xOffset {
-                position1.x = (cardsSorted.first?.frame.width)! / 2 + border
-                position2.x = position1.x + (cardsSorted.first?.frame.width)! + 2 * xOffset
-            } else if position2.x > self.frame.width - (cardsSorted.first?.frame.width)! / 2 - xOffset {
-                position2.x = self.frame.width - (cardsSorted.first?.frame.width)! / 2 - border
-                position1.x = position2.x - (cardsSorted.first?.frame.width)! - 2 * xOffset
+            if position1.x < (cardsSorted.first?.frame.width)! / 2 + self.xOffset {
+                position1.x = (cardsSorted.first?.frame.width)! / 2 + self.border
+                position2.x = position1.x + (cardsSorted.first?.frame.width)! + 2 * self.xOffset
+            } else if position2.x > self.frame.width - (cardsSorted.first?.frame.width)! / 2 - self.xOffset {
+                position2.x = self.frame.width - (cardsSorted.first?.frame.width)! / 2 - self.border
+                position1.x = position2.x - (cardsSorted.first?.frame.width)! - 2 * self.xOffset
             }
             
             let halfIndex: Int = cardsSorted.count / 2
             let stack1 = Array(cardsSorted.prefix(upTo: halfIndex))
             let stack2 = Array(cardsSorted.suffix(from: halfIndex))
             
-            stack1.stack(atPosition: position1, sendPosition: true, animateReceiver: true)
-            stack2.stack(atPosition: position2, sendPosition: true, animateReceiver: true)
+            stack1.stack(atPosition: position1, sendPosition: true, animateReceiver: true, delegate: self)
+            stack2.stack(atPosition: position2, sendPosition: true, animateReceiver: true, delegate: self)
         }
     }
     
     func stoppedCutting(touchLocation: CGPoint) {
-        print ("cutting \(cutStartPosition) -> \(touchLocation)")
+        print ("cutting \(self.cutStartPosition) -> \(touchLocation)")
         
-        let origin = CGPoint(x: min(touchLocation.x, cutStartPosition.x), y: min(touchLocation.y, cutStartPosition.y))
-        let width = abs(touchLocation.x - cutStartPosition.x)
-        let height = abs(touchLocation.y - cutStartPosition.y)
+        let origin = CGPoint(x: min(touchLocation.x, self.cutStartPosition.x), y: min(touchLocation.y, self.cutStartPosition.y))
+        let width = abs(touchLocation.x - self.cutStartPosition.x)
+        let height = abs(touchLocation.y - self.cutStartPosition.y)
         let cutRect = CGRect(x: origin.x, y: origin.y, width: width, height: height)
         let cards = self.allCards.filter { cutRect.contains($0.position) }
         self.cut(cards: cards)
@@ -755,7 +755,7 @@ class GameScene: SKScene {
         }
         
         // stacking cards also sends position to other devices
-        cards.stack(atPosition: topCardPosition!, sendPosition: true, animateReceiver: true)
+        cards.stack(atPosition: topCardPosition!, sendPosition: true, animateReceiver: true, delegate: self)
  
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
@@ -824,7 +824,7 @@ class GameScene: SKScene {
             let timeInterval = t.timestamp - self.lastTouchTimestamp
             self.setMovingSpeed(startPosition: previousPosition, endPosition: currentPosition, time: timeInterval)
             
-            if forceTouch {
+            if self.forceTouchEnabled {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
                     // Force touch activated
                     if !self.forceTouchActivated {
@@ -833,7 +833,7 @@ class GameScene: SKScene {
                 }
             }
             
-            if transformation.x != 0 || transformation.y != 0 {
+            if transformation.isNonZero {
                 self.canDoubleTap = false
                 self.lastTouchMoveTimestamp = t.timestamp
                 if self.selectedNodes.count > 0 {
@@ -909,7 +909,7 @@ class GameScene: SKScene {
                 let timeSinceTouchesBegan = t.timestamp - self.touchesBeganTimestamp
                 if self.selectedNodes.count > 1 &&
                     self.firstTouchLocation == touchLocation && self.forceTouchActivated &&
-                    (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouch) {
+                    (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouchEnabled) {
                     self.forceTouchActivated = false
                     self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers, at: touchLocation)
                     return
@@ -973,7 +973,7 @@ class GameScene: SKScene {
         
         self.lastUpdateTime = currentTime
         
-        if !forceTouch {
+        if !forceTouchEnabled {
             if selectedNodes.count == 1 && !forceTouchActivated && lastTouchMoveTimestamp != 0.0 && currentTime - lastTouchMoveTimestamp >= timeToSelectMultipleNodes {
                 self.didForceOrLongTouch(at: selectedNodes[0].position)
             }
@@ -983,147 +983,25 @@ class GameScene: SKScene {
     // MARK: - Network sync methods
     
     /**
-     Synchronizes all connected devices to this one
+     Returns data for synchronising settigs and all card positions
      */
-    func syncToMe() {
-        self.syncDeckReset()
+    func syncSettingsAndGameData() -> Data? {
+        let settingsData = RequestData(withType: .settings, andDictionary: Settings.instance.settingsDictionary)
+        let gameData = RequestData(withType: .game, andArray: Global.cardDictionaryArray(with: self.allCards, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: true, animate: false))
+        
+        let requestData = [settingsData, gameData]
+        do {
+            let encodedData = try requestData.encodedData()
+            return encodedData
+        } catch {
+            return nil
+        }
+    }
+    
+    func syncSceneToMe() {
         self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
     }
     
-    func syncDeckReset() {
-        let settingsDictionary = [ "minRank" : self.settings.minRank,
-                                   "maxRank" : self.settings.maxRank,
-                                   "jack" : self.settings.jack,
-                                   "queen" : self.settings.queen,
-                                   "king" : self.settings.king,
-                                   "ace" : self.settings.ace] as [String : Any]
-        let encodedData = NSKeyedArchiver.archivedData(withRootObject: settingsDictionary)
-        
-        do {
-            let settingsData = try Settings.instance.jsonData()
-            self.gameSceneDelegate?.sendData(data: settingsData, type: .settings)
-        } catch {
-            // Coundn't seralize settings
-        }
-        
-        self.gameSceneDelegate!.sendData(data: encodedData, type: .settings)
-    }
-    
-    /**
-     Handles received sychronization data (settings or cards)
-     
-     - parameter data: data containing synchronization dictionary
-     */
-    func receivedData(data: Data, type dataType: WsDataType?) {
-        
-        switch dataType {
-        case .settings:
-            // settings received from AWS
-            do {
-                let receivedSettings = try Settings(with: data)
-                print("Received settings as json with data type")
-                Settings.instance.minRank = receivedSettings.minRank
-                Settings.instance.maxRank = receivedSettings.maxRank
-                Settings.instance.pips = receivedSettings.pips
-                Settings.instance.jack = receivedSettings.jack
-                Settings.instance.queen = receivedSettings.queen
-                Settings.instance.king = receivedSettings.king
-                Settings.instance.ace = receivedSettings.ace
-                self.resetGame(sync: false)
-            } catch {
-                // Failed to deserialize settings
-                print("Failed to deserialize json settings")
-            }
-            
-            break
-        case .game, nil:
-            // settings receive from local
-            if let receivedSettings = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSDictionary {
-                print("Received settings as archived")
-                self.settings.minRank = (receivedSettings["minRank"] as? Int)!
-                self.settings.maxRank = (receivedSettings["maxRank"] as? Int)!
-                self.settings.jack = (receivedSettings["jack"] as? Bool)!
-                self.settings.queen = (receivedSettings["queen"] as? Bool)!
-                self.settings.king = (receivedSettings["king"] as? Bool)!
-                self.settings.ace = (receivedSettings["ace"] as? Bool)!
-                self.resetGame(sync: false)
-            } else if let receivedSettings = try? Settings(with: data) {
-                print("Received settings as json with no dataType")
-                Settings.instance.minRank = receivedSettings.minRank
-                Settings.instance.maxRank = receivedSettings.maxRank
-                Settings.instance.pips = receivedSettings.pips
-                Settings.instance.jack = receivedSettings.jack
-                Settings.instance.queen = receivedSettings.queen
-                Settings.instance.king = receivedSettings.king
-                Settings.instance.ace = receivedSettings.ace
-                self.resetGame(sync: false)
-            } else {
-                do {
-                    let cardDictionaryArray = try JSONSerialization.jsonObject(with: data) as! NSArray
-                    
-                    print("Received game data")
-                    
-                    for cardDictionaryArrayElement in cardDictionaryArray {
-                        let cardDictionary = cardDictionaryArrayElement as! NSDictionary
-                        
-                        let cardSymbol = cardDictionary["c"] as! String
-                        if let cardNode = self.allCards.filter({ $0.card?.symbol() == cardSymbol }).first {
-                            
-                            let newPositionRelative = cardDictionary["p"] != nil ? NSCoder.cgPoint(for: cardDictionary["p"] as! String) : CGPoint()
-                            var newPositionTransposed = CGPoint()
-                            
-                            let newRotationRelative = cardDictionary["r"] != nil ? cardDictionary["r"] as! CGFloat : CGFloat()
-                            var newRotation = CGFloat()
-                            
-                            switch self.playerPosition {
-                            case .bottom :
-                                newPositionTransposed = newPositionRelative
-                                newRotation = newRotationRelative
-                            case .top :
-                                newPositionTransposed.x = 1 - newPositionRelative.x
-                                newPositionTransposed.y = 1 - newPositionRelative.y
-                                newRotation = newRotationRelative - CGFloat.pi
-                            case .left :
-                                // UNTESTED
-                                newPositionTransposed.x = 1 - newPositionRelative.y
-                                newPositionTransposed.y = newPositionRelative.x
-                                newRotation = newRotationRelative + CGFloat.pi / 2
-                            case .right:
-                                // UNTESTED
-                                newPositionTransposed.x = newPositionRelative.y
-                                newPositionTransposed.y = 1 - newPositionRelative.x
-                                newRotation = CGFloat.pi / 2 - newRotationRelative - CGFloat.pi / 2
-                            default:
-                                break
-                            }
-                            
-                            let newPosition = CGPoint(x: newPositionTransposed.x * self.frame.width, y: newPositionTransposed.y * self.frame.width + self.dividerLine.position.y)
-                        
-                            let faceUp = cardDictionary["f"] as! Bool
-                            
-                            
-                            if (cardDictionary["m"] as! Bool) {
-                                cardNode.moveToFront()
-                                Global.displayCards([cardNode])
-                            }
-                            
-                            if cardDictionary["a"] as! Bool {
-                                cardNode.moveAndFlip(to: newPosition, rotateToAngle: newRotation, faceUp: faceUp, duration: self.resetDuration, sendPosition: false)
-                            } else {
-                                cardNode.flip(faceUp: cardDictionary["f"] as! Bool, sendPosition: false)
-                                cardNode.position = newPosition
-                                cardNode.zRotation = newRotation
-                            }
-                        }
-                    }
-                } catch {
-                    print("Error deserializing json data \(error)")
-                }
-            }
-        default:
-            break
-        }
-    }
 }
 
 
@@ -1149,8 +1027,10 @@ extension GameScene : CardSpriteNodeDelegate {
         let cardDictionary = Global.cardDictionary(for: cardNode, cardPosition: futurePosition, cardRotation: futureRotation, faceUp: futureFaceUp, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: true)
         
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: [cardDictionary])
-            self.gameSceneDelegate!.sendData(data: jsonData, type: .game)
+            let requestData = RequestData(withType: .game, andArray: [cardDictionary])
+            if let encodedData = try requestData.encodedData() {
+                self .gameSceneDelegate?.sendData(data: encodedData, type: .game)
+            }
         } catch {
             print("Error serializing json data: \(error)")
         }
@@ -1161,12 +1041,33 @@ extension GameScene : CardSpriteNodeDelegate {
         let cardDictionaryArray = Global.cardDictionaryArray(with: cardNodes, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate)
 
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: cardDictionaryArray)
-            self.gameSceneDelegate!.sendData(data: jsonData, type: .game)
+            let gameData = RequestData(withType: .game, andArray: cardDictionaryArray)
+            if let requestData = try gameData.encodedData() {
+                self.gameSceneDelegate!.sendData(data: requestData, type: .game)
+            }
         } catch {
             print("Error serializing json data: \(error)")
         }
 
+    }
+    
+    /**
+     Sends the z positions of all cards to sychroize vertical order
+     */
+    func sendZPositions() {
+        print("Sending z positions")
+        
+        let cardsSorted = self.allCards.sorted { $0.zPosition < $1.zPosition }
+        let zPositionsArray = cardsSorted.map { $0.card?.symbol }
+                
+        do {
+            let requestData = RequestData(withType: .game, andArray: zPositionsArray as Array<Any>)
+            if let encodedData = try requestData.encodedData() {
+                self.gameSceneDelegate?.sendData(data: encodedData, type: .game)
+            }
+        } catch {
+            print("failed to serialize zposition data")
+        }
     }
     
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode] {

@@ -338,7 +338,7 @@ class Solitaire : GameScene {
     /**
      Shuffles cards and deals a new game
      */
-    override func resetCards(sync: Bool) {
+    override func shuffleAndStackAllCards(sync: Bool) {
         
         DispatchQueue.global(qos: .default).async {
             self.scores[0].score -= 52

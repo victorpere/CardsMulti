@@ -8,7 +8,7 @@
 
 enum Suit: Int {
     case spades, hearts, diamonds, clubs
-    func symbol() -> String {
+    var symbol: String {
         switch self {
         case .spades:
             return "♠️"

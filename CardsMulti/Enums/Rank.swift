@@ -11,7 +11,7 @@ enum Rank: Int {
     case six, seven, eight, nine, ten
     case jack, queen, king
     case ace
-    func symbol() -> String {
+    var symbol: String {
         switch self {
         case .ace:
             return "A"
@@ -25,7 +25,7 @@ enum Rank: Int {
             return String(self.rawValue)
         }
     }
-    func name() -> String {
+    var name: String {
         switch self {
         case .ace:
             return "ace"
