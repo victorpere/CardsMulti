@@ -622,7 +622,7 @@ class GameScene: SKScene {
                         }
                     //}
                 } else {
-                    self.selectedNodes = [touchedCardNode]
+                    self.selectedNodes.append(touchedCardNode)
                 }
 
                 if tapCount > 1 && self.canDoubleTap {
@@ -801,7 +801,9 @@ class GameScene: SKScene {
 
     // MARK: - UIResponder methods
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("Touches began: \(touches.count)")
+        
         for t in touches {
             self.selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
             
@@ -813,6 +815,28 @@ class GameScene: SKScene {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("Touches moved: \(touches.count)")
+        
+        var rotationAngle: CGFloat = 0
+        let touchesArray = Array(touches)
+        
+        if touches.count == 2 && self.selectedNodes.count == 2 {
+            if self.selectedNodes[0] == self.selectedNodes[1] {
+                print("2 touches -- same card")
+                                
+                let touch1 = touchesArray[0]
+                let touch2 = touchesArray[1]
+                
+                let previousAngle = Math.angleOfLine(between: touch1.previousLocation(in: self), and: touch2.previousLocation(in: self))
+                let newAngle = Math.angleOfLine(between: touch1.location(in: self), and: touch2.location(in: self))
+                
+                rotationAngle = previousAngle - newAngle
+                
+            } else {
+                print("2 touches -- different cards")
+            }
+        }
+
         for t in touches {
             //print("touches moved at \(t.location(in: self)) at \(t.timestamp)")
  
@@ -843,7 +867,7 @@ class GameScene: SKScene {
                     self.unSnap(self.selectedNodes)
                     
                     if !self.rotating {
-                        self.selectedNodes.move(transformation: transformation)
+                        self.selectedNodes.move(transformation: transformation, rotateBy: rotationAngle)
                     }
                     
                     if self.selectedNodes.count == 1 {

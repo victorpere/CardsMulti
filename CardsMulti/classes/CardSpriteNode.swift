@@ -55,6 +55,9 @@ class CardSpriteNode : SKSpriteNode {
     
     var snapBackToLocation: SnapLocation?
     
+    var movingSpeed: CGFloat = 0
+    var rotationSpeed: CGFloat = 0
+    
     // MARK: - Computed properties
     
     var cardWidth: CGFloat { return CardSpriteNode.cardWidthFullSizePixels * self.cardScale }
@@ -271,10 +274,11 @@ class CardSpriteNode : SKSpriteNode {
         }        
     }
     
-    func move(transformation: CGPoint) {
+    func move(transformation: CGPoint, rotateBy rotationAngle: CGFloat = 0) {
         self.moving = true
         let currentPosition = self.position
         self.position = CGPoint(x: currentPosition.x + transformation.x, y: currentPosition.y + transformation.y)
+        self.zRotation = self.zRotation + rotationAngle
         self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
     }
     
@@ -388,7 +392,14 @@ class CardSpriteNode : SKSpriteNode {
         return angle
     }
     
-    /* Rotate about the specified point by the angle between the centre and the two points */
+    /**
+     Rotate about the specified point by the angle between the centre and the two points
+     
+     - parameters:
+        - fromPoint: point to rotate from
+        - toPoint: point to rotate to
+        - centrePoint: rotation centre
+     */
     func rotate(from fromPoint: CGPoint, to toPoint: CGPoint, about centrePoint: CGPoint) {
         let angle = centrePoint.angleBetween(pointA: fromPoint, pointB: toPoint)
         self.zRotation -= angle
@@ -535,11 +546,12 @@ extension Array where Element:CardSpriteNode {
         return zPositionsArray
     }
 
-    func move(transformation: CGPoint) {
+    func move(transformation: CGPoint, rotateBy rotationAngle: CGFloat = 0) {
         for cardNode in self.sorted(by: { $0.zPosition < $1.zPosition }) {
             cardNode.moving = true
             let currentPosition = cardNode.position
             cardNode.position = CGPoint(x: currentPosition.x + transformation.x, y: currentPosition.y + transformation.y)
+            cardNode.zRotation = cardNode.zRotation + rotationAngle
         }
     }
     

@@ -35,6 +35,19 @@ class Math {
         let dy = pointB.y - pointA.y
         return abs(hypot(dx, dy))
     }
+    
+    /**
+     Returns the angle of a line between two points
+     
+     - parameters:
+        - pointA: first point
+        - pointB: second point
+     */
+    static func angleOfLine(between pointA: CGPoint, and pointB: CGPoint) -> CGFloat {
+        let dx = pointB.x - pointA.x
+        let dy = pointB.y - pointA.y
+        return atan(dx / dy)
+    }
 }
 
 extension Double
