@@ -421,13 +421,18 @@ class GameViewController: UIViewController {
     /**
      Displays an alert with OK and Cancel buttons
      */
-    private func showActionDialog(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void)) {
+    private func showActionDialog(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void), cancelAction: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: text, preferredStyle: .alert)
         
         let action = UIAlertAction(title: actionTitle, style: .default) { (alert) -> Void in
             action()
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in
+            if cancelAction != nil {
+                cancelAction!()
+            }
+        }
         
         alert.addAction(action)
         alert.addAction(cancelAction)
@@ -551,6 +556,8 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         if let gameId = GameState.instance.gameId {
             self.showActionDialog(title: "Do you want to reconnect to last game?", text: nil, actionTitle: "Reconnect", action: { () -> Void in
                 self.connectionService.joinGame(gameId: gameId)
+            }, cancelAction: { () -> Void in
+                GameState.instance.gameId = nil
             })
         }
     }
