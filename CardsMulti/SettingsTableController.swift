@@ -62,9 +62,9 @@ class SettingsTableContoller : UIViewController {
         self.aceSwitch.isOn = self.settings.ace
         
         self.cardScaleSlider = UISlider()
-        self.cardScaleSlider.minimumValue = Settings.minCardWidthsPerScreen
-        self.cardScaleSlider.maximumValue = Settings.maxCardWidthsPerScreen
-        self.cardScaleSlider.value = Settings.instance.cardWidthsPerScreen
+        self.cardScaleSlider.minimumValue = -Settings.maxCardWidthsPerScreen
+        self.cardScaleSlider.maximumValue = -Settings.minCardWidthsPerScreen
+        self.cardScaleSlider.value = -Settings.instance.cardWidthsPerScreen
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
         
@@ -121,8 +121,8 @@ class SettingsTableContoller : UIViewController {
     }
     
     private func saveUISettings() {
-        if Settings.instance.cardWidthsPerScreen != self.cardScaleSlider.value {
-            Settings.instance.cardWidthsPerScreen = self.cardScaleSlider.value
+        if Settings.instance.cardWidthsPerScreen != -self.cardScaleSlider.value {
+            Settings.instance.cardWidthsPerScreen = -self.cardScaleSlider.value
             self.delegate?.uiSettingsChanged()
         }
     }
