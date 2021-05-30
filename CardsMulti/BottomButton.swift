@@ -19,7 +19,7 @@ class BottomButton: UIButton {
     init(withIconNamed icon: String, viewFrame: CGRect, buttonNumber: CGFloat, numberOfButtons: CGFloat, tag: Int) {
         let icon = UIImage(named: icon)
         let gapBetweenButtons = (viewFrame.width - 2 * self.buttonMargin - (icon?.size.width)!) / (numberOfButtons - 1)
-        let frame = CGRect(x: self.buttonMargin + gapBetweenButtons * buttonNumber, y: viewFrame.height - self.buttonMargin - (icon?.size.height)!, width: (icon?.size.width)!, height: (icon?.size.height)!)
+        let frame = CGRect(x: viewFrame.minX + self.buttonMargin + gapBetweenButtons * buttonNumber, y: viewFrame.minY + viewFrame.height - self.buttonMargin - (icon?.size.height)!, width: (icon?.size.width)!, height: (icon?.size.height)!)
         
         super.init(frame: frame)
         

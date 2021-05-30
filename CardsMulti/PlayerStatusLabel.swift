@@ -22,7 +22,7 @@ class PlayerStatusLabel : UILabel {
     var position: Position
     
     // MARK: - Initilizers
-    init(withFrameDimension frameDimension: CGFloat, inPosition position: Position) {
+    init(withFrameDimension frameDimension: CGFloat, inPosition position: Position, withInsets insets: UIEdgeInsets) {
         var frame = CGRect()
         var rotationAngle: CGFloat = 0
         
@@ -32,12 +32,12 @@ class PlayerStatusLabel : UILabel {
         case .bottom:
             break
         case .top:
-            frame = CGRect(x: 0, y: 0, width: frameDimension, height: self.height)
+            frame = CGRect(x: insets.left, y: insets.top, width: frameDimension, height: self.height)
         case .left:
-            frame = CGRect(x: (self.height - frameDimension) / 2, y: frameDimension / 2, width: frameDimension, height: self.height)
+            frame = CGRect(x: (self.height - frameDimension) / 2 + insets.left, y: frameDimension / 2 + insets.top, width: frameDimension, height: self.height)
             rotationAngle = CGFloat(0 - Double.pi / 2)
         case .right:
-            frame = CGRect(x: (frameDimension - self.height) / 2, y: frameDimension / 2, width: frameDimension, height: self.height)
+            frame = CGRect(x: (frameDimension - self.height) / 2 + insets.left - insets.right, y: frameDimension / 2 + insets.top, width: frameDimension, height: self.height)
             rotationAngle = 0 - CGFloat(0 - Double.pi / 2)
         }
         

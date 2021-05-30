@@ -13,6 +13,7 @@ import MultipeerConnectivity
 
 class GameViewController: UIViewController {
     
+    var safeFrame: CGRect!
     let buttonMargin: CGFloat = 8.0
     let numberOfButtons: CGFloat = 5
     
@@ -44,8 +45,16 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.connectionService.delegate = self
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
         // Configure the view.
+        self.safeFrame = CGRect(x: self.view.safeAreaInsets.left,
+                                y: self.view.safeAreaInsets.top,
+                                width: self.view.frame.width - self.view.safeAreaInsets.left - self.view.safeAreaInsets.right,
+                                height: self.view.frame.height - self.view.safeAreaInsets.top - self.view.safeAreaInsets.bottom)
         
         let playersIcon = UIImage(named: "icon_players")
         
@@ -56,24 +65,24 @@ class GameViewController: UIViewController {
         self.backGroundView.backgroundColor = UIColor(patternImage: UIImage(named: UIDevice.current.backgroundFileName)!)
         self.view.addSubview(self.backGroundView)
         
-        self.connectionsLabel = UILabel(frame: CGRect(x: 0, y: self.view.frame.width, width: self.view.frame.width, height: 15))
+        self.connectionsLabel = UILabel(frame: CGRect(x: self.view.safeAreaInsets.left, y: self.view.frame.width, width: self.safeFrame.width, height: 15))
         self.connectionsLabel.textColor = UIColor.green
         self.connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
         self.connectionsLabel.text = "Connections: "
         self.view.addSubview(self.connectionsLabel)
         
-        self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - 35, y: self.view.frame.width, width: 35, height: 15))
+        self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - self.view.safeAreaInsets.right - 35, y: self.view.frame.width, width: 35, height: 15))
         self.awsStatusLabel.textColor = UIColor.green
         self.awsStatusLabel.font = UIFont(name: "Helvetica", size: 12)
         self.view.addSubview(self.awsStatusLabel)
         
-        self.playerAcrossLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .top)
+        self.playerAcrossLabel = PlayerStatusLabel(withFrameDimension: self.safeFrame.width, inPosition: .top, withInsets: self.view.safeAreaInsets)
         self.view.addSubview(self.playerAcrossLabel)
         
-        self.playerLeftLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .left)
+        self.playerLeftLabel = PlayerStatusLabel(withFrameDimension: self.safeFrame.width, inPosition: .left, withInsets: self.view.safeAreaInsets)
         self.view.addSubview(self.playerLeftLabel)
         
-        self.playerRightLabel = PlayerStatusLabel(withFrameDimension: self.view.frame.width, inPosition: .right)
+        self.playerRightLabel = PlayerStatusLabel(withFrameDimension: self.safeFrame.width, inPosition: .right, withInsets: self.view.safeAreaInsets)
         self.view.addSubview(self.playerRightLabel)
 
         self.positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
@@ -87,23 +96,23 @@ class GameViewController: UIViewController {
         self.view.addSubview(self.positionLabel)
         self.positionLabel.isHidden = true
         
-        self.lineUpCardsButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.view.frame, buttonNumber: 0, numberOfButtons: self.numberOfButtons, tag: 3)
+        self.lineUpCardsButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.safeFrame, buttonNumber: 0, numberOfButtons: self.numberOfButtons, tag: 3)
         self.lineUpCardsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
         self.view.addSubview(self.lineUpCardsButton)
         
-        self.sortCardsButton = BottomButton(withIconNamed: "icon_cards_sort", viewFrame: self.view.frame, buttonNumber: 1, numberOfButtons: self.numberOfButtons, tag: 5)
+        self.sortCardsButton = BottomButton(withIconNamed: "icon_cards_sort", viewFrame: self.safeFrame, buttonNumber: 1, numberOfButtons: self.numberOfButtons, tag: 5)
         self.sortCardsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
         self.view.addSubview(self.sortCardsButton)
         
-        self.settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.view.frame, buttonNumber: 2, numberOfButtons: self.numberOfButtons, tag: 4)
+        self.settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.safeFrame, buttonNumber: 2, numberOfButtons: self.numberOfButtons, tag: 4)
         self.settingsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
         self.view.addSubview(self.settingsButton)
         
-        self.numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.view.frame, buttonNumber: 3, numberOfButtons: self.numberOfButtons, tag: 2)
+        self.numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.safeFrame, buttonNumber: 3, numberOfButtons: self.numberOfButtons, tag: 2)
         self.numberOfPlayersButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
         self.view.addSubview(self.numberOfPlayersButton)
         
-        self.restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.view.frame, buttonNumber: 4, numberOfButtons: self.numberOfButtons, tag: 1)
+        self.restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.safeFrame, buttonNumber: 4, numberOfButtons: self.numberOfButtons, tag: 1)
         self.restartButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
         self.view.addSubview(self.restartButton)
         
@@ -112,7 +121,10 @@ class GameViewController: UIViewController {
         //view.addSubview(self.scoresButton)
         
         //let skView = self.view as! SKView
-        let sceneFrame = CGRect(x: self.view.frame.minX, y: self.view.frame.minY, width: self.view.frame.width, height: self.view.frame.height - barHeight)
+        let sceneFrame = CGRect(x: self.safeFrame.minX,
+                                y: self.safeFrame.minY,
+                                width: self.safeFrame.width,
+                                height: self.safeFrame.height - barHeight)
         self.skView = SKView(frame: sceneFrame)
         self.view.addSubview(self.skView)
         
