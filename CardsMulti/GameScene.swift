@@ -633,6 +633,7 @@ class GameScene: SKScene {
                         snapLocation.doubleTapAction(snapLocation)
                     } else {
                         // otherwise, perform the scene's double tap action
+                        print("performing scene double tap action")
                         self.doubleTapAction(touchedCardNode)
                     }
                     
@@ -876,6 +877,8 @@ class GameScene: SKScene {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
+            print("touchesEnded tapCount \(t.tapCount)")
+            
             if t.tapCount > 1 {
                 return
             }
@@ -895,9 +898,12 @@ class GameScene: SKScene {
                         }
                     }
                 } else if self.cardsMoved {
+                    print("will call self.snap")
                     self.snap(self.selectedNodes)
                 }
-                                
+               
+                self.currentMovingSpeed = CGVector()
+                self.currentRotationSpeed = CGFloat()
                 self.lastTouchTimestamp = 0.0
                 self.lastTouchMoveTimestamp = 0.0
                 let touchLocation = t.location(in: self)
@@ -1096,6 +1102,7 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func snap(_ cardNodes: [CardSpriteNode]) {
+        print("scene snap")
         DispatchQueue.global(qos: .default).async {
             var snappedToNewLocation = false
             let cardNodesSorted = cardNodes.sorted { $0.zPosition < $1.zPosition }
