@@ -26,6 +26,7 @@ class SettingsTableContoller : UIViewController {
     var aceSwitch: Switch!
     
     var cardScaleSlider: UISlider!
+    var soundSwitch: Switch!
     
     // MARK: - View methods
     
@@ -65,6 +66,12 @@ class SettingsTableContoller : UIViewController {
         self.cardScaleSlider.minimumValue = -Settings.maxCardWidthsPerScreen
         self.cardScaleSlider.maximumValue = -Settings.minCardWidthsPerScreen
         self.cardScaleSlider.value = -Settings.instance.cardWidthsPerScreen
+        
+        self.soundSwitch = Switch(width: elementWidth)
+        self.soundSwitch.isOn = self.settings.soundOn
+        self.soundSwitch.onValueChanged = { () in
+            self.settings.soundOn = self.soundSwitch.isOn
+        }
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
         
@@ -168,6 +175,8 @@ extension SettingsTableContoller : UITableViewDataSource {
             return 4
         case SettingsSection.size.rawValue:
             return 1
+        case SettingsSection.sound.rawValue:
+            return 1
         default:
             return 0
         }
@@ -229,6 +238,10 @@ extension SettingsTableContoller : UITableViewDataSource {
             cell.selectionStyle = .none
             cell.textLabel?.text = "Card size"
             cell.accessoryView = self.cardScaleSlider
+        case SettingsSection.sound.rawValue:
+            cell.selectionStyle = .none
+            cell.textLabel?.text = "Sound"
+            cell.accessoryView = self.soundSwitch
         default:
             break
         }
@@ -254,5 +267,5 @@ protocol SettingsTableControllerDelegate {
  Enumeration of settings sections
  */
 enum SettingsSection: Int, CaseIterable {
-    case game = 0, cards1, cards2, size
+    case game = 0, cards1, cards2, size, sound
 }

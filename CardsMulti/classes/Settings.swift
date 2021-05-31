@@ -134,6 +134,15 @@ class Settings : SettingsBase, NSCoding {
         }
     }
     
+    var soundOn: Bool {
+        get {
+            return self.settingOrDefault(forKey: "soundOn", defaultValue: true)
+        }
+        set(value) {
+            self.setSetting(forKey: "soundOn", toValue: value)
+        }
+    }
+    
     // MARK: - Computed properties
     
     var settingsDictionary: NSDictionary {

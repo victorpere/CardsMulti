@@ -12,14 +12,15 @@ import GameplayKit
 import MultipeerConnectivity
 
 class GameViewController: UIViewController {
-    
-    var safeFrame: CGRect!
+        
     let buttonMargin: CGFloat = 8.0
     let numberOfButtons: CGFloat = 5
     
     let connectionService = ConnectionServiceManager()
     //var host: MCPeerID!
     
+    var safeFrame: CGRect!
+    var configured = false
     
     var connectionsLabel: UILabel!
     var positionLabel: UILabel!
@@ -45,12 +46,20 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.connectionService.delegate = self
+        self.configured = false
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        if self.configured {
+            return
+        }
+        
         // Configure the view.
+                
+        self.configured = true
+        
         self.safeFrame = CGRect(x: self.view.safeAreaInsets.left,
                                 y: self.view.safeAreaInsets.top,
                                 width: self.view.frame.width - self.view.safeAreaInsets.left - self.view.safeAreaInsets.right,

@@ -1084,13 +1084,13 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func makeMoveSound() {
-        if !self.hasActions() {
+        if settings.soundOn && !self.hasActions() {
             self.run(self.moveSound)
         }
     }
     
     func makeFlipSound() {
-        if !self.hasActions() {
+        if settings.soundOn && !self.hasActions() {
             self.run(self.flipSound)
         }
     }
