@@ -77,10 +77,10 @@ class SnapLocation {
     var duration: Double = 0.2
     
     /// Closure defining the rule for snapping a new card to this location. Default returns true for all
-    var snappableConditionMet: (CardSpriteNode) -> Bool = { (_) in return true }
+    var isSnappable: (CardSpriteNode) -> Bool = { (_) in return true }
     
     /// Closure defining the rule for whether a card can be selected to be moved. Default returns true for all
-    var movableConditionMet: (CardSpriteNode) -> Bool = { (_) in return true }
+    var isMovable: (CardSpriteNode) -> Bool = { (_) in return true }
     
     /// Action to perform when the snap location is doulbe-tapped. Default is flip top card
     var doubleTapAction: (SnapLocation) -> Void = { (_ snapLocation) in
@@ -163,7 +163,7 @@ class SnapLocation {
             return false
         }
         
-        if !self.snappableConditionMet(cardNode) {
+        if !self.isSnappable(cardNode) {
             return false
         }
         
@@ -324,7 +324,7 @@ class SnapLocation {
      - returns: All snapped cards that are selectable
      */
     func movableCardNodes() -> [CardSpriteNode] {
-        return self.snappedCards.filter { self.movableConditionMet($0) }
+        return self.snappedCards.filter { self.isMovable($0) }
     }
     
     // MARK: - Private methods
