@@ -254,7 +254,7 @@ class Settings : SettingsBase, NSCoding {
         if let value = settingsDictionary[SettingsKey.ace.rawValue] as? Bool {
             self.ace = value
         }
-        if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen] as? Float {
+        if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen.rawValue] as? Float {
             self.cardWidthsPerScreen = value
         }
     }
