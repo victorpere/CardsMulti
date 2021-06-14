@@ -14,6 +14,8 @@ public final class Config {
     /// AWS websocket endpoinnt
     public static let awsEndpoint = "wss://8vuqtnjhvk.execute-api.us-east-2.amazonaws.com/dev"
     
+    public static let appLinksDomain = "victoriussoftware.com"
+    
     public static let mainColor: UIColor = UIColor(red: 0.7, green: 0.7, blue: 0.5, alpha: 1.0)
 
     public static let cardBackImageName = "back"

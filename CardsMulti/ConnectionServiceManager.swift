@@ -247,8 +247,8 @@ class ConnectionServiceManager : NSObject {
      
      - parameter gameCode: the game code to find
      */
-    func findGames(gameCode: String) {
-        self.wsRequestSender.findGames(gameCode: gameCode)
+    func findGames(withGameCode gameCode: String) {
+        self.wsRequestSender.findGames(withGameCode: gameCode)
     }
     
     /**

@@ -24,6 +24,12 @@ class WsRequestSender {
     
     private var webSocket: WebSocket
     
+    /// The parameter to be used with waitingFunc
+    private var waitingParam: String?
+    
+    /// This function will execute when connection is established
+    private var waitingFunc: ((String) -> Void)?
+    
     // MARK: - Initializer
     
     init() {
@@ -65,7 +71,14 @@ class WsRequestSender {
      Find game IDs matching the specified game code
      - parameter gameCode: the game code to find
      */
-    func findGames(gameCode: String) {
+    func findGames(withGameCode gameCode: String) {
+        if (!self.isConnected) {
+            self.waitingParam = gameCode
+            self.waitingFunc = self.findGames(withGameCode:)
+            self.connect()
+            return
+        }
+        
         let payload: NSDictionary = [
             "action": WsAction.onFindGame.rawValue,
             "gameCode": gameCode
@@ -198,8 +211,15 @@ class WsRequestSender {
 
 extension WsRequestSender : WebSocketDelegate {
     func websocketDidConnect(socket: WebSocketClient) {
-        print("websocketDidConnect")
+        print("websocketDidConnect")        
         self.delegate?.didConnect()
+        
+        if let param = self.waitingParam, let function = self.waitingFunc {
+            function(param)
+            
+            self.waitingParam = nil
+            self.waitingFunc = nil
+        }
     }
     
     func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {

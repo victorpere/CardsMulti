@@ -10,6 +10,8 @@ import UIKit
 import SpriteKit
 import GameplayKit
 import MultipeerConnectivity
+import ContactsUI
+import MessageUI
 
 class GameViewController: UIViewController {
         
@@ -204,13 +206,13 @@ class GameViewController: UIViewController {
             self.playerRightLabel.isHidden = true
             self.awsStatusLabel.isHidden = true
             self.scene = Solitaire(size: self.skView.frame.size, loadFromSave: loadFromSave)
-        case GameType.GoFish.rawValue:
-            self.connectionsLabel.isHidden = false
-            self.playerLeftLabel.isHidden = false
-            self.playerAcrossLabel.isHidden = false
-            self.playerRightLabel.isHidden = false
-            self.awsStatusLabel.isHidden = false
-            self.scene = GameGoFish(size: self.skView.frame.size, loadFromSave: loadFromSave)
+//        case GameType.GoFish.rawValue:
+//            self.connectionsLabel.isHidden = false
+//            self.playerLeftLabel.isHidden = false
+//            self.playerAcrossLabel.isHidden = false
+//            self.playerRightLabel.isHidden = false
+//            self.awsStatusLabel.isHidden = false
+//            self.scene = GameGoFish(size: self.skView.frame.size, loadFromSave: loadFromSave)
         default:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
@@ -267,7 +269,7 @@ class GameViewController: UIViewController {
         // button to join AWS game
         let joinGameAction = UIAlertAction(title: "Join a game", style: .default, handler: { (alert) -> Void in
             self.showTextDialog(title: "Join a game", text: "Game code", keyboardType: .numberPad, okAction: { (gameCode) -> Void in
-                self.connectionService.findGames(gameCode: gameCode)
+                self.connectionService.findGames(withGameCode: gameCode)
             })
         })
         peerBrowser.addAction(joinGameAction)
@@ -290,14 +292,26 @@ class GameViewController: UIViewController {
         }
         
         let connectionAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
+        
+        let inviteButton = UIAlertAction(title: "Invite a friend", style: .default, handler: { (alert) -> Void in
+            self.createInvitation()
+        })
+        
         let disconnectButton = UIAlertAction(title: "Disconnect from the game", style: .default, handler: { (alert) -> Void in
             self.connectionService.disconnectFromGame()
             self.connectionService.disconnect()
         } )
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in }
         
+        connectionAlert.addAction(inviteButton)
         connectionAlert.addAction(disconnectButton)
         connectionAlert.addAction(cancelButton)
+        
+        let presentationController = connectionAlert.popoverPresentationController
+        presentationController?.permittedArrowDirections = .down
+        presentationController?.sourceView = self.numberOfPlayersButton
+        presentationController?.sourceRect = self.numberOfPlayersButton.bounds
+        
         self.present(connectionAlert, animated: true, completion: nil)
     }
     
@@ -401,6 +415,35 @@ class GameViewController: UIViewController {
         }
     }
     
+    /**
+     Instructs connection service to find games matching the specified game code
+     - parameters:
+        - withGameCode: game code to search
+     */
+    func findGames(withGameCode gameCode: String) {
+        print("find gameCode \(gameCode)")
+        
+        if self.connectionService.gameId == nil {
+            self.connectionService.findGames(withGameCode: gameCode)
+        } else {
+            self.showAlert(title: "Already joined a game", text: "Disconnect from the current game before joining another one")
+        }
+    }
+    
+    /**
+     Joins game with specified gameId
+     - parameter gameId: gameId to join
+     */
+    func joinGame(gameId: String) {
+        print("join gameId \(gameId)")
+        
+        if self.connectionService.gameId == nil {
+            self.connectionService.joinGame(gameId: gameId)
+        } else {
+            self.showAlert(title: "Already joined a game", text: "Disconnect from the current game before joining another one")
+        }
+    }
+    
     // MARK: - Private methods
     
     /**
@@ -461,6 +504,26 @@ class GameViewController: UIViewController {
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)
         }
+    }
+    
+    /**
+     Creates an invitation link to the current game and opens a sharing dialog
+     */
+    private func createInvitation() {
+        let params = [URLQueryItem(name: "gamecode", value: self.connectionService.gameCode)]
+        guard let url = Global.appLinkUrl(method: "join", params: params) else {
+            self.showAlert(title: "Something went wrong", text: "Couldn't retrieve the game information")
+            return
+        }
+        
+        let inviteViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        
+        let presentationController = inviteViewController.popoverPresentationController
+        presentationController?.permittedArrowDirections = .down
+        presentationController?.sourceView = self.numberOfPlayersButton
+        presentationController?.sourceRect = self.numberOfPlayersButton.bounds
+
+        self.present(inviteViewController, animated: true, completion: nil)
     }
     
     fileprivate func updateConnectionLabels() {
@@ -604,7 +667,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
                 self.connectionService.joinGame(gameId: gameIds[0].0)
             })
         } else {
-            self.showAlert(title: "No games found", text: "")
+            self.showAlert(title: "Game not found", text: "")
         }
     }
     

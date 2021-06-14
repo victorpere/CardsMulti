@@ -14,7 +14,6 @@
 		5702182B2373B6D500310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
 		5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
 		570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A810F249EB8FC001096E1 /* WsMessage.swift */; };
-		570C3973233697E200A2882C /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		57272556256AE697008A8171 /* RequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57272555256AE697008A8171 /* RequestData.swift */; };
 		573FD5862399F30C009BDBF9 /* GameType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573FD5852399F30C009BDBF9 /* GameType.swift */; };
@@ -91,7 +90,6 @@
 		57DD919925853F820086336D /* WsMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A810F249EB8FC001096E1 /* WsMessage.swift */; };
 		57DD919D25853F850086336D /* RequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57272555256AE697008A8171 /* RequestData.swift */; };
 		57DD91A125853F900086336D /* WsRequestSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F400FE248D6D7800EF71D5 /* WsRequestSender.swift */; };
-		57DD91A525853FB00086336D /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
 		57DD91A925853FB30086336D /* Solitaire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C323778D9300719821 /* Solitaire.swift */; };
 		57DD91AD25853FE90086336D /* PopUpMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */; };
 		57DD91B125853FEF0086336D /* PopUpMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */; };
@@ -153,6 +151,9 @@
 		578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceivedDataHandler.swift; sourceTree = "<group>"; };
 		57897FF71E85652400B1D4A6 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		57897FF91E85658D00B1D4A6 /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
+		578DB663266D11570034BB45 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
+		578DB665266DA0360034BB45 /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
+		578DB6672675069E0034BB45 /* CardsMulti.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CardsMulti.entitlements; sourceTree = "<group>"; };
 		578F40C323778D9300719821 /* Solitaire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solitaire.swift; sourceTree = "<group>"; };
 		578F40C52377923100719821 /* SnapLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLocation.swift; sourceTree = "<group>"; };
 		57B053D11E4E3BD20057E62F /* CardsMulti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsMulti.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -307,6 +308,7 @@
 		57B053D31E4E3BD20057E62F /* CardsMulti */ = {
 			isa = PBXGroup;
 			children = (
+				578DB6672675069E0034BB45 /* CardsMulti.entitlements */,
 				570218242373B35F00310A67 /* Xibs */,
 				570C3971233697B100A2882C /* GameScenes */,
 				57897FF61E85651400B1D4A6 /* Config */,
@@ -403,6 +405,8 @@
 				57F70560243A7A35009552AB /* ScoresViewController.swift */,
 				57F70566243A857B009552AB /* ScoreCell.swift */,
 				574725C7243C072E0094FF39 /* GridView.swift */,
+				578DB663266D11570034BB45 /* ContactsTableViewController.swift */,
+				578DB665266DA0360034BB45 /* ContactsViewController.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -684,7 +688,6 @@
 				574693522367CB9D00AB6516 /* SettingsBase.swift in Sources */,
 				57F400FF248D6D7800EF71D5 /* WsRequestSender.swift in Sources */,
 				57D6560423651BA000DA69C4 /* CoreGraphics.swift in Sources */,
-				570C3973233697E200A2882C /* GameGoFish.swift in Sources */,
 				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
 				57F70561243A7A35009552AB /* ScoresViewController.swift in Sources */,
@@ -755,7 +758,6 @@
 				578B1C5A1E7EFB1B008B8381 /* SettingsViewController.swift in Sources */,
 				578B1C5E1E7EFBD3008B8381 /* Math.swift in Sources */,
 				57DD919925853F820086336D /* WsMessage.swift in Sources */,
-				57DD91A525853FB00086336D /* GameGoFish.swift in Sources */,
 				57DD91AD25853FE90086336D /* PopUpMenu.swift in Sources */,
 				57DD918D25853F6D0086336D /* Player.swift in Sources */,
 				57DD91B925853FFB0086336D /* ScoreCell.swift in Sources */,
@@ -937,14 +939,15 @@
 			baseConfigurationReference = 73C5D4C34CC51557A25B81C4 /* Pods-CardsMulti.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.7.1;
+				MARKETING_VERSION = 0.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -957,14 +960,15 @@
 			baseConfigurationReference = B620DE44CE4E19863D919246 /* Pods-CardsMulti.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.7.1;
+				MARKETING_VERSION = 0.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

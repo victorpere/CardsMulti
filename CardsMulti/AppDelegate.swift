@@ -28,6 +28,57 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+    
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        
+        // Get URL components from the incoming user activity
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let incomingURL = userActivity.webpageURL,
+            let components = NSURLComponents(url: incomingURL, resolvingAgainstBaseURL: true) else {
+            print("link fail")
+            return false
+        }
+        
+        print("link: \(incomingURL.absoluteString)")
+        
+        // Check for specific URL components
+        guard let path = components.path else {
+            print("path fail")
+            return false
+        }
+        
+        print("path = \(path)")
+        
+        if path != "/join" {
+            return false
+        }
+        
+        guard let params = components.queryItems else {
+            print("no params")
+            return false
+        }
+        
+        for param in params {
+            print("param: \(param.name) = \(param.value ?? "NULL")")
+        }
+        
+        if let gameId = params.first(where: { $0.name == "gameid" } )?.value {
+            print("gameId: \(gameId)")
+            
+        } else if let gameCode = params.first(where: { $0.name == "gamecode" } )?.value {
+            print("gameCode: \(gameCode)")
+
+            if let viewController = self.window?.rootViewController as! GameViewController? {
+                viewController.connectionService.startService()
+                viewController.findGames(withGameCode: gameCode)
+            }
+        } else {
+            print("params fail")
+            return false
+        }
+            
+        return true
+    }
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

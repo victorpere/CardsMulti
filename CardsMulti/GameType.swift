@@ -11,7 +11,7 @@ import Foundation
 enum GameType: Int, CaseIterable {
     case FreePlay = 0
     case Solitare = 1
-    case GoFish = 2
+    //case GoFish = 2
     
     var name: String {
         switch self {
@@ -19,8 +19,8 @@ enum GameType: Int, CaseIterable {
             return "Free Play"
         case .Solitare:
             return "Solitaire"
-        case .GoFish:
-            return "Go Fish"
+//        case .GoFish:
+//            return "Go Fish"
         }
     }
 }

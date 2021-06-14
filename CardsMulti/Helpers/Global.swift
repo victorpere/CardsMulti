@@ -153,4 +153,21 @@ class Global {
         
         return cardDictionaryArray
     }
+    
+    /**
+     Builds an app link URL for the specified method and parameters
+     
+     - returns app link URL
+     */
+    static func appLinkUrl(method: String, params: [URLQueryItem]) -> String? {
+        var components = URLComponents()
+        
+        components.scheme = "https"
+        components.host = Config.appLinksDomain
+        components.path = "/\(method)"
+        components.queryItems = params
+        
+        let url = components.url
+        return url?.absoluteString
+    }
 }
