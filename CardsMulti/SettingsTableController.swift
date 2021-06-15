@@ -75,11 +75,10 @@ class SettingsTableContoller : UIViewController {
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
         
-        self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height), style: UITableView.Style.grouped)
+        self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.navigationController?.view.frame.height ?? self.view.frame.height), style: UITableView.Style.grouped)
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.sectionFooterHeight = 0
-        self.tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
         
         self.view.addSubview(self.tableView)
     }
