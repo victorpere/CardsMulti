@@ -9,7 +9,7 @@
 import UIKit
 
 class SettingsTableContoller : UIViewController {
-    let stadardRowHeight: CGFloat = 44
+    let standardRowHeight: CGFloat = 44
     let sliderRowHeight:CGFloat = 53
     
     let settings = Settings()
@@ -62,7 +62,7 @@ class SettingsTableContoller : UIViewController {
         self.kingSwitch.isOn = self.settings.king
         self.aceSwitch.isOn = self.settings.ace
         
-        self.cardScaleSlider = UISlider()
+        self.cardScaleSlider = UISlider(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 2, height: self.standardRowHeight))
         self.cardScaleSlider.minimumValue = -Settings.maxCardWidthsPerScreen
         self.cardScaleSlider.maximumValue = -Settings.minCardWidthsPerScreen
         self.cardScaleSlider.value = -Settings.instance.cardWidthsPerScreen
@@ -189,7 +189,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         if indexPath.section == SettingsSection.cards1.rawValue && (indexPath.row == 1 || indexPath.row == 2) {
             return self.sliderRowHeight
         }
-        return self.stadardRowHeight
+        return self.standardRowHeight
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
