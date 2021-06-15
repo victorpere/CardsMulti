@@ -78,6 +78,8 @@ class SettingsTableContoller : UIViewController {
         self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height), style: UITableView.Style.grouped)
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.tableView.sectionFooterHeight = 0
+        self.tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
         
         self.view.addSubview(self.tableView)
     }
@@ -167,6 +169,8 @@ extension SettingsTableContoller : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
+        case SettingsSection.player.rawValue:
+            return 1
         case SettingsSection.game.rawValue:
             return GameType.allCases.count
         case SettingsSection.cards1.rawValue:
@@ -189,10 +193,34 @@ extension SettingsTableContoller : UITableViewDataSource {
         return self.stadardRowHeight
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if let settingsSection = SettingsSection(rawValue: section) {
+            return settingsSection.title
+        }
+        
+        return nil
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: nil)
         
         switch indexPath.section {
+        case SettingsSection.player.rawValue:
+            switch indexPath.row {
+            case 0:
+                let textEditCell = (UINib(nibName: "TextEditCell", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? TextEditCell)!
+                textEditCell.selectionStyle = .none
+                textEditCell.name.text = "Name"
+                textEditCell.value.text = self.settings.displayName
+                textEditCell.value.delegate = textEditCell
+                textEditCell.delegate = self
+                
+                return textEditCell
+            default:
+                break
+            }
+            
+            break
         case SettingsSection.game.rawValue:
             cell.textLabel?.text = GameType(rawValue: indexPath.row)?.name
             
@@ -267,5 +295,26 @@ protocol SettingsTableControllerDelegate {
  Enumeration of settings sections
  */
 enum SettingsSection: Int, CaseIterable {
-    case game = 0, cards1, cards2, size, sound
+    case player = 0, game, cards1, cards2, size, sound
+    
+    var title: String? {
+        switch self {
+        case .player:
+            return "Player"
+        case .game:
+            return "Game"
+        case .cards1:
+            return "Cards"
+        default:
+            return nil
+        }
+    }
+}
+
+// MARK: - Protocol
+
+extension SettingsTableContoller : TextEditCellDelegate {
+    func didFinishEditing(_ text: String) {
+        self.settings.displayName = text
+    }
 }
