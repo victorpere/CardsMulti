@@ -16,6 +16,8 @@
 		570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A810F249EB8FC001096E1 /* WsMessage.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		57272556256AE697008A8171 /* RequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57272555256AE697008A8171 /* RequestData.swift */; };
+		5732550D267A683C003B8834 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5732550F267A683C003B8834 /* Localizable.strings */; };
+		57325512267A699E003B8834 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57325511267A699E003B8834 /* String.swift */; };
 		573FD5862399F30C009BDBF9 /* GameType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573FD5852399F30C009BDBF9 /* GameType.swift */; };
 		573FD588239F343F009BDBF9 /* PlayArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573FD587239F343F009BDBF9 /* PlayArea.swift */; };
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
@@ -142,6 +144,9 @@
 		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
 		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		57272555256AE697008A8171 /* RequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestData.swift; sourceTree = "<group>"; };
+		5732550E267A683C003B8834 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		57325510267A6878003B8834 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		57325511267A699E003B8834 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		573FD5852399F30C009BDBF9 /* GameType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameType.swift; sourceTree = "<group>"; };
 		573FD587239F343F009BDBF9 /* PlayArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayArea.swift; sourceTree = "<group>"; };
 		5740504C1E5E890000316AEB /* card_flip.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_flip.m4a; sourceTree = "<group>"; };
@@ -258,6 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				5740504B1E5E88F300316AEB /* Sounds */,
+				5732550F267A683C003B8834 /* Localizable.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -276,6 +282,7 @@
 			children = (
 				574050541E5F82AA00316AEB /* UIDevice.swift */,
 				57D6560323651BA000DA69C4 /* CoreGraphics.swift */,
+				57325511267A699E003B8834 /* String.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -538,6 +545,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 57B053C81E4E3BD20057E62F;
 			productRefGroup = 57B053D21E4E3BD20057E62F /* Products */;
@@ -561,6 +569,7 @@
 				57B053E01E4E3BD20057E62F /* Main.storyboard in Resources */,
 				5740504E1E5E890000316AEB /* card_flip.m4a in Resources */,
 				57B053E21E4E3BD20057E62F /* Assets.xcassets in Resources */,
+				5732550D267A683C003B8834 /* Localizable.strings in Resources */,
 				570218262373B39600310A67 /* CardSizeTableViewCell.xib in Resources */,
 				57B053E51E4E3BD20057E62F /* LaunchScreen.storyboard in Resources */,
 			);
@@ -698,6 +707,7 @@
 				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
 				57F70561243A7A35009552AB /* ScoresViewController.swift in Sources */,
+				57325512267A699E003B8834 /* String.swift in Sources */,
 				570218282373B44100310A67 /* CardSizeTableViewCell.swift in Sources */,
 				57B9C8F41E58FAA900F8E25B /* Actions.swift in Sources */,
 				57272556256AE697008A8171 /* RequestData.swift in Sources */,
@@ -808,6 +818,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		5732550F267A683C003B8834 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5732550E267A683C003B8834 /* en */,
+				57325510267A6878003B8834 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		57B053DE1E4E3BD20057E62F /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -950,12 +969,12 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.7.2;
+				MARKETING_VERSION = 0.7.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -971,12 +990,12 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.7.2;
+				MARKETING_VERSION = 0.7.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

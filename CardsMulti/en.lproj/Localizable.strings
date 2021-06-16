@@ -1,0 +1,61 @@
+/* 
+  Localizable.strings
+  CardsMulti
+
+  Created by Victor on 2021-06-16.
+  Copyright © 2021 Victorius Software Inc. All rights reserved.
+*/
+
+
+"cancel"    = "Cancel";
+"ok"        = "OK";
+"allow"     = "Allow";
+
+"settings"  = "Settings";
+
+"player"    = "Player";
+"name"      = "Name";
+"game"      = "Game";
+"free play" = "Free Play";
+"solitaire" = "Solitaire";
+"cards"     = "Cards";
+"pip cards" = "Pip Cards";
+"minimum rank"  = "Minimum Rank";
+"maximum rank"  = "Maximum Rank";
+"jack"      = "Jack";
+"queen"     = "Queen";
+"king"      = "King";
+"ace"       = "Ace";
+"card size" = "Card Size";
+"sound"     = "Sound";
+
+"create or join a game"     = "Create or join a game";
+"invite a friend to join"   = "Invite a friend to join";
+"join a game"               = "Join a game";
+"disconnect from the game"  = "Disconnect from the game";
+"game code"                 = "Game code";
+"connected to game"         = "Connected to game";
+"already joined a game"     = "Already joined a game";
+"disconnect from the current game before joining another one"   = "Disconnect from the current game before joining another one";
+"something went wrong"      = "Something went wrong";
+"couldn't retrieve the game information"    = "Couldn't retrieve the game information";
+"joined the game"           = "joined the game";
+"disconnected"              = "disconnected";
+"wants to connect to the game"  = "wants to connect to the game";
+"do you want to reconnect to last game?"    = "Do you want to reconnect to last game?";
+"reconnect"     = "Reconnect";
+"could not find game"   = "Could not find game";
+"found game"    = "Found game";
+"created by"    = "Created by";
+"join"          = "Join";
+"joined game code"  = "Joined game code";
+"message from"  = "Message from";
+
+"disconnected from game"    = "Disconnected from the game";
+
+"shuffle"   = "Shuffle";
+"stack"     = "Stack";
+"fan"       = "Fan";
+"deal"      = "Deal";
+
+"cards selected"    = "cards selected";

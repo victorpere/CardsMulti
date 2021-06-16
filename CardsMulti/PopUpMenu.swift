@@ -16,34 +16,34 @@ class PopUpMenu : UIAlertController {
     
     convenience init(numberOfCards: Int, numberOfPlayers: Int) {
         let maxNumberOfCardsToDeal = numberOfCards / numberOfPlayers
-        self.init(title: "\(numberOfCards) cards selected", message: nil, preferredStyle: .actionSheet)
+        self.init(title: "\(numberOfCards) \("cards selected".localized)", message: nil, preferredStyle: .actionSheet)
         
-        let shuffleButton = UIAlertAction(title: "Shuffle", style: .default, handler: {
+        let shuffleButton = UIAlertAction(title: "shuffle".localized, style: .default, handler: {
             (alert) -> Void in
             self.delegate?.shuffle()
         })
         self.addAction(shuffleButton)
         
-        let stackButton = UIAlertAction(title: "Stack", style: .default, handler: {
+        let stackButton = UIAlertAction(title: "stack".localized, style: .default, handler: {
             (alert) -> Void in
             self.delegate?.stack()
         })
         self.addAction(stackButton)
         
-        let fanButton = UIAlertAction(title: "Fan", style: .default, handler: {
+        let fanButton = UIAlertAction(title: "fan".localized, style: .default, handler: {
             (alert) -> Void in
             self.delegate?.fan()
         })
         self.addAction(fanButton)
         
         for index in 1...maxNumberOfCardsToDeal {
-            let dealButton = UIAlertAction(title: "Deal \(index)", style: .default, handler: { (alert) -> Void in
+            let dealButton = UIAlertAction(title: "\("deal".localized) \(index)", style: .default, handler: { (alert) -> Void in
                 self.delegate?.deal(index)
             })
             self.addAction(dealButton)
         }
         
-        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel) { (alert) -> Void in
+        let cancelButton = UIAlertAction(title: "cancel".localized, style: .cancel) { (alert) -> Void in
             self.delegate?.cancel()
         }
         self.addAction(cancelButton)

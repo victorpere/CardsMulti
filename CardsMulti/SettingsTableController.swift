@@ -40,7 +40,7 @@ class SettingsTableContoller : UIViewController {
         }
         
         self.view.backgroundColor = .white
-        self.title = "Settings"
+        self.title = "settings".localized
         
         let elementWidth = self.view.frame.width / 2
         
@@ -209,7 +209,7 @@ extension SettingsTableContoller : UITableViewDataSource {
             case 0:
                 let textEditCell = (UINib(nibName: "TextEditCell", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? TextEditCell)!
                 textEditCell.selectionStyle = .none
-                textEditCell.name.text = "Name"
+                textEditCell.name.text = "name".localized
                 textEditCell.value.text = self.settings.displayName
                 textEditCell.value.delegate = textEditCell
                 textEditCell.delegate = self
@@ -232,13 +232,13 @@ extension SettingsTableContoller : UITableViewDataSource {
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
-                cell.textLabel?.text = "Pip cards"
+                cell.textLabel?.text = "pip cards".localized
                 cell.accessoryView = self.pipsSwitch
             case 1:
-                cell.textLabel?.text = "Minimum rank"
+                cell.textLabel?.text = "minimum rank".localized
                 cell.accessoryView = self.minSlider
             case 2:
-                cell.textLabel?.text = "Maximum rank"
+                cell.textLabel?.text = "maximum rank".localized
                 cell.accessoryView = self.maxSlider
             default:
                 break
@@ -247,27 +247,27 @@ extension SettingsTableContoller : UITableViewDataSource {
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
-                cell.textLabel?.text = "Jack"
+                cell.textLabel?.text = "jack".localized
                 cell.accessoryView = self.jackSwitch
             case 1:
-                cell.textLabel?.text = "Queen"
+                cell.textLabel?.text = "queen".localized
                 cell.accessoryView = self.queenSwitch
             case 2:
-                cell.textLabel?.text = "King"
+                cell.textLabel?.text = "king".localized
                 cell.accessoryView = self.kingSwitch
             case 3:
-                cell.textLabel?.text = "Ace"
+                cell.textLabel?.text = "ace".localized
                 cell.accessoryView = self.aceSwitch
             default:
                 break
             }
         case SettingsSection.size.rawValue:
             cell.selectionStyle = .none
-            cell.textLabel?.text = "Card size"
+            cell.textLabel?.text = "card size".localized
             cell.accessoryView = self.cardScaleSlider
         case SettingsSection.sound.rawValue:
             cell.selectionStyle = .none
-            cell.textLabel?.text = "Sound"
+            cell.textLabel?.text = "sound".localized
             cell.accessoryView = self.soundSwitch
         default:
             break
@@ -299,11 +299,11 @@ enum SettingsSection: Int, CaseIterable {
     var title: String? {
         switch self {
         case .player:
-            return "Player"
+            return "player".localized
         case .game:
-            return "Game"
+            return "game".localized
         case .cards1:
-            return "Cards"
+            return "cards".localized
         default:
             return nil
         }

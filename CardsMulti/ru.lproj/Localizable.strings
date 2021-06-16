@@ -1,0 +1,61 @@
+/* 
+  Localizable.strings
+  CardsMulti
+
+  Created by Victor on 2021-06-16.
+  Copyright © 2021 Victorius Software Inc. All rights reserved.
+*/
+
+
+"cancel"    = "Отменить";
+"ok"        = "ОК";
+"allow"     = "Позволить";
+
+"settings"  = "Настройки";
+
+"player"    = "Игрок";
+"name"      = "Имя";
+"game"      = "Игра";
+"free play" = "Свободная игра";
+"solitaire" = "Пасьянс";
+"cards"     = "Колода";
+"pip cards" = "Числовые карты";
+"minimum rank"  = "От";
+"maximum rank"  = "До";
+"jack"      = "Валеты";
+"queen"     = "Дамы";
+"king"      = "Короли";
+"ace"       = "Тузы";
+"card size" = "Размер карты";
+"sound"     = "Звук";
+
+"create or join a game"     = "Создать или присоединиться к игре";
+"invite a friend to join"   = "Пригласить в игру";
+"join a game"               = "Присоединиться к игре";
+"disconnect from the game"  = "Отсоединиться от игры";
+"game code"                 = "Код";
+"connected to game"         = "Присоединиться к игре";
+"already joined a game"     = "Вы уже присоединились к игре";
+"disconnect from the current game before joining another one"   = "Отсоединитесь перед тем, как присоединиться к другой игре";
+"something went wrong"      = "Что-то не так";
+"couldn't retrieve the game information"    = "Не смог выдать информацию об игре";
+"joined the game"           = "присоединился к игре";
+"disconnected"              = "отсоединился";
+"wants to connect to the game"  = "хочет присоединиться к игре";
+"do you want to reconnect to last game?"    = "Хотите присоединиться к предыдущей игре?";
+"reconnect"     = "Присоединиться снова";
+"could not find game"   = "Игра не найдена";
+"found game"    = "Игра найдена";
+"created by"    = "Создана";
+"join"          = "Присоединиться";
+"joined game code"  = "Присоединились к игре под кодом:";
+"message from"  = "Сообщение от";
+
+"disconnected from game"    = "Отсоединились от игры";
+
+"shuffle"   = "Перетасовать";
+"stack"     = "В стопку";
+"fan"       = "Веером";
+"deal"      = "Раздать";
+
+"cards selected"    = "карт выбрано";

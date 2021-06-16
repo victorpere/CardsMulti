@@ -16,9 +16,9 @@ enum GameType: Int, CaseIterable {
     var name: String {
         switch self {
         case .FreePlay:
-            return "Free Play"
+            return "free play".localized
         case .Solitare:
-            return "Solitaire"
+            return "solitaire".localized
 //        case .GoFish:
 //            return "Go Fish"
         }
