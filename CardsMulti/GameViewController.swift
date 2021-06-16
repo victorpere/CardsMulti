@@ -260,7 +260,7 @@ class GameViewController: UIViewController {
         }
         
         // button to create AWS game
-        let createGameAction = UIAlertAction(title: "Create a new game", style: .default,
+        let createGameAction = UIAlertAction(title: "Invite a friend to join", style: .default,
                                              handler: { (alert) -> Void in
                                                 self.connectionService.createGame()
         })
@@ -293,7 +293,7 @@ class GameViewController: UIViewController {
         
         let connectionAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         
-        let inviteButton = UIAlertAction(title: "Invite a friend", style: .default, handler: { (alert) -> Void in
+        let inviteButton = UIAlertAction(title: "Invite a friend to join", style: .default, handler: { (alert) -> Void in
             self.createInvitation()
         })
         
@@ -653,7 +653,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     
     func didGreateGameAWS(gameCode: String) {
         self.awsStatusLabel.text = gameCode
-        self.showAlert(title: "Game Created", text: "Game code: \(gameCode)")
+        self.createInvitation()
     }
     
     func didNotFindGame() {
