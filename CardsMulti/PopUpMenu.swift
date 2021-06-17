@@ -16,7 +16,7 @@ class PopUpMenu : UIAlertController {
     
     convenience init(numberOfCards: Int, numberOfPlayers: Int) {
         let maxNumberOfCardsToDeal = numberOfCards / numberOfPlayers
-        self.init(title: "\(numberOfCards) \("cards selected".localized)", message: nil, preferredStyle: .actionSheet)
+        self.init(title: String(format: "%d cards selected".localized, numberOfCards), message: nil, preferredStyle: .actionSheet)
         
         let shuffleButton = UIAlertAction(title: "shuffle".localized, style: .default, handler: {
             (alert) -> Void in

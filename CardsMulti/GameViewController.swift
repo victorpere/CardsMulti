@@ -79,7 +79,7 @@ class GameViewController: UIViewController {
         self.connectionsLabel = UILabel(frame: CGRect(x: self.view.safeAreaInsets.left, y: self.view.frame.width, width: self.safeFrame.width, height: 15))
         self.connectionsLabel.textColor = UIColor.green
         self.connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
-        self.connectionsLabel.text = "Connections: "
+        self.connectionsLabel.text = "\("connections".localized): "
         self.view.addSubview(self.connectionsLabel)
         
         self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - self.view.safeAreaInsets.right - 35, y: self.view.frame.width, width: 35, height: 15))
@@ -530,7 +530,7 @@ class GameViewController: UIViewController {
         DispatchQueue.main.async {
             let connectedPlayerNames = self.connectionService.playersAWS.filter({$0 != nil}).map({$0!.displayName})
             let connectionLabels = connectedPlayerNames.count == 0 ? "" : "\(connectedPlayerNames)"
-            self.connectionsLabel.text = "Connections: \(connectionLabels)"
+            self.connectionsLabel.text = "\("connections".localized): \(connectionLabels)"
             self.updateLabels()
             self.updatePlayerLabels()
         }
@@ -570,7 +570,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
         DispatchQueue.main.async {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
-            self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+            self.connectionsLabel.text = "\("connections".localized): \(connectedDevicesNames)"
             self.updateLabels()
             self.updatePlayerLabels()
         }
@@ -587,7 +587,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
         DispatchQueue.main.async {
             let connectedDevicesNames = connectedDevices.map({$0.displayName})
-            self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+            self.connectionsLabel.text = "\("connections".localized): \(connectedDevicesNames)"
             self.updateLabels()
             self.updatePlayerLabels()
         }
@@ -598,7 +598,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     func updatePositions(myPosition: Position) {
         DispatchQueue.main.async {
             let connectedDevicesNames = self.connectionService.session.connectedPeers.map({$0.displayName})
-            self.connectionsLabel.text = "Connections: \(connectedDevicesNames)"
+            self.connectionsLabel.text = "\("connections".localized): \(connectedDevicesNames)"
             self.updateLabels()
             self.updatePlayerLabels()
         }

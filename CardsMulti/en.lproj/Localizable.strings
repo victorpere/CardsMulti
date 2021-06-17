@@ -12,7 +12,6 @@
 "allow"     = "Allow";
 
 "settings"  = "Settings";
-
 "player"    = "Player";
 "name"      = "Name";
 "game"      = "Game";
@@ -50,12 +49,13 @@
 "join"          = "Join";
 "joined game code"  = "Joined game code";
 "message from"  = "Message from";
-
 "disconnected from game"    = "Disconnected from the game";
 
 "shuffle"   = "Shuffle";
 "stack"     = "Stack";
 "fan"       = "Fan";
 "deal"      = "Deal";
+"%d cards selected"    = "%d cards selected";
 
-"cards selected"    = "cards selected";
+"connections"   = "Connections";
+"%d cards"      = "%d cards";

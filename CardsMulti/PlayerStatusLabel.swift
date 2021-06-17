@@ -18,7 +18,7 @@ class PlayerStatusLabel : UILabel {
     // MARK: - Properties
     
     var playerNameLabel: String = ""
-    var numberOfCardsLabel: String = "0 cards"
+    var numberOfCardsLabel: String = String(format: "%d cards".localized, 0)
     var position: Position
     
     // MARK: - Initilizers
@@ -64,7 +64,7 @@ class PlayerStatusLabel : UILabel {
     }
     
     func update(numberOfCards: Int) {
-        self.numberOfCardsLabel = "\(numberOfCards) Cards"
+        self.numberOfCardsLabel = String(format: "%d cards".localized, numberOfCards)
         self.updateText()
     }
     
