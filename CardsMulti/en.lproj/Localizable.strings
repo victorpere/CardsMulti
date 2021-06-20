@@ -55,7 +55,14 @@
 "stack"     = "Stack";
 "fan"       = "Fan";
 "deal"      = "Deal";
-"%d cards selected"    = "%d cards selected";
+"flip face down"    = "Flip face down";
+"flip face up"      = "Flip face up";
+"%d cards selected"     = "%d cards selected";
+"recall cards from %@"        = "Recall cards from %@";
+"bottom"    = "bottom";
+"top"       = "top";
+"left"      = "left";
+"right"     = "right";
 
 "connections"   = "Connections";
 "%d cards"      = "%d cards";

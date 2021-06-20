@@ -706,8 +706,8 @@ extension GameViewController : GameSceneDelegate {
     
     func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint) {
         print("touch location: \(location)")
-        let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, numberOfPlayers: numberOfPlayers)
-        popUpMenu.delegate = self
+        let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, delegate: self)
+        popUpMenu.touchLocation = location
         
         let sourceRect = CGRect(center: CGPoint(x: location.x, y: self.skView.frame.height - location.y), size: CGSize(width: 1, height: 1))
         
@@ -756,6 +756,14 @@ extension GameViewController : SettingsViewControllerDelegate, SettingsTableCont
 // MARK: - PopUpMenuDelegate
 
 extension GameViewController : PopUpMenuDelegate {
+    func numberOfCards(inPosition position: Position) -> Int {
+        return self.scene.numberOfCards(inPosition: position)
+    }
+    
+    var numberOfPlayers: Int {
+        return self.scene.numberOfPlayers
+    }
+    
     func stack() {
         self.scene.stackSelectedCards()
     }
@@ -773,7 +781,11 @@ extension GameViewController : PopUpMenuDelegate {
     }
     
     func cancel() {
-        self.scene.deselectNodeForTouch()
+        self.scene.endTouchesReset()
     }
 
+    func recall(from position: Position?, to location: CGPoint?) {
+        self.scene.endTouchesReset()
+        self.scene.recallCards(from: position, to: location)
+    }
 }

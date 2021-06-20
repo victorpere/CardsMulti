@@ -31,6 +31,8 @@ class GameScene: SKScene {
     let timeToSelectMultipleNodes: TimeInterval = 1.0
     let timeToPopUpMenu: TimeInterval = 1.1
     
+    let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
+    
     //let connectionService = ConnectionServiceManager()
     
     var gameType: GameType
@@ -56,6 +58,7 @@ class GameScene: SKScene {
     var previousMovingSpeed = CGVector()
     var currentRotationSpeed: CGFloat = 0
     var firstTouchLocation = CGPoint()
+    var lastTouchLocation: CGPoint? = nil
     var lastTouchTimestamp = 0.0
     var lastSendPositionTimestamp = 0.0
     var lastTouchMoveTimestamp = 0.0
@@ -162,15 +165,15 @@ class GameScene: SKScene {
      - parameter location: location of the touch
      */
     private func didForceOrLongTouch(at location: CGPoint) {
+        self.selectionFeedbackGenerator.selectionChanged()
+        
         self.rotating = false
         self.forceTouchActivated = true
         self.selectMultipleNodesForTouch(touchLocation: location)
-        //AudioServicesPlaySystemSound(1520) // activate 'Pop' feedback
-        
-        let generator = UISelectionFeedbackGenerator()
-        generator.selectionChanged()
-        
-        if self.selectedNodes.count == 1 {
+
+        if self.selectedNodes.count == 0 {
+            self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: 0, numberOfPlayers: self.numberOfPlayers, at: location)
+        } else if self.selectedNodes.count == 1 {
             self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
         }
     }
@@ -191,7 +194,7 @@ class GameScene: SKScene {
      
      - parameter position: position of the player
      */
-    func cards(inPosition position: Position) -> [CardSpriteNode] {
+    func cards(inPosition position: Position?) -> [CardSpriteNode] {
         switch position {
         case .left:
             return self.allCards.filter { $0.position.x < 0 }
@@ -203,6 +206,8 @@ class GameScene: SKScene {
             return self.allCards.filter { $0.position.y > self.frame.height }
         case .right:
             return self.allCards.filter { $0.position.x > self.frame.width }
+        default:
+            return self.allCards
         }
     }
     
@@ -534,6 +539,18 @@ class GameScene: SKScene {
     }
     
     /**
+     Moves cards from specified player position to the specified location.
+     If the position is null, moves all cards. If the location is null, cards are moved to the centre of the play area.
+     - parameter position: position to move cards from
+     - parameter location: location to move cards to
+     */
+    func recallCards(from position: Position?, to location: CGPoint?) {
+        self.forceTouchActivated = false
+        let cards = self.cards(inPosition: position)
+        cards.stack(atPosition: location ?? self.playArea.center, sendPosition: true, delegate: self)
+    }
+    
+    /**
      Separates the specified set of cards into two stacks
      
      - parameter cards: the set of cards to cut
@@ -637,7 +654,7 @@ class GameScene: SKScene {
                         self.doubleTapAction(touchedCardNode)
                     }
                     
-                    self.deselectNodeForTouch()
+                    self.endTouchesReset()
                 } else if touchedCardNode.pointInCorner(touchLocation) {
                     // touched in the corner of the card
                     // select for rotation
@@ -726,6 +743,18 @@ class GameScene: SKScene {
     }
     
     /**
+     Perform reset actions after touches ended
+     */
+    func endTouchesReset() {
+        print("endTouchesReset")
+        self.forceTouchActivated = false
+        self.rotating = false
+        self.cardsMoved = false
+        self.deselectNodeForTouch()
+        self.lastTouchLocation = nil
+    }
+    
+    /**
      Shuffles selected cards and deselects them
      */
     func shuffleSelectedCards() {
@@ -804,18 +833,23 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
         for t in touches {
+            print("touchesBegan tapCount \(t.tapCount)")
+            
+            self.selectionFeedbackGenerator.prepare()
+            
             self.selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
             
             self.firstTouchLocation = t.location(in: self)
             self.touchesBeganTimestamp = t.timestamp
             self.lastTouchTimestamp = t.timestamp
             self.lastTouchMoveTimestamp = t.timestamp
+            self.lastTouchLocation = t.location(in: self)
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            //print("touches moved at \(t.location(in: self)) at \(t.timestamp)")
+            //print("touchesMoved tapCount \(t.tapCount)")
  
             let currentPosition = t.location(in: self)
             let previousPosition = t.previousLocation(in: self)
@@ -827,7 +861,7 @@ class GameScene: SKScene {
             
             if self.forceTouchEnabled {
                 if t.force / t.maximumPossibleForce >= self.forceTouchRatio {
-                    // Force touch activated
+                    print("Force or long touch activated")
                     if !self.forceTouchActivated {
                         self.didForceOrLongTouch(at: currentPosition)
                     }
@@ -872,10 +906,12 @@ class GameScene: SKScene {
             }
             
             self.lastTouchTimestamp = t.timestamp
+            self.lastTouchLocation = t.location(in: self)
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.lastTouchLocation = nil
         for t in touches {
             print("touchesEnded tapCount \(t.tapCount)")
             
@@ -924,16 +960,11 @@ class GameScene: SKScene {
             }
         }
                 
-        self.forceTouchActivated = false
-        self.rotating = false
-        self.cardsMoved = false
-        self.deselectNodeForTouch()
+        self.endTouchesReset()
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.rotating = false
-        self.cardsMoved = false
-        self.deselectNodeForTouch()
+        self.endTouchesReset()
     }
     
     // MARK: - Scene methods
@@ -980,8 +1011,11 @@ class GameScene: SKScene {
         self.lastUpdateTime = currentTime
         
         if !forceTouchEnabled {
-            if selectedNodes.count == 1 && !forceTouchActivated && lastTouchMoveTimestamp != 0.0 && currentTime - lastTouchMoveTimestamp >= timeToSelectMultipleNodes {
-                self.didForceOrLongTouch(at: selectedNodes[0].position)
+            if let touchLocation = self.lastTouchLocation, !forceTouchActivated && lastTouchMoveTimestamp != 0.0 && currentTime - lastTouchMoveTimestamp >= timeToSelectMultipleNodes {
+                if self.playArea.contains(touchLocation) || self.selectedNodes.count > 0 {
+                    print("didForceOrLongTouch")
+                    self.didForceOrLongTouch(at: touchLocation)
+                }
             }
         }
     }

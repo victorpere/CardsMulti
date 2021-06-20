@@ -55,7 +55,14 @@
 "stack"     = "В стопку";
 "fan"       = "Веером";
 "deal"      = "Раздать";
+"flip face down"    = "Рубашкой вверх";
+"flip face up"      = "Рубашкой вниз";
 "%d cards selected"    = "Выбрано %d карт";
+"recall cards from %@"        = "Вернуть карты %@";
+"bottom"    = "снизу";
+"top"       = "сверху";
+"left"      = "слева";
+"right"     = "справа";
 
 "connections"   = "Присоединены";
 "%d cards"      = "%d карт";
