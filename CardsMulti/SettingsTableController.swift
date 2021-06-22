@@ -14,6 +14,8 @@ class SettingsTableContoller : UIViewController {
     
     let settings = Settings()
     
+    var gameConfigs: GameConfigs!
+    
     var tableView: UITableView!
     var delegate: SettingsTableControllerDelegate!
     
@@ -27,6 +29,18 @@ class SettingsTableContoller : UIViewController {
     
     var cardScaleSlider: UISlider!
     var soundSwitch: Switch!
+    
+    // MARK: - Initializers
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        self.gameConfigs = GameConfigs(withFile: Config.configFilePath ?? "")
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - View methods
     
@@ -79,6 +93,8 @@ class SettingsTableContoller : UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.sectionFooterHeight = 0
+        
+        self.gameSelected()
         
         self.view.addSubview(self.tableView)
     }
@@ -134,6 +150,28 @@ class SettingsTableContoller : UIViewController {
             self.delegate?.uiSettingsChanged()
         }
     }
+    
+    private func gameSelected() {
+        if let gameConfig = self.gameConfigs.configs[GameType(rawValue: self.settings.game) ?? .freePlay] {
+            self.cardScaleSlider.isEnabled = gameConfig.canChangeCardSize
+            self.pipsSwitch.isEnabled = gameConfig.canChangeDeck
+            self.minSlider.isEnabled = gameConfig.canChangeDeck
+            self.maxSlider.isEnabled = gameConfig.canChangeDeck
+            self.jackSwitch.isEnabled = gameConfig.canChangeDeck
+            self.queenSwitch.isEnabled = gameConfig.canChangeDeck
+            self.kingSwitch.isEnabled = gameConfig.canChangeDeck
+            self.aceSwitch.isEnabled = gameConfig.canChangeDeck
+        } else {
+            self.cardScaleSlider.isEnabled = true
+            self.pipsSwitch.isEnabled = true
+            self.minSlider.isEnabled = true
+            self.maxSlider.isEnabled = true
+            self.jackSwitch.isEnabled = true
+            self.queenSwitch.isEnabled = true
+            self.kingSwitch.isEnabled = true
+            self.aceSwitch.isEnabled = true
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate
@@ -149,6 +187,7 @@ extension SettingsTableContoller : UITableViewDelegate {
             // change game
             if true || Settings.instance.game != indexPath.row {
                 Settings.instance.game = indexPath.row
+                self.gameSelected()
                 self.delegate?.gameChanged()
             }
             

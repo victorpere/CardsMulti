@@ -9,18 +9,35 @@
 import Foundation
 
 enum GameType: Int, CaseIterable {
-    case FreePlay = 0
-    case Solitare = 1
+    case freePlay = 0
+    case solitare = 1
     //case GoFish = 2
+    
+    init(withName name: String) throws {
+        switch name {
+        case "FreePlay":
+            self = .freePlay
+            break
+        case "Solitaire":
+            self = .solitare
+            break
+        default:
+            throw GameTypeError.FailedToFindGameTypeError
+        }
+    }
     
     var name: String {
         switch self {
-        case .FreePlay:
+        case .freePlay:
             return "free play".localized
-        case .Solitare:
+        case .solitare:
             return "solitaire".localized
 //        case .GoFish:
 //            return "Go Fish"
         }
     }
+}
+
+enum GameTypeError : Error {
+    case FailedToFindGameTypeError
 }

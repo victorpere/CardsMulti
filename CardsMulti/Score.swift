@@ -121,7 +121,7 @@ class Score {
         if let value = scoreInfo["gameType"] as? Int {
             self.gameType = GameType(rawValue: value)
         } else {
-            self.gameType = .FreePlay
+            self.gameType = .freePlay
         }
     }
     

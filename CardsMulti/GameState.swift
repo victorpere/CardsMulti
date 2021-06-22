@@ -13,7 +13,7 @@ class GameState : SettingsBase {
     // MARK: - Singleton
     
     static let instance = GameState()
-    static let solitare = GameState(.Solitare)
+    static let solitare = GameState(.solitare)
     
     // MARK: - Initializers
     

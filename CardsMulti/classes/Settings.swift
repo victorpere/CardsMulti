@@ -24,7 +24,7 @@ class Settings : SettingsBase, NSCoding {
     static let maxCardWidthsPerScreen: Float = 10
     
     static let gameConfig = [
-        GameType.Solitare : [
+        GameType.solitare : [
             "minRank" : 2,
             "maxRank" : 10,
             "pips" : true,
@@ -50,7 +50,7 @@ class Settings : SettingsBase, NSCoding {
     
     var game: Int {
         get {
-            return self.settingOrDefault(forKey: "game", defaultValue: GameType.FreePlay.rawValue)
+            return self.settingOrDefault(forKey: "game", defaultValue: GameType.freePlay.rawValue)
         }
         set(value) {
             self.setSetting(forKey: "game", toValue: value)

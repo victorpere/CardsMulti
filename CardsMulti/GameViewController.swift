@@ -192,14 +192,14 @@ class GameViewController: UIViewController {
         //connectionsLabel.isHidden = true
         
         switch Settings.instance.game {
-        case GameType.FreePlay.rawValue:
+        case GameType.freePlay.rawValue:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false
             self.playerAcrossLabel.isHidden = false
             self.playerRightLabel.isHidden = false
             self.awsStatusLabel.isHidden = false
             self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
-        case GameType.Solitare.rawValue:
+        case GameType.solitare.rawValue:
             self.connectionsLabel.isHidden = true
             self.playerLeftLabel.isHidden = true
             self.playerAcrossLabel.isHidden = true

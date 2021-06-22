@@ -1,0 +1,12 @@
+[
+    {
+        "gameType": "FreePlay"
+    },
+    {
+        "gameType": "Solitaire",
+        "maxPlayers": 1,
+        "canChangeCardSize": false,
+        "canChangeDeck": false,
+        "canRotateCards": false
+    }
+]

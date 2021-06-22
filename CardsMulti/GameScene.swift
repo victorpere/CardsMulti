@@ -128,14 +128,14 @@ class GameScene: SKScene {
     
     override init(size: CGSize) {
         self.loadSaved = true
-        self.gameType = .FreePlay
+        self.gameType = .freePlay
         super.init(size: size)
                 
         //self.resetGame(sync: false, loadSaved: true)
     }
     
     init(size: CGSize, loadFromSave: Bool) {
-        self.gameType = .FreePlay
+        self.gameType = .freePlay
         self.loadSaved = loadFromSave
         super.init(size: size)
     }
