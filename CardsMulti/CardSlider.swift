@@ -13,11 +13,13 @@ class CardSlider : UISlider {
     let slider_track = "slider_frame"
     let MIN: Float = 3.0
     let MAX: Float = 10.0
+    let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
     
     var minDelegate: CardSlider?
     var maxDelegate: CardSlider?
     
     var rank: Int { return self.value == self.MIN ? Int(self.MIN - 1) : Int(self.value) }
+    var lastRank: Int!
     
     // MARK: - Initializers
     
@@ -35,10 +37,11 @@ class CardSlider : UISlider {
         self.setMaximumTrackImage(sliderTrackImage, for: .normal)
         
         self.value = Float(initialRank) + 0.5
+        self.lastRank = initialRank
         self.setThumbImage()
     }
     
-    override init(frame: CGRect) {
+    private override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
@@ -46,11 +49,23 @@ class CardSlider : UISlider {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Override methods
+    
+    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        self.selectionFeedbackGenerator.prepare()
+        return super.beginTracking(touch, with: event)
+    }
+    
     // MARK: - Events
     
     @objc func sliderMoved(sender: CardSlider) {
         DispatchQueue.main.async {
             self.setThumbImage()
+            
+            if self.rank != self.lastRank {                
+                self.selectionFeedbackGenerator.selectionChanged()
+                self.lastRank = self.rank
+            }
             
             if self.minDelegate != nil && self.minDelegate!.value > self.value {
                 self.minDelegate?.value = self.value
