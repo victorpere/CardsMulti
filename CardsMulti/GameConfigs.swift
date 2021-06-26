@@ -51,6 +51,9 @@ class GameConfigs {
                             if let value = settingsDictionary[GameConfigKey.options.rawValue] as? NSArray {
                                 gameConfig.options = value
                             }
+                            if let value = settingsDictionary[GameConfigKey.defaultSettings.rawValue] as? NSDictionary {
+                                gameConfig.defaultSettings = self.defaultSettings(fromDictionary: value)
+                            }
                             
                             self.configs[gameType] = gameConfig
                         }
@@ -61,6 +64,34 @@ class GameConfigs {
         } catch {
             throw GameConfigError.FailedToDeserializeConfigData
         }
+    }
+    
+    private func defaultSettings(fromDictionary settingsDictionary: NSDictionary) -> GameConfigDefaultSettings {
+        var defaultSettings = GameConfigDefaultSettings()
+        
+        if let value = settingsDictionary[GameConfigKey.pipsEnabled.rawValue] as? Bool {
+            defaultSettings.pipsEnabled = value
+        }
+        if let value = settingsDictionary[GameConfigKey.minValue.rawValue] as? Int {
+            defaultSettings.minValue = value
+        }
+        if let value = settingsDictionary[GameConfigKey.maxValue.rawValue] as? Int {
+            defaultSettings.maxValue = value
+        }
+        if let value = settingsDictionary[GameConfigKey.jacksEnabled.rawValue] as? Bool {
+            defaultSettings.jacksEnabled = value
+        }
+        if let value = settingsDictionary[GameConfigKey.queensEnabled.rawValue] as? Bool {
+            defaultSettings.queensEnabled = value
+        }
+        if let value = settingsDictionary[GameConfigKey.kingsEnabled.rawValue] as? Bool {
+            defaultSettings.kingsEnabled = value
+        }
+        if let value = settingsDictionary[GameConfigKey.acesEnabled.rawValue] as? Bool {
+            defaultSettings.acesEnabled = value
+        }
+        
+        return defaultSettings
     }
 }
 
@@ -73,6 +104,20 @@ struct GameConfig {
     var canChangeDeck: Bool = true
     var canRotateCards: Bool = true
     var options: NSArray?
+    
+    var defaultSettings = GameConfigDefaultSettings()
+}
+
+// MARK: - Struct GameConfigDefaultSettings
+
+struct GameConfigDefaultSettings {
+    var pipsEnabled: Bool = true
+    var minValue: Int = 2
+    var maxValue: Int = 10
+    var jacksEnabled: Bool = true
+    var queensEnabled: Bool = true
+    var kingsEnabled: Bool = true
+    var acesEnabled: Bool = true
 }
 
 // MARK: - Enum GameConfigKey
@@ -84,6 +129,14 @@ enum GameConfigKey : String {
     case canChangeDeck = "canChangeDeck"
     case canRotateCards = "canRotateCards"
     case options = "options"
+    case defaultSettings = "defaultSettings"
+    case pipsEnabled = "pipsEnabled"
+    case minValue = "minValue"
+    case maxValue = "maxValue"
+    case jacksEnabled = "jacksEnabled"
+    case queensEnabled = "queensEnabled"
+    case kingsEnabled = "kingsEnabled"
+    case acesEnabled = "acesEnabled"
 }
 
 // MARK: - Enum GameConfigError

@@ -71,6 +71,10 @@ class SettingsTableContoller : UIViewController {
         self.aceSwitch = Switch(width: elementWidth)
         
         self.pipsSwitch.isOn = self.settings.pips
+        self.pipsSwitch.onValueChanged = { () in
+            self.tableView.reloadData()
+        }
+        
         self.jackSwitch.isOn = self.settings.jack
         self.queenSwitch.isOn = self.settings.queen
         self.kingSwitch.isOn = self.settings.king
@@ -153,6 +157,16 @@ class SettingsTableContoller : UIViewController {
     
     private func gameSelected() {
         if let gameConfig = self.gameConfigs.configs[GameType(rawValue: self.settings.game) ?? .freePlay] {
+            if !gameConfig.canChangeDeck {
+                self.pipsSwitch.isOn = gameConfig.defaultSettings.pipsEnabled
+                self.minSlider.value = Float(gameConfig.defaultSettings.minValue)
+                self.maxSlider.value = Float(gameConfig.defaultSettings.maxValue)
+                self.jackSwitch.isOn = gameConfig.defaultSettings.jacksEnabled
+                self.queenSwitch.isOn = gameConfig.defaultSettings.queensEnabled
+                self.kingSwitch.isOn = gameConfig.defaultSettings.kingsEnabled
+                self.aceSwitch.isOn = gameConfig.defaultSettings.acesEnabled
+            }
+            
             self.cardScaleSlider.isEnabled = gameConfig.canChangeCardSize
             self.pipsSwitch.isEnabled = gameConfig.canChangeDeck
             self.minSlider.isEnabled = gameConfig.canChangeDeck
@@ -161,6 +175,8 @@ class SettingsTableContoller : UIViewController {
             self.queenSwitch.isEnabled = gameConfig.canChangeDeck
             self.kingSwitch.isEnabled = gameConfig.canChangeDeck
             self.aceSwitch.isEnabled = gameConfig.canChangeDeck
+            
+            
         } else {
             self.cardScaleSlider.isEnabled = true
             self.pipsSwitch.isEnabled = true
@@ -170,6 +186,10 @@ class SettingsTableContoller : UIViewController {
             self.queenSwitch.isEnabled = true
             self.kingSwitch.isEnabled = true
             self.aceSwitch.isEnabled = true
+        }
+        
+        if self.settingsHaveChanged() {
+            self.saveSettings()
         }
     }
 }
@@ -212,7 +232,10 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.game.rawValue:
             return GameType.allCases.count
         case SettingsSection.cards1.rawValue:
-            return 3
+            if self.pipsSwitch.isOn {
+                return 3
+            }
+            return 1
         case SettingsSection.cards2.rawValue:
             return 4
         case SettingsSection.size.rawValue:
