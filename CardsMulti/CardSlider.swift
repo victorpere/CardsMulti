@@ -8,15 +8,15 @@
 
 import UIKit
 
-class CardSlider : UISlider {
+class CardSlider : UISlider, CardSliderDelegate {
     let slider_icon = "icon_card_slider"
     let slider_track = "slider_frame"
     let MIN: Float = 3.0
     let MAX: Float = 10.0
     let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
     
-    var minDelegate: CardSlider?
-    var maxDelegate: CardSlider?
+    var minDelegate: CardSliderDelegate?
+    var maxDelegate: CardSliderDelegate?
     
     var rank: Int { return self.value == self.MIN ? Int(self.MIN - 1) : Int(self.value) }
     var lastRank: Int!
@@ -62,7 +62,7 @@ class CardSlider : UISlider {
         DispatchQueue.main.async {
             self.setThumbImage()
             
-            if self.rank != self.lastRank {                
+            if self.rank != self.lastRank {
                 self.selectionFeedbackGenerator.selectionChanged()
                 self.lastRank = self.rank
             }
@@ -89,4 +89,11 @@ class CardSlider : UISlider {
             self.setThumbImage(image, for: .normal)
         }
     }
+}
+
+// MARK: - Protocol CardSliderDelegate
+
+protocol CardSliderDelegate {
+    var value: Float { get set }
+    func setThumbImage()
 }
