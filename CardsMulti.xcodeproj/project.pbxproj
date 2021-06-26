@@ -36,7 +36,6 @@
 		578B1C571E7EFB04008B8381 /* ConnectionServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054081E4E40750057E62F /* ConnectionServiceManager.swift */; };
 		578B1C581E7EFB0A008B8381 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DA1E4E3BD20057E62F /* GameScene.swift */; };
 		578B1C591E7EFB17008B8381 /* BottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0C1E7479F5000243B2 /* BottomButton.swift */; };
-		578B1C5A1E7EFB1B008B8381 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0E1E748244000243B2 /* SettingsViewController.swift */; };
 		578B1C5B1E7EFB33008B8381 /* CardSpriteNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B054121E4E75F30057E62F /* CardSpriteNode.swift */; };
 		578B1C5C1E7EFB37008B8381 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B091E7368B3000243B2 /* Position.swift */; };
 		578B1C5D1E7EFBCB008B8381 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B101E74A651000243B2 /* Settings.swift */; };
@@ -119,7 +118,6 @@
 		57E0935D212730E500D4E4F6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF71E85652400B1D4A6 /* Config.swift */; };
 		57E97B0A1E7368B4000243B2 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B091E7368B3000243B2 /* Position.swift */; };
 		57E97B0D1E7479F6000243B2 /* BottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0C1E7479F5000243B2 /* BottomButton.swift */; };
-		57E97B0F1E748244000243B2 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B0E1E748244000243B2 /* SettingsViewController.swift */; };
 		57E97B111E74A651000243B2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E97B101E74A651000243B2 /* Settings.swift */; };
 		57EA2B5E25B39DFD00536B47 /* MathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EA2B5D25B39DFD00536B47 /* MathTests.swift */; };
 		57F400FF248D6D7800EF71D5 /* WsRequestSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F400FE248D6D7800EF71D5 /* WsRequestSender.swift */; };
@@ -213,7 +211,6 @@
 		57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingDirection.swift; sourceTree = "<group>"; };
 		57E97B091E7368B3000243B2 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Position.swift; path = Enums/Position.swift; sourceTree = "<group>"; };
 		57E97B0C1E7479F5000243B2 /* BottomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
-		57E97B0E1E748244000243B2 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		57E97B101E74A651000243B2 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = classes/Settings.swift; sourceTree = "<group>"; };
 		57EA2B5D25B39DFD00536B47 /* MathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathTests.swift; sourceTree = "<group>"; };
 		57F400FE248D6D7800EF71D5 /* WsRequestSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WsRequestSender.swift; sourceTree = "<group>"; };
@@ -443,7 +440,6 @@
 			isa = PBXGroup;
 			children = (
 				57E97B0C1E7479F5000243B2 /* BottomButton.swift */,
-				57E97B0E1E748244000243B2 /* SettingsViewController.swift */,
 				57897FF91E85658D00B1D4A6 /* Switch.swift */,
 				57C626112346E6D6008A9872 /* CardSlider.swift */,
 				57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */,
@@ -757,7 +753,6 @@
 				57E97B0A1E7368B4000243B2 /* Position.swift in Sources */,
 				578742BB2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
 				573FD5862399F30C009BDBF9 /* GameType.swift in Sources */,
-				57E97B0F1E748244000243B2 /* SettingsViewController.swift in Sources */,
 				574050551E5F82AA00316AEB /* UIDevice.swift in Sources */,
 				573FD588239F343F009BDBF9 /* PlayArea.swift in Sources */,
 				57E97B111E74A651000243B2 /* Settings.swift in Sources */,
@@ -820,7 +815,6 @@
 				578742BC2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
 				57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */,
 				57DD91C1258540010086336D /* GridView.swift in Sources */,
-				578B1C5A1E7EFB1B008B8381 /* SettingsViewController.swift in Sources */,
 				578B1C5E1E7EFBD3008B8381 /* Math.swift in Sources */,
 				57DD919925853F820086336D /* WsMessage.swift in Sources */,
 				57DD91AD25853FE90086336D /* PopUpMenu.swift in Sources */,
@@ -1017,7 +1011,7 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -1038,7 +1032,7 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;

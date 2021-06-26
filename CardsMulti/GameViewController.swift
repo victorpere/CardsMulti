@@ -734,7 +734,7 @@ extension GameViewController : GameSceneDelegate {
 
 // MARK: - SettingsViewControllerDelegate
 
-extension GameViewController : SettingsViewControllerDelegate, SettingsTableControllerDelegate {
+extension GameViewController : SettingsTableControllerDelegate {
     func uiSettingsChanged() {
         self.scene.updateUISettings()
     }
