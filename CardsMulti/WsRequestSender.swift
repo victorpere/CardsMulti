@@ -61,7 +61,7 @@ class WsRequestSender {
     func createGame() {
         let payload: NSDictionary = [
             "action": WsAction.onCreateGame.rawValue,
-            "creator": Settings.instance.displayName
+            "creator": StoredSettings.instance.displayName
         ]
         
         self.sendPayload(payload)
@@ -94,7 +94,7 @@ class WsRequestSender {
     func joinGame(gameId: String) {
         let payload: NSDictionary = [
             "action": WsAction.onJoinGame.rawValue,
-            "playerName": Settings.instance.displayName,
+            "playerName": StoredSettings.instance.displayName,
             "gameId": gameId
         ]
         
@@ -107,7 +107,7 @@ class WsRequestSender {
     func disconnectFromGame(gameId: String) {
         let payload: NSDictionary = [
             "action": WsAction.onDisconnectGame.rawValue,
-            "playerName": Settings.instance.displayName,
+            "playerName": StoredSettings.instance.displayName,
             "gameId": gameId
         ]
         

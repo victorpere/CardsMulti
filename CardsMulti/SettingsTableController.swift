@@ -11,17 +11,20 @@ import UIKit
 class SettingsTableContoller : UIViewController {
     let standardRowHeight: CGFloat = 44
     let sliderRowHeight:CGFloat = 53
+    let popoverWidth: CGFloat = 375
     
-    let settings = Settings()
+    let storedSettings = StoredSettings()
+    let selectedSettings: CurrentSettings
+    var selectedConfig: GameConfig
     
     var gameConfigs: GameConfigs!
     
     var tableView: UITableView!
     var delegate: SettingsTableControllerDelegate!
     
-    var minSlider: CardSlider!
-    var maxSlider: CardSlider!
-    var pipsSwitch: Switch!
+    weak var minSlider: CardSlider?
+    weak var maxSlider: CardSlider?
+    
     var jackSwitch: Switch!
     var queenSwitch: Switch!
     var kingSwitch: Switch!
@@ -29,12 +32,37 @@ class SettingsTableContoller : UIViewController {
     
     var cardScaleSlider: UISlider!
     var soundSwitch: Switch!
+        
+    var elementWidth: CGFloat = 0
+    var selectedGame: Int
+    
+    // MARK: - Computed properties
+    
+    var gameHasBeenChanged: Bool {
+        return self.selectedGame != self.storedSettings.game
+    }
+    
+    var settingsHaveBeenChanged: Bool {
+        if self.storedSettings.minRank != self.selectedSettings.minRank ||
+            self.storedSettings.maxRank != self.selectedSettings.maxRank ||
+            self.storedSettings.pips != self.selectedSettings.pips ||
+            self.storedSettings.jack != self.jackSwitch.isOn ||
+            self.storedSettings.queen != self.queenSwitch.isOn ||
+            self.storedSettings.king != self.kingSwitch.isOn ||
+            self.storedSettings.ace != self.aceSwitch.isOn {
+            return true
+        }
+        return false
+    }
     
     // MARK: - Initializers
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        self.selectedGame = self.storedSettings.game
+        self.selectedSettings = CurrentSettings(with: self.storedSettings)
+        self.selectedConfig = GameConfig(gameType: GameType(rawValue: selectedSettings.game) ?? .freePlay)
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
+                
         self.gameConfigs = GameConfigs(withFile: Config.configFilePath ?? "")
     }
     
@@ -49,46 +77,34 @@ class SettingsTableContoller : UIViewController {
         
         if let popOverVC = self.parent?.popoverPresentationController {
             if UIPopoverArrowDirection.unknown.rawValue > popOverVC.arrowDirection.rawValue {
-                self.view.frame = CGRect(origin: self.view.frame.origin, size: CGSize(width: 375, height: self.view.frame.height))
+                self.view.frame = CGRect(origin: self.view.frame.origin, size: CGSize(width: self.popoverWidth, height: self.view.frame.height))
             }
         }
         
         self.view.backgroundColor = .white
         self.title = "settings".localized
         
-        let elementWidth = self.view.frame.width / 2
+        self.elementWidth = self.view.frame.width / 2
         
-        self.minSlider = CardSlider(width: elementWidth, initialRank: self.settings.minRank)
-        self.maxSlider = CardSlider(width: elementWidth, initialRank: self.settings.maxRank)
-        
-        self.minSlider.maxDelegate = self.maxSlider
-        self.maxSlider.minDelegate = self.minSlider
-        
-        self.pipsSwitch = Switch(width: elementWidth)
         self.jackSwitch = Switch(width: elementWidth)
         self.queenSwitch = Switch(width: elementWidth)
         self.kingSwitch = Switch(width: elementWidth)
         self.aceSwitch = Switch(width: elementWidth)
         
-        self.pipsSwitch.isOn = self.settings.pips
-        self.pipsSwitch.onValueChanged = { () in
-            self.tableView.reloadData()
-        }
-        
-        self.jackSwitch.isOn = self.settings.jack
-        self.queenSwitch.isOn = self.settings.queen
-        self.kingSwitch.isOn = self.settings.king
-        self.aceSwitch.isOn = self.settings.ace
+        self.jackSwitch.isOn = self.storedSettings.jack
+        self.queenSwitch.isOn = self.storedSettings.queen
+        self.kingSwitch.isOn = self.storedSettings.king
+        self.aceSwitch.isOn = self.storedSettings.ace
         
         self.cardScaleSlider = UISlider(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 2, height: self.standardRowHeight))
-        self.cardScaleSlider.minimumValue = -Settings.maxCardWidthsPerScreen
-        self.cardScaleSlider.maximumValue = -Settings.minCardWidthsPerScreen
-        self.cardScaleSlider.value = -Settings.instance.cardWidthsPerScreen
+        self.cardScaleSlider.minimumValue = -StoredSettings.maxCardWidthsPerScreen
+        self.cardScaleSlider.maximumValue = -StoredSettings.minCardWidthsPerScreen
+        self.cardScaleSlider.value = -StoredSettings.instance.cardWidthsPerScreen
         
         self.soundSwitch = Switch(width: elementWidth)
-        self.soundSwitch.isOn = self.settings.soundOn
+        self.soundSwitch.isOn = self.storedSettings.soundOn
         self.soundSwitch.onValueChanged = { () in
-            self.settings.soundOn = self.soundSwitch.isOn
+            self.storedSettings.soundOn = self.soundSwitch.isOn
         }
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
@@ -98,7 +114,7 @@ class SettingsTableContoller : UIViewController {
         self.tableView.dataSource = self
         self.tableView.sectionFooterHeight = 0
         
-        self.gameSelected()
+        self.gameSelected(ofType: GameType(rawValue: self.storedSettings.game))
         
         self.view.addSubview(self.tableView)
     }
@@ -106,12 +122,26 @@ class SettingsTableContoller : UIViewController {
     // MARK: - Actions
     
     @objc func done(sender: UIButton) {
-        if settingsHaveChanged() {
-            self.saveSettings()
+        if self.gameHasBeenChanged {
+            self.showActionDialog(title: "game will restart".localized, text: "are you sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
+                self.storedSettings.game = self.selectedGame
+                self.saveSettings()
+                self.saveUISettings()
+                self.delegate?.resetScores()
+                self.delegate?.gameChanged()
+                self.dismiss(animated: true, completion: nil)
+            })
+        } else if self.settingsHaveBeenChanged {
+            self.showActionDialog(title: "game will restart".localized, text: "are you sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
+                self.saveSettings()
+                self.saveUISettings()
+                self.delegate?.settingsChanged()
+                self.dismiss(animated: true, completion: nil)
+            })
+        } else {
+            self.saveUISettings()
+            self.dismiss(animated: true, completion: nil)
         }
-
-        self.saveUISettings()
-        self.dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Public methods
@@ -120,76 +150,55 @@ class SettingsTableContoller : UIViewController {
         self.tableView.frame = CGRect(origin: self.tableView.frame.origin, size: size)
     }
     
-    func settingsHaveChanged() -> Bool {
-        if self.settings.minRank != self.minSlider.rank ||
-            self.settings.maxRank != self.maxSlider.rank ||
-            self.settings.pips != self.pipsSwitch.isOn ||
-            self.settings.jack != self.jackSwitch.isOn ||
-            self.settings.queen != self.queenSwitch.isOn ||
-            self.settings.king != self.kingSwitch.isOn ||
-            self.settings.ace != self.aceSwitch.isOn {
-            return true
-        }
-        return false
-    }
-    
     // MARK: - Private methods
     
     private func saveSettings() {
-        self.settings.minRank = self.minSlider.rank
-        self.settings.maxRank = self.maxSlider.rank
+        self.storedSettings.minRank = self.selectedSettings.minRank
+        self.storedSettings.maxRank = self.selectedSettings.maxRank
         
-        self.settings.pips = self.pipsSwitch.isOn
-        self.settings.jack = self.jackSwitch.isOn
-        self.settings.queen = self.queenSwitch.isOn
-        self.settings.king = self.kingSwitch.isOn
-        self.settings.ace = self.aceSwitch.isOn
-        
-        self.delegate?.settingsChanged()
+        self.storedSettings.pips = self.selectedSettings.pips
+        self.storedSettings.jack = self.jackSwitch.isOn
+        self.storedSettings.queen = self.queenSwitch.isOn
+        self.storedSettings.king = self.kingSwitch.isOn
+        self.storedSettings.ace = self.aceSwitch.isOn
     }
     
     private func saveUISettings() {
-        if Settings.instance.cardWidthsPerScreen != -self.cardScaleSlider.value {
-            Settings.instance.cardWidthsPerScreen = -self.cardScaleSlider.value
+        if StoredSettings.instance.cardWidthsPerScreen != -self.cardScaleSlider.value {
+            StoredSettings.instance.cardWidthsPerScreen = -self.cardScaleSlider.value
             self.delegate?.uiSettingsChanged()
         }
     }
     
-    private func gameSelected() {
-        if let gameConfig = self.gameConfigs.configs[GameType(rawValue: self.settings.game) ?? .freePlay] {
+    private func gameSelected(ofType gameType: GameType?) {
+        if let gameConfig = self.gameConfigs.configs[gameType ?? .freePlay] {
+            self.selectedConfig = gameConfig
+            
             if !gameConfig.canChangeDeck {
-                self.pipsSwitch.isOn = gameConfig.defaultSettings.pipsEnabled
-                self.minSlider.value = Float(gameConfig.defaultSettings.minValue)
-                self.maxSlider.value = Float(gameConfig.defaultSettings.maxValue)
+                self.selectedSettings.pips = gameConfig.defaultSettings.pipsEnabled
+                self.selectedSettings.minRank = gameConfig.defaultSettings.minValue
+                self.selectedSettings.maxRank = gameConfig.defaultSettings.maxValue
                 self.jackSwitch.isOn = gameConfig.defaultSettings.jacksEnabled
                 self.queenSwitch.isOn = gameConfig.defaultSettings.queensEnabled
                 self.kingSwitch.isOn = gameConfig.defaultSettings.kingsEnabled
                 self.aceSwitch.isOn = gameConfig.defaultSettings.acesEnabled
             }
             
+            if !gameConfig.canChangeCardSize {
+                self.cardScaleSlider.value = -gameConfig.defaultSettings.cardWidthsPerScreen
+            }
+            
             self.cardScaleSlider.isEnabled = gameConfig.canChangeCardSize
-            self.pipsSwitch.isEnabled = gameConfig.canChangeDeck
-            self.minSlider.isEnabled = gameConfig.canChangeDeck
-            self.maxSlider.isEnabled = gameConfig.canChangeDeck
             self.jackSwitch.isEnabled = gameConfig.canChangeDeck
             self.queenSwitch.isEnabled = gameConfig.canChangeDeck
             self.kingSwitch.isEnabled = gameConfig.canChangeDeck
             self.aceSwitch.isEnabled = gameConfig.canChangeDeck
-            
-            
         } else {
             self.cardScaleSlider.isEnabled = true
-            self.pipsSwitch.isEnabled = true
-            self.minSlider.isEnabled = true
-            self.maxSlider.isEnabled = true
             self.jackSwitch.isEnabled = true
             self.queenSwitch.isEnabled = true
             self.kingSwitch.isEnabled = true
             self.aceSwitch.isEnabled = true
-        }
-        
-        if self.settingsHaveChanged() {
-            self.saveSettings()
         }
     }
 }
@@ -200,18 +209,11 @@ extension SettingsTableContoller : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case SettingsSection.game.rawValue:
-            // reset score
-            // TODO: create a score page
-            self.delegate.resetScores()
-            
-            // change game
-            if true || Settings.instance.game != indexPath.row {
-                Settings.instance.game = indexPath.row
-                self.gameSelected()
-                self.delegate?.gameChanged()
+            if indexPath.row != self.selectedGame {
+                self.selectedGame = indexPath.row
+                self.gameSelected(ofType: GameType(rawValue: self.selectedGame))
+                self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue, SettingsSection.cards1.rawValue]), with: .none)
             }
-            
-            self.dismiss(animated: true, completion: nil)
             break
         default:
             break
@@ -220,6 +222,7 @@ extension SettingsTableContoller : UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource
+
 extension SettingsTableContoller : UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return SettingsSection.allCases.count
@@ -232,7 +235,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.game.rawValue:
             return GameType.allCases.count
         case SettingsSection.cards1.rawValue:
-            if self.pipsSwitch.isOn {
+            if self.selectedSettings.pips {
                 return 3
             }
             return 1
@@ -272,7 +275,7 @@ extension SettingsTableContoller : UITableViewDataSource {
                 let textEditCell = (UINib(nibName: "TextEditCell", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? TextEditCell)!
                 textEditCell.selectionStyle = .none
                 textEditCell.name.text = "name".localized
-                textEditCell.value.text = self.settings.displayName
+                textEditCell.value.text = self.storedSettings.displayName
                 textEditCell.value.delegate = textEditCell
                 textEditCell.delegate = self
                 
@@ -285,7 +288,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.game.rawValue:
             cell.textLabel?.text = GameType(rawValue: indexPath.row)?.name
             
-            if Settings.instance.game == indexPath.row {
+            if indexPath.row == self.selectedGame {
                 cell.accessoryType = .checkmark
             }
             
@@ -295,13 +298,40 @@ extension SettingsTableContoller : UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 cell.textLabel?.text = "pip cards".localized
-                cell.accessoryView = self.pipsSwitch
+                
+                let pipsSwitch = Switch(width: self.elementWidth)
+                pipsSwitch.isOn = self.selectedSettings.pips
+                pipsSwitch.isEnabled = self.selectedConfig.canChangeDeck
+                pipsSwitch.onValueChanged = { () in
+                    self.selectedSettings.pips = pipsSwitch.isOn
+                    self.tableView.reloadSections(IndexSet(integer: SettingsSection.cards1.rawValue), with: .bottom)
+                }
+                cell.accessoryView = pipsSwitch
+                
             case 1:
                 cell.textLabel?.text = "minimum rank".localized
-                cell.accessoryView = self.minSlider
+                
+                let minSlider = CardSlider(width: elementWidth, initialRank: self.selectedSettings.minRank)
+                minSlider.isEnabled = self.selectedConfig.canChangeDeck
+                minSlider.onRankChanged = { () -> Void in
+                    self.selectedSettings.minRank = minSlider.rank
+                }
+                self.minSlider = minSlider
+                minSlider.maxSlider = self.maxSlider
+                self.maxSlider?.minSlider = minSlider
+                cell.accessoryView = minSlider
             case 2:
                 cell.textLabel?.text = "maximum rank".localized
-                cell.accessoryView = self.maxSlider
+                
+                let maxSlider = CardSlider(width: elementWidth, initialRank: self.selectedSettings.maxRank)
+                maxSlider.isEnabled = self.selectedConfig.canChangeDeck
+                maxSlider.onRankChanged = { () -> Void in
+                    self.selectedSettings.maxRank = maxSlider.rank
+                }
+                self.maxSlider = maxSlider
+                maxSlider.minSlider = self.minSlider
+                self.minSlider?.maxSlider = maxSlider
+                cell.accessoryView = maxSlider
             default:
                 break
             }
@@ -337,8 +367,6 @@ extension SettingsTableContoller : UITableViewDataSource {
         
         return cell
     }
-    
-    
 }
 
 // MARK: - Protocol SettingsTableControllerDelegate
@@ -376,6 +404,6 @@ enum SettingsSection: Int, CaseIterable {
 
 extension SettingsTableContoller : TextEditCellDelegate {
     func didFinishEditing(_ text: String) {
-        self.settings.displayName = text
+        self.storedSettings.displayName = text
     }
 }

@@ -208,7 +208,7 @@ class CardSpriteNode : SKSpriteNode {
     
     private func getScale() -> CGFloat {
         let screenSize: CGRect = UIScreen.main.bounds
-        let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
+        let cardWidthsPerScreen = CGFloat(StoredSettings.instance.cardWidthsPerScreen)
 
         let cardWidthPixels = screenSize.width / cardWidthsPerScreen
         return cardWidthPixels / CardSpriteNode.cardWidthFullSizePixels
@@ -229,7 +229,7 @@ class CardSpriteNode : SKSpriteNode {
     public func updateScale() {
         DispatchQueue.global(qos: .default).async {
             let screenSize: CGRect = UIScreen.main.bounds
-            let cardWidthsPerScreen = CGFloat(Settings.instance.cardWidthsPerScreen)
+            let cardWidthsPerScreen = CGFloat(StoredSettings.instance.cardWidthsPerScreen)
 
             let cardWidthPixels = screenSize.width / cardWidthsPerScreen
             self.cardScale = cardWidthPixels / CardSpriteNode.cardWidthFullSizePixels

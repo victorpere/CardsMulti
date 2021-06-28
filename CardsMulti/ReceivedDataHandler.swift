@@ -57,7 +57,7 @@ class ReceivedDataHandler {
         case .settings:
             print("Received settings")
             if let receivedDictionary = receivedGameData.dataDictionary {
-                Settings.instance.syncTo(settingsDictionary: receivedDictionary)
+                StoredSettings.instance.syncTo(settingsDictionary: receivedDictionary)
                 self.scene.resetCards()
             }
         case .game:

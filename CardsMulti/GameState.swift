@@ -8,7 +8,7 @@
 
 import Foundation
 
-class GameState : SettingsBase {
+class GameState : StoredBase {
     
     // MARK: - Singleton
     

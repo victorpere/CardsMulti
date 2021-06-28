@@ -191,7 +191,7 @@ class GameViewController: UIViewController {
 
         //connectionsLabel.isHidden = true
         
-        switch Settings.instance.game {
+        switch StoredSettings.instance.game {
         case GameType.freePlay.rawValue:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false

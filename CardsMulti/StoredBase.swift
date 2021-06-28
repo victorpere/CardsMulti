@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SettingsBase : NSObject {
+class StoredBase : NSObject {
     let userDefaults = UserDefaults.standard
     
     func setting<T>(forKey key: String) throws -> T {

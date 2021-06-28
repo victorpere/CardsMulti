@@ -41,7 +41,7 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
-    var settings = Settings()
+    var settings = StoredSettings()
     
     private var lastUpdateTime : TimeInterval = 0
     
@@ -267,7 +267,7 @@ class GameScene: SKScene {
      - parameter loadSaved: whether to load from a saved state
      */
     func loadCards(fromSaved loadSaved: Bool) {
-        let continueGameType = Settings.instance.game == self.gameType.rawValue
+        let continueGameType = StoredSettings.instance.game == self.gameType.rawValue
         let savedCards = GameState.instance.cardNodes
         if continueGameType && loadSaved && savedCards.count > 0 {
             self.allCards = savedCards
@@ -288,7 +288,7 @@ class GameScene: SKScene {
             
             self.loadScores()
         } else {
-            self.allCards = Global.newShuffledDeck(name: "deck", settings: Settings.instance)
+            self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
             self.initCards()
             self.shuffleAndStackAllCards(sync: false)
         }
@@ -359,7 +359,7 @@ class GameScene: SKScene {
      */
     func resetCards() {
         self.resetNodes()
-        self.allCards = Global.newShuffledDeck(name: "deck", settings: Settings.instance)
+        self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
         self.initCards()
     }
     
@@ -1026,7 +1026,7 @@ class GameScene: SKScene {
      Returns data for synchronising settigs and all card positions
      */
     func syncSettingsAndGameData() -> Data? {
-        let settingsData = RequestData(withType: .settings, andDictionary: Settings.instance.settingsDictionary)
+        let settingsData = RequestData(withType: .settings, andDictionary: StoredSettings.instance.settingsDictionary)
         let gameData = RequestData(withType: .game, andArray: Global.cardDictionaryArray(with: self.allCards, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: true, animate: false))
         
         let requestData = [settingsData, gameData]

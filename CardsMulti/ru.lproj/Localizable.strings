@@ -28,6 +28,9 @@
 "card size" = "Размер карты";
 "sound"     = "Звук";
 
+"game will restart" = "Игра начнётся заново";
+"are you sure?"     = "Вы уверены?";
+
 "create or join a game"     = "Создать или присоединиться к игре";
 "invite a friend to join"   = "Пригласить в игру";
 "join a game"               = "Присоединиться к игре";

@@ -71,8 +71,8 @@ class Solitaire : GameScene {
             }
         }
         
-        if (Settings.instance.cardWidthsPerScreen != self.cardWidthsPerScreen) {
-            Settings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
+        if (StoredSettings.instance.cardWidthsPerScreen != self.cardWidthsPerScreen) {
+            StoredSettings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
             self.updateUISettings()
         }
     }

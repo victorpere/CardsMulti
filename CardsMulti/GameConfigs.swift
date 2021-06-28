@@ -90,6 +90,9 @@ class GameConfigs {
         if let value = settingsDictionary[GameConfigKey.acesEnabled.rawValue] as? Bool {
             defaultSettings.acesEnabled = value
         }
+        if let value = settingsDictionary[GameConfigKey.cardWidthsPerScreen.rawValue] as? Float {
+            defaultSettings.cardWidthsPerScreen = value
+        }
         
         return defaultSettings
     }
@@ -118,6 +121,7 @@ struct GameConfigDefaultSettings {
     var queensEnabled: Bool = true
     var kingsEnabled: Bool = true
     var acesEnabled: Bool = true
+    var cardWidthsPerScreen: Float = 8
 }
 
 // MARK: - Enum GameConfigKey
@@ -137,6 +141,7 @@ enum GameConfigKey : String {
     case queensEnabled = "queensEnabled"
     case kingsEnabled = "kingsEnabled"
     case acesEnabled = "acesEnabled"
+    case cardWidthsPerScreen = "cardWidthsPerScreen"
 }
 
 // MARK: - Enum GameConfigError

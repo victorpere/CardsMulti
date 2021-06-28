@@ -15,7 +15,8 @@
             "jacksEnabled": true,
             "queensEnabled": true,
             "kingsEnabled": true,
-            "acesEnabled": true
+            "acesEnabled": true,
+            "cardWidthsPerScreen": 8.0
         }
     }
 ]
