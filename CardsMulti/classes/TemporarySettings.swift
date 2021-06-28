@@ -8,7 +8,8 @@
 
 import Foundation
 
-class CurrentSettings : Settings {
+class TemporarySettings : Settings {
+    var displayName: String = ""
     
     var game: Int = 0
     
@@ -28,11 +29,16 @@ class CurrentSettings : Settings {
     
     var cardWidthsPerScreen: Float = 6
     
+    var soundOn: Bool = true
+    
+    var gameTypeOptions: NSDictionary?
+    
     init() {
         
     }
     
     init(with settings: Settings) {
+        self.displayName = settings.displayName
         self.game = settings.game
         self.minRank = settings.minRank
         self.maxRank = settings.maxRank
@@ -42,5 +48,6 @@ class CurrentSettings : Settings {
         self.king = settings.king
         self.ace = settings.ace
         self.cardWidthsPerScreen = settings.cardWidthsPerScreen
+        self.soundOn = settings.soundOn
     }
 }

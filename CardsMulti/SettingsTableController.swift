@@ -14,7 +14,7 @@ class SettingsTableContoller : UIViewController {
     let popoverWidth: CGFloat = 375
     
     let storedSettings = StoredSettings()
-    let selectedSettings: CurrentSettings
+    let selectedSettings: TemporarySettings
     var selectedConfig: GameConfig
     
     var gameConfigs: GameConfigs!
@@ -34,12 +34,11 @@ class SettingsTableContoller : UIViewController {
     var soundSwitch: Switch!
         
     var elementWidth: CGFloat = 0
-    var selectedGame: Int
     
     // MARK: - Computed properties
     
     var gameHasBeenChanged: Bool {
-        return self.selectedGame != self.storedSettings.game
+        return self.selectedSettings.game != self.storedSettings.game
     }
     
     var settingsHaveBeenChanged: Bool {
@@ -58,8 +57,7 @@ class SettingsTableContoller : UIViewController {
     // MARK: - Initializers
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        self.selectedGame = self.storedSettings.game
-        self.selectedSettings = CurrentSettings(with: self.storedSettings)
+        self.selectedSettings = TemporarySettings(with: self.storedSettings)
         self.selectedConfig = GameConfig(gameType: GameType(rawValue: selectedSettings.game) ?? .freePlay)
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
                 
@@ -124,7 +122,7 @@ class SettingsTableContoller : UIViewController {
     @objc func done(sender: UIButton) {
         if self.gameHasBeenChanged {
             self.showActionDialog(title: "game will restart".localized, text: "are you sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
-                self.storedSettings.game = self.selectedGame
+                self.storedSettings.game = self.selectedSettings.game
                 self.saveSettings()
                 self.saveUISettings()
                 self.delegate?.resetScores()
@@ -209,9 +207,9 @@ extension SettingsTableContoller : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case SettingsSection.game.rawValue:
-            if indexPath.row != self.selectedGame {
-                self.selectedGame = indexPath.row
-                self.gameSelected(ofType: GameType(rawValue: self.selectedGame))
+            if indexPath.row != self.selectedSettings.game {
+                self.selectedSettings.game = indexPath.row
+                self.gameSelected(ofType: GameType(rawValue: self.selectedSettings.game))
                 self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue, SettingsSection.cards1.rawValue]), with: .none)
             }
             break
@@ -288,7 +286,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.game.rawValue:
             cell.textLabel?.text = GameType(rawValue: indexPath.row)?.name
             
-            if indexPath.row == self.selectedGame {
+            if indexPath.row == self.selectedSettings.game {
                 cell.accessoryType = .checkmark
             }
             

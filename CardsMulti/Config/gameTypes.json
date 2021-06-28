@@ -17,6 +17,12 @@
             "kingsEnabled": true,
             "acesEnabled": true,
             "cardWidthsPerScreen": 8.0
+        },
+        "gameTypeOptions" : {
+            "numberOfCardsToDraw" : {
+                "type": "Int",
+                "defaultValue": 3
+            }
         }
     }
 ]

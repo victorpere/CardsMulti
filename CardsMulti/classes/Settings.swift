@@ -9,7 +9,7 @@
 import Foundation
 
 protocol Settings {
-    
+    var displayName: String { get set }
     var game: Int { get set }
     var minRank: Int { get set }
     var maxRank: Int { get set }
@@ -19,4 +19,6 @@ protocol Settings {
     var king: Bool { get set }
     var ace: Bool { get set }
     var cardWidthsPerScreen: Float { get set }
+    var soundOn: Bool { get set }
+    var gameTypeOptions: NSDictionary? { get set }
 }

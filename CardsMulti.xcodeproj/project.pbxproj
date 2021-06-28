@@ -15,8 +15,8 @@
 		5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
 		570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A810F249EB8FC001096E1 /* WsMessage.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
-		57213CF0268903E800753AC4 /* CurrentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57213CEF268903E800753AC4 /* CurrentSettings.swift */; };
-		57213CF1268903F600753AC4 /* CurrentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57213CEF268903E800753AC4 /* CurrentSettings.swift */; };
+		57213CF0268903E800753AC4 /* TemporarySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57213CEF268903E800753AC4 /* TemporarySettings.swift */; };
+		57213CF1268903F600753AC4 /* TemporarySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57213CEF268903E800753AC4 /* TemporarySettings.swift */; };
 		57272556256AE697008A8171 /* RequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57272555256AE697008A8171 /* RequestData.swift */; };
 		5732550D267A683C003B8834 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5732550F267A683C003B8834 /* Localizable.strings */; };
 		57325512267A699E003B8834 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57325511267A699E003B8834 /* String.swift */; };
@@ -158,7 +158,7 @@
 		570A810F249EB8FC001096E1 /* WsMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WsMessage.swift; sourceTree = "<group>"; };
 		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
 		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		57213CEF268903E800753AC4 /* CurrentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CurrentSettings.swift; path = classes/CurrentSettings.swift; sourceTree = "<group>"; };
+		57213CEF268903E800753AC4 /* TemporarySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemporarySettings.swift; path = classes/TemporarySettings.swift; sourceTree = "<group>"; };
 		57272555256AE697008A8171 /* RequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestData.swift; sourceTree = "<group>"; };
 		5732550E267A683C003B8834 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		57325510267A6878003B8834 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -416,7 +416,7 @@
 				57272555256AE697008A8171 /* RequestData.swift */,
 				57D570972687B2490050B28E /* Settings.swift */,
 				57E97B101E74A651000243B2 /* StoredSettings.swift */,
-				57213CEF268903E800753AC4 /* CurrentSettings.swift */,
+				57213CEF268903E800753AC4 /* TemporarySettings.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -768,7 +768,7 @@
 				574050551E5F82AA00316AEB /* UIDevice.swift in Sources */,
 				573FD588239F343F009BDBF9 /* PlayArea.swift in Sources */,
 				57E97B111E74A651000243B2 /* StoredSettings.swift in Sources */,
-				57213CF0268903E800753AC4 /* CurrentSettings.swift in Sources */,
+				57213CF0268903E800753AC4 /* TemporarySettings.swift in Sources */,
 				57D5707A267F840B0050B28E /* GameConfigs.swift in Sources */,
 				578F40C423778D9300719821 /* Solitaire.swift in Sources */,
 				574693562367CD4600AB6516 /* GameState.swift in Sources */,
@@ -827,7 +827,7 @@
 				57D5707B267F84FB0050B28E /* GameConfigs.swift in Sources */,
 				578B1C5D1E7EFBCB008B8381 /* StoredSettings.swift in Sources */,
 				578B1C5C1E7EFB37008B8381 /* Position.swift in Sources */,
-				57213CF1268903F600753AC4 /* CurrentSettings.swift in Sources */,
+				57213CF1268903F600753AC4 /* TemporarySettings.swift in Sources */,
 				578742BC2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
 				57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */,
 				57DD91C1258540010086336D /* GridView.swift in Sources */,
