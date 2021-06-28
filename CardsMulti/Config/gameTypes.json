@@ -18,7 +18,7 @@
             "acesEnabled": true,
             "cardWidthsPerScreen": 8.0
         },
-        "gameTypeOptions" : {
+        "customOptions" : {
             "numberOfCardsToDraw" : {
                 "type": "Int",
                 "defaultValue": 3

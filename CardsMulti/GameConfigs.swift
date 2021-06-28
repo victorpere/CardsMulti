@@ -10,20 +10,39 @@ import Foundation
 
 class GameConfigs {
     
-    // MARK: - Properties
+    static let sharedInstance = GameConfigs(withFile: Config.configFilePath)
     
-    private(set) var configs: [GameType: GameConfig]
+    // MARK: - Private properties
+    
+    private var configs: [GameType: GameConfig]
     
     // MARK: - Initializers
     
-    init(withFile file: String) {
+    init(withFile file: String?) {
         self.configs = [GameType: GameConfig]()
         
-        if let data = NSData(contentsOfFile: file) as Data? {
+        if file != nil, let data = NSData(contentsOfFile: file!) as Data? {
             try? self.decode(settingsFileContent: data)
-        } else {
-            
         }
+    }
+    
+    // MARK: - Public methods
+    
+    /**
+     Returns the configuration for the specified game type
+     - parameter gameType: game type to get the configuration for
+     - returns: configuration for the specified game type
+     */
+    func gameConfig(for gameType: GameType?) -> GameConfig? {
+        if gameType == nil {
+            return nil
+        }
+        
+        if let gameConfig = self.configs[gameType!] {
+            return gameConfig
+        }
+        
+        return nil
     }
     
     // MARK: - Private methods
@@ -48,8 +67,8 @@ class GameConfigs {
                             if let value = settingsDictionary[GameConfigKey.canRotateCards.rawValue] as? Bool {
                                 gameConfig.canRotateCards = value
                             }
-                            if let value = settingsDictionary[GameConfigKey.options.rawValue] as? NSArray {
-                                gameConfig.options = value
+                            if let value = settingsDictionary[GameConfigKey.customOptions.rawValue] as? NSDictionary {
+                                gameConfig.customOptions = value
                             }
                             if let value = settingsDictionary[GameConfigKey.defaultSettings.rawValue] as? NSDictionary {
                                 gameConfig.defaultSettings = self.defaultSettings(fromDictionary: value)
@@ -106,7 +125,7 @@ struct GameConfig {
     var canChangeCardSize: Bool = true
     var canChangeDeck: Bool = true
     var canRotateCards: Bool = true
-    var options: NSArray?
+    var customOptions: NSDictionary?
     
     var defaultSettings = GameConfigDefaultSettings()
 }
@@ -132,7 +151,7 @@ enum GameConfigKey : String {
     case canChangeCardSize = "canChangeCardSize"
     case canChangeDeck = "canChangeDeck"
     case canRotateCards = "canRotateCards"
-    case options = "options"
+    case customOptions = "customOptions"
     case defaultSettings = "defaultSettings"
     case pipsEnabled = "pipsEnabled"
     case minValue = "minValue"

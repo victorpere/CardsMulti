@@ -31,6 +31,10 @@
 "game will restart" = "Game will restart";
 "are you sure?"     = "Are you sure?";
 
+"sigle player game" = "Single player game";
+"you can switch to a multiplayer game in settings" = "You can switch to a multiplayer game in Settings";
+"open settings"     = "Open Settings";
+
 "create or join a game"     = "Create or join a game";
 "invite a friend to join"   = "Invite a friend to join";
 "join a game"               = "Join a game";

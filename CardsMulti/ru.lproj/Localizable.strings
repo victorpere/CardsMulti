@@ -31,6 +31,10 @@
 "game will restart" = "Игра начнётся заново";
 "are you sure?"     = "Вы уверены?";
 
+"sigle player game" = "Одиночная игра";
+"you can switch to a multiplayer game in settings" = "Вы можете переклучиться на мультиплеер в настройках";
+"open settings"     = "Зайти в настройки";
+
 "create or join a game"     = "Создать или присоединиться к игре";
 "invite a friend to join"   = "Пригласить в игру";
 "join a game"               = "Присоединиться к игре";

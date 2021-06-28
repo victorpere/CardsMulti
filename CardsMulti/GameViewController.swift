@@ -159,9 +159,9 @@ class GameViewController: UIViewController {
             self.resetGame()
         case 2:
             if self.connectionService.connected {
-                self.disconnectFromPeer()
+                self.showConnectedMenu()
             } else {
-                self.browsePeers()
+                self.showNotConnectedMenu()
             }
         case 3:
             self.lineUpCards()
@@ -245,7 +245,15 @@ class GameViewController: UIViewController {
         self.scene.resetHand(sort: true)
     }
     
-    func browsePeers() {
+    func showNotConnectedMenu() {
+        if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: self.scene.gameType), gameConfig.maxPlayers < 2 {
+            //self.showAlert(title: "single player game".localized, text: "multiplayer not allowed".localized)
+            self.showActionDialog(title: "sigle player game".localized, text: "you can switch to a multiplayer game in settings".localized, actionTitle: "open settings".localized, action: { () -> Void in
+                self.openSettings()
+            })
+            return
+        }
+        
         var title = "create or join a game".localized
         if self.connectionService.foundPeers.count > 0 {
             title = "Join a nearby device, or create or join a remote game"
@@ -285,7 +293,7 @@ class GameViewController: UIViewController {
         self.present(peerBrowser, animated: true, completion: nil)
     }
     
-    func disconnectFromPeer() {
+    func showConnectedMenu() {
         var title: String?
         if let gameCode = self.connectionService.gameCode {
             title = "\("connected to game".localized) \(gameCode)"

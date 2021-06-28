@@ -20,5 +20,5 @@ protocol Settings {
     var ace: Bool { get set }
     var cardWidthsPerScreen: Float { get set }
     var soundOn: Bool { get set }
-    var gameTypeOptions: NSDictionary? { get set }
+    var customOptions: NSDictionary? { get set }
 }

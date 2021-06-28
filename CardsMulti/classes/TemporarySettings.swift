@@ -31,7 +31,7 @@ class TemporarySettings : Settings {
     
     var soundOn: Bool = true
     
-    var gameTypeOptions: NSDictionary?
+    var customOptions: NSDictionary?
     
     init() {
         

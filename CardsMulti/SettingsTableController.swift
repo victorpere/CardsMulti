@@ -17,8 +17,6 @@ class SettingsTableContoller : UIViewController {
     let selectedSettings: TemporarySettings
     var selectedConfig: GameConfig
     
-    var gameConfigs: GameConfigs!
-    
     var tableView: UITableView!
     var delegate: SettingsTableControllerDelegate!
     
@@ -60,8 +58,6 @@ class SettingsTableContoller : UIViewController {
         self.selectedSettings = TemporarySettings(with: self.storedSettings)
         self.selectedConfig = GameConfig(gameType: GameType(rawValue: selectedSettings.game) ?? .freePlay)
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-                
-        self.gameConfigs = GameConfigs(withFile: Config.configFilePath ?? "")
     }
     
     required init?(coder: NSCoder) {
@@ -169,7 +165,7 @@ class SettingsTableContoller : UIViewController {
     }
     
     private func gameSelected(ofType gameType: GameType?) {
-        if let gameConfig = self.gameConfigs.configs[gameType ?? .freePlay] {
+        if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) {
             self.selectedConfig = gameConfig
             
             if !gameConfig.canChangeDeck {

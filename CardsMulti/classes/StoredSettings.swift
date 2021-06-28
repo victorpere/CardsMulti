@@ -143,12 +143,12 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    var gameTypeOptions: NSDictionary? {
+    var customOptions: NSDictionary? {
         get {
-            return self.settingOrDefault(forKey: "gameTypeOptions", defaultValue: nil)
+            return self.settingOrDefault(forKey: "customOptions", defaultValue: nil)
         }
         set(value) {
-            self.setSetting(forKey: "gameTypeOptions", toValue: value)
+            self.setSetting(forKey: "customOptions", toValue: value)
         }
     }
     
