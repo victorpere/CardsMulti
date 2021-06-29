@@ -36,6 +36,7 @@ class GameScene: SKScene {
     //let connectionService = ConnectionServiceManager()
     
     var gameType: GameType
+    var gameConfig: GameConfig
     var loadSaved: Bool
     
     var entities = [GKEntity]()
@@ -126,30 +127,28 @@ class GameScene: SKScene {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override init(size: CGSize) {
-        self.loadSaved = true
-        self.gameType = .freePlay
-        super.init(size: size)
-                
-        //self.resetGame(sync: false, loadSaved: true)
+    convenience override init(size: CGSize) {
+        self.init(size: size, gameType: .freePlay, loadFromSave: true)
     }
     
-    init(size: CGSize, loadFromSave: Bool) {
-        self.gameType = .freePlay
-        self.loadSaved = loadFromSave
-        super.init(size: size)
+    convenience init(size: CGSize, loadFromSave: Bool) {
+        self.init(size: size, gameType: .freePlay, loadFromSave: loadFromSave)
     }
     
-    init(size: CGSize, gameType: GameType) {
-        self.gameType = gameType
-        self.loadSaved = true
-        super.init(size: size)
+    convenience init(size: CGSize, gameType: GameType) {
+        self.init(size: size, gameType: gameType, loadFromSave: true)
     }
     
-    init (size: CGSize, gameType: GameType, loadFromSave: Bool) {
+    init(size: CGSize, gameType: GameType, loadFromSave: Bool) {
         self.gameType = gameType
         self.loadSaved = loadFromSave
+        self.gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) ?? GameConfig(gameType: gameType)
         super.init(size: size)
+        
+        if (!self.gameConfig.canChangeCardSize && self.settings.cardWidthsPerScreen != self.gameConfig.defaultSettings.cardWidthsPerScreen) {
+            self.settings.cardWidthsPerScreen = self.gameConfig.defaultSettings.cardWidthsPerScreen
+            self.updateUISettings()
+        }
     }
     
     override func sceneDidLoad() {
@@ -655,7 +654,7 @@ class GameScene: SKScene {
                     }
                     
                     self.endTouchesReset()
-                } else if touchedCardNode.pointInCorner(touchLocation) {
+                } else if self.gameConfig.canRotateCards && touchedCardNode.pointInCorner(touchLocation) {
                     // touched in the corner of the card
                     // select for rotation
                     self.rotating = true

@@ -23,20 +23,6 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     static let minCardWidthsPerScreen: Float = 3
     static let maxCardWidthsPerScreen: Float = 10
     
-    static let gameConfig = [
-        GameType.solitare : [
-            "minRank" : 2,
-            "maxRank" : 10,
-            "pips" : true,
-            "jack" : true,
-            "queen" : true,
-            "king" : true,
-            "ace" : true,
-            "cardWidthsPerScreen" : 8
-        ]
-    ]
-
-    
     // MARK: - Properties
     
     var displayName: String {
@@ -59,11 +45,6 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     
     var minRank: Int {
         get {
-            if let gameConfig = StoredSettings.gameConfig[GameType(rawValue: self.game)!] {
-                if let setting = gameConfig["minRank"] {
-                    return setting as! Int
-                }
-            }
             return self.settingOrDefault(forKey: "minRank", defaultValue: StoredSettings.defaultMinRank)
         }
         set(value) {

@@ -1,6 +1,9 @@
 [
     {
-        "gameType": "FreePlay"
+        "gameType": "FreePlay",
+        "defaultSettings": {
+            "cardWidthsPerScreen": 6.0
+        }
     },
     {
         "gameType": "Solitaire",

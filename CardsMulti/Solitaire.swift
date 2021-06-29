@@ -56,7 +56,7 @@ class Solitaire : GameScene {
     
     // MARK: - Initializers
     
-    override init(size: CGSize, loadFromSave: Bool) {
+    init(size: CGSize, loadFromSave: Bool) {
         super.init(size: size, gameType: .solitare, loadFromSave: loadFromSave)
         
         self.doubleTapAction = { (_ card) in
@@ -69,11 +69,6 @@ class Solitaire : GameScene {
                     return
                 }
             }
-        }
-        
-        if (StoredSettings.instance.cardWidthsPerScreen != self.cardWidthsPerScreen) {
-            StoredSettings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
-            self.updateUISettings()
         }
     }
     

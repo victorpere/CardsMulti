@@ -10,32 +10,19 @@ import Foundation
 
 class TemporarySettings : Settings {
     var displayName: String = ""
-    
     var game: Int = 0
-    
     var minRank: Int = 2
-    
     var maxRank: Int = 10
-    
     var pipsEnabled: Bool = true
-    
     var jacksEnabled: Bool = true
-    
     var queensEnabled: Bool = true
-    
     var kingsEnabled: Bool = true
-    
     var acesEnabled: Bool = true
-    
     var cardWidthsPerScreen: Float = 6
-    
     var soundOn: Bool = true
-    
     var customOptions: NSDictionary?
     
-    init() {
-        
-    }
+    init() { }
     
     init(with settings: Settings) {
         self.displayName = settings.displayName
@@ -49,5 +36,6 @@ class TemporarySettings : Settings {
         self.acesEnabled = settings.acesEnabled
         self.cardWidthsPerScreen = settings.cardWidthsPerScreen
         self.soundOn = settings.soundOn
+        self.customOptions = settings.customOptions
     }
 }
