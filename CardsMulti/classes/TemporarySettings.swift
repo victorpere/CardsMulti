@@ -17,15 +17,15 @@ class TemporarySettings : Settings {
     
     var maxRank: Int = 10
     
-    var pips: Bool = true
+    var pipsEnabled: Bool = true
     
-    var jack: Bool = true
+    var jacksEnabled: Bool = true
     
-    var queen: Bool = true
+    var queensEnabled: Bool = true
     
-    var king: Bool = true
+    var kingsEnabled: Bool = true
     
-    var ace: Bool = true
+    var acesEnabled: Bool = true
     
     var cardWidthsPerScreen: Float = 6
     
@@ -42,11 +42,11 @@ class TemporarySettings : Settings {
         self.game = settings.game
         self.minRank = settings.minRank
         self.maxRank = settings.maxRank
-        self.pips = settings.pips
-        self.jack = settings.jack
-        self.queen = settings.queen
-        self.king = settings.king
-        self.ace = settings.ace
+        self.pipsEnabled = settings.pipsEnabled
+        self.jacksEnabled = settings.jacksEnabled
+        self.queensEnabled = settings.queensEnabled
+        self.kingsEnabled = settings.kingsEnabled
+        self.acesEnabled = settings.acesEnabled
         self.cardWidthsPerScreen = settings.cardWidthsPerScreen
         self.soundOn = settings.soundOn
     }

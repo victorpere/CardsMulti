@@ -80,7 +80,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    var pips: Bool {
+    var pipsEnabled: Bool {
         get {
             return self.settingOrDefault(forKey: "pips", defaultValue: true)
         }
@@ -89,7 +89,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    var jack: Bool {
+    var jacksEnabled: Bool {
         get {
             return self.settingOrDefault(forKey: "jack", defaultValue: true)
         }
@@ -98,7 +98,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    var queen: Bool {
+    var queensEnabled: Bool {
         get {
             return self.settingOrDefault(forKey: "queen", defaultValue: true)
         }
@@ -107,7 +107,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    var king: Bool {
+    var kingsEnabled: Bool {
         get {
             return self.settingOrDefault(forKey: "king", defaultValue: true)
         }
@@ -116,7 +116,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    var ace: Bool {
+    var acesEnabled: Bool {
         get {
             return self.settingOrDefault(forKey: "ace", defaultValue: true)
         }
@@ -159,11 +159,11 @@ class StoredSettings : StoredBase, Settings, NSCoding {
             SettingsKey.game.rawValue : self.game,
             SettingsKey.minRank.rawValue : self.minRank,
             SettingsKey.maxRank.rawValue : self.maxRank,
-            SettingsKey.pips.rawValue : self.pips,
-            SettingsKey.jack.rawValue : self.jack,
-            SettingsKey.queen.rawValue : self.queen,
-            SettingsKey.king.rawValue : self.king,
-            SettingsKey.ace.rawValue : self.ace,
+            SettingsKey.pips.rawValue : self.pipsEnabled,
+            SettingsKey.jack.rawValue : self.jacksEnabled,
+            SettingsKey.queen.rawValue : self.queensEnabled,
+            SettingsKey.king.rawValue : self.kingsEnabled,
+            SettingsKey.ace.rawValue : self.acesEnabled,
             SettingsKey.cardWidthsPerScreen.rawValue : self.cardWidthsPerScreen
         ])
     }
@@ -184,16 +184,16 @@ class StoredSettings : StoredBase, Settings, NSCoding {
             self.maxRank = value
         }
         if let value = aDecoder.decodeObject(forKey: "jack") as? Bool {
-            self.jack = value
+            self.jacksEnabled = value
         }
         if let value = aDecoder.decodeObject(forKey: "queen") as? Bool {
-            self.queen = value
+            self.queensEnabled = value
         }
         if let value = aDecoder.decodeObject(forKey: "king") as? Bool {
-            self.king = value
+            self.kingsEnabled = value
         }
         if let value = aDecoder.decodeObject(forKey: "ace") as? Bool {
-            self.ace = value
+            self.acesEnabled = value
         }
         if let value = aDecoder.decodeObject(forKey: "cardWidthsPerScreen") as? Float {
             self.cardWidthsPerScreen = value
@@ -249,19 +249,19 @@ class StoredSettings : StoredBase, Settings, NSCoding {
             self.maxRank = value
         }
         if let value = settingsDictionary[SettingsKey.pips.rawValue] as? Bool {
-            self.pips = value
+            self.pipsEnabled = value
         }
         if let value = settingsDictionary[SettingsKey.jack.rawValue] as? Bool {
-            self.jack = value
+            self.jacksEnabled = value
         }
         if let value = settingsDictionary[SettingsKey.queen.rawValue] as? Bool {
-            self.queen = value
+            self.queensEnabled = value
         }
         if let value = settingsDictionary[SettingsKey.king.rawValue] as? Bool {
-            self.king = value
+            self.kingsEnabled = value
         }
         if let value = settingsDictionary[SettingsKey.ace.rawValue] as? Bool {
-            self.ace = value
+            self.acesEnabled = value
         }
         if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen.rawValue] as? Float {
             self.cardWidthsPerScreen = value
@@ -274,10 +274,10 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         aCoder.encode(self.game, forKey: "game")
         aCoder.encode(self.minRank, forKey: "minRank")
         aCoder.encode(self.maxRank, forKey: "maxRank")
-        aCoder.encode(self.jack, forKey: "jack")
-        aCoder.encode(self.queen, forKey: "queen")
-        aCoder.encode(self.king, forKey: "king")
-        aCoder.encode(self.ace, forKey: "ace")
+        aCoder.encode(self.jacksEnabled, forKey: "jack")
+        aCoder.encode(self.queensEnabled, forKey: "queen")
+        aCoder.encode(self.kingsEnabled, forKey: "king")
+        aCoder.encode(self.acesEnabled, forKey: "ace")
         aCoder.encode(self.cardWidthsPerScreen, forKey: "cardWidthsPerScreen")
     }
 }

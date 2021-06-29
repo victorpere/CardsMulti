@@ -13,11 +13,11 @@ protocol Settings {
     var game: Int { get set }
     var minRank: Int { get set }
     var maxRank: Int { get set }
-    var pips: Bool { get set }
-    var jack: Bool { get set }
-    var queen: Bool { get set }
-    var king: Bool { get set }
-    var ace: Bool { get set }
+    var pipsEnabled: Bool { get set }
+    var jacksEnabled: Bool { get set }
+    var queensEnabled: Bool { get set }
+    var kingsEnabled: Bool { get set }
+    var acesEnabled: Bool { get set }
     var cardWidthsPerScreen: Float { get set }
     var soundOn: Bool { get set }
     var customOptions: NSDictionary? { get set }

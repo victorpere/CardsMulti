@@ -247,7 +247,6 @@ class GameViewController: UIViewController {
     
     func showNotConnectedMenu() {
         if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: self.scene.gameType), gameConfig.maxPlayers < 2 {
-            //self.showAlert(title: "single player game".localized, text: "multiplayer not allowed".localized)
             self.showActionDialog(title: "sigle player game".localized, text: "you can switch to a multiplayer game in settings".localized, actionTitle: "open settings".localized, action: { () -> Void in
                 self.openSettings()
             })

@@ -42,11 +42,11 @@ class SettingsTableContoller : UIViewController {
     var settingsHaveBeenChanged: Bool {
         if self.storedSettings.minRank != self.selectedSettings.minRank ||
             self.storedSettings.maxRank != self.selectedSettings.maxRank ||
-            self.storedSettings.pips != self.selectedSettings.pips ||
-            self.storedSettings.jack != self.jackSwitch.isOn ||
-            self.storedSettings.queen != self.queenSwitch.isOn ||
-            self.storedSettings.king != self.kingSwitch.isOn ||
-            self.storedSettings.ace != self.aceSwitch.isOn {
+            self.storedSettings.pipsEnabled != self.selectedSettings.pipsEnabled ||
+            self.storedSettings.jacksEnabled != self.jackSwitch.isOn ||
+            self.storedSettings.queensEnabled != self.queenSwitch.isOn ||
+            self.storedSettings.kingsEnabled != self.kingSwitch.isOn ||
+            self.storedSettings.acesEnabled != self.aceSwitch.isOn {
             return true
         }
         return false
@@ -85,10 +85,10 @@ class SettingsTableContoller : UIViewController {
         self.kingSwitch = Switch(width: elementWidth)
         self.aceSwitch = Switch(width: elementWidth)
         
-        self.jackSwitch.isOn = self.storedSettings.jack
-        self.queenSwitch.isOn = self.storedSettings.queen
-        self.kingSwitch.isOn = self.storedSettings.king
-        self.aceSwitch.isOn = self.storedSettings.ace
+        self.jackSwitch.isOn = self.storedSettings.jacksEnabled
+        self.queenSwitch.isOn = self.storedSettings.queensEnabled
+        self.kingSwitch.isOn = self.storedSettings.kingsEnabled
+        self.aceSwitch.isOn = self.storedSettings.acesEnabled
         
         self.cardScaleSlider = UISlider(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 2, height: self.standardRowHeight))
         self.cardScaleSlider.minimumValue = -StoredSettings.maxCardWidthsPerScreen
@@ -150,11 +150,11 @@ class SettingsTableContoller : UIViewController {
         self.storedSettings.minRank = self.selectedSettings.minRank
         self.storedSettings.maxRank = self.selectedSettings.maxRank
         
-        self.storedSettings.pips = self.selectedSettings.pips
-        self.storedSettings.jack = self.jackSwitch.isOn
-        self.storedSettings.queen = self.queenSwitch.isOn
-        self.storedSettings.king = self.kingSwitch.isOn
-        self.storedSettings.ace = self.aceSwitch.isOn
+        self.storedSettings.pipsEnabled = self.selectedSettings.pipsEnabled
+        self.storedSettings.jacksEnabled = self.jackSwitch.isOn
+        self.storedSettings.queensEnabled = self.queenSwitch.isOn
+        self.storedSettings.kingsEnabled = self.kingSwitch.isOn
+        self.storedSettings.acesEnabled = self.aceSwitch.isOn
     }
     
     private func saveUISettings() {
@@ -169,7 +169,7 @@ class SettingsTableContoller : UIViewController {
             self.selectedConfig = gameConfig
             
             if !gameConfig.canChangeDeck {
-                self.selectedSettings.pips = gameConfig.defaultSettings.pipsEnabled
+                self.selectedSettings.pipsEnabled = gameConfig.defaultSettings.pipsEnabled
                 self.selectedSettings.minRank = gameConfig.defaultSettings.minValue
                 self.selectedSettings.maxRank = gameConfig.defaultSettings.maxValue
                 self.jackSwitch.isOn = gameConfig.defaultSettings.jacksEnabled
@@ -229,7 +229,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.game.rawValue:
             return GameType.allCases.count
         case SettingsSection.cards1.rawValue:
-            if self.selectedSettings.pips {
+            if self.selectedSettings.pipsEnabled {
                 return 3
             }
             return 1
@@ -280,6 +280,10 @@ extension SettingsTableContoller : UITableViewDataSource {
             
             break
         case SettingsSection.game.rawValue:
+            if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: indexPath.row)), gameConfig.maxPlayers > 1 {
+                cell.imageView?.image = UIImage(named: "icon_players")
+            }
+            
             cell.textLabel?.text = GameType(rawValue: indexPath.row)?.name
             
             if indexPath.row == self.selectedSettings.game {
@@ -294,10 +298,10 @@ extension SettingsTableContoller : UITableViewDataSource {
                 cell.textLabel?.text = "pip cards".localized
                 
                 let pipsSwitch = Switch(width: self.elementWidth)
-                pipsSwitch.isOn = self.selectedSettings.pips
+                pipsSwitch.isOn = self.selectedSettings.pipsEnabled
                 pipsSwitch.isEnabled = self.selectedConfig.canChangeDeck
                 pipsSwitch.onValueChanged = { () in
-                    self.selectedSettings.pips = pipsSwitch.isOn
+                    self.selectedSettings.pipsEnabled = pipsSwitch.isOn
                     self.tableView.reloadSections(IndexSet(integer: SettingsSection.cards1.rawValue), with: .bottom)
                 }
                 cell.accessoryView = pipsSwitch

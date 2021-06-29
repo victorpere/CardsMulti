@@ -16,11 +16,11 @@ class Global {
         while let newSuit = Suit(rawValue: suitNum) {
             var rankNum = settings.minRank
             while let newRank = Rank(rawValue: rankNum) {
-                if (rankNum <= settings.maxRank && settings.pips) ||
-                    (newRank == .jack && settings.jack) ||
-                    (newRank == .queen && settings.queen) ||
-                    (newRank == .king && settings.king) ||
-                    (newRank == .ace && settings.ace) {
+                if (rankNum <= settings.maxRank && settings.pipsEnabled) ||
+                    (newRank == .jack && settings.jacksEnabled) ||
+                    (newRank == .queen && settings.queensEnabled) ||
+                    (newRank == .king && settings.kingsEnabled) ||
+                    (newRank == .ace && settings.acesEnabled) {
                     let card = CardSpriteNode(card: Card(suit: newSuit, rank:newRank), name: name)
                     deck.append(card)
                 }
