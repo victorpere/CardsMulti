@@ -221,6 +221,7 @@ class CardSpriteNode : SKSpriteNode {
             self.delegate.snap([self])
             self.moving = false
             self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
+            self.delegate?.moveCompleted()
         }
     }
     
@@ -306,6 +307,7 @@ class CardSpriteNode : SKSpriteNode {
             self.performMovements(movements)
         } else {
             self.moving = false
+            self.delegate?.moveCompleted()
         }
     }
     
@@ -331,6 +333,7 @@ class CardSpriteNode : SKSpriteNode {
             self.performMovements(movements)
         } else {
             self.moving = false
+            self.delegate?.moveCompleted()
         }
     }
     
@@ -354,6 +357,7 @@ class CardSpriteNode : SKSpriteNode {
                 self.delegate!.sendPosition(of: [self], moveToFront: moveToFrontReceiver, animate: false)
             }
             self.moving = false
+            self.delegate?.moveCompleted()
         }
     }
     
@@ -531,6 +535,7 @@ protocol CardSpriteNodeDelegate {
     func makeMoveSound()
     func makeFlipSound()
     func snap(_ cardNodes: [CardSpriteNode])
+    func moveCompleted()
 }
 
 

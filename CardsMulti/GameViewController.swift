@@ -676,6 +676,10 @@ extension GameViewController : GameSceneDelegate {
         self.connectionService.sendData(data: data)
         self.connectionService.sendDataAWS(data: data, type: dataType)
     }
+    
+    func presentAlert(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void), cancelAction: (() -> Void)?) {
+        self.showActionDialog(title: title, text: text, actionTitle: actionTitle, action: action, cancelAction: cancelAction)
+    }
 }
 
 // MARK: - SettingsViewControllerDelegate

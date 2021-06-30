@@ -70,6 +70,19 @@ class Solitaire : GameScene {
                 }
             }
         }
+        
+        self.isGameFinished = { () -> Bool in
+            for card in self.allCards {
+                if card.snapLocation === self.foundations[0] ||
+                    card.snapLocation === self.foundations[1] ||
+                    card.snapLocation === self.foundations[2] ||
+                    card.snapLocation === self.foundations[3] {
+                    continue
+                }
+                return false
+            }
+            return true
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

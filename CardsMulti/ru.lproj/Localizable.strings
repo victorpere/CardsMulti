@@ -35,6 +35,9 @@
 "you can switch to a multiplayer game in settings" = "Вы можете переклучиться на мультиплеер в настройках";
 "open settings"     = "Зайти в настройки";
 
+"game over" = "Игра окончена";
+"new game"  = "Начать игру";
+
 "create or join a game"     = "Создать или присоединиться к игре";
 "invite a friend to join"   = "Пригласить в игру";
 "join a game"               = "Присоединиться к игре";

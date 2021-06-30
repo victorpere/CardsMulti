@@ -106,6 +106,10 @@ class GameScene: SKScene {
         card.flip(sendPosition: true)
     }
     
+    var isGameFinished: () -> Bool = { () in return false }
+    
+    var gameFinishedAction: (() -> Void)?
+    
     // MARK: - Computed properties
     
     /// The common are which all players can see
@@ -148,6 +152,13 @@ class GameScene: SKScene {
         if (!self.gameConfig.canChangeCardSize && self.settings.cardWidthsPerScreen != self.gameConfig.defaultSettings.cardWidthsPerScreen) {
             self.settings.cardWidthsPerScreen = self.gameConfig.defaultSettings.cardWidthsPerScreen
             self.updateUISettings()
+        }
+        
+        self.gameFinishedAction = { () -> Void in
+            print("game finished action")
+            self.gameSceneDelegate?.presentAlert(title: "game over".localized, text: nil, actionTitle: "new game".localized, action: { () -> Void in
+                self.shuffleAndStackAllCards(sync: true)
+            }, cancelAction: nil)
         }
     }
     
@@ -256,8 +267,10 @@ class GameScene: SKScene {
      Saves positions of all cards
      */
     func saveGame() {
-        GameState.instance.cardNodes = self.allCards
-        GameState.instance.scores = self.scores
+        DispatchQueue.global(qos: .background).async {
+            GameState.instance.cardNodes = self.allCards
+            GameState.instance.scores = self.scores
+        }
     }
     
     /**
@@ -1163,6 +1176,19 @@ extension GameScene : CardSpriteNodeDelegate {
             }
         }        
     }
+    
+    func moveCompleted() {
+        self.saveGame()
+        
+        DispatchQueue.global(qos: .background).async {
+            if self.isGameFinished(), let action = self.gameFinishedAction {
+                DispatchQueue.global(qos: .default).async {
+                    action()
+                }
+            }
+        }
+        
+    }
 }
 
 // MARK: - Protocol GameSceneDelegate
@@ -1176,6 +1202,8 @@ protocol GameSceneDelegate {
     func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint)
     
     func updatePlayer(numberOfCards: Int, inPosition position: Position)
+    
+    func presentAlert(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void), cancelAction: (() -> Void)?)
 }
 
 
