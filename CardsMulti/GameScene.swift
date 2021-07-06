@@ -28,12 +28,10 @@ class GameScene: SKScene {
     let yPeek: CGFloat = 20.0
     let buffer: CGFloat = 100.0
     let forceTouchRatio: CGFloat = 0.9
-    let timeToSelectMultipleNodes: TimeInterval = 1.0
-    let timeToPopUpMenu: TimeInterval = 1.1
+    let timeToSelectMultipleNodes: TimeInterval = 0.5
+    let timeToPopUpMenu: TimeInterval = 0.6
     
-    let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
-    
-    //let connectionService = ConnectionServiceManager()
+    let feedbackGenerator = UIImpactFeedbackGenerator()
     
     var gameType: GameType
     var gameConfig: GameConfig
@@ -175,7 +173,11 @@ class GameScene: SKScene {
      - parameter location: location of the touch
      */
     private func didForceOrLongTouch(at location: CGPoint) {
-        self.selectionFeedbackGenerator.selectionChanged()
+        if #available(iOS 13.0, *) {
+            self.feedbackGenerator.impactOccurred(intensity: 1.0)
+        } else {
+            self.feedbackGenerator.impactOccurred()
+        }
         
         self.rotating = false
         self.forceTouchActivated = true
@@ -933,7 +935,7 @@ class GameScene: SKScene {
         for t in touches {
             print("touchesBegan tapCount \(t.tapCount)")
             
-            self.selectionFeedbackGenerator.prepare()
+            self.feedbackGenerator.prepare()
             
             self.selectNodeForTouch(touchLocation: t.location(in: self), tapCount: t.tapCount)
             
