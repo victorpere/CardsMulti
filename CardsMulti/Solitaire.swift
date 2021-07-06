@@ -420,7 +420,59 @@ class Solitaire : GameScene {
         
     }
     
-    // MARK: - Private methods
+    override func popUpMenuItems(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
+        return [PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
+            self.autoComplete()
+        }, parameter: nil)]
+    }
     
+    // MARK: - Private methods
 
+    private func autoComplete() {
+        DispatchQueue.global(qos: .default).async {
+            var done = false
+            
+            while !done {
+                done = true
+                
+                for tableau in self.tableauLocations {
+                    if let topCard = tableau.topCard {
+                        for foundation in self.foundations {
+                            if foundation.isSnappable(topCard) {
+                                tableau.unSnap(cards: [topCard])
+                                foundation.snap(topCard)
+                                usleep(useconds_t(self.dealDuration * 1000000))
+                                done = false
+                                break
+                            }
+                        }
+                    }
+                }
+                
+                if let topCard = self.playPile.topCard {
+                    for foundation in self.foundations {
+                        if foundation.isSnappable(topCard) {
+                            self.playPile.unSnap(cards: [topCard])
+                            foundation.snap(topCard)
+                            usleep(useconds_t(self.dealDuration * 1000000))
+                            done = false
+                            break
+                        }
+                    }
+                }
+                
+                if self.playPile.snappedCards.count == 0, let topCard = self.wastePile.topCard {
+                    for foundation in self.foundations {
+                        if foundation.isSnappable(topCard) {
+                            self.wastePile.unSnap(cards: [topCard])
+                            foundation.snap(topCard)
+                            usleep(useconds_t(self.dealDuration * 1000000))
+                            done = false
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -73,6 +73,7 @@
 "top"       = "top";
 "left"      = "left";
 "right"     = "right";
+"autocomplete"  = "Autocomplete";
 
 "connections"   = "Connections";
 "%d cards"      = "%d cards";

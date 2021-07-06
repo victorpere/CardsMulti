@@ -650,22 +650,24 @@ extension GameViewController : GameSceneDelegate {
         }
     }
     
-    func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint) {
-        print("touch location: \(location)")
-        let popUpMenu = PopUpMenu(numberOfCards: numberOfCards, delegate: self)
-        popUpMenu.touchLocation = location
-        
-        let sourceRect = CGRect(center: CGPoint(x: location.x, y: self.skView.frame.height - location.y), size: CGSize(width: 1, height: 1))
-        
-        print("rect: \(sourceRect)")
-        
-        let presentationController = popUpMenu.popoverPresentationController
-        presentationController?.permittedArrowDirections = .any
-        presentationController?.sourceView = self.skView
-        presentationController?.sourceRect = sourceRect
-        presentationController?.canOverlapSourceViewRect = true
-        
-        self.present(popUpMenu, animated: true, completion: nil)
+    /// NEW POP UP MENU METHOD
+    func presentPopUpMenu(title: String?, withItems items: [PopUpMenuItem]?, at location: CGPoint) {
+        if let popUpMenuitems = items {
+            let popUpMenu = PopUpMenu(title: title, menuItems: popUpMenuitems)
+            popUpMenu.delegate = self
+            
+            let sourceRect = CGRect(center: CGPoint(x: location.x, y: self.skView.frame.height - location.y), size: CGSize(width: 1, height: 1))
+            
+            print("rect: \(sourceRect)")
+            
+            let presentationController = popUpMenu.popoverPresentationController
+            presentationController?.permittedArrowDirections = .any
+            presentationController?.sourceView = self.skView
+            presentationController?.sourceRect = sourceRect
+            presentationController?.canOverlapSourceViewRect = true
+            
+            self.present(popUpMenu, animated: true, completion: nil)
+        }
     }
     
     func peers() -> [MCPeerID?] {
@@ -706,36 +708,9 @@ extension GameViewController : SettingsTableControllerDelegate {
 // MARK: - PopUpMenuDelegate
 
 extension GameViewController : PopUpMenuDelegate {
-    func numberOfCards(inPosition position: Position) -> Int {
-        return self.scene.numberOfCards(inPosition: position)
-    }
-    
-    var numberOfPlayers: Int {
-        return self.scene.numberOfPlayers
-    }
-    
-    func stack() {
-        self.scene.stackSelectedCards()
-    }
-    
-    func fan() {
-        self.scene.fan(cards: self.scene.selectedNodes, faceUp: true)
-    }
-    
-    func deal(_ cards: Int) {
-        self.scene.deal(numberOfCards: cards)
-    }
-    
-    func shuffle() {
-        self.scene.shuffle(cards: self.scene.selectedNodes)
-    }
     
     func cancel() {
         self.scene.endTouchesReset()
     }
 
-    func recall(from position: Position?, to location: CGPoint?) {
-        self.scene.endTouchesReset()
-        self.scene.recallCards(from: position, to: location)
-    }
 }

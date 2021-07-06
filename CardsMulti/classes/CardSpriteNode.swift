@@ -244,6 +244,21 @@ class CardSpriteNode : SKSpriteNode {
         
     }
     
+    /**
+     All cards that are touching the card and each other within an array
+     */
+    func touching(cards: [CardSpriteNode]) -> [CardSpriteNode] {
+        var touchingCards = cards.filter { $0.intersects(self)}
+                
+        for card in touchingCards {
+            let remainingCards = cards.filter { !touchingCards.contains($0) }
+            Global.displayCards(remainingCards)
+            touchingCards.append(contentsOf: card.touching(cards: remainingCards))
+        }
+        
+        return touchingCards
+    }
+    
     // MARK: - Public methods - movement
     
     func flip(sendPosition: Bool) {

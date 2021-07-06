@@ -181,14 +181,18 @@ class GameScene: SKScene {
         self.forceTouchActivated = true
         self.selectMultipleNodesForTouch(touchLocation: location)
 
+        self.forceOrLongTouchAction(at: location)
+    }
+    
+    // MARK: - Public methods
+    
+    func forceOrLongTouchAction(at location: CGPoint) {
         if self.selectedNodes.count == 0 {
-            self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: 0, numberOfPlayers: self.numberOfPlayers, at: location)
+            self.gameSceneDelegate?.presentPopUpMenu(title: String(format: "%d cards".localized, self.selectedNodes.count), withItems: self.popUpMenuItems(at: location), at: location)
         } else if self.selectedNodes.count == 1 {
             self.selectedNodes[0].rotate(to: 0, duration: self.shortDuration, sendPosition: true)
         }
     }
-    
-    // MARK: - Public methods
     
     /**
      Returns the number of cards in the area of the player in the specified position
@@ -259,6 +263,88 @@ class GameScene: SKScene {
         for score in self.scores {
             score.reset()
         }
+    }
+    
+    /**
+     Returns pop up menu items for recall of cards from beyond the screen
+     */
+    func popUpMenuItemsForRecall(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
+        if !self.playArea.contains(touchLocation) {
+            return nil
+        }
+        
+        var popUpMenuItems = [PopUpMenuItem]()
+        for position in Position.allCases.filter({ $0.rawValue > 0 }) {
+            if self.numberOfCards(inPosition: position) > 0 {
+                let popUpMenuItem = PopUpMenuItem(title: String(format: "recall cards from %@".localized, "\(position)".localized), action: {(_ position: Any?) in
+                    if let recallFromPosition = position as? Position {
+                        self.recallCards(from: recallFromPosition, to: touchLocation)
+                    }
+                }, parameter: position)
+                popUpMenuItems.append(popUpMenuItem)
+            }
+        }
+        return popUpMenuItems
+    }
+    
+    func popUpMenuItemsForMultipleCardsSelected(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
+        var popUpMenuItems = [PopUpMenuItem]()
+        
+        popUpMenuItems.append(PopUpMenuItem(title: "shuffle".localized, action: {(_: Any?) in
+            self.shuffleSelectedCards()
+        }, parameter: nil))
+        
+        popUpMenuItems.append(PopUpMenuItem(title: "stack".localized, action: {(_: Any?) in
+            self.stackSelectedCards()
+        }, parameter: nil))
+        
+        popUpMenuItems.append(PopUpMenuItem(title: "fan".localized, action: {(_: Any?) in
+            self.fan(cards: self.selectedNodes, faceUp: true)
+        }, parameter: nil))
+        
+        for card in self.selectedNodes {
+            if card.faceUp {
+                popUpMenuItems.append(PopUpMenuItem(title: "flip face down".localized, action: {(_: Any?) in
+                    for card in self.selectedNodes {
+                        card.flip(faceUp: false, sendPosition: true)
+                    }
+                }, parameter: nil))
+                break
+            }
+        }
+        
+        for card in self.selectedNodes {
+            if !card.faceUp {
+                popUpMenuItems.append(PopUpMenuItem(title: "flip face up".localized, action: {(_: Any?) in
+                    for card in self.selectedNodes {
+                        card.flip(faceUp: true, sendPosition: true)
+                    }
+                }, parameter: nil))
+                break
+            }
+        }
+        
+        let maxNumberOfCardsToDeal = self.selectedNodes.count / self.numberOfPlayers
+        for index in 1...maxNumberOfCardsToDeal {
+            popUpMenuItems.append(PopUpMenuItem(title: "\("deal".localized) \(index)", action: {(_: Any?) in
+                self.deal(numberOfCards: index)
+            }, parameter: nil))
+        }
+        
+        return popUpMenuItems
+    }
+    
+    /**
+     Returns pop up menu items for the specified point on the screen
+     */
+    func popUpMenuItems(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
+        if self.selectedNodes.count == 0 {
+            return self.popUpMenuItemsForRecall(at: touchLocation)
+        } else if selectedNodes.count > 1 {
+            return self.popUpMenuItemsForMultipleCardsSelected(at: touchLocation)
+        }
+        
+        return nil
     }
 
     // MARK: - Game methods
@@ -704,7 +790,7 @@ class GameScene: SKScene {
                 self.selectedNodes = snapLocation.movableCardNodes()
             } else {
                 // otherwise select cards normally
-                self.selectedNodes = self.getCards(under: touchedCardNode)
+                self.selectedNodes = touchedCardNode.touching(cards: self.allCards)
             }
             
             for cardNode in self.selectedNodes.sorted(by: { $0.zPosition < $1.zPosition }) {
@@ -965,7 +1051,8 @@ class GameScene: SKScene {
                     self.firstTouchLocation == touchLocation && self.forceTouchActivated &&
                     (timeSinceTouchesBegan < self.timeToPopUpMenu || !self.forceTouchEnabled) {
                     self.forceTouchActivated = false
-                    self.gameSceneDelegate?.presentPopUpMenu(numberOfCards: self.selectedNodes.count, numberOfPlayers: self.numberOfPlayers, at: touchLocation)
+                    
+                    self.gameSceneDelegate?.presentPopUpMenu(title: String(format: "%d cards".localized, self.selectedNodes.count), withItems: self.popUpMenuItems(at: touchLocation), at: touchLocation)
                     return
                 }
                 
@@ -1024,10 +1111,8 @@ class GameScene: SKScene {
         
         if !forceTouchEnabled {
             if let touchLocation = self.lastTouchLocation, !forceTouchActivated && lastTouchMoveTimestamp != 0.0 && currentTime - lastTouchMoveTimestamp >= timeToSelectMultipleNodes {
-                if self.playArea.contains(touchLocation) || self.selectedNodes.count > 0 {
-                    print("didForceOrLongTouch")
-                    self.didForceOrLongTouch(at: touchLocation)
-                }
+                print("didForceOrLongTouch")
+                self.didForceOrLongTouch(at: touchLocation)
             }
         }
     }
@@ -1126,7 +1211,7 @@ extension GameScene : CardSpriteNodeDelegate {
         let cards = self.allCards.filter { card.frame.contains($0.position) }
         return cards.sorted { $0.zPosition < $1.zPosition }
     }
-    
+        
     func isOnTopOfPile(_ card: CardSpriteNode) -> Bool {
         let cardsOnTopOfCard = self.allCards.filter { (card.frame.contains($0.bottomLeftCorner) || card.frame.contains($0.bottomRightCorner) ||
             card.frame.contains($0.topLeftCorner) ||
@@ -1199,7 +1284,7 @@ protocol GameSceneDelegate {
 
     func peers() -> [MCPeerID?]
     
-    func presentPopUpMenu(numberOfCards: Int, numberOfPlayers: Int, at location: CGPoint)
+    func presentPopUpMenu(title: String?, withItems items: [PopUpMenuItem]?, at location: CGPoint)
     
     func updatePlayer(numberOfCards: Int, inPosition position: Position)
     
