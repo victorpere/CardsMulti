@@ -53,11 +53,11 @@ class GameState : StoredBase {
             return cardNodes
         }
         set(value) {
-            let cardSymbols = NSArray(array: value.map { $0.card?.symbol as Any })
+            let cardSymbols = NSArray(array: value.map { $0.card.symbol as Any })
             self.setSetting(forKey: "cardSymbols", toValue: cardSymbols)
             for cardNode in value {
                 let cardInfo = cardNode.cardInfo
-                self.setSetting(forKey: (cardNode.card?.symbol)!, toValue: cardInfo)
+                self.setSetting(forKey: cardNode.card.symbol, toValue: cardInfo)
             }
         }
     }

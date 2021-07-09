@@ -80,10 +80,7 @@ class Global {
 
     static func displayCards(_ cards: [CardSpriteNode]) {
         for cardNode in cards {
-            if let card = cardNode.card {
-                print(" \(card.symbol) (\(cardNode.zPosition))", terminator:"")
-                //print(" \(card.spriteName)", terminator:"")
-            }
+            print(" \(cardNode.card.symbol) (\(cardNode.zPosition))", terminator:"")
         }
         print()
     }
@@ -132,7 +129,7 @@ class Global {
         }
         
         let cardDictionary: NSDictionary = [
-            "c": (cardNode.card?.symbol)! as String,
+            "c": cardNode.card.symbol as String,
             "f": faceUp,
             "p": NSCoder.string(for: newPositionTransposed),
             "m": moveToFront,

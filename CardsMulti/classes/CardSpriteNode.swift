@@ -31,7 +31,7 @@ class CardSpriteNode : SKSpriteNode {
     var cardScale: CGFloat = 0.25
     var popScaleBy: CGFloat = 1.1
     
-    var card: Card?
+    var card: Card
     var frontTexture: SKTexture?
     var backTexture: SKTexture?
     var faceUp = true
@@ -91,9 +91,9 @@ class CardSpriteNode : SKSpriteNode {
         get {
             return NSDictionary(dictionary: [
                 "name": self.name!,
-                "symbol": self.card!.symbol,
-                "suit": self.card!.suit.rawValue,
-                "rank": self.card!.rank.rawValue,
+                "symbol": self.card.symbol,
+                "suit": self.card.suit.rawValue,
+                "rank": self.card.rank.rawValue,
                 "faceUp": self.faceUp,
                 "rotation": self.zRotation,
                 "x": self.position.x,
@@ -111,7 +111,8 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     init() {
-        super.init(texture: nil, color: .clear, size: CGSize(width: 0, height: 0))
+        self.card = Card(suit: .spades, rank: .queen)
+        super.init(texture: nil, color: .clear, size: CGSize(width: 0, height: 0))        
         self.cardScale = self.getScale()
         self.setScale(cardScale)
     }
@@ -134,10 +135,10 @@ class CardSpriteNode : SKSpriteNode {
         self.backTexture = SKTexture(imageNamed: self.backImageName)
         self.backTexture?.filteringMode = SKTextureFilteringMode.nearest
         self.faceUp = faceUp
+        self.card = card
         
         super.init(texture: faceUp ? self.frontTexture : self.backTexture, color: .clear, size: (self.frontTexture?.size())!)
 
-        self.card = card
         self.name = name
         self.cardScale = self.getScale()
         self.setScale(self.cardScale)
@@ -445,7 +446,7 @@ class CardSpriteNode : SKSpriteNode {
     // MARK: - Public methods - ranking/scoring
     
     func includesRank(among cardNodes: [CardSpriteNode]) -> Bool {
-        let filtered = cardNodes.filter { $0.card?.rank.rawValue == self.card?.rank.rawValue }
+        let filtered = cardNodes.filter { $0.card.rank.rawValue == self.card.rank.rawValue }
         if filtered.count > 0 {
             return true
         }
@@ -453,7 +454,7 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     func includesCard(among cardNodes: [CardSpriteNode]) -> Bool {
-        let filtered = cardNodes.filter { $0.card?.rank == self.card?.rank && $0.card?.suit == self.card?.suit }
+        let filtered = cardNodes.filter { $0.card.rank == self.card.rank && $0.card.suit == self.card.suit }
         if filtered.count > 0 {
             return true
         }
@@ -461,8 +462,8 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     func beats(_ cardNode: CardSpriteNode, trump: Card) -> Bool {
-        if ((self.card?.rank.rawValue)! > (cardNode.card?.rank.rawValue)! && (self.card?.suit)! == cardNode.card?.suit) ||
-            (self.card?.suit == trump.suit && cardNode.card?.suit != trump.suit) {
+        if (self.card.rank.rawValue > cardNode.card.rank.rawValue && self.card.suit == cardNode.card.suit) ||
+            (self.card.suit == trump.suit && cardNode.card.suit != trump.suit) {
             return true
         }
         return false
@@ -561,7 +562,7 @@ extension Array where Element:CardSpriteNode {
     /// Returns a string array representing the card symbols in order of their zPositions
     var zPositionsArray: [String?] {
         let cardsSorted = self.sorted { $0.zPosition < $1.zPosition }
-        let zPositionsArray = cardsSorted.map { $0.card?.symbol }
+        let zPositionsArray = cardsSorted.map { $0.card.symbol }
         return zPositionsArray
     }
 
@@ -648,14 +649,14 @@ extension Array where Element:CardSpriteNode {
         
         for arrayElement in cardDictionaryArray {
             if let cardSymbol = arrayElement as? String {
-                guard let cardNode = self.filter({ $0.card?.symbol == cardSymbol}).first else { break }
+                guard let cardNode = self.filter({ $0.card.symbol == cardSymbol}).first else { break }
                 cardNode.moveToFront()
                 Global.displayCards([cardNode])
             }
             
             else if let cardDictionary = arrayElement as? NSDictionary {
                 guard let cardSymbol = cardDictionary["c"] as? String else { break }
-                guard let cardNode = self.filter({ $0.card?.symbol == cardSymbol}).first else { break }
+                guard let cardNode = self.filter({ $0.card.symbol == cardSymbol}).first else { break }
                 guard let codedPosition = cardDictionary["p"] as? String else { break }
                 let position = NSCoder.cgPoint(for: codedPosition)
                 guard let rotation = cardDictionary["r"] as? CGFloat else { break }

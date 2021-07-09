@@ -144,10 +144,10 @@ class Solitaire : GameScene {
             // conditions for adding cards to the foundations
             foundation.isSnappable = { (_ card) in
                 if foundation.topCard == nil {
-                    return card.card?.rank == Rank.ace
+                    return card.card.rank == Rank.ace
                 }
                 
-                return foundation.topCard!.card?.suit == card.card?.suit && ((foundation.topCard!.card?.rank.rawValue)! + 1 == card.card?.rank.rawValue || (foundation.topCard!.card?.rank == Rank.ace && card.card?.rank == Rank.two))
+                return foundation.topCard!.card.suit == card.card.suit && (foundation.topCard!.card.rank.rawValue + 1 == card.card.rank.rawValue || (foundation.topCard!.card.rank == Rank.ace && card.card.rank == Rank.two))
             }
             
             // top car in the foudation is movable
@@ -313,9 +313,9 @@ class Solitaire : GameScene {
             // conditions for adding cards to a tableau
             tableau.isSnappable = { (_ card) in
                 if let topCard = tableau.topCard {
-                    return topCard.card?.suit.color != card.card?.suit.color && topCard.card?.rank.rawValue == (card.card?.rank.rawValue)! + 1
+                    return topCard.card.suit.color != card.card.suit.color && topCard.card.rank.rawValue == card.card.rank.rawValue + 1
                 }
-                return card.card?.rank == Rank.king
+                return card.card.rank == Rank.king
             }
             
             // double tap moves the car to a foundation if possible

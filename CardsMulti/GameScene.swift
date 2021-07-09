@@ -539,17 +539,17 @@ class GameScene: SKScene {
         if cards.count > 0 {
             //  select top card
             var cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
-            let cardToDeal = cardsSorted.first
-            // deal the card to somewhere in the area
-            let newLocation = self.randomLocationForPlayer(in: position)
-            
-            DispatchQueue.main.async {
-                cardToDeal?.moveToFront()
-                cardToDeal?.moveAndFlip(to: newLocation, rotateToAngle: cardToDeal!.zRotation, faceUp: false, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+            if let cardToDeal = cardsSorted.first {
+                // deal the card to somewhere in the area
+                let newLocation = self.randomLocationForPlayer(in: position)
+                
+                DispatchQueue.main.async {
+                    cardToDeal.moveToFront()
+                    cardToDeal.moveAndFlip(to: newLocation, rotateToAngle: cardToDeal.zRotation, faceUp: false, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+                }
+                // remove the dealt card from the stack
+                cardsSorted.remove(at: 0)
             }
-            // remove the dealt card from the stack
-            cardsSorted.remove(at: 0)
-            
             return cardsSorted
         }
         
@@ -629,11 +629,9 @@ class GameScene: SKScene {
     func stackSelectedCards() {
         if self.selectedNodes.count > 0 {
             let cardsSorted = self.selectedNodes.sorted { $0.zPosition > $1.zPosition }
-            let topCardLocation = (cardsSorted.last?.position)!
-            //self.stack(cards: cardsSorted, at: topCardLocation)
-            
-            self.selectedNodes.stack(atPosition: topCardLocation, sendPosition: true, animateReceiver: true, delegate: self)
-            
+            if let topCardLocation = cardsSorted.last?.position {
+                self.selectedNodes.stack(atPosition: topCardLocation, sendPosition: true, animateReceiver: true, delegate: self)
+            }
             self.deselectNodeForTouch()
         }
     }
@@ -658,24 +656,26 @@ class GameScene: SKScene {
     func cut(cards: [CardSpriteNode]) {
         if cards.count > 1 {
             let cardsSorted = cards.sorted { $0.zPosition > $1.zPosition }
-            let originalPosition  = cardsSorted.first?.position
-            var position1 = CGPoint(x: (originalPosition?.x)! - (cardsSorted.first?.frame.size.width)! / 2 - self.xOffset, y: (originalPosition?.y)!)
-            var position2 = CGPoint(x: (originalPosition?.x)! + (cardsSorted.first?.frame.size.width)! / 2 + self.xOffset, y: (originalPosition?.y)!)
-            
-            if position1.x < (cardsSorted.first?.frame.width)! / 2 + self.xOffset {
-                position1.x = (cardsSorted.first?.frame.width)! / 2 + self.border
-                position2.x = position1.x + (cardsSorted.first?.frame.width)! + 2 * self.xOffset
-            } else if position2.x > self.frame.width - (cardsSorted.first?.frame.width)! / 2 - self.xOffset {
-                position2.x = self.frame.width - (cardsSorted.first?.frame.width)! / 2 - self.border
-                position1.x = position2.x - (cardsSorted.first?.frame.width)! - 2 * self.xOffset
+            if let topCard = cardsSorted.first {
+                let originalPosition  = topCard.position
+                var position1 = CGPoint(x: originalPosition.x - topCard.frame.size.width / 2 - self.xOffset, y: originalPosition.y)
+                var position2 = CGPoint(x: originalPosition.x + topCard.frame.size.width / 2 + self.xOffset, y: originalPosition.y)
+                
+                if position1.x < topCard.frame.width / 2 + self.xOffset {
+                    position1.x = topCard.frame.width / 2 + self.border
+                    position2.x = position1.x + topCard.frame.width + 2 * self.xOffset
+                } else if position2.x > self.frame.width - topCard.frame.width / 2 - self.xOffset {
+                    position2.x = self.frame.width - topCard.frame.width / 2 - self.border
+                    position1.x = position2.x - topCard.frame.width - 2 * self.xOffset
+                }
+                
+                let halfIndex: Int = cardsSorted.count / 2
+                let stack1 = Array(cardsSorted.prefix(upTo: halfIndex))
+                let stack2 = Array(cardsSorted.suffix(from: halfIndex))
+                
+                stack1.stack(atPosition: position1, sendPosition: true, animateReceiver: true, delegate: self)
+                stack2.stack(atPosition: position2, sendPosition: true, animateReceiver: true, delegate: self)
             }
-            
-            let halfIndex: Int = cardsSorted.count / 2
-            let stack1 = Array(cardsSorted.prefix(upTo: halfIndex))
-            let stack2 = Array(cardsSorted.suffix(from: halfIndex))
-            
-            stack1.stack(atPosition: position1, sendPosition: true, animateReceiver: true, delegate: self)
-            stack2.stack(atPosition: position2, sendPosition: true, animateReceiver: true, delegate: self)
         }
     }
     
@@ -700,8 +700,8 @@ class GameScene: SKScene {
 
         var hand = self.cards(inPosition: .bottom)
         if sort {
-            hand.sort { ($0.card?.rank.rawValue)! < ($1.card?.rank.rawValue)! }
-            hand.sort { ($0.card?.suit.rawValue)! < ($1.card?.suit.rawValue)! }
+            hand.sort { $0.card.rank.rawValue < $1.card.rank.rawValue }
+            hand.sort { $0.card.suit.rawValue < $1.card.suit.rawValue }
         } else {
             hand.sort { $0.position.x < $1.position.x }
         }
@@ -725,10 +725,9 @@ class GameScene: SKScene {
     func selectNodeForTouch(touchLocation: CGPoint, tapCount: Int) {
         let touchedNode = self.atPoint(touchLocation)
         
-        if touchedNode is CardSpriteNode {
+        if let touchedCardNode = touchedNode as? CardSpriteNode {
             
             // select card to move
-            let touchedCardNode = touchedNode as! CardSpriteNode
             if touchedCardNode.selectable {
                 
                 if let snapLocation = touchedCardNode.snapLocation {
@@ -784,9 +783,7 @@ class GameScene: SKScene {
      */
     func selectMultipleNodesForTouch(touchLocation: CGPoint) {
         let touchedNode = self.atPoint(touchLocation)
-        if touchedNode is CardSpriteNode {
-            let touchedCardNode = touchedNode as! CardSpriteNode
-            
+        if let touchedCardNode = touchedNode as? CardSpriteNode {
             if let snapLocation = touchedCardNode.snapLocation {
                 // if the card is snapped, select all movable cards from the snap location
                 self.selectedNodes = snapLocation.movableCardNodes()
@@ -875,18 +872,17 @@ class GameScene: SKScene {
         print("shuffling cards")
         print("old order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
-        let topCardPosition = cards.last?.position
-        
-        var shuffledCards = cards
-        Global.shuffle(&shuffledCards)
-        
-        for card in shuffledCards {
-            card.moveToFront()
+        if let topCardPosition = cards.last?.position {
+            var shuffledCards = cards
+            Global.shuffle(&shuffledCards)
+            
+            for card in shuffledCards {
+                card.moveToFront()
+            }
+            
+            // stacking cards also sends position to other devices
+            cards.stack(atPosition: topCardPosition, sendPosition: true, animateReceiver: true, delegate: self)
         }
-        
-        // stacking cards also sends position to other devices
-        cards.stack(atPosition: topCardPosition!, sendPosition: true, animateReceiver: true, delegate: self)
- 
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
     }
@@ -904,26 +900,26 @@ class GameScene: SKScene {
         let radianPerCard: CGFloat = 0.2
         //let arcSize = CGFloat(cards.count) * radianPerCard
         
-        let topCardPosition = (cards.last?.position)!
-        
-        for (cardNumber, card) in cards.sorted(by: { $0.zPosition < $1.zPosition }).enumerated() {
-            let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(cards.count - 1) / 2)
-            //let offset: CGFloat =  (CGFloat(cards.count - 1) / 2) - CGFloat(cardNumber)
-            let angle: CGFloat = radianPerCard * offset
-            
-            let dx: CGFloat = fanRadius * sin(angle)
-            let dy: CGFloat = (fanRadius * cos(angle)) - fanRadius
-            
-            let newPosition = CGPoint(x: topCardPosition.x + dx, y: topCardPosition.y + dy)
-            
-            Global.displayCards([card])
-            print("Offset: \(offset)")
-            print("Old position: \(topCardPosition)")
-            print("New Position: \(newPosition)")
-            print("Angle: \(angle)")
-            
-            //card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
-            card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+        if let topCardPosition = cards.last?.position {
+            for (cardNumber, card) in cards.sorted(by: { $0.zPosition < $1.zPosition }).enumerated() {
+                let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(cards.count - 1) / 2)
+                //let offset: CGFloat =  (CGFloat(cards.count - 1) / 2) - CGFloat(cardNumber)
+                let angle: CGFloat = radianPerCard * offset
+                
+                let dx: CGFloat = fanRadius * sin(angle)
+                let dy: CGFloat = (fanRadius * cos(angle)) - fanRadius
+                
+                let newPosition = CGPoint(x: topCardPosition.x + dx, y: topCardPosition.y + dy)
+                
+                Global.displayCards([card])
+                print("Offset: \(offset)")
+                print("Old position: \(topCardPosition)")
+                print("New Position: \(newPosition)")
+                print("Angle: \(angle)")
+                
+                //card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
+                card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
+            }
         }
         
         self.deselectNodeForTouch()
@@ -1159,7 +1155,9 @@ extension GameScene : CardSpriteNodeDelegate {
         for eachCardNode in self.allCards {
             eachCardNode.zPosition += 1
         }
-        cardNode.zPosition = self.allCards.min { $0.zPosition < $1.zPosition }!.zPosition - 1
+        if let bottomCard = self.allCards.min(by: { $0.zPosition < $1.zPosition }) {
+            cardNode.zPosition = bottomCard.zPosition - 1
+        }
     }
     
     func sendFuture(position futurePosition: CGPoint, rotation futureRotation: CGFloat, faceUp futureFaceUp: Bool, of cardNode: CardSpriteNode, moveToFront: Bool) {
@@ -1182,7 +1180,7 @@ extension GameScene : CardSpriteNodeDelegate {
         do {
             let gameData = RequestData(withType: .game, andArray: cardDictionaryArray)
             if let requestData = try gameData.encodedData() {
-                self.gameSceneDelegate!.sendData(data: requestData, type: .game)
+                self.gameSceneDelegate?.sendData(data: requestData, type: .game)
             }
         } catch {
             print("Error serializing json data: \(error)")
@@ -1197,7 +1195,7 @@ extension GameScene : CardSpriteNodeDelegate {
         print("Sending z positions")
         
         let cardsSorted = self.allCards.sorted { $0.zPosition < $1.zPosition }
-        let zPositionsArray = cardsSorted.map { $0.card?.symbol }
+        let zPositionsArray = cardsSorted.map { $0.card.symbol }
                 
         do {
             let requestData = RequestData(withType: .game, andArray: zPositionsArray as Array<Any>)
