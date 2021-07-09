@@ -19,7 +19,6 @@ class GameViewController: UIViewController {
     let numberOfButtons: CGFloat = 5
     
     let connectionService = ConnectionServiceManager()
-    //var host: MCPeerID!
     
     var safeFrame: CGRect!
     var configured = false
@@ -67,9 +66,9 @@ class GameViewController: UIViewController {
                                 width: self.view.frame.width - self.view.safeAreaInsets.left - self.view.safeAreaInsets.right,
                                 height: self.view.frame.height - self.view.safeAreaInsets.top - self.view.safeAreaInsets.bottom)
         
-        let playersIcon = UIImage(named: "icon_players")
+        let playersIcon = (UIImage(named: "icon_players"))!
         
-        let barHeight = (playersIcon?.size.height)! + 2 * buttonMargin
+        let barHeight = playersIcon.size.height + 2 * buttonMargin
         
         self.backGroundView = UIView(frame: view.frame)
         self.backGroundView.backgroundColor = UIColor.black
@@ -152,7 +151,7 @@ class GameViewController: UIViewController {
     
     // MARK: - Action methods
     
-    @objc func buttonAction(sender: UIButton!) {
+    @objc func buttonAction(sender: UIButton) {
         let btnsendtag: UIButton = sender
         switch btnsendtag.tag {
         case 1:

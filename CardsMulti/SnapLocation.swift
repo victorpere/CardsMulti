@@ -293,8 +293,8 @@ class SnapLocation {
         }
         
         // flip the top card if needed
-        if self.topCard != nil && self.shouldFlip {
-            self.topCard!.flip(faceUp: self.faceUp, sendPosition: true)
+        if self.shouldFlip {
+            self.topCard?.flip(faceUp: self.faceUp, sendPosition: true)
         }
         
         self.unsnapAction(unsnappedCards)

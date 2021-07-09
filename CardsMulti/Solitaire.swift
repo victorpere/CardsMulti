@@ -143,11 +143,11 @@ class Solitaire : GameScene {
             
             // conditions for adding cards to the foundations
             foundation.isSnappable = { (_ card) in
-                if foundation.topCard == nil {
-                    return card.card.rank == Rank.ace
+                if let topFoundationCard = foundation.topCard {
+                    return topFoundationCard.card.suit == card.card.suit && (topFoundationCard.card.rank.rawValue + 1 == card.card.rank.rawValue || (topFoundationCard.card.rank == Rank.ace && card.card.rank == Rank.two))
                 }
                 
-                return foundation.topCard!.card.suit == card.card.suit && (foundation.topCard!.card.rank.rawValue + 1 == card.card.rank.rawValue || (foundation.topCard!.card.rank == Rank.ace && card.card.rank == Rank.two))
+                return card.card.rank == Rank.ace
             }
             
             // top car in the foudation is movable

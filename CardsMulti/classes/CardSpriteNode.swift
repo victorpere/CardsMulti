@@ -12,7 +12,7 @@ class CardSpriteNode : SKSpriteNode {
     
     // MARK: - Properties
     
-    var delegate:CardSpriteNodeDelegate! = nil
+    var delegate: CardSpriteNodeDelegate?
     
     let dragCoefficient = 4.0
     let accelerationTimeInterval = 0.001
@@ -90,7 +90,7 @@ class CardSpriteNode : SKSpriteNode {
     var cardInfo: NSDictionary {
         get {
             return NSDictionary(dictionary: [
-                "name": self.name!,
+                "name": self.name ?? "",
                 "symbol": self.card.symbol,
                 "suit": self.card.suit.rawValue,
                 "rank": self.card.rank.rawValue,
@@ -112,13 +112,13 @@ class CardSpriteNode : SKSpriteNode {
     
     init() {
         self.card = Card(suit: .spades, rank: .queen)
-        super.init(texture: nil, color: .clear, size: CGSize(width: 0, height: 0))        
+        super.init(texture: nil, color: .clear, size: CGSize(width: 0, height: 0))
         self.cardScale = self.getScale()
         self.setScale(cardScale)
     }
     
     convenience init(cardInfo: NSDictionary) {
-        let name = cardInfo["name"] as! String
+        let name = cardInfo["name"] as? String
         let card = Card(suit: Suit(rawValue: cardInfo["suit"] as! Int)! , rank: Rank(rawValue: cardInfo["rank"] as! Int)!)
         let faceUp = cardInfo["faceUp"] as! Bool
         self.init(card: card, name: name, faceUp: faceUp)
@@ -129,7 +129,7 @@ class CardSpriteNode : SKSpriteNode {
         self.snapLocationName = cardInfo["snap"] as? String
     }
     
-    init(card: Card, name: String, faceUp: Bool = false) {
+    init(card: Card, name: String?, faceUp: Bool = false) {
         self.frontTexture = SKTexture(imageNamed: card.spriteName)
         self.frontTexture?.filteringMode = SKTextureFilteringMode.nearest
         self.backTexture = SKTexture(imageNamed: self.backImageName)
@@ -217,11 +217,11 @@ class CardSpriteNode : SKSpriteNode {
     
     fileprivate func performMovements(_ movements: [SKAction]) {
         let movementSequence = SKAction.sequence(movements)
-        self.delegate!.makeMoveSound()
+        self.delegate?.makeMoveSound()
         self.run(movementSequence) {
-            self.delegate.snap([self])
+            self.delegate?.snap([self])
             self.moving = false
-            self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
+            self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false)
             self.delegate?.moveCompleted()
         }
     }
@@ -277,10 +277,10 @@ class CardSpriteNode : SKSpriteNode {
             self.shadowNode.isHidden = true
         }
         
-        self.delegate!.makeFlipSound()
+        self.delegate?.makeFlipSound()
         faceUp = !faceUp
         if sendPosition {
-            self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
+            self.delegate?.sendPosition(of: [self], moveToFront: true, animate: false)
         }
     }
     
@@ -295,7 +295,7 @@ class CardSpriteNode : SKSpriteNode {
         let currentPosition = self.position
         self.position = CGPoint(x: currentPosition.x + transformation.x, y: currentPosition.y + transformation.y)
         self.zRotation = self.zRotation + rotationAngle
-        self.delegate!.sendPosition(of: [self], moveToFront: true, animate: false)
+        self.delegate?.sendPosition(of: [self], moveToFront: true, animate: false)
     }
     
     /**
@@ -358,19 +358,19 @@ class CardSpriteNode : SKSpriteNode {
         //if we're animating at the receiver end, send the position first
         //so that the animations happen simultaneously
         if sendPosition && animateReceiver {
-            self.delegate!.sendFuture(position: newPosition, rotation: newRotation, faceUp: faceUp, of: self, moveToFront: moveToFrontReceiver)
+            self.delegate?.sendFuture(position: newPosition, rotation: newRotation, faceUp: faceUp, of: self, moveToFront: moveToFrontReceiver)
         }
         
         self.moving = true
         let movement = SKAction.move(to: newPosition, duration: duration)
         let rotation = SKAction.rotate(toAngle: newRotation, duration: duration, shortestUnitArc: true)
         let actionGroup = SKAction.group([movement, rotation])
-        self.delegate!.makeMoveSound()
+        self.delegate?.makeMoveSound()
         self.run(actionGroup) {
             if self.faceUp != faceUp {
                 self.flip(sendPosition: sendPosition && !animateReceiver)
             } else if sendPosition && !animateReceiver {
-                self.delegate!.sendPosition(of: [self], moveToFront: moveToFrontReceiver, animate: false)
+                self.delegate?.sendPosition(of: [self], moveToFront: moveToFrontReceiver, animate: false)
             }
             self.moving = false
             self.delegate?.moveCompleted()
@@ -381,7 +381,7 @@ class CardSpriteNode : SKSpriteNode {
         let movement = SKAction.rotate(toAngle: angle, duration: duration, shortestUnitArc: true)
         self.run(movement) {
             if sendPosition {
-                self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
+                self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false)
             }
         }
     }
@@ -390,7 +390,7 @@ class CardSpriteNode : SKSpriteNode {
         let movement = SKAction.rotate(byAngle: angle, duration: duration)
         self.run(movement) {
             if sendPosition {
-                self.delegate!.sendPosition(of: [self], moveToFront: false, animate: false)
+                self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false)
             }
         }
     }
@@ -482,11 +482,11 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     func getCardsUnder() -> [CardSpriteNode] {
-        return self.delegate!.getCards(under: self)
+        return self.delegate?.getCards(under: self) ?? [CardSpriteNode]()
     }
     
     func isOnTopOfPile() -> Bool {
-        return self.delegate!.isOnTopOfPile(self);
+        return self.delegate?.isOnTopOfPile(self) ?? true
     }
     
     /**
