@@ -436,6 +436,18 @@ class GameViewController: UIViewController {
     }
     
     /**
+     Instructs connection service to find a game with the matching game Id
+     - parameter gameId: game Id to match
+     */
+    func findGame(byGameId gameId: String) {
+        if self.connectionService.gameId == nil {
+            self.connectionService.findGame(byGameId: gameId)
+        } else {
+            self.showAlert(title: "already joined a game".localized, text: "disconnect from the current game before joining another one".localized)
+        }
+    }
+    
+    /**
      Joins game with specified gameId
      - parameter gameId: gameId to join
      */
@@ -455,20 +467,25 @@ class GameViewController: UIViewController {
      Creates an invitation link to the current game and opens a sharing dialog
      */
     private func createInvitation() {
-        let params = [URLQueryItem(name: "gamecode", value: self.connectionService.gameCode)]
-        guard let url = Global.appLinkUrl(method: "join", params: params) else {
-            self.showAlert(title: "something went wrong".localized, text: "couldn't retrieve the game information".localized)
-            return
-        }
-        
-        let inviteViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        
-        let presentationController = inviteViewController.popoverPresentationController
-        presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = self.numberOfPlayersButton
-        presentationController?.sourceRect = self.numberOfPlayersButton.bounds
+        if self.connectionService.gameId != nil {
+            //let params = [URLQueryItem(name: "gamecode", value: self.connectionService.gameCode)]
+            let params = [URLQueryItem(name: "gameid", value: self.connectionService.gameId)]
+            guard let url = Global.appLinkUrl(method: "join", params: params) else {
+                self.showAlert(title: "something went wrong".localized, text: "couldn't retrieve the game information".localized)
+                return
+            }
+            
+            let inviteViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+            
+            let presentationController = inviteViewController.popoverPresentationController
+            presentationController?.permittedArrowDirections = .down
+            presentationController?.sourceView = self.numberOfPlayersButton
+            presentationController?.sourceRect = self.numberOfPlayersButton.bounds
 
-        self.present(inviteViewController, animated: true, completion: nil)
+            self.present(inviteViewController, animated: true, completion: nil)
+        } else {
+            print("No connected game")
+        }
     }
     
     fileprivate func updateConnectionLabels() {

@@ -64,6 +64,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let gameId = params.first(where: { $0.name == "gameid" } )?.value {
             print("gameId: \(gameId)")
+            if let viewController = self.window?.rootViewController as! GameViewController? {
+                viewController.connectionService.startService()
+                viewController.findGame(byGameId: gameId)
+            }
             
         } else if let gameCode = params.first(where: { $0.name == "gamecode" } )?.value {
             print("gameCode: \(gameCode)")

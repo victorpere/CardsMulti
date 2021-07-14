@@ -252,6 +252,14 @@ class ConnectionServiceManager : NSObject {
     }
     
     /**
+     Sends a request to AWS to find a game with a matching game Id
+     - parameter gameId: the game Id to find
+     */
+    func findGame(byGameId gameId: String) {
+        self.wsRequestSender.findGame(byGameId: gameId)
+    }
+    
+    /**
      Sends a request to AWS to join a game with the provided gameId
      
      - parameter gameId: ID of the game to join

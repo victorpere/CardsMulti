@@ -88,6 +88,26 @@ class WsRequestSender {
     }
     
     /**
+     Find the game by the spcified game Id
+     - parameter gameId: the game Id to find
+     */
+    func findGame(byGameId gameId: String) {
+        if (!self.isConnected) {
+            self.waitingParam = gameId
+            self.waitingFunc = self.findGame(byGameId:)
+            self.connect()
+            return
+        }
+        
+        let payload: NSDictionary = [
+            "action": WsAction.onFindGameById.rawValue,
+            "gameId": gameId
+        ]
+        
+        self.sendPayload(payload)
+    }
+    
+    /**
      Join an existing game by game ID
      - parameter gameID:ID of the game to join
      */
@@ -278,6 +298,7 @@ enum WsRequestSenderError : Error {
 enum WsAction : String {
     case onCreateGame = "onCreateGame"
     case onFindGame = "onFindGame"
+    case onFindGameById = "onFindGameById"
     case onJoinGame = "onJoinGame"
     case onDisconnectGame = "onDisconnectGame"
     case onData = "onData"
