@@ -259,7 +259,7 @@ class GameViewController: UIViewController {
         
         let peerBrowser = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         for peerID in self.connectionService.foundPeers {
-            let peerAction = UIAlertAction(title: peerID.displayName, style: .default, handler: { (alert) -> Void in
+            let peerAction = UIAlertAction(title: String(format: "join %@".localized, peerID.displayName), style: .default, handler: { (alert) -> Void in
                 self.connectionService.invitePeer(peerID)
             } )
             peerBrowser.addAction(peerAction)

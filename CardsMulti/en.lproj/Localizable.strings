@@ -60,6 +60,7 @@
 "joined game code"  = "Joined game code";
 "message from"  = "Message from";
 "disconnected from game"    = "Disconnected from the game";
+"join %@"       = "Join %@";
 
 "shuffle"   = "Shuffle";
 "stack"     = "Stack";

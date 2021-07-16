@@ -37,8 +37,12 @@ class ConnectionServiceManager : NSObject {
     
     private let connectionServiceType = "cards-multi"
     
-    let myPeerId = MCPeerID(displayName: UIDevice.current.name)
+    //let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     let myself: Player
+    
+    let settings = StoredSettings()
+    
+    var myPeerId: MCPeerID
     
     /// Websockets game ID
     var gameId: String?
@@ -104,6 +108,7 @@ class ConnectionServiceManager : NSObject {
     // MARK: - Initializers
     
     override init() {
+        self.myPeerId = MCPeerID(displayName: self.settings.displayName)
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerId, discoveryInfo: nil, serviceType: self.connectionServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerId, serviceType: self.connectionServiceType)
         self.myself = Player(peerId: self.myPeerId)
