@@ -22,6 +22,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_cards-multi._tcp</string>
+	</array>
 	<key>NSContactsUsageDescription</key>
 	<string>CONTACTS_USAGE_DESC</string>
 	<key>UILaunchStoryboardName</key>
@@ -37,10 +41,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_cards-multi._tcp</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

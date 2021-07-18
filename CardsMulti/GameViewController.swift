@@ -501,7 +501,12 @@ class GameViewController: UIViewController {
     fileprivate func updateScenePlayers() {
         self.scene.peers = self.connectionService.players
         self.scene.players = self.connectionService.playersAWS
-        self.scene.playerPosition = self.connectionService.myPositionAWS
+        
+        if self.connectionService.gameId != nil {
+            self.scene.playerPosition = self.connectionService.myPositionAWS
+        } else {
+            self.scene.playerPosition = self.connectionService.myPosition
+        }
     }
     
     // MARK: - System method overrides
@@ -536,8 +541,7 @@ extension GameViewController : ConnectionServiceManagerDelegate {
             self.updateLabels()
             self.updatePlayerLabels()
         }
-        
-        self.scene.playerPosition = self.connectionService.myPosition
+
         self.updateScenePlayers()
         
     }

@@ -50,7 +50,7 @@ class ConnectionServiceManager : NSObject {
     /// Websockets game code
     var gameCode: String?
     
-    var hostPeerID: MCPeerID!
+    var hostPeerID: MCPeerID?
     var players: [MCPeerID?] = [nil, nil, nil, nil]
     
     var host: Player?
@@ -231,11 +231,15 @@ class ConnectionServiceManager : NSObject {
     func reassignHost() {
         // OLD WAY
         let allPeers = self.players.filter { $0 != nil }
-        self.hostPeerID = allPeers.first!
+        if allPeers.count > 0 {
+            self.hostPeerID = allPeers.first as? MCPeerID
+        }
         
         // NEW WAY
         let allPlayers = self.playersAWS.filter { $0 != nil }
-        self.host = allPlayers.first!
+        if allPlayers.count > 0 {
+            self.host = allPlayers.first as? Player
+        }
     }
     
     // MARK: - AWS methods
