@@ -27,5 +27,22 @@
                 "defaultValue": 3
             }
         }
+    },
+    {
+        "gameType": "FreeCell",
+        "maxPlayers": 1,
+        "canChangeCardSize": false,
+        "canChangeDeck": false,
+        "canRotateCards": false,
+        "defaultSettings": {
+            "pipsEnabled": true,
+            "minValue": 2,
+            "maxValue": 10,
+            "jacksEnabled": true,
+            "queensEnabled": true,
+            "kingsEnabled": true,
+            "acesEnabled": true,
+            "cardWidthsPerScreen": 9.0
+        }
     }
 ]

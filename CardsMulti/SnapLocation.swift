@@ -163,6 +163,10 @@ class SnapLocation {
             return false
         }
         
+        if self.maxCards <= self.snappedCards.count {
+            return false
+        }
+        
         if !self.isSnappable(cardNode) {
             return false
         }

@@ -12,6 +12,7 @@ enum GameType: Int, CaseIterable {
     case freePlay = 0
     case solitare = 1
     //case GoFish = 2
+    case freeCell = 2
     
     init(withName name: String) throws {
         switch name {
@@ -20,6 +21,9 @@ enum GameType: Int, CaseIterable {
             break
         case "Solitaire":
             self = .solitare
+            break
+        case "FreeCell":
+            self = .freeCell
             break
         default:
             throw GameTypeError.FailedToFindGameTypeError
@@ -34,6 +38,8 @@ enum GameType: Int, CaseIterable {
             return "solitaire".localized
 //        case .GoFish:
 //            return "Go Fish"
+        case .freeCell:
+            return "freecell".localized
         }
     }
 }

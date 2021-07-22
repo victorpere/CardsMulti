@@ -17,6 +17,7 @@
 "game"      = "Game";
 "free play" = "Free Play";
 "solitaire" = "Solitaire";
+"freecell"  = "FreeCell";
 "cards"     = "Cards";
 "pip cards" = "Pip Cards";
 "minimum rank"  = "Minimum Rank";

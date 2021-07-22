@@ -104,6 +104,9 @@
 		57D6560423651BA000DA69C4 /* CoreGraphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D6560323651BA000DA69C4 /* CoreGraphics.swift */; };
 		57D6560523651BBD00DA69C4 /* CoreGraphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D6560323651BA000DA69C4 /* CoreGraphics.swift */; };
 		57D6560623651BBE00DA69C4 /* CoreGraphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D6560323651BA000DA69C4 /* CoreGraphics.swift */; };
+		57DA7BCB26A853AA00F3CA8F /* FreeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BCA26A853AA00F3CA8F /* FreeCell.swift */; };
+		57DA7BCC26A8546600F3CA8F /* FreeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BCA26A853AA00F3CA8F /* FreeCell.swift */; };
+		57DA7BCE26A8C9EF00F3CA8F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57DA7BCD26A8C9EF00F3CA8F /* StoreKit.framework */; };
 		57DD918D25853F6D0086336D /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		57DD919125853F770086336D /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693552367CD4600AB6516 /* GameState.swift */; };
 		57DD919525853F7C0086336D /* PlayArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573FD587239F343F009BDBF9 /* PlayArea.swift */; };
@@ -216,6 +219,8 @@
 		57D5708F26879DA60050B28E /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Extensions/UIViewController.swift; sourceTree = "<group>"; };
 		57D570972687B2490050B28E /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = classes/Settings.swift; sourceTree = "<group>"; };
 		57D6560323651BA000DA69C4 /* CoreGraphics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreGraphics.swift; sourceTree = "<group>"; };
+		57DA7BCA26A853AA00F3CA8F /* FreeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeCell.swift; sourceTree = "<group>"; };
+		57DA7BCD26A8C9EF00F3CA8F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingDirection.swift; sourceTree = "<group>"; };
 		57E97B091E7368B3000243B2 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Position.swift; path = Enums/Position.swift; sourceTree = "<group>"; };
 		57E97B0C1E7479F5000243B2 /* BottomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
@@ -239,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB45C3F501F4DA0B88BA27B8 /* Pods_CardsMulti.framework in Frameworks */,
+				57DA7BCE26A8C9EF00F3CA8F /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +282,7 @@
 				570C3972233697E200A2882C /* GameGoFish.swift */,
 				578F40C323778D9300719821 /* Solitaire.swift */,
 				578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */,
+				57DA7BCA26A853AA00F3CA8F /* FreeCell.swift */,
 			);
 			name = GameScenes;
 			sourceTree = "<group>";
@@ -470,6 +477,7 @@
 		C6A4DAED8A528ADF9DA1D07E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				57DA7BCD26A8C9EF00F3CA8F /* StoreKit.framework */,
 				987F0BA579C9C4CB037CF4DF /* Pods_CardsMulti.framework */,
 				3C6DB5156A4A8348D5666310 /* Pods_CardsMultiTests.framework */,
 				CCCBBA39BBF31932BCA25228 /* Pods_CardsMultiUITests.framework */,
@@ -755,6 +763,7 @@
 				57D6560423651BA000DA69C4 /* CoreGraphics.swift in Sources */,
 				57897FF81E85652400B1D4A6 /* Config.swift in Sources */,
 				57B054131E4E75F30057E62F /* Card.swift in Sources */,
+				57DA7BCB26A853AA00F3CA8F /* FreeCell.swift in Sources */,
 				57F70561243A7A35009552AB /* ScoresViewController.swift in Sources */,
 				57325512267A699E003B8834 /* String.swift in Sources */,
 				570218282373B44100310A67 /* CardSizeTableViewCell.swift in Sources */,
@@ -801,6 +810,7 @@
 				57D570992687B2490050B28E /* Settings.swift in Sources */,
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
 				57DD91A125853F900086336D /* WsRequestSender.swift in Sources */,
+				57DA7BCC26A8546600F3CA8F /* FreeCell.swift in Sources */,
 				578B1C591E7EFB17008B8381 /* BottomButton.swift in Sources */,
 				57C626132346E6DB008A9872 /* CardSlider.swift in Sources */,
 				57DD91B525853FF80086336D /* ScoresViewController.swift in Sources */,

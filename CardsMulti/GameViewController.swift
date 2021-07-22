@@ -212,6 +212,14 @@ class GameViewController: UIViewController {
 //            self.playerRightLabel.isHidden = false
 //            self.awsStatusLabel.isHidden = false
 //            self.scene = GameGoFish(size: self.skView.frame.size, loadFromSave: loadFromSave)
+        case GameType.freeCell.rawValue:
+            self.connectionsLabel.isHidden = true
+            self.playerLeftLabel.isHidden = true
+            self.playerAcrossLabel.isHidden = true
+            self.playerRightLabel.isHidden = true
+            self.awsStatusLabel.isHidden = true
+            self.scene = FreeCell(size: self.skView.frame.size, loadFromSave: loadFromSave)
+
         default:
             self.connectionsLabel.isHidden = false
             self.playerLeftLabel.isHidden = false

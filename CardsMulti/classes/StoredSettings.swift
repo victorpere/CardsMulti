@@ -34,6 +34,16 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
+    var cardSet: String? {
+        get {
+            return self.settingOrDefault(forKey: "cardSet", defaultValue: nil)
+            //return "02en"
+        }
+        set(value) {
+            self.setSetting(forKey: "cardSet", toValue: value)
+        }
+    }
+    
     var game: Int {
         get {
             return self.settingOrDefault(forKey: "game", defaultValue: GameType.freePlay.rawValue)

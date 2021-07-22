@@ -10,6 +10,7 @@ import Foundation
 
 protocol Settings {
     var displayName: String { get set }
+    var cardSet: String? { get set }
     var game: Int { get set }
     var minRank: Int { get set }
     var maxRank: Int { get set }

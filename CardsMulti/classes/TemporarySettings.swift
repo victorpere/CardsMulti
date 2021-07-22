@@ -10,6 +10,7 @@ import Foundation
 
 class TemporarySettings : Settings {
     var displayName: String = ""
+    var cardSet: String?
     var game: Int = 0
     var minRank: Int = 2
     var maxRank: Int = 10

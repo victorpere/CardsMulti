@@ -58,6 +58,8 @@ class CardSpriteNode : SKSpriteNode {
     var movingSpeed: CGFloat = 0
     var rotationSpeed: CGFloat = 0
     
+    var settings: Settings
+    
     // MARK: - Computed properties
     
     var cardWidth: CGFloat { return CardSpriteNode.cardWidthFullSizePixels * self.cardScale }
@@ -111,6 +113,7 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     init() {
+        self.settings = StoredSettings()
         self.card = Card(suit: .spades, rank: .queen)
         super.init(texture: nil, color: .clear, size: CGSize(width: 0, height: 0))
         self.cardScale = self.getScale()
@@ -130,7 +133,20 @@ class CardSpriteNode : SKSpriteNode {
     }
     
     init(card: Card, name: String?, faceUp: Bool = false) {
-        self.frontTexture = SKTexture(imageNamed: card.spriteName)
+        self.settings = StoredSettings()
+        
+        if let cardSet = self.settings.cardSet, let frontTextureImage = UIImage(named: "\(cardSet)\(card.spriteName)") {
+            self.frontTexture = SKTexture(image: frontTextureImage)
+        } else {
+            self.frontTexture = SKTexture(imageNamed: card.spriteName)
+        }
+        
+        if let cardSet = self.settings.cardSet, let backTextureImage = UIImage(named: "\(cardSet)\(card.spriteName)") {
+            self.backTexture = SKTexture(image: backTextureImage)
+        } else {
+            self.frontTexture = SKTexture(imageNamed: card.spriteName)
+        }
+        
         self.frontTexture?.filteringMode = SKTextureFilteringMode.nearest
         self.backTexture = SKTexture(imageNamed: self.backImageName)
         self.backTexture?.filteringMode = SKTextureFilteringMode.nearest

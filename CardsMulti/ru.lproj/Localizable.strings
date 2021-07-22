@@ -17,6 +17,7 @@
 "game"      = "Игра";
 "free play" = "Свободная игра";
 "solitaire" = "Пасьянс";
+"freecell"  = "Свободная ячейка";
 "cards"     = "Колода";
 "pip cards" = "Числовые карты";
 "minimum rank"  = "От";
