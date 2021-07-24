@@ -15,6 +15,10 @@ class GameScene: SKScene {
     /// MCPeerID of this device
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     
+    var cardWidth: CGFloat
+    var cardHeight: CGFloat
+    var margin: CGFloat
+    
     let numberOfCards = 0
     let minRank = 6
     let border: CGFloat = 10.0
@@ -145,6 +149,11 @@ class GameScene: SKScene {
         self.gameType = gameType
         self.loadSaved = loadFromSave
         self.gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) ?? GameConfig(gameType: gameType)
+        
+        self.cardWidth = CardSpriteNode.cardWidthPixels(forCardWidthsPerScreen: CGFloat(self.settings.cardWidthsPerScreen))
+        self.cardHeight = CardSpriteNode.cardHeightPixels(forCardWidthsPerScreen: CGFloat(self.settings.cardWidthsPerScreen))
+        self.margin = CGFloat(self.settings.margin)
+        
         super.init(size: size)
         
         if (!self.gameConfig.canChangeCardSize && self.settings.cardWidthsPerScreen != self.gameConfig.defaultSettings.cardWidthsPerScreen) {

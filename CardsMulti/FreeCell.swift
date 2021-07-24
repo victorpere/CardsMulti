@@ -13,16 +13,6 @@ class FreeCell : GameScene {
     
     // MARK: - Constants
     
-    /// Sets the size of the cards
-    let cardWidthsPerScreen: Float = 9
-    
-    /// Width of a card in pixels
-    let cardWidthPixels = CardSpriteNode.cardWidthPixels(forCardWidthsPerScreen: 9)
-    let cardHeightPixels = CardSpriteNode.cardHeightPixels(forCardWidthsPerScreen: 9)
-    
-    /// The margin between piles or piles and screen edge
-    let margin: CGFloat = 5
-    
     /// Additional margin at the top
     let topMargin: CGFloat = 50
     
@@ -97,20 +87,6 @@ class FreeCell : GameScene {
     
     // MARK: - GameScene override methods
     
-    /**
-     Resets the game
-     
-     */
-    override func loadCards(fromSaved loadSaved: Bool) {
-        super.loadCards(fromSaved: loadSaved)
-        
-        if loadSaved {
-            for tableauLocation in self.tableauLocations {
-                tableauLocation.faceUp = true
-            }
-        }
-    }
-    
     override func resetGame(sync: Bool, loadSaved: Bool = false) {
         self.removeAllChildren()
         
@@ -134,11 +110,11 @@ class FreeCell : GameScene {
         self.foundations.removeAll()
         self.tableauLocations.removeAll()
         
-        let snapLocationSize = CGSize(width: self.cardWidthPixels, height: self.cardHeightPixels)
+        let snapLocationSize = CGSize(width: self.cardWidth, height: self.cardHeight)
         
         // Cells
         for col in 1...4 {
-            let location = CGPoint(x: self.margin * CGFloat(col) + self.cardWidthPixels * CGFloat(col) - self.cardWidthPixels / 2, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin)
+            let location = CGPoint(x: self.margin * CGFloat(col) + self.cardWidth * CGFloat(col) - self.cardWidth / 2, y: self.frame.height - self.cardWidth - self.margin - self.topMargin)
             let cell = SnapLocation(location: location, snapSize: snapLocationSize)
             cell.name = "Cell \(col)"
             cell.maxCards = 1
@@ -167,7 +143,7 @@ class FreeCell : GameScene {
         
         // Foundations
         for col in 1...4 {
-            let location = CGPoint(x: self.frame.width - self.margin * CGFloat(col) - self.cardWidthPixels * CGFloat(col-1) - self.cardWidthPixels / 2, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin)
+            let location = CGPoint(x: self.frame.width - self.margin * CGFloat(col) - self.cardWidth * CGFloat(col-1) - self.cardWidth / 2, y: self.frame.height - self.cardWidth - self.margin - self.topMargin)
             let foundation = SnapLocation(location: location, snapSize: snapLocationSize)
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
@@ -208,12 +184,9 @@ class FreeCell : GameScene {
             self.foundations.append(foundation)
         }
         
-        
-        
-        
         // Tableau
         for col in 0...7 {
-            let location = CGPoint(x: self.cardWidthPixels / 2 + self.margin * CGFloat(col + 1) + self.cardWidthPixels * CGFloat(col), y: self.frame.height - self.cardWidthPixels * 3 - self.margin - self.topMargin)
+            let location = CGPoint(x: self.cardWidth / 2 + self.margin * CGFloat(col + 1) + self.cardWidth * CGFloat(col), y: self.frame.height - self.cardWidth * 3 - self.margin - self.topMargin)
             let tableau = SnapLocation(location: location, snapSize: snapLocationSize)
             tableau.name = "Tableau \(col + 1)"
             tableau.yOffset = self.initialTableauOffset
@@ -222,13 +195,6 @@ class FreeCell : GameScene {
             tableau.faceUp = true
             tableau.unsnapWhenMoved = false
             tableau.snapBack = true
-            
-            // only face up cards are movable
-//            tableau.isMovable = { (card) in
-//
-//
-//                return card.faceUp
-//            }
             
             // conditions for adding cards to a tableau
             tableau.isSnappable = { (_ card) in

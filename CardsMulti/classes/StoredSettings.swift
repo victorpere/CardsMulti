@@ -23,6 +23,8 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     static let minCardWidthsPerScreen: Float = 3
     static let maxCardWidthsPerScreen: Float = 10
     
+    private let defaultMargin: Float = 5
+    
     // MARK: - Properties
     
     var displayName: String {
@@ -122,6 +124,16 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
         set(value) {
             self.setSetting(forKey: "cardWidthsPerScreen", toValue: value)
+        }
+    }
+    
+    var margin: Float {
+        get {
+            let config = GameConfigs.sharedInstance.gameConfig(for: GameType.init(rawValue: self.game))
+            return config?.defaultSettings.margin ?? GameConfigs.sharedInstance.defaultSettings.margin
+        }
+        set(value) {
+            self.setSetting(forKey: "margin", toValue: value)
         }
     }
     

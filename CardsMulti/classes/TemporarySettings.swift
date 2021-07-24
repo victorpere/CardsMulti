@@ -20,6 +20,7 @@ class TemporarySettings : Settings {
     var kingsEnabled: Bool = true
     var acesEnabled: Bool = true
     var cardWidthsPerScreen: Float = 6
+    var margin: Float = 5
     var soundOn: Bool = true
     var customOptions: NSDictionary?
     

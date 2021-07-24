@@ -13,16 +13,6 @@ class Solitaire : GameScene {
     
     // MARK: - Constants
     
-    /// Sets the size of the cards
-    let cardWidthsPerScreen: Float = 8
-    
-    /// Width of a card in pixels
-    let cardWidthPixels = CardSpriteNode.cardWidthPixels(forCardWidthsPerScreen: 8)
-    let cardHeightPixels = CardSpriteNode.cardHeightPixels(forCardWidthsPerScreen: 8)
-    
-    /// The margin between piles or piles and screen edge
-    let margin: CGFloat = 5
-    
     /// Additional margin at the top
     let topMargin: CGFloat = 50
     
@@ -128,11 +118,11 @@ class Solitaire : GameScene {
         self.foundations.removeAll()
         self.tableauLocations.removeAll()
         
-        let snapLocationSize = CGSize(width: self.cardWidthPixels, height: self.cardHeightPixels)
+        let snapLocationSize = CGSize(width: self.cardWidth, height: self.cardHeight)
         
         // Foundations
         for col in 1...4 {
-            let location = CGPoint(x: self.margin * CGFloat(col) + self.cardWidthPixels * CGFloat(col) - self.cardWidthPixels / 2, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin)
+            let location = CGPoint(x: self.margin * CGFloat(col) + self.cardWidth * CGFloat(col) - self.cardWidth / 2, y: self.frame.height - self.cardWidth - self.margin - self.topMargin)
             let foundation = SnapLocation(location: location, snapSize: snapLocationSize)
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
@@ -174,7 +164,7 @@ class Solitaire : GameScene {
         }
         
         // Stock pile
-        self.stockPile = SnapLocation(location: CGPoint(x: self.frame.width - self.cardWidthPixels / 2 - self.margin, y: self.frame.height - self.cardWidthPixels - self.margin - self.topMargin), snapSize: snapLocationSize)
+        self.stockPile = SnapLocation(location: CGPoint(x: self.frame.width - self.cardWidth / 2 - self.margin, y: self.frame.height - self.cardWidth - self.margin - self.topMargin), snapSize: snapLocationSize)
         self.stockPile.name = "Stock Pile"
         self.stockPile.xOffset = CGFloat(self.verticalHeight)
         self.stockPile.yOffset = CGFloat(self.verticalHeight)
@@ -218,7 +208,7 @@ class Solitaire : GameScene {
         self.snapLocations.append(self.stockPile)
         
         // Waste pile
-        self.wastePile = SnapLocation(location: CGPoint(x: self.stockPile.location.x - self.cardWidthPixels - 10 * self.margin, y: self.stockPile.location.y), snapSize: snapLocationSize)
+        self.wastePile = SnapLocation(location: CGPoint(x: self.stockPile.location.x - self.cardWidth - 10 * self.margin, y: self.stockPile.location.y), snapSize: snapLocationSize)
         self.wastePile.name = "Waste Pile"
         self.wastePile.shouldFlip = true
         self.wastePile.faceUp = true
@@ -295,7 +285,7 @@ class Solitaire : GameScene {
         
         // Tableau
         for col in 0...6 {
-            let location = CGPoint(x: self.cardWidthPixels / 2 + self.margin * CGFloat(col + 1) + self.cardWidthPixels * CGFloat(col), y: self.frame.height - self.cardWidthPixels * 3 - self.margin - self.topMargin)
+            let location = CGPoint(x: self.cardWidth / 2 + self.margin * CGFloat(col + 1) + self.cardWidth * CGFloat(col), y: self.frame.height - self.cardWidth * 3 - self.margin - self.topMargin)
             let tableau = SnapLocation(location: location, snapSize: snapLocationSize)
             tableau.name = "Tableau \(col + 1)"
             tableau.yOffset = self.initialTableauOffset

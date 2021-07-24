@@ -12,13 +12,15 @@ class GameConfigs {
     
     static let sharedInstance = GameConfigs(withFile: Config.configFilePath)
     
+    var defaultSettings = GameConfigDefaultSettings()
+    
     // MARK: - Private properties
     
     private var configs: [GameType: GameConfig]
     
     // MARK: - Initializers
     
-    init(withFile file: String?) {
+    private init(withFile file: String?) {
         self.configs = [GameType: GameConfig]()
         
         if file != nil, let data = NSData(contentsOfFile: file!) as Data? {
@@ -112,6 +114,9 @@ class GameConfigs {
         if let value = settingsDictionary[GameConfigKey.cardWidthsPerScreen.rawValue] as? Float {
             defaultSettings.cardWidthsPerScreen = value
         }
+        if let value = settingsDictionary[GameConfigKey.margin.rawValue] as? Float {
+            defaultSettings.margin = value
+        }
         
         return defaultSettings
     }
@@ -141,6 +146,7 @@ struct GameConfigDefaultSettings {
     var kingsEnabled: Bool = true
     var acesEnabled: Bool = true
     var cardWidthsPerScreen: Float = 8
+    var margin: Float = 8
 }
 
 // MARK: - Enum GameConfigKey
@@ -161,6 +167,7 @@ enum GameConfigKey : String {
     case kingsEnabled = "kingsEnabled"
     case acesEnabled = "acesEnabled"
     case cardWidthsPerScreen = "cardWidthsPerScreen"
+    case margin = "margin"
 }
 
 // MARK: - Enum GameConfigError

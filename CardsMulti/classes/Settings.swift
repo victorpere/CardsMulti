@@ -20,6 +20,7 @@ protocol Settings {
     var kingsEnabled: Bool { get set }
     var acesEnabled: Bool { get set }
     var cardWidthsPerScreen: Float { get set }
+    var margin: Float { get set }
     var soundOn: Bool { get set }
     var customOptions: NSDictionary? { get set }
 }

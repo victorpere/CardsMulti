@@ -1042,7 +1042,7 @@
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.7.7;
+				MARKETING_VERSION = 0.7.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1063,7 +1063,7 @@
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.7.7;
+				MARKETING_VERSION = 0.7.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

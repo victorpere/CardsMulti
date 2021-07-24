@@ -19,7 +19,8 @@
             "queensEnabled": true,
             "kingsEnabled": true,
             "acesEnabled": true,
-            "cardWidthsPerScreen": 8.0
+            "cardWidthsPerScreen": 8.0,
+            "margin": 5.0
         },
         "customOptions" : {
             "numberOfCardsToDraw" : {
@@ -42,7 +43,8 @@
             "queensEnabled": true,
             "kingsEnabled": true,
             "acesEnabled": true,
-            "cardWidthsPerScreen": 9.0
+            "cardWidthsPerScreen": 9.0,
+            "margin": 4.5
         }
     }
 ]
