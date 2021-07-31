@@ -79,3 +79,13 @@
 
 "connections"   = "Connections";
 "%d cards"      = "%d cards";
+
+// UIStrings
+
+"Error"                                     = "Error";
+"In-App Purchases may be restricted on your device" = "In-App Purchases may be restricted on your device";
+"Product request status"                    = "Product request status";
+"Purchase status"                           = "Purchase status";
+"You are not authorized to make payments"   = "You are not authorized to make payments";
+
+"Store"                                     = "Store";

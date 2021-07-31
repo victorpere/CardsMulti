@@ -209,6 +209,10 @@ extension SettingsTableContoller : UITableViewDelegate {
                 self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue, SettingsSection.cards1.rawValue]), with: .none)
             }
             break
+        case SettingsSection.store.rawValue:
+            self.tableView.deselectRow(at: indexPath, animated: true)
+            let productsTableController = ProductsTableController(nibName: nil, bundle: nil)
+            self.navigationController?.pushViewController(productsTableController, animated: true)
         default:
             break
         }
@@ -238,6 +242,8 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.size.rawValue:
             return 1
         case SettingsSection.sound.rawValue:
+            return 1
+        case SettingsSection.store.rawValue:
             return 1
         default:
             return 0
@@ -359,6 +365,9 @@ extension SettingsTableContoller : UITableViewDataSource {
             cell.selectionStyle = .none
             cell.textLabel?.text = "sound".localized
             cell.accessoryView = self.soundSwitch
+        case SettingsSection.store.rawValue:
+            cell.textLabel?.text = UIStrings.store
+            cell.accessoryType = .disclosureIndicator
         default:
             break
         }
@@ -382,7 +391,7 @@ protocol SettingsTableControllerDelegate {
  Enumeration of settings sections
  */
 enum SettingsSection: Int, CaseIterable {
-    case player = 0, game, cards1, cards2, size, sound
+    case player = 0, game, cards1, cards2, size, sound, store
     
     var title: String? {
         switch self {

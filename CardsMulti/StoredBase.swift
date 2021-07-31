@@ -11,11 +11,11 @@ import Foundation
 class StoredBase : NSObject {
     let userDefaults = UserDefaults.standard
     
-    func setting<T>(forKey key: String) throws -> T {
+    func setting<T>(forKey key: String) -> T? {
         if let value = self.userDefaults.value(forKey: key) as? T {
             return value
         }
-        throw SettingsErrors.settingNotFound
+        return nil
     }
     
     func settingOrDefault<T>(forKey key: String, defaultValue: T) -> T {

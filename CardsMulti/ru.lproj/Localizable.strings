@@ -79,3 +79,13 @@
 
 "connections"   = "Присоединены";
 "%d cards"      = "%d карт";
+
+// UIStrings
+
+"Error"                                     = "Ошибка";
+"In-App Purchases may be restricted on your device" = "Покупки могут быть недоступны на вашем приборе";
+"Product request status"                    = "Статус запроса о покупке";
+"Purchase status"                           = "Статус покупки";
+"You are not authorized to make payments"   = "Вы не можете совершать оплату";
+
+"Store"                                     = "Магазин";

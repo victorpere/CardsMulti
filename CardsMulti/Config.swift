@@ -18,6 +18,8 @@ public final class Config {
     
     public static let configFilePath = Bundle.main.path(forResource: "gameTypes", ofType: "json")
     
+    public static let productIdsFilePath = Bundle.main.path(forResource: "ProductIds", ofType: "plist")
+    
     public static let mainColor: UIColor = UIColor(red: 0.7, green: 0.7, blue: 0.5, alpha: 1.0)
 
     public static let cardBackImageName = "back"
