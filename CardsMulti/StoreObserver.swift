@@ -40,7 +40,8 @@ class StoreObserver: NSObject {
     
     // MARK: - Public methods
     
-    func buy(_ product: SKProduct) {
+    func purchase(_ product: SKProduct) {
+        print("Start purchase: \(product.productIdentifier)")
         let payment = SKMutablePayment(product: product)
         SKPaymentQueue.default().add(payment)
     }
@@ -58,17 +59,19 @@ class StoreObserver: NSObject {
     fileprivate func handlePurchased(_ transaction: SKPaymentTransaction) {
         self.purchased.append(transaction)
         
-        print("Purchased: \(transaction.payment.productIdentifier)")
+        print("Purchase successful: \(transaction.payment.productIdentifier)")
+        DispatchQueue.main.async {
+            self.delegate?.didPurchaseOrRestoreProduct(identifier: transaction.payment.productIdentifier)
+        }
         
         SKPaymentQueue.default().finishTransaction(transaction)
     }
     
     fileprivate func handleFailed(_ transaction: SKPaymentTransaction) {
-        let errorMessage = "Purchase failed: \(transaction.payment.productIdentifier)"
-        print(errorMessage)
+        print("Purchase failed: \(transaction.payment.productIdentifier)")
         
         DispatchQueue.main.async {
-            self.delegate?.didReceive(message: errorMessage)
+            self.delegate?.didFailToPurchaseProduct(identifier: transaction.payment.productIdentifier)
         }
         
         SKPaymentQueue.default().finishTransaction(transaction)
@@ -78,7 +81,11 @@ class StoreObserver: NSObject {
         self.hasRestorablePurchases = true
         self.restored.append(transaction)
         
-        print("Restored: \(transaction.payment.productIdentifier)")
+        print("Restore successful: \(transaction.payment.productIdentifier)")
+        
+        DispatchQueue.main.async {
+            self.delegate?.didPurchaseOrRestoreProduct(identifier: transaction.payment.productIdentifier)
+        }
         
         SKPaymentQueue.default().finishTransaction(transaction)
     }
@@ -111,6 +118,7 @@ extension StoreObserver: SKPaymentTransactionObserver {
 // MARK: - Protocol StoreObserverDelegate
 
 protocol StoreObserverDelegate: AnyObject {
-    //func didSucceedRestore()
+    func didPurchaseOrRestoreProduct(identifier: String)
+    func didFailToPurchaseProduct(identifier: String)
     func didReceive(message: String)
 }

@@ -89,3 +89,6 @@
 "You are not authorized to make payments"   = "You are not authorized to make payments";
 
 "Store"                                     = "Store";
+"Purchased"                                 = "Purchased";
+"Restore Purchases"                         = "Restore Purchases";
+"Could not purchase %@"                     = "Could not purchase %@";

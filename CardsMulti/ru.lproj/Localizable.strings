@@ -89,3 +89,6 @@
 "You are not authorized to make payments"   = "Вы не можете совершать оплату";
 
 "Store"                                     = "Магазин";
+"Purchased"                                 = "Куплено";
+"Restore Purchases"                         = "Восстановить покупки";
+"Could not purchase %@"                     = "Покупка %@ не удалась";

@@ -17,4 +17,8 @@ struct UIStrings {
     static let purchaseStatus           = "Purchase status".localized
     
     static let store                    = "Store".localized
+    static let purchased                = "Purchased".localized
+    static let restorePurchases         = "Restore Purchases".localized
+    
+    static let purchaseFailed           = "Could not purchase %@".localized
 }
