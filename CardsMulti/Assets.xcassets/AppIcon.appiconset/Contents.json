@@ -1,116 +1,116 @@
 {
   "images" : [
     {
-      "size" : "20x20",
+      "filename" : "iconv2-01-40.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 20pt 2x.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "20x20"
     },
     {
-      "size" : "20x20",
+      "filename" : "iconv2-01-60.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 20pt 3x.png",
-      "scale" : "3x"
+      "scale" : "3x",
+      "size" : "20x20"
     },
     {
-      "size" : "29x29",
+      "filename" : "iconv2-01-58.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 29pt 2x.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "29x29"
     },
     {
-      "size" : "29x29",
+      "filename" : "iconv2-01-87.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 29pt 3x.png",
-      "scale" : "3x"
+      "scale" : "3x",
+      "size" : "29x29"
     },
     {
-      "size" : "40x40",
+      "filename" : "iconv2-01-80.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 40pt 2x.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "40x40"
     },
     {
-      "size" : "40x40",
+      "filename" : "iconv2-01-120.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 40pt 3x.png",
-      "scale" : "3x"
+      "scale" : "3x",
+      "size" : "40x40"
     },
     {
-      "size" : "60x60",
+      "filename" : "iconv2-01-121.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 60pt 2x.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "60x60"
     },
     {
-      "size" : "60x60",
+      "filename" : "iconv2-01-180.png",
       "idiom" : "iphone",
-      "filename" : "CardsMulti app icon 60pt 3x.png",
-      "scale" : "3x"
+      "scale" : "3x",
+      "size" : "60x60"
     },
     {
-      "size" : "20x20",
-      "idiom" : "ipad",
       "filename" : "CardsMulti app icon 20pt 1x.png",
-      "scale" : "1x"
+      "idiom" : "ipad",
+      "scale" : "1x",
+      "size" : "20x20"
     },
     {
-      "size" : "20x20",
+      "filename" : "iconv2-01-41.png",
       "idiom" : "ipad",
-      "filename" : "CardsMulti app icon 20pt 2x-1.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "20x20"
     },
     {
-      "size" : "29x29",
-      "idiom" : "ipad",
       "filename" : "CardsMulti app icon 29pt 1x.png",
-      "scale" : "1x"
+      "idiom" : "ipad",
+      "scale" : "1x",
+      "size" : "29x29"
     },
     {
-      "size" : "29x29",
+      "filename" : "iconv2-01-59.png",
       "idiom" : "ipad",
-      "filename" : "CardsMulti app icon 29pt 2x-1.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "29x29"
     },
     {
-      "size" : "40x40",
+      "filename" : "iconv2-01-42.png",
       "idiom" : "ipad",
-      "filename" : "CardsMulti app icon 40pt 1x.png",
-      "scale" : "1x"
+      "scale" : "1x",
+      "size" : "40x40"
     },
     {
-      "size" : "40x40",
+      "filename" : "iconv2-01-81.png",
       "idiom" : "ipad",
-      "filename" : "CardsMulti app icon 40pt 2x-1.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "40x40"
     },
     {
-      "size" : "76x76",
-      "idiom" : "ipad",
       "filename" : "CardsMulti app icon 76pt 1x.png",
-      "scale" : "1x"
-    },
-    {
-      "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "CardsMulti app icon 76pt 2x.png",
-      "scale" : "2x"
+      "scale" : "1x",
+      "size" : "76x76"
     },
     {
-      "size" : "83.5x83.5",
+      "filename" : "iconv2-01-152.png",
       "idiom" : "ipad",
-      "filename" : "CardsMulti app icon 83.5pt 2x.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "size" : "76x76"
     },
     {
-      "size" : "1024x1024",
+      "filename" : "iconv2-01-167.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "size" : "83.5x83.5"
+    },
+    {
+      "filename" : "iconv2-01-1024.png",
       "idiom" : "ios-marketing",
-      "filename" : "CardsMulti app icon v3 1024.png",
-      "scale" : "1x"
+      "scale" : "1x",
+      "size" : "1024x1024"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }
