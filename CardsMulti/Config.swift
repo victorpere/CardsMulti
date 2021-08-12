@@ -30,7 +30,19 @@ public final class Config {
     
     public static let maxPlayers: Int = 4
     
-    private init(){
+    public static let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    
+    public static let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    
+    public static var isDebug: Bool {
+        #if DEBUG
+          return true
+        #else
+          return false
+        #endif
+      }
+    
+    private init() {
         
     }
 }

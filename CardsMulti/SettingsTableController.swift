@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import StoreKit
 
 class SettingsTableContoller : UIViewController {
     let standardRowHeight: CGFloat = 44
@@ -32,6 +33,10 @@ class SettingsTableContoller : UIViewController {
     var soundSwitch: Switch!
         
     var elementWidth: CGFloat = 0
+    
+    // In-app Purchases
+    var productIdentifiers = ProductIdentifiers()
+    var products = [SKProduct]()
     
     // MARK: - Computed properties
     
@@ -68,6 +73,13 @@ class SettingsTableContoller : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        StoreObserver.sharedInstance.delegate = self
+        StoreManager.sharedInstance.delegate = self
+        
+        DispatchQueue.global(qos: .background).async {
+            self.fetchProductInformation()
+        }
         
         if let popOverVC = self.parent?.popoverPresentationController {
             if UIPopoverArrowDirection.unknown.rawValue > popOverVC.arrowDirection.rawValue {
@@ -108,7 +120,7 @@ class SettingsTableContoller : UIViewController {
         self.tableView.dataSource = self
         self.tableView.sectionFooterHeight = 0
         
-        self.gameSelected(ofType: GameType(rawValue: self.storedSettings.game))
+        self.didSelectGame(ofType: GameType(rawValue: self.storedSettings.game))
         
         self.view.addSubview(self.tableView)
     }
@@ -164,7 +176,7 @@ class SettingsTableContoller : UIViewController {
         }
     }
     
-    private func gameSelected(ofType gameType: GameType?) {
+    private func didSelectGame(ofType gameType: GameType?) {
         if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) {
             self.selectedConfig = gameConfig
             
@@ -195,17 +207,53 @@ class SettingsTableContoller : UIViewController {
             self.aceSwitch.isEnabled = true
         }
     }
+    
+    fileprivate func fetchProductInformation() {
+        if !StoreObserver.sharedInstance.isAuthorizedForPayments {
+            return
+        }
+        
+        if !self.productIdentifiers.identifiers.isEmpty {
+            StoreManager.sharedInstance.startProductRequest(with: self.productIdentifiers.identifiers)
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate
 
 extension SettingsTableContoller : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case SettingsSection.game.rawValue:
             if indexPath.row != self.selectedSettings.game {
+                let gameType = GameType(rawValue: indexPath.row)
+                
+                // if the game type is a product and has not been purchased
+                if let config = GameConfigs.sharedInstance.gameConfig(for: gameType), let productId = config.productId, !self.productIdentifiers.purchasedIdentifiers.contains(productId) {
+                    
+                    if !StoreObserver.sharedInstance.isAuthorizedForPayments {
+                        self.showAlert(title: UIStrings.error, text: UIStrings.notAuthorizedForPurchase)
+                        break
+                    } else if let product = self.products.first(where: { $0.productIdentifier == productId}) {
+                        
+                        self.showActionDialog(title: UIStrings.inAppPurchase, text: String(format: UIStrings.wouldYouLikeToPurchase, product.localizedTitle), actionTitle: UIStrings.ok, action: {() -> Void in
+                            StoreObserver.sharedInstance.purchase(product)
+                        })
+
+                        break
+                    } else if Config.isDebug {
+                        self.showAlert(title: "Debug", text: nil)
+                    } else if Config.isTestFlight {
+                        self.showAlert(title: "Test", text: nil)
+                    } else {
+                        self.showAlert(title: UIStrings.error, text: UIStrings.unableToRetrieveProduct)
+                        break
+                    }
+                }
+                
                 self.selectedSettings.game = indexPath.row
-                self.gameSelected(ofType: GameType(rawValue: self.selectedSettings.game))
+                self.didSelectGame(ofType: gameType)
                 self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue, SettingsSection.cards1.rawValue]), with: .none)
             }
             break
@@ -244,7 +292,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.sound.rawValue:
             return 1
         case SettingsSection.store.rawValue:
-            return 1
+            return 0
         default:
             return 0
         }
@@ -286,12 +334,23 @@ extension SettingsTableContoller : UITableViewDataSource {
             
             break
         case SettingsSection.game.rawValue:
-            if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: indexPath.row)), gameConfig.maxPlayers > 1 {
-                cell.imageView?.image = UIImage(named: "icon_players")
-            }
-            
             cell.textLabel?.text = GameType(rawValue: indexPath.row)?.name
             
+            if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: indexPath.row)) {
+                if gameConfig.maxPlayers > 1 {
+                    cell.imageView?.image = UIImage(named: "icon_players")
+                }
+                
+                // If the game config has a productId, it is a paid item
+                if let productId = gameConfig.productId, !self.productIdentifiers.purchasedIdentifiers.contains(productId) {
+                    
+                    // display price information if we have it
+                    if let product = self.products.first(where: { $0.productIdentifier == productId}) {
+                        cell.detailTextLabel?.text = product.formattedPrice
+                    }
+                }
+            }
+
             if indexPath.row == self.selectedSettings.game {
                 cell.accessoryType = .checkmark
             }
@@ -375,6 +434,49 @@ extension SettingsTableContoller : UITableViewDataSource {
         return cell
     }
 }
+
+// MARK: - Extension StoreObserverDelegate
+
+extension SettingsTableContoller: StoreObserverDelegate {
+    func didFailToPurchaseProduct(identifier: String) {
+        // Go ahead with game selection for debug and test when purchase fails
+        if Config.isDebug || Config.isTestFlight {
+            self.showAlert(title: "Debug or test user", text: nil)
+            
+            if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: identifier) {
+                self.selectedSettings.game = gameConfig.gameType.rawValue
+                self.didSelectGame(ofType: gameConfig.gameType)
+                self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue, SettingsSection.cards1.rawValue]), with: .none)
+            }
+            
+        // Production user - purchase failed
+        } else if let product = self.products.first(where: { $0.productIdentifier == identifier}) {
+            self.showAlert(title: UIStrings.purchaseStatus, text: String(format: UIStrings.purchaseFailed, product.localizedTitle))
+        } else {
+            self.showAlert(title: UIStrings.purchaseStatus, text: UIStrings.error)
+        }
+    }
+    
+    func didPurchaseOrRestoreProduct(identifier: String) {
+        self.productIdentifiers.add(purchasedIdentifier: identifier)
+        
+        self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue]), with: .none)
+    }
+}
+
+// MARK: - Extension StoreManagerDelegate
+
+extension SettingsTableContoller: StoreManagerDelegate {
+    func didReceive(availableProducts: [SKProduct]) {
+        self.products = availableProducts
+        self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue]), with: .none)
+    }
+    
+    func didReceive(message: String) {
+        
+    }
+}
+
 
 // MARK: - Protocol SettingsTableControllerDelegate
 

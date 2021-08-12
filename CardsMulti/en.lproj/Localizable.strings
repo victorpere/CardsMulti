@@ -92,3 +92,6 @@
 "Purchased"                                 = "Purchased";
 "Restore Purchases"                         = "Restore Purchases";
 "Could not purchase %@"                     = "Could not purchase %@";
+"Could not retrieve product information"    = "Could not retrieve product informations";
+
+"OK"                                        = "OK";

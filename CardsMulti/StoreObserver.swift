@@ -120,5 +120,4 @@ extension StoreObserver: SKPaymentTransactionObserver {
 protocol StoreObserverDelegate: AnyObject {
     func didPurchaseOrRestoreProduct(identifier: String)
     func didFailToPurchaseProduct(identifier: String)
-    func didReceive(message: String)
 }

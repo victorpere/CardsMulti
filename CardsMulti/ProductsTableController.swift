@@ -125,10 +125,6 @@ extension ProductsTableController: StoreObserverDelegate {
         self.productIdentifiers.add(purchasedIdentifier: identifier)
         self.productsTableView.reloadData()
     }
-    
-    func didReceive(message: String) {
-        self.showAlert(title: UIStrings.purchaseStatus, text: message)
-    }
 }
 
 // MARK: - Extension StoreManagerDelegate
@@ -139,7 +135,7 @@ extension ProductsTableController: StoreManagerDelegate {
         self.productsTableView.reloadData()
     }
     
-    func didRecieve(message: String) {
+    func didReceive(message: String) {
         self.showAlert(title: UIStrings.productRequestStatus, text: message)
     }
 }

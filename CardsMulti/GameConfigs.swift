@@ -47,6 +47,10 @@ class GameConfigs {
         return nil
     }
     
+    func gameConfig(for productId: String) -> GameConfig? {
+        return self.configs.first(where: { $0.value.productId == productId })?.value
+    }
+    
     // MARK: - Private methods
     
     private func decode(settingsFileContent: Data) throws {
@@ -57,6 +61,9 @@ class GameConfigs {
                         if let value = settingsDictionary[GameConfigKey.gameType.rawValue] as? String, let gameType = try? GameType(withName: value) {
                             var gameConfig = GameConfig(gameType: gameType)
                             
+                            if let value = settingsDictionary[GameConfigKey.productId.rawValue] as? String {
+                                gameConfig.productId = value
+                            }
                             if let value = settingsDictionary[GameConfigKey.maxPlayers.rawValue] as? Int {
                                 gameConfig.maxPlayers = value
                             }
@@ -126,6 +133,7 @@ class GameConfigs {
 
 struct GameConfig {
     var gameType: GameType
+    var productId: String?
     var maxPlayers: Int = 4
     var canChangeCardSize: Bool = true
     var canChangeDeck: Bool = true
@@ -153,6 +161,7 @@ struct GameConfigDefaultSettings {
 
 enum GameConfigKey : String {
     case gameType = "gameType"
+    case productId = "productId"
     case maxPlayers = "maxPlayers"
     case canChangeCardSize = "canChangeCardSize"
     case canChangeDeck = "canChangeDeck"
