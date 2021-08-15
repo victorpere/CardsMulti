@@ -85,8 +85,8 @@ class Solitaire : GameScene {
      Resets the game
      
      */
-    override func loadCards(fromSaved loadSaved: Bool) {
-        super.loadCards(fromSaved: loadSaved)
+    override func loadCards(fromSaved loadSaved: Bool, sync: Bool = false) {
+        super.loadCards(fromSaved: loadSaved, sync: sync)
         
         if loadSaved {
             for tableauLocation in self.tableauLocations {

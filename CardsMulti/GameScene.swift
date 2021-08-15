@@ -375,7 +375,7 @@ class GameScene: SKScene {
      
      - parameter loadSaved: whether to load from a saved state
      */
-    func loadCards(fromSaved loadSaved: Bool) {
+    func loadCards(fromSaved loadSaved: Bool, sync: Bool = false) {
         let continueGameType = StoredSettings.instance.game == self.gameType.rawValue
         let savedCards = GameState.instance.cardNodes
         if continueGameType && loadSaved && savedCards.count > 0 {
@@ -399,7 +399,7 @@ class GameScene: SKScene {
         } else {
             self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
             self.initCards()
-            self.shuffleAndStackAllCards(sync: false)
+            self.shuffleAndStackAllCards(sync: sync)
         }
     }
     
@@ -459,7 +459,7 @@ class GameScene: SKScene {
     func resetGame(sync: Bool, loadSaved: Bool = false) {
         self.resetNodes()
         
-        self.loadCards(fromSaved: loadSaved)
+        self.loadCards(fromSaved: loadSaved, sync: sync)
  
     }
     

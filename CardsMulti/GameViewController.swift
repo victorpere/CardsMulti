@@ -720,6 +720,7 @@ extension GameViewController : SettingsTableControllerDelegate {
     }
     
     func settingsChanged() {
+        self.syncToMe(recipients: nil)
         self.scene.resetGame(sync: true)
     }
     
