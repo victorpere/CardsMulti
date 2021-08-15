@@ -716,6 +716,19 @@ extension GameViewController : GameSceneDelegate {
 
 extension GameViewController : SettingsTableControllerDelegate {
     func uiSettingsChanged() {
+        let settingsData = RequestData(withType: .uiSettings, andDictionary: StoredSettings.instance.settingsDictionary)
+        do {
+            if let encodedData = try settingsData.encodedData() {
+                DispatchQueue.global(qos: .default).async {
+                    self.connectionService.sendData(data: encodedData)
+                }
+                DispatchQueue.global(qos: .default).async {
+                    self.connectionService.sendDataAWS(data: encodedData, type: .game)
+                }
+            }
+        } catch {
+            print("Error encoding settings data")
+        }
         self.scene.updateUISettings()
     }
     

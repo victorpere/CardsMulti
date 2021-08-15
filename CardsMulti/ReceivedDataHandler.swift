@@ -60,6 +60,12 @@ class ReceivedDataHandler {
                 StoredSettings.instance.syncTo(settingsDictionary: receivedDictionary)
                 self.scene.resetCards()
             }
+        case .uiSettings:
+            print("Received UI settings")
+            if let receivedDictionary = receivedGameData.dataDictionary {
+                StoredSettings.instance.syncTo(settingsDictionary: receivedDictionary)
+                self.scene.updateUISettings()
+            }
         case .game:
             print("Received game data")
             if let receivedArray = receivedGameData.dataArray {

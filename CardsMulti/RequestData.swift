@@ -171,6 +171,7 @@ enum GameDataError : Error {
 enum RequestType : String {
     case game = "Game"
     case settings = "Settings"
+    case uiSettings = "UISettings"
     case requestToSync = "RequestToSync"
     case unknown = "Unknown"
 }
