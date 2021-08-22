@@ -24,11 +24,8 @@ class WsRequestSender {
     
     private var webSocket: WebSocket
     
-    /// The parameter to be used with waitingFunc
-    private var waitingParam: String?
-    
-    /// This function will execute when connection is established
-    private var waitingFunc: ((String) -> Void)?
+    /// This action will execute when connection is established
+    private var waitingAction: (() -> Void)?
     
     // MARK: - Initializer
     
@@ -59,6 +56,14 @@ class WsRequestSender {
      Create a new game
      */
     func createGame() {
+        if (!self.isConnected) {
+            self.waitingAction = { () in
+                self.createGame()
+            }
+            self.connect()
+            return
+        }
+        
         let payload: NSDictionary = [
             "action": WsAction.onCreateGame.rawValue,
             "creator": StoredSettings.instance.displayName
@@ -73,8 +78,9 @@ class WsRequestSender {
      */
     func findGames(withGameCode gameCode: String) {
         if (!self.isConnected) {
-            self.waitingParam = gameCode
-            self.waitingFunc = self.findGames(withGameCode:)
+            self.waitingAction = { () in
+                self.findGames(withGameCode: gameCode)
+            }
             self.connect()
             return
         }
@@ -93,8 +99,9 @@ class WsRequestSender {
      */
     func findGame(byGameId gameId: String) {
         if (!self.isConnected) {
-            self.waitingParam = gameId
-            self.waitingFunc = self.findGame(byGameId:)
+            self.waitingAction = { () in
+                self.findGame(byGameId: gameId)
+            }
             self.connect()
             return
         }
@@ -112,6 +119,14 @@ class WsRequestSender {
      - parameter gameID:ID of the game to join
      */
     func joinGame(gameId: String) {
+        if (!self.isConnected) {
+            self.waitingAction = { () in
+                self.joinGame(gameId: gameId)
+            }
+            self.connect()
+            return
+        }
+        
         let payload: NSDictionary = [
             "action": WsAction.onJoinGame.rawValue,
             "playerName": StoredSettings.instance.displayName,
@@ -234,11 +249,9 @@ extension WsRequestSender : WebSocketDelegate {
         print("websocketDidConnect")        
         self.delegate?.didConnect()
         
-        if let param = self.waitingParam, let function = self.waitingFunc {
-            function(param)
-            
-            self.waitingParam = nil
-            self.waitingFunc = nil
+        if let action = self.waitingAction {
+            action()
+            self.waitingAction = nil
         }
     }
     
