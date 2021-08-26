@@ -120,7 +120,7 @@ class ConnectionServiceManager : NSObject {
         
         self.hostPeerID = self.myPeerId
         
-        players[Position.bottom.rawValue] = self.myPeerId
+        self.players[Position.bottom.rawValue] = self.myPeerId
         self.playersAWS[Position.bottom.rawValue] = self.myself
         
         self.serviceAdvertiser.delegate = self
@@ -365,6 +365,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 for i in 0..<self.players.count {
                     if self.players[i] == nil {
                         self.players[i] = peerID
+                        self.playersAWS[i] = Player(peerId: peerID)
                         break
                     }
                 }
@@ -382,6 +383,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
             
             for i in 0..<self.players.count {
                 if self.players[i] == peerID { self.players[i] = nil }
+                if self.playersAWS[i]?.peerId == peerID { self.playersAWS[i] = nil }
             }
             
             if self.hostPeerID == peerID {
@@ -394,8 +396,12 @@ extension ConnectionServiceManager : MCSessionDelegate {
             
             if session.connectedPeers.count == 0 {
                 self.players = [nil, nil, nil, nil]
-                self.players[Position.bottom.rawValue] = myPeerId
+                self.players[Position.bottom.rawValue] = self.myPeerId
                 self.hostPeerID = self.myPeerId
+                
+                self.playersAWS = [nil, nil, nil, nil]
+                self.playersAWS[Position.bottom.rawValue] = Player(peerId: self.myPeerId)
+                self.host = self.myself
             }
             
             self.delegate?.deviceDisconnected(peerID: peerID, connectedDevices: session.connectedPeers)
@@ -410,6 +416,13 @@ extension ConnectionServiceManager : MCSessionDelegate {
 
         if let receivedPlayers = NSKeyedUnarchiver.unarchiveObject(with: data) as? [MCPeerID?] {
             self.players = receivedPlayers
+            
+            for (i, player) in self.players.enumerated() {
+                if let peerId = player {
+                    self.playersAWS[i] = Player(peerId: peerId)
+                }
+            }
+            
             self.reassignHost()
             self.delegate?.updatePositions(myPosition: self.myPosition)
         } else {
@@ -478,6 +491,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.gameCode = gameCode
         self.myself.position = .bottom
         self.host = self.myself
+        self.playersAWS = [self.myself, nil, nil, nil]
         
         GameState.instance.gameId = gameId
         
@@ -519,7 +533,6 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
     }
     
     func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo]) {
-        
         if connectionId != self.myself.connectionId || connections.count == 1 {
             let newPlayer = Player(connectionId: connectionId, displayName: playerName)
             
