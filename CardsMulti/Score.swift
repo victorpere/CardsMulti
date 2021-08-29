@@ -90,7 +90,7 @@ class Score {
     convenience init(scoreInfo: NSDictionary) {
         self.init()
         
-        if let value = scoreInfo["peerId"] as? String {
+        if let value = scoreInfo["peerId"] as? String, value.count > 0 {
             self.peerId = MCPeerID(displayName: value)
         }
         

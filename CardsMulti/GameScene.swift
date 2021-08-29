@@ -37,6 +37,8 @@ class GameScene: SKScene {
     
     let feedbackGenerator = UIImpactFeedbackGenerator()
     
+    let gameState: GameState
+    
     var gameType: GameType
     var gameConfig: GameConfig
     var loadSaved: Bool
@@ -153,6 +155,8 @@ class GameScene: SKScene {
         self.cardWidth = CardSpriteNode.cardWidthPixels(forCardWidthsPerScreen: CGFloat(self.settings.cardWidthsPerScreen))
         self.cardHeight = CardSpriteNode.cardHeightPixels(forCardWidthsPerScreen: CGFloat(self.settings.cardWidthsPerScreen))
         self.margin = CGFloat(self.settings.margin)
+        
+        self.gameState = GameState(gameType)
         
         super.init(size: size)
         
@@ -365,8 +369,8 @@ class GameScene: SKScene {
      */
     func saveGame() {
         DispatchQueue.global(qos: .background).async {
-            GameState.instance.cardNodes = self.allCards
-            GameState.instance.scores = self.scores
+            self.gameState.cardNodes = self.allCards
+            self.gameState.scores = self.scores
         }
     }
     
@@ -377,7 +381,8 @@ class GameScene: SKScene {
      */
     func loadCards(fromSaved loadSaved: Bool, sync: Bool = false) {
         let continueGameType = StoredSettings.instance.game == self.gameType.rawValue
-        let savedCards = GameState.instance.cardNodes
+        let savedCards = self.gameState.cardNodes
+
         if continueGameType && loadSaved && savedCards.count > 0 {
             self.allCards = savedCards
             self.initCards()
@@ -407,7 +412,8 @@ class GameScene: SKScene {
      Loads game scores from saved state
      */
     func loadScores() {
-        let savedScores = GameState.instance.scores
+        let savedScores = self.gameState.scores
+
         if savedScores.count > 0 {
             self.scores = savedScores
             self.updateScoreLabel()

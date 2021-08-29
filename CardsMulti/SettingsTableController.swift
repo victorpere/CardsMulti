@@ -133,7 +133,6 @@ class SettingsTableContoller : UIViewController {
                 self.storedSettings.game = self.selectedSettings.game
                 self.saveSettings()
                 self.saveUISettings()
-                self.delegate?.resetScores()
                 self.delegate?.gameChanged()
                 self.dismiss(animated: true, completion: nil)
             })

@@ -150,8 +150,6 @@ class Global {
             cardDictionary.setValue(NSCoder.string(for: velocityTransposed), forKey: "v")
         }
         
-        print("send card dictionary: \(cardDictionary)")
-        
         return cardDictionary
     }
     

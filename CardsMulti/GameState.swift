@@ -32,20 +32,27 @@ class GameState : StoredBase {
     
     // MARK: - Enums
     
-    enum Key : String {
-        case cardNodes = "cardNodes"
+    fileprivate enum Key : String {
+        case cardSymbols = "cardSymbols"
         case scores = "scores"
         case gameId = "gameId"
     }
     
     // MARK: - Stored properties
     
+    var gameTypeId: String {
+        if let gameTypeId = self.gameType?.rawValue {
+            return String(gameTypeId)
+        }
+        return ""
+    }
+    
     var cardNodes: [CardSpriteNode] {
         get {
-            let cardSymbols = self.settingOrDefault(forKey: "cardSymbols", defaultValue: NSArray())
+            let cardSymbols = self.settingOrDefault(forKey: "\(self.gameTypeId)\(Key.cardSymbols.rawValue)", defaultValue: NSArray())
             var cardNodes: [CardSpriteNode] = []
             for cardSymbol in cardSymbols {
-                let cardInfo = self.settingOrDefault(forKey: cardSymbol as! String, defaultValue: NSDictionary())
+                let cardInfo = self.settingOrDefault(forKey: "\(self.gameTypeId)\(cardSymbol as! String)", defaultValue: NSDictionary())
                 if cardInfo.allKeys.count > 0 {
                     cardNodes.append(CardSpriteNode(cardInfo: cardInfo))
                 }
@@ -54,29 +61,30 @@ class GameState : StoredBase {
         }
         set(value) {
             let cardSymbols = NSArray(array: value.map { $0.card.symbol as Any })
-            self.setSetting(forKey: "cardSymbols", toValue: cardSymbols)
+            self.setSetting(forKey: "\(self.gameTypeId)\(Key.cardSymbols.rawValue)", toValue: cardSymbols)
             for cardNode in value {
                 let cardInfo = cardNode.cardInfo
-                self.setSetting(forKey: cardNode.card.symbol, toValue: cardInfo)
+                self.setSetting(forKey: "\(self.gameTypeId)\(cardNode.card.symbol)", toValue: cardInfo)
             }
         }
     }
     
     var scores: [Score] {
         get {
-            let scoreIds = self.settingOrDefault(forKey: "scores", defaultValue: NSArray())
+            let scoreIds = self.settingOrDefault(forKey: "\(self.gameTypeId)\(Key.scores.rawValue)", defaultValue: NSArray())
             var scores: [Score] = []
             for scoreId in scoreIds {
-                let scoreInfo = self.settingOrDefault(forKey: scoreId as! String, defaultValue: NSDictionary())
+                
+                let scoreInfo = self.settingOrDefault(forKey: "\(self.gameTypeId)\(scoreId as! String)", defaultValue: NSDictionary())
                 scores.append(Score(scoreInfo: scoreInfo))
             }
             return scores
         }
         set(value) {
             let scoreIds = NSArray(array: value.map { $0.scoreId as Any })
-            self.setSetting(forKey: "scores", toValue: scoreIds)
+            self.setSetting(forKey: "\(self.gameTypeId)\(Key.scores.rawValue)", toValue: scoreIds)
             for score in value {
-                self.setSetting(forKey: score.scoreId, toValue: score.scoreInfo)
+                self.setSetting(forKey: "\(self.gameTypeId)\(score.scoreId)", toValue: score.scoreInfo)
             }
         }
     }
