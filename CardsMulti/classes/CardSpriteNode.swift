@@ -231,13 +231,17 @@ class CardSpriteNode : SKSpriteNode {
         return cardWidthPixels / CardSpriteNode.cardWidthFullSizePixels
     }
     
-    fileprivate func performMovements(_ movements: [SKAction]) {
+    fileprivate func performMovements(_ movements: [SKAction], sendPosition: Bool = true, velocity: CGVector? = nil) {
         let movementSequence = SKAction.sequence(movements)
         self.delegate?.makeMoveSound()
         self.run(movementSequence) {
             self.delegate?.snap([self])
             self.moving = false
-            self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false)
+            
+            if sendPosition {
+                self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false, velocity: nil)
+            }
+            
             self.delegate?.moveCompleted()
         }
     }
@@ -296,7 +300,7 @@ class CardSpriteNode : SKSpriteNode {
         self.delegate?.makeFlipSound()
         faceUp = !faceUp
         if sendPosition {
-            self.delegate?.sendPosition(of: [self], moveToFront: true, animate: false)
+            self.delegate?.sendPosition(of: [self], moveToFront: true, animate: false, velocity: nil)
         }
     }
     
@@ -311,7 +315,7 @@ class CardSpriteNode : SKSpriteNode {
         let currentPosition = self.position
         self.position = CGPoint(x: currentPosition.x + transformation.x, y: currentPosition.y + transformation.y)
         self.zRotation = self.zRotation + rotationAngle
-        self.delegate?.sendPosition(of: [self], moveToFront: true, animate: false)
+        self.delegate?.sendPosition(of: [self], moveToFront: true, animate: false, velocity: nil)
     }
     
     /**
@@ -319,24 +323,29 @@ class CardSpriteNode : SKSpriteNode {
      
      - parameter startSpeed: initial speed
      */
-    func stopMoving(startSpeed: CGVector) {
+    func stopMoving(startVelocity: CGVector, sendPostion: Bool = true) {
         self.moving = true
         
-        var currentSpeed = startSpeed
-        var linearSpeed = Math.hypotenuse(from: currentSpeed)
-        let linearAcceleration = linearSpeed * self.dragCoefficient
-        let acceleration = Math.acceleration2d(linearAcceleration: linearAcceleration, speed: currentSpeed)
+        if sendPostion {
+            self.delegate?.sendPosition(of: [self], moveToFront: false, animate: true, velocity: startVelocity)
+        }
+
+        var velocity = startVelocity
+        var speed = Math.hypotenuse(from: velocity)
+        let linearAcceleration = speed * self.dragCoefficient
+        let acceleration = Math.acceleration2d(linearAcceleration: linearAcceleration, speed: velocity)
         
         var movements = [SKAction]()
-        while linearSpeed > 0 {
-            let movement = SKAction.moveBy(x: currentSpeed.dx * CGFloat(self.accelerationTimeInterval), y: currentSpeed.dy * CGFloat(self.accelerationTimeInterval), duration: self.accelerationTimeInterval)
+        while speed > 0 {
+            let movement = SKAction.moveBy(x: velocity.dx * CGFloat(self.accelerationTimeInterval), y: velocity.dy * CGFloat(self.accelerationTimeInterval), duration: self.accelerationTimeInterval)
             movements.append(movement)
-            currentSpeed.dx -= CGFloat(accelerationTimeInterval) * acceleration.dx
-            currentSpeed.dy -= CGFloat(accelerationTimeInterval) * acceleration.dy
-            linearSpeed -= accelerationTimeInterval * linearAcceleration
+            velocity.dx -= CGFloat(accelerationTimeInterval) * acceleration.dx
+            velocity.dy -= CGFloat(accelerationTimeInterval) * acceleration.dy
+            speed -= accelerationTimeInterval * linearAcceleration
         }
+        
         if movements.count > 0 {
-            self.performMovements(movements)
+            self.performMovements(movements, sendPosition: sendPostion, velocity: startVelocity)
         } else {
             self.moving = false
             self.delegate?.moveCompleted()
@@ -386,7 +395,7 @@ class CardSpriteNode : SKSpriteNode {
             if self.faceUp != faceUp {
                 self.flip(sendPosition: sendPosition && !animateReceiver)
             } else if sendPosition && !animateReceiver {
-                self.delegate?.sendPosition(of: [self], moveToFront: moveToFrontReceiver, animate: false)
+                self.delegate?.sendPosition(of: [self], moveToFront: moveToFrontReceiver, animate: false, velocity: nil)
             }
             self.moving = false
             self.delegate?.moveCompleted()
@@ -397,7 +406,7 @@ class CardSpriteNode : SKSpriteNode {
         let movement = SKAction.rotate(toAngle: angle, duration: duration, shortestUnitArc: true)
         self.run(movement) {
             if sendPosition {
-                self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false)
+                self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false, velocity: nil)
             }
         }
     }
@@ -406,7 +415,7 @@ class CardSpriteNode : SKSpriteNode {
         let movement = SKAction.rotate(byAngle: angle, duration: duration)
         self.run(movement) {
             if sendPosition {
-                self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false)
+                self.delegate?.sendPosition(of: [self], moveToFront: false, animate: false, velocity: nil)
             }
         }
     }
@@ -558,7 +567,7 @@ protocol CardSpriteNodeDelegate {
     func moveToFront(_ cardNode: CardSpriteNode)
     func moveToBack(_ cardNode: CardSpriteNode)
     func sendFuture(position futurePosition: CGPoint, rotation futureRotation: CGFloat, faceUp futureFaceUp: Bool, of cardNode: CardSpriteNode, moveToFront: Bool)
-    func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool)
+    func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool, velocity: CGVector?)
     func sendZPositions()
     func getCards(under card: CardSpriteNode) -> [CardSpriteNode]
     func isOnTopOfPile(_ cardNode: CardSpriteNode) -> Bool
@@ -683,6 +692,7 @@ extension Array where Element:CardSpriteNode {
                 let transposedPosition = scene.playerPosition.transpose(position: position)
                 let transposedRotation = scene.playerPosition.transpose(rotation: rotation)
                 
+                
                 if moveToFront {
                     cardNode.moveToFront()
                 }
@@ -690,7 +700,19 @@ extension Array where Element:CardSpriteNode {
                 let newPosition = CGPoint(x: transposedPosition.x * scene.frame.width, y: transposedPosition.y * scene.frame.width + scene.dividerLine.position.y)
                 
                 if animate {
-                    cardNode.moveAndFlip(to: newPosition, rotateToAngle: transposedRotation, faceUp: faceUp, duration: scene.resetDuration, sendPosition: false)
+                    var velocity = CGVector()
+                    if let codedVelocity = cardDictionary["v"] as? String {
+                        velocity = NSCoder.cgVector(for: codedVelocity)
+                    }
+                    
+                    if !velocity.zero {
+                        let transposedVelocity = scene.playerPosition.transpose(velocity: velocity)
+                        let startVelocity = CGVector(dx: transposedVelocity.dx * scene.frame.width, dy: transposedVelocity.dy * scene.frame.width)
+                        
+                        cardNode.stopMoving(startVelocity: startVelocity, sendPostion: false)
+                    } else {
+                        cardNode.moveAndFlip(to: newPosition, rotateToAngle: transposedRotation, faceUp: faceUp, duration: scene.resetDuration, sendPosition: false)
+                    }
                 } else {
                     cardNode.flip(faceUp: faceUp, sendPosition: false)
                     cardNode.position = newPosition

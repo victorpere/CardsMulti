@@ -770,7 +770,7 @@ class GameScene: SKScene {
                 }
                 
                 self.canDoubleTap = true
-                self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
+                self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false, velocity: nil)
             }
         } else {
             
@@ -809,7 +809,7 @@ class GameScene: SKScene {
             print("force touched to drag cards: ", terminator: "")
             Global.displayCards(self.selectedNodes)
             
-            self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
+            self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false, velocity: nil)
         }
     }
     
@@ -991,7 +991,7 @@ class GameScene: SKScene {
                         // if it doesn't move it to the top
                         if self.selectedNodes[0] != self.lastSelectedNode && self.selectedNodes[0].isOnTopOfPile() {
                             self.selectedNodes[0].moveToFront()
-                            self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false)
+                            self.sendPosition(of: self.selectedNodes, moveToFront: true, animate: false, velocity: nil)
                         }
                         
                         if self.rotating {
@@ -1004,7 +1004,7 @@ class GameScene: SKScene {
                     let timeElapsed = t.timestamp - self.lastSendPositionTimestamp
                     if timeElapsed >= 0.1 || (self.selectedNodes.count <= 2 && timeElapsed >= 0.05) {
                         self.lastSendPositionTimestamp = t.timestamp
-                        self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false)
+                        self.sendPosition(of: self.selectedNodes, moveToFront: false, animate: false, velocity: nil)
                     }
                     
                 }
@@ -1035,7 +1035,7 @@ class GameScene: SKScene {
                         self.selectedNodes[0].stopRotating(startSpeed: self.currentRotationSpeed)
                     } else {
                         DispatchQueue.concurrentPerform(iterations: self.selectedNodes.count) {
-                            self.selectedNodes[$0].stopMoving(startSpeed: self.currentMovingSpeed)
+                            self.selectedNodes[$0].stopMoving(startVelocity: self.currentMovingSpeed)
                         }
                     }
                 } else if self.cardsMoved {
@@ -1131,7 +1131,7 @@ class GameScene: SKScene {
      */
     func syncSettingsAndGameData() -> Data? {
         let settingsData = RequestData(withType: .settings, andDictionary: StoredSettings.instance.settingsDictionary)
-        let gameData = RequestData(withType: .game, andArray: Global.cardDictionaryArray(with: self.allCards, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: true, animate: false))
+        let gameData = RequestData(withType: .game, andArray: Global.cardDictionaryArray(with: self.allCards, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: true, animate: false, velocity: nil))
         
         let requestData = [settingsData, gameData]
         do {
@@ -1143,7 +1143,7 @@ class GameScene: SKScene {
     }
     
     func syncSceneToMe() {
-        self.sendPosition(of: self.allCards, moveToFront: true, animate: false)
+        self.sendPosition(of: self.allCards, moveToFront: true, animate: false, velocity: nil)
     }
     
 }
@@ -1170,7 +1170,7 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func sendFuture(position futurePosition: CGPoint, rotation futureRotation: CGFloat, faceUp futureFaceUp: Bool, of cardNode: CardSpriteNode, moveToFront: Bool) {
-        let cardDictionary = Global.cardDictionary(for: cardNode, cardPosition: futurePosition, cardRotation: futureRotation, faceUp: futureFaceUp, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: true)
+        let cardDictionary = Global.cardDictionary(for: cardNode, cardPosition: futurePosition, cardRotation: futureRotation, faceUp: futureFaceUp, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: true, velocity: nil)
         
         do {
             let requestData = RequestData(withType: .game, andArray: [cardDictionary])
@@ -1182,9 +1182,9 @@ extension GameScene : CardSpriteNodeDelegate {
         }
     }
     
-    func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool) {
+    func sendPosition(of cardNodes: [CardSpriteNode], moveToFront: Bool, animate: Bool, velocity: CGVector?) {
         
-        let cardDictionaryArray = Global.cardDictionaryArray(with: cardNodes, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate)
+        let cardDictionaryArray = Global.cardDictionaryArray(with: cardNodes, playerPosition: self.playerPosition, width: self.frame.width, yOffset: self.dividerLine.position.y, moveToFront: moveToFront, animate: animate, velocity: velocity)
 
         do {
             let gameData = RequestData(withType: .game, andArray: cardDictionaryArray)

@@ -14,6 +14,12 @@ extension CGVector {
             return MovingDirection(transformation: CGPoint(x: self.dx, y: self.dy)) ?? .none
         }
     }
+    
+    var zero: Bool {
+        get {
+            return self.dx == 0 && self.dy == 0
+        }
+    }
 }
 
 extension CGPoint {

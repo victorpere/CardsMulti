@@ -118,4 +118,21 @@ enum Position : Int, CaseIterable {
         }
         return transposedRotation
     }
+    
+    func transpose(velocity: CGVector) -> CGVector {
+        var transposedVelocity = velocity
+        switch self {
+        case .bottom:
+            break
+        case .top:
+            transposedVelocity = CGVector(dx: -velocity.dx, dy: -velocity.dy)
+        case .left:
+            transposedVelocity = CGVector(dx: -velocity.dy, dy: velocity.dx)
+        case .right:
+            transposedVelocity = CGVector(dx: velocity.dy, dy: -velocity.dx)
+        default:
+            break
+        }
+        return transposedVelocity
+    }
 }
