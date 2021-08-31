@@ -94,3 +94,5 @@
 "Could not purchase %@"                     = "Покупка %@ не удалась";
 "Could not retrieve product information"    = "Не удалось получить информацию о товаре";
 "OK"                                        = "ОК";
+
+"Reset score"                               = "Сбросить счёт";

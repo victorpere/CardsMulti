@@ -155,7 +155,7 @@ class GameViewController: UIViewController {
         let btnsendtag: UIButton = sender
         switch btnsendtag.tag {
         case 1:
-            self.resetGame()
+            self.restartGame()
         case 2:
             if self.connectionService.connected {
                 self.showConnectedMenu()
@@ -240,8 +240,8 @@ class GameViewController: UIViewController {
         self.skView.presentScene(self.scene)
     }
     
-    func resetGame() {
-        self.scene.shuffleAndStackAllCards(sync: true)
+    func restartGame() {
+        self.scene.restartGame(sync: true)
     }
     
     func lineUpCards() {

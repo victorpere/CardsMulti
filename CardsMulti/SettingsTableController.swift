@@ -128,21 +128,23 @@ class SettingsTableContoller : UIViewController {
     // MARK: - Actions
     
     @objc func done(sender: UIButton) {
-        if self.gameHasBeenChanged {
-            self.showActionDialog(title: "game will restart".localized, text: "are you sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
-                self.storedSettings.game = self.selectedSettings.game
-                self.saveSettings()
-                self.saveUISettings()
-                self.delegate?.gameChanged()
-                self.dismiss(animated: true, completion: nil)
-            })
-        } else if self.settingsHaveBeenChanged {
+        if self.settingsHaveBeenChanged {
             self.showActionDialog(title: "game will restart".localized, text: "are you sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
                 self.saveSettings()
                 self.saveUISettings()
                 self.delegate?.settingsChanged()
                 self.dismiss(animated: true, completion: nil)
             })
+        } else if self.gameHasBeenChanged {
+            // TODO: check if there are connections
+            
+            //self.showActionDialog(title: "game will restart".localized, text: "are you //sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
+                self.storedSettings.game = self.selectedSettings.game
+                self.saveSettings()
+                self.saveUISettings()
+                self.delegate?.gameChanged()
+                self.dismiss(animated: true, completion: nil)
+            //})
         } else {
             self.saveUISettings()
             self.dismiss(animated: true, completion: nil)

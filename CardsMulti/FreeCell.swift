@@ -32,15 +32,6 @@ class FreeCell : GameScene {
     var cells = [SnapLocation]()
     
     // MARK: - Computed properties
-
-    /// Current game score
-    var score: Int {
-        var score = -52
-        for foundation in self.foundations {
-            score += 3 * foundation.snappedCards.count
-        }
-        return score
-    }
     
     /// Number of cards that can be moved at the same time
     var numberOfCardsCanMove: Int {
@@ -67,7 +58,7 @@ class FreeCell : GameScene {
             }
         }
         
-        self.isGameFinished = { () -> Bool in
+        self.isGameFinished = { () -> Bool in            
             for card in self.allCards {
                 if card.snapLocation === self.foundations[0] ||
                     card.snapLocation === self.foundations[1] ||
@@ -78,6 +69,16 @@ class FreeCell : GameScene {
                 return false
             }
             return true
+        }
+        
+        self.gameFinishedAction = { () -> Void in
+            if let winCount = self.scores.first(where: { $0.name == "WinCount" }) {
+                winCount.score += 1
+            }
+            
+            self.gameSceneDelegate?.presentAlert(title: "game over".localized, text: nil, actionTitle: "new game".localized, action: { () -> Void in
+                self.restartGame(sync: true)
+            }, cancelAction: nil)
         }
     }
     
@@ -99,12 +100,6 @@ class FreeCell : GameScene {
         self.scoreLabel.horizontalAlignmentMode = .left
         self.scoreLabel.verticalAlignmentMode = .top
         self.addChild(self.scoreLabel)
-        
-        if self.scores.count == 0 {
-            let score = Score(peerId: self.myPeerId, name: "RunningScore", gameType: self.gameType)
-            score.label = self.scoreLabel
-            self.scores.append(score)
-        }
         
         self.snapLocations.removeAll()
         self.foundations.removeAll()
@@ -164,20 +159,6 @@ class FreeCell : GameScene {
             // top car in the foudation is movable
             foundation.isMovable = { (_ card) in
                 return card == foundation.topCard
-            }
-            
-            foundation.snapAction = { (_) in
-                if let score = self.scores.first {
-                    score.score += 3
-                    self.updateScoreLabel()
-                }
-            }
-            
-            foundation.unsnapAction = { (cards) in
-                if let score = self.scores.first {
-                    score.score -= Double(3 * cards.count)
-                    self.updateScoreLabel()
-                }
             }
             
             self.snapLocations.append(foundation)
@@ -274,7 +255,7 @@ class FreeCell : GameScene {
         
         self.initDividerLine(hidden: true)
         self.loadCards(fromSaved: loadSaved)
-        
+
     }
     
     /**
@@ -283,10 +264,17 @@ class FreeCell : GameScene {
     override func shuffleAndStackAllCards(sync: Bool) {
         
         DispatchQueue.global(qos: .default).async {
-            self.scores[0].score -= 52
             
-            for foundation in self.foundations {
-                self.scores[0].score += Double(foundation.snappedCards.count) * 3
+            if let gameCount = self.scores.first(where: { $0.name == "GameCount" }) {
+                gameCount.score += 1
+            }
+            
+            if !self.scores.contains(where: { $0.name == "WinCount" }) {
+                self.scores.append(Score(peerId: self.myPeerId, name: "WinCount", gameType: self.gameType))
+            }
+            
+            if !self.scores.contains(where: { $0.name == "GameCount" }) {
+                self.scores.append(Score(peerId: self.myPeerId, name: "GameCount", gameType: self.gameType))
             }
             
             self.updateScoreLabel()
@@ -331,9 +319,15 @@ class FreeCell : GameScene {
     }
     
     override func popUpMenuItems(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
-        return [PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
+        let autocompleteItem = PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
             self.autoComplete()
-        }, parameter: nil)]
+        }, parameter: nil)
+        
+        let resetScoresItem = PopUpMenuItem(title: UIStrings.resetScore, action: {(_: Any?) in
+            self.resetScores()
+        }, parameter: nil)
+        
+        return [autocompleteItem, resetScoresItem]
     }
     
     override func selectMultipleNodesForTouch(touchLocation: CGPoint) {
@@ -342,6 +336,35 @@ class FreeCell : GameScene {
                 card.pop()
             }
         }
+    }
+    
+    override func updateScoreLabel() {
+        if let winCount = self.scores.first(where: { $0.name == "WinCount" }),
+           let gameCount = self.scores.first(where: { $0.name == "GameCount" }) {
+            self.scoreLabel.text = "\(winCount.scoreText) / \(gameCount.scoreText)"
+        } else {
+            self.scoreLabel.text = ""
+        }
+    }
+
+    override func resetScores() {
+        if let winCount = self.scores.first(where: { $0.name == "WinCount" }) {
+            winCount.score = 0
+        } else {
+            if !self.scores.contains(where: { $0.name == "WinCount" }) {
+                self.scores.append(Score(peerId: self.myPeerId, name: "WinCount", gameType: self.gameType))
+            }
+        }
+        
+        if let gameCount = self.scores.first(where: { $0.name == "GameCount" }) {
+            gameCount.score = 0
+        } else {
+            if !self.scores.contains(where: { $0.name == "GameCount" }) {
+                self.scores.append(Score(peerId: self.myPeerId, name: "GameCount", gameType: self.gameType))
+            }
+        }
+        
+        self.updateScoreLabel()
     }
     
     // MARK: - Private methods

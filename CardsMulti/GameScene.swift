@@ -100,6 +100,8 @@ class GameScene: SKScene {
     var scores = [Score]()
     var scoreLabel : SKLabelNode!
     
+    var gameFinished = false
+    
     var playersHands = [0, 0, 0, 0]
     
     /// Locations to which cards should snap to if moved to within a close distance
@@ -168,7 +170,7 @@ class GameScene: SKScene {
         self.gameFinishedAction = { () -> Void in
             print("game finished action")
             self.gameSceneDelegate?.presentAlert(title: "game over".localized, text: nil, actionTitle: "new game".localized, action: { () -> Void in
-                self.shuffleAndStackAllCards(sync: true)
+                self.restartGame(sync: true)
             }, cancelAction: nil)
         }
     }
@@ -466,7 +468,6 @@ class GameScene: SKScene {
         self.resetNodes()
         
         self.loadCards(fromSaved: loadSaved, sync: sync)
- 
     }
     
     /**
@@ -476,6 +477,14 @@ class GameScene: SKScene {
         self.resetNodes()
         self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
         self.initCards()
+    }
+    
+    /**
+     Restarts game with a shuffled deck
+     */
+    func restartGame(sync: Bool) {
+        self.gameFinished = false
+        self.shuffleAndStackAllCards(sync: sync)
     }
     
     /**
@@ -1280,10 +1289,13 @@ extension GameScene : CardSpriteNodeDelegate {
     func moveCompleted() {
         self.saveGame()
         
-        DispatchQueue.global(qos: .background).async {
-            if self.isGameFinished(), let action = self.gameFinishedAction {
-                DispatchQueue.global(qos: .default).async {
-                    action()
+        if !self.gameFinished {
+            DispatchQueue.global(qos: .background).async {
+                if self.isGameFinished(), let action = self.gameFinishedAction {
+                    self.gameFinished = true
+                    DispatchQueue.global(qos: .default).async {
+                        action()
+                    }
                 }
             }
         }

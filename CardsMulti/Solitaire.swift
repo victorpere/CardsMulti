@@ -347,7 +347,7 @@ class Solitaire : GameScene {
         
         self.initDividerLine(hidden: true)
         self.loadCards(fromSaved: loadSaved)
-        
+
     }
     
     /**
@@ -411,9 +411,27 @@ class Solitaire : GameScene {
     }
     
     override func popUpMenuItems(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
-        return [PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
+        let autocompleteItem = PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
             self.autoComplete()
-        }, parameter: nil)]
+        }, parameter: nil)
+        
+        let resetScoresItem = PopUpMenuItem(title: UIStrings.resetScore, action: {(_: Any?) in
+            self.resetScores()
+        }, parameter: nil)
+        
+        return [autocompleteItem, resetScoresItem]
+    }
+    
+    override func resetScores() {
+        if let score = self.scores.first(where: { $0.name == "RunningScore" }) {
+            score.score = 0
+        } else {
+            if !self.scores.contains(where: { $0.name == "RunningScore" }) {
+                self.scores.append(Score(peerId: self.myPeerId, name: "RunningScore", gameType: self.gameType))
+            }
+        }
+        
+        self.updateScoreLabel()
     }
     
     // MARK: - Private methods

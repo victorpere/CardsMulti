@@ -26,4 +26,6 @@ struct UIStrings {
     static let wouldYouLikeToPurchase   = "Would you like to purchase %@?".localized
     
     static let ok                       = "OK".localized
+    
+    static let resetScore               = "Reset score".localized
 }
