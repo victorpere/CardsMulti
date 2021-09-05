@@ -28,4 +28,7 @@ struct UIStrings {
     static let ok                       = "OK".localized
     
     static let resetScore               = "Reset score".localized
+    static let settingsHaveChanged      = "Settings have changed".localized
+    static let gameAndSettingsHaveChanged = "Game and settings have changed".localized
+    static let restartGame              = "Restart game?".localized
 }

@@ -742,6 +742,12 @@ extension GameViewController : SettingsTableControllerDelegate {
         self.startGame(loadFromSave: true)
     }
     
+    func gameAndSettingsChanged() {
+        self.scene.saveGame()
+        self.syncToMe(recipients: nil)
+        self.startGame(loadFromSave: false)
+    }
+    
     func resetScores() {
         self.scene.resetScores()
     }

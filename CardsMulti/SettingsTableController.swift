@@ -45,6 +45,11 @@ class SettingsTableContoller : UIViewController {
     }
     
     var settingsHaveBeenChanged: Bool {
+        if let gameType = GameType(rawValue: self.selectedSettings.game) {
+            let gameSettings = StoredGameSettings(with: gameType)
+            return !gameSettings.equals(to: self.selectedSettings)
+        }
+        
         if self.storedSettings.minRank != self.selectedSettings.minRank ||
             self.storedSettings.maxRank != self.selectedSettings.maxRank ||
             self.storedSettings.pipsEnabled != self.selectedSettings.pipsEnabled ||
@@ -128,9 +133,17 @@ class SettingsTableContoller : UIViewController {
     // MARK: - Actions
     
     @objc func done(sender: UIButton) {
-        if self.settingsHaveBeenChanged {
-            self.showActionDialog(title: "game will restart".localized, text: "are you sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
-                self.saveSettings()
+        if self.gameHasBeenChanged && self.settingsHaveBeenChanged {
+            self.showActionDialog(title: UIStrings.gameAndSettingsHaveChanged, text: UIStrings.restartGame, actionTitle: UIStrings.ok, action: {() -> Void in
+                self.storedSettings.game = self.selectedSettings.game
+                self.saveGameSettings()
+                self.saveUISettings()
+                self.delegate?.gameAndSettingsChanged()
+                self.dismiss(animated: true, completion: nil)
+            })
+        } else if self.settingsHaveBeenChanged {
+            self.showActionDialog(title: UIStrings.settingsHaveChanged, text: UIStrings.restartGame, actionTitle: UIStrings.ok, action: {() -> Void in
+                self.saveGameSettings()
                 self.saveUISettings()
                 self.delegate?.settingsChanged()
                 self.dismiss(animated: true, completion: nil)
@@ -140,7 +153,7 @@ class SettingsTableContoller : UIViewController {
             
             //self.showActionDialog(title: "game will restart".localized, text: "are you //sure?".localized, actionTitle: "ok".localized, action: {() -> Void in
                 self.storedSettings.game = self.selectedSettings.game
-                self.saveSettings()
+                self.saveGameSettings()
                 self.saveUISettings()
                 self.delegate?.gameChanged()
                 self.dismiss(animated: true, completion: nil)
@@ -159,7 +172,12 @@ class SettingsTableContoller : UIViewController {
     
     // MARK: - Private methods
     
-    private func saveSettings() {
+    private func saveGameSettings() {
+        if let gameType = GameType(rawValue: self.selectedSettings.game) {
+            let gameSettings = StoredGameSettings(with: gameType)
+            gameSettings.sync(to: self.selectedSettings)
+        }
+        
         self.storedSettings.minRank = self.selectedSettings.minRank
         self.storedSettings.maxRank = self.selectedSettings.maxRank
         
@@ -171,6 +189,11 @@ class SettingsTableContoller : UIViewController {
     }
     
     private func saveUISettings() {
+        if let gameType = GameType(rawValue: self.selectedSettings.game) {
+            let gameSettings = StoredGameSettings(with: gameType)
+            gameSettings.cardWidthsPerScreen = -self.cardScaleSlider.value
+        }
+        
         if StoredSettings.instance.cardWidthsPerScreen != -self.cardScaleSlider.value {
             StoredSettings.instance.cardWidthsPerScreen = -self.cardScaleSlider.value
             self.delegate?.uiSettingsChanged()
@@ -182,17 +205,16 @@ class SettingsTableContoller : UIViewController {
             self.selectedConfig = gameConfig
             
             if !gameConfig.canChangeDeck {
-                self.selectedSettings.pipsEnabled = gameConfig.defaultSettings.pipsEnabled
-                self.selectedSettings.minRank = gameConfig.defaultSettings.minValue
-                self.selectedSettings.maxRank = gameConfig.defaultSettings.maxValue
-                self.jackSwitch.isOn = gameConfig.defaultSettings.jacksEnabled
-                self.queenSwitch.isOn = gameConfig.defaultSettings.queensEnabled
-                self.kingSwitch.isOn = gameConfig.defaultSettings.kingsEnabled
-                self.aceSwitch.isOn = gameConfig.defaultSettings.acesEnabled
+                self.selectedSettings.sync(to: gameConfig.defaultSettings)
+            } else if gameType != nil {
+                let gameSettings = StoredGameSettings(with: gameType!)
+                self.selectedSettings.sync(to: gameSettings)
             }
             
             if !gameConfig.canChangeCardSize {
                 self.cardScaleSlider.value = -gameConfig.defaultSettings.cardWidthsPerScreen
+            } else {
+                self.cardScaleSlider.value = -self.selectedSettings.cardWidthsPerScreen
             }
             
             self.cardScaleSlider.isEnabled = gameConfig.canChangeCardSize
@@ -485,6 +507,7 @@ protocol SettingsTableControllerDelegate {
     func settingsChanged()
     func uiSettingsChanged()
     func gameChanged()
+    func gameAndSettingsChanged()
     func resetScores()
 }
 

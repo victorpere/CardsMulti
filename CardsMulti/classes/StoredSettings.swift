@@ -306,4 +306,6 @@ enum SettingsKey : String {
     case king = "king"
     case ace = "ace"
     case cardWidthsPerScreen = "cardWidthsPerScreen"
+    case margin = "margin"
+    case customOptions = "customOptions"
 }

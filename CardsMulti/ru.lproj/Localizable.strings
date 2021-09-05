@@ -96,3 +96,6 @@
 "OK"                                        = "ОК";
 
 "Reset score"                               = "Сбросить счёт";
+"Settings have changed"                     = "Настройки изменились";
+"Game and settings have changed"            = "Игра и настройки изменились";
+"Restart game?"                             = "Начать игру заново?";

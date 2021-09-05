@@ -12,7 +12,7 @@ class GameConfigs {
     
     static let sharedInstance = GameConfigs(withFile: Config.configFilePath)
     
-    var defaultSettings = GameConfigDefaultSettings()
+    var defaultSettings = TemporarySettings()
     
     // MARK: - Private properties
     
@@ -94,17 +94,17 @@ class GameConfigs {
         }
     }
     
-    private func defaultSettings(fromDictionary settingsDictionary: NSDictionary) -> GameConfigDefaultSettings {
-        var defaultSettings = GameConfigDefaultSettings()
+    private func defaultSettings(fromDictionary settingsDictionary: NSDictionary) -> TemporarySettings {
+        let defaultSettings = TemporarySettings()
         
         if let value = settingsDictionary[GameConfigKey.pipsEnabled.rawValue] as? Bool {
             defaultSettings.pipsEnabled = value
         }
         if let value = settingsDictionary[GameConfigKey.minValue.rawValue] as? Int {
-            defaultSettings.minValue = value
+            defaultSettings.minRank = value
         }
         if let value = settingsDictionary[GameConfigKey.maxValue.rawValue] as? Int {
-            defaultSettings.maxValue = value
+            defaultSettings.maxRank = value
         }
         if let value = settingsDictionary[GameConfigKey.jacksEnabled.rawValue] as? Bool {
             defaultSettings.jacksEnabled = value
@@ -140,21 +140,7 @@ struct GameConfig {
     var canRotateCards: Bool = true
     var customOptions: NSDictionary?
     
-    var defaultSettings = GameConfigDefaultSettings()
-}
-
-// MARK: - Struct GameConfigDefaultSettings
-
-struct GameConfigDefaultSettings {
-    var pipsEnabled: Bool = true
-    var minValue: Int = 2
-    var maxValue: Int = 10
-    var jacksEnabled: Bool = true
-    var queensEnabled: Bool = true
-    var kingsEnabled: Bool = true
-    var acesEnabled: Bool = true
-    var cardWidthsPerScreen: Float = 8
-    var margin: Float = 8
+    var defaultSettings = TemporarySettings()
 }
 
 // MARK: - Enum GameConfigKey

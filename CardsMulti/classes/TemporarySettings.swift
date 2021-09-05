@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TemporarySettings : Settings {
+class TemporarySettings : Settings, GameSettings {
     var displayName: String = ""
     var cardSet: String?
     var game: Int = 0
@@ -39,5 +39,18 @@ class TemporarySettings : Settings {
         self.cardWidthsPerScreen = settings.cardWidthsPerScreen
         self.soundOn = settings.soundOn
         self.customOptions = settings.customOptions
+    }
+    
+    func sync(to gameSettings: GameSettings) {
+        self.minRank = gameSettings.minRank
+        self.maxRank = gameSettings.maxRank
+        self.pipsEnabled = gameSettings.pipsEnabled
+        self.jacksEnabled = gameSettings.jacksEnabled
+        self.queensEnabled = gameSettings.queensEnabled
+        self.kingsEnabled = gameSettings.kingsEnabled
+        self.acesEnabled = gameSettings.acesEnabled
+        self.cardWidthsPerScreen = gameSettings.cardWidthsPerScreen
+        self.margin = gameSettings.margin
+        self.customOptions = gameSettings.customOptions
     }
 }

@@ -97,3 +97,6 @@
 "OK"                                        = "OK";
 
 "Reset score"                               = "Reset score";
+"Settings have changed"                     = "Settings have changed";
+"Game and settings have changed"            = "Game and settings have changed";
+"Restart game?"                             = "Restart game?";
