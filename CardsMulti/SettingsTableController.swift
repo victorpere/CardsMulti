@@ -282,8 +282,10 @@ extension SettingsTableContoller : UITableViewDelegate {
             break
         case SettingsSection.store.rawValue:
             self.tableView.deselectRow(at: indexPath, animated: true)
-            let productsTableController = ProductsTableController(nibName: nil, bundle: nil)
-            self.navigationController?.pushViewController(productsTableController, animated: true)
+            StoreObserver.sharedInstance.restore()
+            
+            //let productsTableController = ProductsTableController(nibName: nil, bundle: nil)
+            //self.navigationController?.pushViewController(productsTableController, animated: true)
         default:
             break
         }
@@ -315,7 +317,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.sound.rawValue:
             return 1
         case SettingsSection.store.rawValue:
-            return 0
+            return 1
         default:
             return 0
         }
@@ -448,8 +450,8 @@ extension SettingsTableContoller : UITableViewDataSource {
             cell.textLabel?.text = "sound".localized
             cell.accessoryView = self.soundSwitch
         case SettingsSection.store.rawValue:
-            cell.textLabel?.text = UIStrings.store
-            cell.accessoryType = .disclosureIndicator
+            cell.textLabel?.text = UIStrings.restorePurchases
+            //cell.accessoryType = .disclosureIndicator
         default:
             break
         }
@@ -527,6 +529,8 @@ enum SettingsSection: Int, CaseIterable {
             return "game".localized
         case .cards1:
             return "cards".localized
+        case .store:
+            return UIStrings.store
         default:
             return nil
         }
