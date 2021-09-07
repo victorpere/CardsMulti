@@ -31,4 +31,8 @@ struct UIStrings {
     static let settingsHaveChanged      = "Settings have changed".localized
     static let gameAndSettingsHaveChanged = "Game and settings have changed".localized
     static let restartGame              = "Restart game?".localized
+    
+    // Messages - NOT localized
+    static let shuffledAllCards         = "%@ shuffled all cards"
+    static let dealingCards             = "%@ is dealing %d cards"
 }

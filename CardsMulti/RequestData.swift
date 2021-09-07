@@ -173,6 +173,7 @@ enum RequestType : String {
     case settings = "Settings"
     case uiSettings = "UISettings"
     case requestToSync = "RequestToSync"
+    case message = "Message"
     case unknown = "Unknown"
 }
 

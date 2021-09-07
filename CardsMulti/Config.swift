@@ -28,6 +28,13 @@ public final class Config {
     
     public static let snapDistance: CGFloat = 20
     
+    public static let flashMessageFadeDuration: TimeInterval = 0.25
+    public static let flashMessageDuration: TimeInterval = 2.0
+    public static let flashMessageColor: UIColor = .white
+    public static let flashMessageFontSize: CGFloat = 20
+    
+    public static let uiFontName: String = "Helvetica"
+    
     public static let maxPlayers: Int = 4
     
     public static let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String

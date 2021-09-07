@@ -29,6 +29,7 @@ class GameViewController: UIViewController {
     var playerAcrossLabel: PlayerStatusLabel!
     var playerRightLabel: PlayerStatusLabel!
     var awsStatusLabel: UILabel!
+    var flashMessageLabel: FlashMessageLabel!
     
     var backGroundView: UIView!
     var skView: SKView!
@@ -81,6 +82,9 @@ class GameViewController: UIViewController {
         self.connectionsLabel.text = "\("connections".localized): "
         self.view.addSubview(self.connectionsLabel)
         
+        self.flashMessageLabel = FlashMessageLabel(frame: CGRect(center: CGPoint(x: self.safeFrame.midX, y: self.safeFrame.width + 15), size: CGSize(width: self.safeFrame.width, height: 40)))
+        self.view.addSubview(self.flashMessageLabel)
+        
         self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - self.view.safeAreaInsets.right - 35, y: self.view.frame.width, width: 35, height: 15))
         self.awsStatusLabel.textColor = UIColor.green
         self.awsStatusLabel.font = UIFont(name: "Helvetica", size: 12)
@@ -99,7 +103,7 @@ class GameViewController: UIViewController {
         self.positionLabel.textColor = UIColor.green
         self.positionLabel.font = UIFont(name: "Helvetica", size: 10)
         self.positionLabel.numberOfLines = 0
-        self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition)\n"
+        self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.myPosition)\n"
         for player in self.connectionService.players {
             self.positionLabel.text?.append("\(String(describing: player))\n")
         }
@@ -392,7 +396,7 @@ class GameViewController: UIViewController {
 
     func updateLabels() {
         DispatchQueue.main.async {
-            self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.hostPeerID)\n\(self.connectionService.myPosition)\n"
+            self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.myPosition)\n"
             for player in self.connectionService.players {
                 self.positionLabel.text?.append("\(String(describing: player))\n")
             }
@@ -709,6 +713,10 @@ extension GameViewController : GameSceneDelegate {
     
     func presentAlert(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void), cancelAction: (() -> Void)?) {
         self.showActionDialog(title: title, text: text, actionTitle: actionTitle, action: action, cancelAction: cancelAction)
+    }
+    
+    func flashMessage(_ message: String) {
+        self.flashMessageLabel.flash(message: message)
     }
 }
 

@@ -71,7 +71,17 @@ class ReceivedDataHandler {
             if let receivedArray = receivedGameData.dataArray {
                 self.scene.allCards.handle(recievedCardDictionaryArray: receivedArray, forScene: self.scene)
             }
+        case .message:
+            print("Received message")
+            if let receivedDictionary = receivedGameData.dataDictionary {
+                let message = Message(with: receivedDictionary)
+                
+                if let displayMessage = message.displayMessageLocalized {
+                    self.scene.gameSceneDelegate?.flashMessage(displayMessage)
+                }
+            }
         default:
+            print("Received unknown data type")
             break
         }
     }

@@ -55,6 +55,8 @@
 		578F40C62377923100719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
 		578F40C72377924400719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
 		578F40C82377924400719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
+		57A7169526E6672C0073C0E1 /* FlashMessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A7169426E6672C0073C0E1 /* FlashMessageLabel.swift */; };
+		57A7169926E6A5E20073C0E1 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A7169826E6A5E20073C0E1 /* Message.swift */; };
 		57B053D51E4E3BD20057E62F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053D41E4E3BD20057E62F /* AppDelegate.swift */; };
 		57B053DB1E4E3BD20057E62F /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DA1E4E3BD20057E62F /* GameScene.swift */; };
 		57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053DC1E4E3BD20057E62F /* GameViewController.swift */; };
@@ -201,6 +203,8 @@
 		578DB66A2677E1620034BB45 /* TextEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditCell.swift; sourceTree = "<group>"; };
 		578F40C323778D9300719821 /* Solitaire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solitaire.swift; sourceTree = "<group>"; };
 		578F40C52377923100719821 /* SnapLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLocation.swift; sourceTree = "<group>"; };
+		57A7169426E6672C0073C0E1 /* FlashMessageLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashMessageLabel.swift; sourceTree = "<group>"; };
+		57A7169826E6A5E20073C0E1 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Message.swift; path = classes/Message.swift; sourceTree = "<group>"; };
 		57B053D11E4E3BD20057E62F /* CardsMulti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsMulti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57B053D41E4E3BD20057E62F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		57B053DA1E4E3BD20057E62F /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -455,6 +459,7 @@
 				57E97B101E74A651000243B2 /* StoredSettings.swift */,
 				5748641726DE62F4005517BB /* StoredGameSettings.swift */,
 				57213CEF268903E800753AC4 /* TemporarySettings.swift */,
+				57A7169826E6A5E20073C0E1 /* Message.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -504,6 +509,7 @@
 				578DB665266DA0360034BB45 /* ContactsViewController.swift */,
 				578DB66A2677E1620034BB45 /* TextEditCell.swift */,
 				57DA7BDA26ADB51800F3CA8F /* ProductsTableController.swift */,
+				57A7169426E6672C0073C0E1 /* FlashMessageLabel.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -795,11 +801,13 @@
 				57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */,
 				57C626122346E6D6008A9872 /* CardSlider.swift in Sources */,
 				570C397523369C4D00A2882C /* Player.swift in Sources */,
+				57A7169526E6672C0073C0E1 /* FlashMessageLabel.swift in Sources */,
 				570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */,
 				57B054171E4E766A0057E62F /* Math.swift in Sources */,
 				57BB31DD23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
 				57DA7BD026AC949800F3CA8F /* StoreObserver.swift in Sources */,
 				574693522367CB9D00AB6516 /* StoredBase.swift in Sources */,
+				57A7169926E6A5E20073C0E1 /* Message.swift in Sources */,
 				57F400FF248D6D7800EF71D5 /* WsRequestSender.swift in Sources */,
 				57DA7BD826ACA96600F3CA8F /* StoreManager.swift in Sources */,
 				5748641826DE62F4005517BB /* StoredGameSettings.swift in Sources */,
@@ -1087,12 +1095,12 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.8.6;
+				MARKETING_VERSION = 0.8.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1108,12 +1116,12 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.8.6;
+				MARKETING_VERSION = 0.8.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

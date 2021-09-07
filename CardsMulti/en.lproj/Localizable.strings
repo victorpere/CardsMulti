@@ -100,3 +100,8 @@
 "Settings have changed"                     = "Settings have changed";
 "Game and settings have changed"            = "Game and settings have changed";
 "Restart game?"                             = "Restart game?";
+
+// Messages
+
+"%@ shuffled all cards"                     = "%@ shuffled all cards";
+"%@ is dealing %d cards"                    = "%@ is dealing %d cards";

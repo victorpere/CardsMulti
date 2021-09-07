@@ -493,6 +493,11 @@ class GameScene: SKScene {
      - parameter sync: whether to synchronize with other devices after execution
      */
     func shuffleAndStackAllCards(sync: Bool) {
+        var message = Message()
+        message.systemMessage = UIStrings.shuffledAllCards
+        message.arguments = [self.settings.displayName]
+        self.sendMessage(message)
+        
         Global.shuffle(&self.allCards)
         
         for cardNode in self.allCards {
@@ -516,6 +521,11 @@ class GameScene: SKScene {
      - parameter numberOfCards: number of cards to deal to each player
      */
     func deal(numberOfCards: Int) {
+        var message = Message()
+        message.systemMessage = UIStrings.dealingCards
+        message.arguments = [self.settings.displayName, numberOfCards]
+        self.sendMessage(message)
+        
         let _ = self.deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards)
         self.deselectNodeForTouch()
     }
@@ -896,6 +906,12 @@ class GameScene: SKScene {
         print("shuffling cards")
         print("old order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
+        
+        var message = Message()
+        message.systemMessage = UIStrings.shuffledAllCards
+        message.arguments = [self.settings.displayName]        
+        self.sendMessage(message)
+        
         if let topCardPosition = cards.last?.position {
             var shuffledCards = cards
             Global.shuffle(&shuffledCards)
@@ -1161,6 +1177,12 @@ class GameScene: SKScene {
         self.sendPosition(of: self.allCards, moveToFront: true, animate: false, velocity: nil)
     }
     
+    func sendMessage(_ message: Message) {
+        let messageData = RequestData(withType: .message, andDictionary: message.dictionary)
+        if let encodedData = try? messageData.encodedData() {
+            self.gameSceneDelegate?.sendData(data: encodedData, type: .game)
+        }
+    }
 }
 
 
@@ -1316,6 +1338,8 @@ protocol GameSceneDelegate {
     func updatePlayer(numberOfCards: Int, inPosition position: Position)
     
     func presentAlert(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void), cancelAction: (() -> Void)?)
+    
+    func flashMessage(_ message: String)
 }
 
 

@@ -99,3 +99,8 @@
 "Settings have changed"                     = "Настройки изменились";
 "Game and settings have changed"            = "Игра и настройки изменились";
 "Restart game?"                             = "Начать игру заново?";
+
+// Messages
+
+"%@ shuffled all cards"                     = "%@ тасует все карты";
+"%@ is dealing %d cards"                    = "%@ раздаёт по %d карт";
