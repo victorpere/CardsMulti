@@ -104,3 +104,4 @@
 
 "%@ shuffled all cards"                     = "%@ тасует все карты";
 "%@ is dealing %d cards"                    = "%@ раздаёт по %d карт";
+"%@ shuffled %d cards"                      = "%@ тасует %d карты";

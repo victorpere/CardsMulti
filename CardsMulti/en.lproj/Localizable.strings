@@ -105,3 +105,4 @@
 
 "%@ shuffled all cards"                     = "%@ shuffled all cards";
 "%@ is dealing %d cards"                    = "%@ is dealing %d cards";
+"%@ shuffled %d cards"                      = "%@ shuffled %d cards";

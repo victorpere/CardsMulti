@@ -15,6 +15,8 @@ class GameScene: SKScene {
     /// MCPeerID of this device
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     
+    let flashMessageNode: FlashMessageNode
+    
     var cardWidth: CGFloat
     var cardHeight: CGFloat
     var margin: CGFloat
@@ -150,6 +152,8 @@ class GameScene: SKScene {
     }
     
     init(size: CGSize, gameType: GameType, loadFromSave: Bool) {
+        self.flashMessageNode = FlashMessageNode(position: CGPoint(x: 0, y: 0), width: size.width)
+                
         self.gameType = gameType
         self.loadSaved = loadFromSave
         self.gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) ?? GameConfig(gameType: gameType)
@@ -447,6 +451,7 @@ class GameScene: SKScene {
     
     fileprivate func resetNodes() {
         self.removeAllChildren()
+        self.addChild(self.flashMessageNode)
         
         connectionLabel = SKLabelNode(text: "Connections: ")
         connectionLabel.fontColor = UIColor.green
@@ -757,8 +762,8 @@ class GameScene: SKScene {
         - tapCount: number of taps to detect double tap
      */
     func selectNodeForTouch(touchLocation: CGPoint, tapCount: Int) {
-        let touchedNode = self.atPoint(touchLocation)
-        
+        let touchedNode = self.nodes(at: touchLocation).sorted(by: { $0.zPosition > $1.zPosition}).first(where: { $0 is CardSpriteNode })
+                
         if let touchedCardNode = touchedNode as? CardSpriteNode {
             
             // select card to move
@@ -816,7 +821,8 @@ class GameScene: SKScene {
      - parameter touchLocation: location of the touch
      */
     func selectMultipleNodesForTouch(touchLocation: CGPoint) {
-        let touchedNode = self.atPoint(touchLocation)
+        let touchedNode = self.nodes(at: touchLocation).sorted(by: { $0.zPosition > $1.zPosition}).first(where: { $0 is CardSpriteNode })
+        
         if let touchedCardNode = touchedNode as? CardSpriteNode {
             if let snapLocation = touchedCardNode.snapLocation {
                 // if the card is snapped, select all movable cards from the snap location
@@ -907,11 +913,6 @@ class GameScene: SKScene {
         print("old order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
         
-        var message = Message()
-        message.systemMessage = UIStrings.shuffledAllCards
-        message.arguments = [self.settings.displayName]        
-        self.sendMessage(message)
-        
         if let topCardPosition = cards.last?.position {
             var shuffledCards = cards
             Global.shuffle(&shuffledCards)
@@ -922,6 +923,15 @@ class GameScene: SKScene {
             
             // stacking cards also sends position to other devices
             cards.stack(atPosition: topCardPosition, sendPosition: true, animateReceiver: true, delegate: self)
+            
+            //self.flashMessageNode.position = topCardPosition
+            //self.flashMessageNode.flash(message: "ShUfFlEd")
+            
+            var message = Message()
+            message.systemMessage = UIStrings.shuffledNCards
+            message.arguments = [self.settings.displayName, cards.count]
+            message.location =  topCardPosition
+            self.sendMessage(message)
         }
         print("new order:")
         Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
@@ -1181,6 +1191,17 @@ class GameScene: SKScene {
         let messageData = RequestData(withType: .message, andDictionary: message.dictionary)
         if let encodedData = try? messageData.encodedData() {
             self.gameSceneDelegate?.sendData(data: encodedData, type: .game)
+        }
+    }
+    
+    // MARK: - UI Messages
+    
+    func flash(message: String, at position: CGPoint?) {
+        if position != nil {
+            self.flashMessageNode.position = position!
+            self.flashMessageNode.flash(message: message)
+        } else {
+            self.gameSceneDelegate?.flashMessage(message)
         }
     }
 }

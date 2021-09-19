@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 struct Message {
     
@@ -16,6 +17,7 @@ struct Message {
     var systemMessage: String?
     var textMessage: String?
     var arguments: [CVarArg]
+    var location: CGPoint?
     
     // MARK: - Computed properties
     
@@ -38,10 +40,14 @@ struct Message {
             messageDictionary[MessageKey.arguments.rawValue] = self.arguments
         }
         
+        if self.location != nil {
+            messageDictionary[MessageKey.location.rawValue] = NSCoder.string(for: self.location!)
+        }
+        
         return messageDictionary
     }
     
-    var displayMessageLocalized: String? {
+    var flashMessage: String? {
         if self.systemMessage != nil {
             return String(format: self.systemMessage!.localized, arguments: self.arguments)
         }
@@ -79,6 +85,10 @@ struct Message {
                 }
             }
         }
+        
+        if let value = dictionary[MessageKey.location.rawValue] as? String {
+            self.location = NSCoder.cgPoint(for: value)
+        }
     }
 }
 
@@ -89,4 +99,5 @@ fileprivate enum MessageKey: String {
     case systemMessage = "systemMessage"
     case textMessage = "textMessage"
     case arguments = "arguments"
+    case location = "location"
 }

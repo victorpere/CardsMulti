@@ -32,6 +32,7 @@ public final class Config {
     public static let flashMessageDuration: TimeInterval = 2.0
     public static let flashMessageColor: UIColor = .white
     public static let flashMessageFontSize: CGFloat = 20
+    public static let flashMessageLabelHeight: CGFloat = 40
     
     public static let uiFontName: String = "Helvetica"
     

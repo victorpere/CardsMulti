@@ -76,8 +76,8 @@ class ReceivedDataHandler {
             if let receivedDictionary = receivedGameData.dataDictionary {
                 let message = Message(with: receivedDictionary)
                 
-                if let displayMessage = message.displayMessageLocalized {
-                    self.scene.gameSceneDelegate?.flashMessage(displayMessage)
+                if let displayMessage = message.flashMessage {
+                    self.scene.flash(message:displayMessage, at: nil)
                 }
             }
         default:

@@ -35,4 +35,5 @@ struct UIStrings {
     // Messages - NOT localized
     static let shuffledAllCards         = "%@ shuffled all cards"
     static let dealingCards             = "%@ is dealing %d cards"
+    static let shuffledNCards           = "%@ shuffled %d cards"
 }
