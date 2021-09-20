@@ -55,6 +55,28 @@ extension CGPoint {
         
         return (toAngle - fromAngle) * multiplier
     }
+    
+    func relativePoint(for position: Position, width: CGFloat, yOffset: CGFloat) -> CGPoint {
+        var relativePoint = CGPoint(x: self.x / width, y: (self.y - yOffset) / width)
+        
+        switch position {
+        case .bottom :
+            break
+        case .top :
+            relativePoint.x = 1 - relativePoint.x
+            relativePoint.y = 1 - relativePoint.y
+        case .left :
+            relativePoint.x = relativePoint.y
+            relativePoint.y = 1 - relativePoint.x
+        case .right:
+            relativePoint.x = 1 - relativePoint.y
+            relativePoint.y = relativePoint.x
+        default:
+            break
+        }
+        
+        return relativePoint
+    }
 }
 
 extension CGRect {

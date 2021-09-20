@@ -930,7 +930,7 @@ class GameScene: SKScene {
             var message = Message()
             message.systemMessage = UIStrings.shuffledNCards
             message.arguments = [self.settings.displayName, cards.count]
-            message.location =  topCardPosition
+            message.location =  topCardPosition.relativePoint(for: self.playerPosition, width: self.size.width, yOffset: self.dividerLine.position.y)
             self.sendMessage(message)
         }
         print("new order:")
@@ -1196,9 +1196,13 @@ class GameScene: SKScene {
     
     // MARK: - UI Messages
     
-    func flash(message: String, at position: CGPoint?) {
-        if position != nil {
-            self.flashMessageNode.position = position!
+    func flash(message: String, at location: CGPoint?) {
+        if location != nil {
+            var transposedLocation = self.playerPosition.transpose(position: location!)
+            transposedLocation.x = transposedLocation.x * self.size.width
+            transposedLocation.y = transposedLocation.y * self.size.width + self.dividerLine.position.y
+            
+            self.flashMessageNode.position = transposedLocation
             self.flashMessageNode.flash(message: message)
         } else {
             self.gameSceneDelegate?.flashMessage(message)

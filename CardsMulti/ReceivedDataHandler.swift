@@ -77,7 +77,7 @@ class ReceivedDataHandler {
                 let message = Message(with: receivedDictionary)
                 
                 if let displayMessage = message.flashMessage {
-                    self.scene.flash(message:displayMessage, at: nil)
+                    self.scene.flash(message:displayMessage, at: message.location)
                 }
             }
         default:

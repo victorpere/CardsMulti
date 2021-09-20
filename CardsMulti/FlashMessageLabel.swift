@@ -83,6 +83,7 @@ class FlashMessageNode: SKLabelNode, Flashing {
     
     required init(position: CGPoint, width: CGFloat) {
         super.init(fontNamed: Config.uiFontName)
+        self.fontSize = Config.flashMessageFontSize
         self.position = position
         self.alpha = 0
         self.text = nil
