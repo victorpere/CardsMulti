@@ -237,6 +237,11 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     
     func syncTo(settingsDictionary receivedSettingsDictionary: NSDictionary) {
         self.initialize(withDictionary: receivedSettingsDictionary)
+        
+        if let gameType = GameType.init(rawValue: self.game) {
+            let gameSettings = StoredGameSettings(with: gameType)
+            gameSettings.sync(toSettings: self)
+        }
     }
     
     // MARK: - Private methods

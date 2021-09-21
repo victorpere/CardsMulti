@@ -38,4 +38,5 @@ protocol GameSettings {
     var customOptions: NSDictionary? { get set }
     
     func sync(to gameSettings: GameSettings)
+    func sync(toSettings settings: Settings)
 }

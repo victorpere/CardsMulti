@@ -13,8 +13,8 @@ class ReceivedDataHandler {
     
     // MARK: - Private properties
     
-    private let scene: GameScene
-    private let connectionServiceManager: ConnectionServiceManager
+    private weak var scene: GameScene?
+    private weak var connectionServiceManager: ConnectionServiceManager?
     
     // MARK: - Initializers
     
@@ -51,25 +51,25 @@ class ReceivedDataHandler {
     private func handleRequestData(_ receivedGameData: RequestData) {
         switch receivedGameData.type {
         case .requestToSync:
-            if self.connectionServiceManager.isHost {
-                self.scene.syncSceneToMe()
+            if self.connectionServiceManager?.isHost ?? false {
+                self.scene?.syncSceneToMe()
             }
         case .settings:
             print("Received settings")
             if let receivedDictionary = receivedGameData.dataDictionary {
                 StoredSettings.instance.syncTo(settingsDictionary: receivedDictionary)
-                self.scene.resetCards()
+                self.scene?.resetCards()
             }
         case .uiSettings:
             print("Received UI settings")
             if let receivedDictionary = receivedGameData.dataDictionary {
                 StoredSettings.instance.syncTo(settingsDictionary: receivedDictionary)
-                self.scene.updateUISettings()
+                self.scene?.updateUISettings()
             }
         case .game:
             print("Received game data")
-            if let receivedArray = receivedGameData.dataArray {
-                self.scene.allCards.handle(recievedCardDictionaryArray: receivedArray, forScene: self.scene)
+            if let receivedArray = receivedGameData.dataArray, self.scene != nil {
+                self.scene!.allCards.handle(recievedCardDictionaryArray: receivedArray, forScene: self.scene!)
             }
         case .message:
             print("Received message")
@@ -77,7 +77,7 @@ class ReceivedDataHandler {
                 let message = Message(with: receivedDictionary)
                 
                 if let displayMessage = message.flashMessage {
-                    self.scene.flash(message:displayMessage, at: message.location)
+                    self.scene?.flash(message:displayMessage, at: message.location)
                 }
             }
         default:

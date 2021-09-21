@@ -128,6 +128,19 @@ class StoredGameSettings : StoredBase, GameSettings {
         self.customOptions = gameSettings.customOptions
     }
     
+    func sync(toSettings settings: Settings) {
+        self.minRank = settings.minRank
+        self.maxRank = settings.maxRank
+        self.pipsEnabled = settings.pipsEnabled
+        self.jacksEnabled = settings.jacksEnabled
+        self.queensEnabled = settings.queensEnabled
+        self.kingsEnabled = settings.kingsEnabled
+        self.acesEnabled = settings.acesEnabled
+        self.cardWidthsPerScreen = settings.cardWidthsPerScreen
+        self.margin = settings.margin
+        self.customOptions = settings.customOptions
+    }
+    
     func equals(to gameSettings: GameSettings) -> Bool {
         return gameSettings.minRank == self.minRank &&
             gameSettings.maxRank == self.maxRank &&
