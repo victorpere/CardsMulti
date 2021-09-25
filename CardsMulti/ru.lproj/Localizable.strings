@@ -105,3 +105,6 @@
 "%@ shuffled all cards"                     = "%@ тасует все карты";
 "%@ is dealing %d cards"                    = "%@ раздаёт по %d карт";
 "%@ shuffled %d cards"                      = "%@ тасует %d карты";
+"%@ changed card appearance"                = "%@ изменил(а) вид карт";
+"%@ changed card deck"                      = "%@ изменил(а) колоду";
+"%@ changed game to %@"                     = "%@ изменил(а) игру на %@";

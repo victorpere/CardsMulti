@@ -376,7 +376,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 self.reassignHost()
             }
             
-            //self.delegate?.newDeviceConnected!(peerID: peerID, connectedDevices: session.connectedPeers)
+            self.delegate?.newDeviceConnected(peerID: peerID, connectedDevices: session.connectedPeers)
             
         } else if state == .notConnected {
             // a device disconnected from the game

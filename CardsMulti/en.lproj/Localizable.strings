@@ -106,3 +106,6 @@
 "%@ shuffled all cards"                     = "%@ shuffled all cards";
 "%@ is dealing %d cards"                    = "%@ is dealing %d cards";
 "%@ shuffled %d cards"                      = "%@ shuffled %d cards";
+"%@ changed card appearance"                = "%@ changed card appearance";
+"%@ changed card deck"                      = "%@ changed card deck";
+"%@ changed game to %@"                     = "%@ changed game to %@";

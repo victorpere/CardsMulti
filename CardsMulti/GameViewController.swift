@@ -534,12 +534,11 @@ class GameViewController: UIViewController {
 extension GameViewController : ConnectionServiceManagerDelegate {
 
     func newPlayerConnected(player: Player, connectedPlayers: [Player?]) {
-        self.showAlert(title: "", text: "\(player.displayName) \("joined the game".localized)")
+        self.flashMessage("\(player.displayName) \("joined the game".localized)")
     }
     
     
     func syncToMe(recipients: [Player]?) {
-        //self.scene.syncSettingsToMe()
         if let syncData = self.scene.syncSettingsAndGameData() {
             self.connectionService.sendData(data: syncData)
             self.connectionService.sendDataAWS(data: syncData, type: .game)
@@ -547,19 +546,11 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     }
     
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
-        DispatchQueue.main.async {
-            let connectedDevicesNames = connectedDevices.map({$0.displayName})
-            self.connectionsLabel.text = "\("connections".localized): \(connectedDevicesNames)"
-            self.updateLabels()
-            self.updatePlayerLabels()
-        }
-
-        self.updateScenePlayers()
-        
+        self.flashMessage("\(peerID.displayName) \("joined the game".localized)")
     }
     
     func playerDisconnected(player: Player, connectedPlayers: [Player?]) {
-        self.showAlert(title: "", text: "\(player.displayName) \("disconnected".localized)")
+        self.flashMessage("\(player.displayName) \("disconnected".localized)")
     }
     
     func deviceDisconnected(peerID: MCPeerID, connectedDevices: [MCPeerID]) {
@@ -571,6 +562,8 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         }
         self.scene.playerPosition = self.connectionService.myPosition
         self.updateScenePlayers()
+        
+        self.flashMessage("\(peerID.displayName) \("disconnected".localized)")
     }
     
     func updatePositions(myPosition: Position) {
@@ -651,18 +644,17 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     
     func didJoinGameAWS(gameId: String, gameCode: String, creator: String) {
         self.awsStatusLabel.text = gameCode
-        self.showAlert(title: "\("joined game code".localized) \(gameCode)", text: "\("Created by".localized) \(creator)")
+        self.flashMessage("\("joined game code".localized) \(gameCode)")
     }
     
     func didDisconnectFromGameAWS() {
         self.awsStatusLabel.text = "⚡︎"
         self.updateConnectionLabels()
-        self.showAlert(title: "disconnected from game".localized, text: nil)
+        self.flashMessage("disconnected from game".localized)
     }
     
     func didReceiveTextMessageAWS(_ message: String, from sender: String) {
         self.showAlert(title: "\("message from".localized) \(sender)", text: message)
-        
     }
 }
 
@@ -738,22 +730,42 @@ extension GameViewController : SettingsTableControllerDelegate {
             print("Error encoding settings data")
         }
         self.scene.updateUISettings()
+        
+        var message = Message()
+        message.systemMessage = UIStrings.changedAppearance
+        message.arguments = [StoredSettings.instance.displayName]
+        self.scene.sendMessage(message)
     }
     
     func settingsChanged() {
         self.syncToMe(recipients: nil)
         self.scene.resetGame(sync: true)
+        
+        var message = Message()
+        message.systemMessage = UIStrings.changedDeck
+        message.arguments = [StoredSettings.instance.displayName]
+        self.scene.sendMessage(message)
     }
     
     func gameChanged() {
         self.scene.saveGame()
         self.startGame(loadFromSave: true)
+        
+        var message = Message()
+        message.systemMessage = UIStrings.changedGame
+        message.arguments = [StoredSettings.instance.displayName, GameType.init(rawValue: StoredSettings.instance.game)?.name ?? ""]
+        self.scene.sendMessage(message)
     }
     
     func gameAndSettingsChanged() {
         self.scene.saveGame()
         self.syncToMe(recipients: nil)
         self.startGame(loadFromSave: false)
+        
+        var message = Message()
+        message.systemMessage = UIStrings.changedGame
+        message.arguments = [StoredSettings.instance.displayName, GameType.init(rawValue: StoredSettings.instance.game)?.name ?? ""]
+        self.scene.sendMessage(message)
     }
     
     func resetScores() {

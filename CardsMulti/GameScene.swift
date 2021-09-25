@@ -501,6 +501,7 @@ class GameScene: SKScene {
         var message = Message()
         message.systemMessage = UIStrings.shuffledAllCards
         message.arguments = [self.settings.displayName]
+        message.location = self.playArea.center.relativePoint(for: self.playerPosition, width: self.size.width, yOffset: self.dividerLine.position.y)
         self.sendMessage(message)
         
         Global.shuffle(&self.allCards)
@@ -923,9 +924,6 @@ class GameScene: SKScene {
             
             // stacking cards also sends position to other devices
             cards.stack(atPosition: topCardPosition, sendPosition: true, animateReceiver: true, delegate: self)
-            
-            //self.flashMessageNode.position = topCardPosition
-            //self.flashMessageNode.flash(message: "ShUfFlEd")
             
             var message = Message()
             message.systemMessage = UIStrings.shuffledNCards
