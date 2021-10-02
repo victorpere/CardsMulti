@@ -24,11 +24,6 @@ class SettingsTableContoller : UIViewController {
     weak var minSlider: CardSlider?
     weak var maxSlider: CardSlider?
     
-    var jackSwitch: Switch!
-    var queenSwitch: Switch!
-    var kingSwitch: Switch!
-    var aceSwitch: Switch!
-    
     var cardScaleSlider: UISlider!
     var soundSwitch: Switch!
         
@@ -53,10 +48,10 @@ class SettingsTableContoller : UIViewController {
         if self.storedSettings.minRank != self.selectedSettings.minRank ||
             self.storedSettings.maxRank != self.selectedSettings.maxRank ||
             self.storedSettings.pipsEnabled != self.selectedSettings.pipsEnabled ||
-            self.storedSettings.jacksEnabled != self.jackSwitch.isOn ||
-            self.storedSettings.queensEnabled != self.queenSwitch.isOn ||
-            self.storedSettings.kingsEnabled != self.kingSwitch.isOn ||
-            self.storedSettings.acesEnabled != self.aceSwitch.isOn {
+            self.storedSettings.jacksEnabled != self.selectedSettings.jacksEnabled ||
+            self.storedSettings.queensEnabled != self.selectedSettings.queensEnabled ||
+            self.storedSettings.kingsEnabled != self.selectedSettings.kingsEnabled ||
+            self.storedSettings.acesEnabled != self.selectedSettings.acesEnabled {
             return true
         }
         return false
@@ -96,16 +91,6 @@ class SettingsTableContoller : UIViewController {
         self.title = "settings".localized
         
         self.elementWidth = self.view.frame.width / 2
-        
-        self.jackSwitch = Switch(width: elementWidth)
-        self.queenSwitch = Switch(width: elementWidth)
-        self.kingSwitch = Switch(width: elementWidth)
-        self.aceSwitch = Switch(width: elementWidth)
-        
-        self.jackSwitch.isOn = self.storedSettings.jacksEnabled
-        self.queenSwitch.isOn = self.storedSettings.queensEnabled
-        self.kingSwitch.isOn = self.storedSettings.kingsEnabled
-        self.aceSwitch.isOn = self.storedSettings.acesEnabled
         
         self.cardScaleSlider = UISlider(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 2, height: self.standardRowHeight))
         self.cardScaleSlider.minimumValue = -StoredSettings.maxCardWidthsPerScreen
@@ -182,10 +167,10 @@ class SettingsTableContoller : UIViewController {
         self.storedSettings.maxRank = self.selectedSettings.maxRank
         
         self.storedSettings.pipsEnabled = self.selectedSettings.pipsEnabled
-        self.storedSettings.jacksEnabled = self.jackSwitch.isOn
-        self.storedSettings.queensEnabled = self.queenSwitch.isOn
-        self.storedSettings.kingsEnabled = self.kingSwitch.isOn
-        self.storedSettings.acesEnabled = self.aceSwitch.isOn
+        self.storedSettings.jacksEnabled = self.selectedSettings.jacksEnabled
+        self.storedSettings.queensEnabled = self.selectedSettings.queensEnabled
+        self.storedSettings.kingsEnabled = self.selectedSettings.kingsEnabled
+        self.storedSettings.acesEnabled = self.selectedSettings.acesEnabled
     }
     
     private func saveUISettings() {
@@ -216,18 +201,6 @@ class SettingsTableContoller : UIViewController {
             } else {
                 self.cardScaleSlider.value = -self.selectedSettings.cardWidthsPerScreen
             }
-            
-            self.cardScaleSlider.isEnabled = gameConfig.canChangeCardSize
-            self.jackSwitch.isEnabled = gameConfig.canChangeDeck
-            self.queenSwitch.isEnabled = gameConfig.canChangeDeck
-            self.kingSwitch.isEnabled = gameConfig.canChangeDeck
-            self.aceSwitch.isEnabled = gameConfig.canChangeDeck
-        } else {
-            self.cardScaleSlider.isEnabled = true
-            self.jackSwitch.isEnabled = true
-            self.queenSwitch.isEnabled = true
-            self.kingSwitch.isEnabled = true
-            self.aceSwitch.isEnabled = true
         }
     }
     
@@ -277,15 +250,12 @@ extension SettingsTableContoller : UITableViewDelegate {
                 
                 self.selectedSettings.game = indexPath.row
                 self.didSelectGame(ofType: gameType)
-                self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue, SettingsSection.cards1.rawValue]), with: .none)
+                self.tableView.reloadSections(IndexSet([SettingsSection.game.rawValue, SettingsSection.cards1.rawValue, SettingsSection.cards2.rawValue]), with: .none)
             }
             break
         case SettingsSection.store.rawValue:
             self.tableView.deselectRow(at: indexPath, animated: true)
             StoreObserver.sharedInstance.restore()
-            
-            //let productsTableController = ProductsTableController(nibName: nil, bundle: nil)
-            //self.navigationController?.pushViewController(productsTableController, animated: true)
         default:
             break
         }
@@ -427,17 +397,41 @@ extension SettingsTableContoller : UITableViewDataSource {
             cell.selectionStyle = .none
             switch indexPath.row {
             case 0:
+                let jackSwitch = Switch(width: self.elementWidth)
+                jackSwitch.isOn = self.selectedSettings.jacksEnabled
+                jackSwitch.isEnabled = self.selectedConfig.canChangeDeck
+                jackSwitch.onValueChanged = { () -> Void in
+                    self.selectedSettings.jacksEnabled = jackSwitch.isOn
+                }
                 cell.textLabel?.text = "jack".localized
-                cell.accessoryView = self.jackSwitch
+                cell.accessoryView = jackSwitch
             case 1:
+                let queenSwitch = Switch(width: self.elementWidth)
+                queenSwitch.isOn = self.selectedSettings.queensEnabled
+                queenSwitch.isEnabled = self.selectedConfig.canChangeDeck
+                queenSwitch.onValueChanged = { () -> Void in
+                    self.selectedSettings.queensEnabled = queenSwitch.isOn
+                }
                 cell.textLabel?.text = "queen".localized
-                cell.accessoryView = self.queenSwitch
+                cell.accessoryView = queenSwitch
             case 2:
+                let kingSwitch = Switch(width: self.elementWidth)
+                kingSwitch.isOn = self.selectedSettings.kingsEnabled
+                kingSwitch.isEnabled = self.selectedConfig.canChangeDeck
+                kingSwitch.onValueChanged = { () -> Void in
+                    self.selectedSettings.kingsEnabled = kingSwitch.isOn
+                }
                 cell.textLabel?.text = "king".localized
-                cell.accessoryView = self.kingSwitch
+                cell.accessoryView = kingSwitch
             case 3:
+                let aceSwitch = Switch(width: self.elementWidth)
+                aceSwitch.isOn = self.selectedSettings.acesEnabled
+                aceSwitch.isEnabled = self.selectedConfig.canChangeDeck
+                aceSwitch.onValueChanged = { () -> Void in
+                    self.selectedSettings.acesEnabled = aceSwitch.isOn
+                }
                 cell.textLabel?.text = "ace".localized
-                cell.accessoryView = self.aceSwitch
+                cell.accessoryView = aceSwitch
             default:
                 break
             }
