@@ -51,9 +51,8 @@ class ReceivedDataHandler {
     private func handleRequestData(_ receivedGameData: RequestData) {
         switch receivedGameData.type {
         case .requestToSync:
-            if self.connectionServiceManager?.isHost ?? false {
-                self.scene?.syncSceneToMe()
-            }
+            print("Received request to sync")
+            self.connectionServiceManager?.delegate?.syncToMe(recipients: nil)
         case .settings:
             print("Received settings")
             if let receivedDictionary = receivedGameData.dataDictionary {

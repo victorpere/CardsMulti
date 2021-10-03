@@ -82,9 +82,9 @@ class ConnectionServiceManager : NSObject {
         return self.hostPeerID == self.myPeerId
     }
     
-    var isHostAWS: Bool {
-        return self.host?.connectionId == self.myself.connectionId
-    }
+//    var isHostAWS: Bool {
+//        return self.host?.connectionId == self.myself.connectionId
+//    }
     
     var myPosition: Position {
         // OLD WAY
@@ -188,7 +188,9 @@ class ConnectionServiceManager : NSObject {
     func sendDataAWS(data: Data, type dataType: WsDataType, toPlayers players: [Player?]? = nil) {
         if let myConnectionId = self.myself.connectionId {
             let recipientConnectionIds = players == nil ? Array(self.playersAWS.filter({ $0?.connectionId != myConnectionId })).connectionIds : players!.connectionIds
-            self.wsRequestSender.sendData(sender: myConnectionId, type: dataType, data: data, recepients: recipientConnectionIds)
+            if recipientConnectionIds.count > 0 {
+                self.wsRequestSender.sendData(sender: myConnectionId, type: dataType, data: data, recepients: recipientConnectionIds)
+            }
         }
     }
     
@@ -400,7 +402,6 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 self.hostPeerID = self.myPeerId
                 
                 self.playersAWS = [nil, nil, nil, nil]
-                self.playersAWS[Position.bottom.rawValue] = Player(peerId: self.myPeerId)
                 self.host = self.myself
             }
             
@@ -533,6 +534,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
     }
     
     func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo]) {
+        
         if connectionId != self.myself.connectionId || connections.count == 1 {
             let newPlayer = Player(connectionId: connectionId, displayName: playerName)
             
@@ -540,7 +542,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                 self.host = newPlayer
             }
             
-            if self.isHostAWS {
+            if self.myself.connectionId == connections.first?.connectionId {
                 for i in 0..<self.playersAWS.count {
                     if self.playersAWS[i] == nil || self.playersAWS[i]?.connectionId == newPlayer.connectionId {
                         newPlayer.position = Position(rawValue: i) ?? .bottom
@@ -552,7 +554,7 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                 self.sendPlayerDataAWS()
                 self.delegate?.updatePlayers()
                 self.delegate?.syncToMe(recipients: [newPlayer])
-                self.reassignHost()
+                //self.reassignHost()
             }
             
             self.delegate?.newPlayerConnected(player: newPlayer, connectedPlayers: self.playersAWS)
@@ -572,9 +574,9 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
                 }
             }
             
-            if self.host?.connectionId == connectionId {
-                self.reassignHost()
-            }
+//            if self.host?.connectionId == connectionId {
+//                self.reassignHost()
+//            }
         }
     }
     
