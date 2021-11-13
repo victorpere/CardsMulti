@@ -250,6 +250,7 @@ class ConnectionServiceManager : NSObject {
      Sends a request to AWS to create a new game
      */
     func createGame() {
+        self.playersAWS = [nil, nil, nil, nil]
         self.wsRequestSender.createGame()
     }
     
@@ -276,6 +277,7 @@ class ConnectionServiceManager : NSObject {
      - parameter gameId: ID of the game to join
      */
     func joinGame(gameId: String) {
+        self.playersAWS = [nil, nil, nil, nil]
         self.wsRequestSender.joinGame(gameId: gameId)
     }
     
