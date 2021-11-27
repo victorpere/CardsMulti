@@ -198,8 +198,10 @@ class SettingsTableContoller : UIViewController {
             
             if !gameConfig.canChangeCardSize {
                 self.cardScaleSlider.value = -gameConfig.defaultSettings.cardWidthsPerScreen
+                self.cardScaleSlider.isEnabled = false
             } else {
                 self.cardScaleSlider.value = -self.selectedSettings.cardWidthsPerScreen
+                self.cardScaleSlider.isEnabled = true
             }
         }
     }
