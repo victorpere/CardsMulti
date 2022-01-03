@@ -24,7 +24,8 @@ class SettingsTableContoller : UIViewController {
     weak var minSlider: CardSlider?
     weak var maxSlider: CardSlider?
     
-    var cardScaleSlider: UISlider!
+    //var cardScaleSlider: UISlider!
+    var cardScaleSlider: CardScaleSlider!
     var soundSwitch: Switch!
         
     var elementWidth: CGFloat = 0
@@ -92,10 +93,13 @@ class SettingsTableContoller : UIViewController {
         
         self.elementWidth = self.view.frame.width / 2
         
-        self.cardScaleSlider = UISlider(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 2, height: self.standardRowHeight))
-        self.cardScaleSlider.minimumValue = -StoredSettings.maxCardWidthsPerScreen
-        self.cardScaleSlider.maximumValue = -StoredSettings.minCardWidthsPerScreen
-        self.cardScaleSlider.value = -StoredSettings.instance.cardWidthsPerScreen
+        //self.cardScaleSlider = UISlider(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 2, height: self.standardRowHeight))
+        self.cardScaleSlider = CardScaleSlider(width: self.view.frame.width / 2)
+        self.cardScaleSlider.settingsTableController = self
+        //self.cardScaleSlider.minimumValue = -StoredSettings.maxCardWidthsPerScreen
+        //self.cardScaleSlider.maximumValue = -StoredSettings.minCardWidthsPerScreen
+        //self.cardScaleSlider.value = -StoredSettings.instance.cardWidthsPerScreen
+        //self.cardScaleSlider.setThumbImage(UIImage(named: "back"), for: .normal)
         
         self.soundSwitch = Switch(width: elementWidth)
         self.soundSwitch.isOn = self.storedSettings.soundOn
@@ -176,11 +180,12 @@ class SettingsTableContoller : UIViewController {
     private func saveUISettings() {
         if let gameType = GameType(rawValue: self.selectedSettings.game) {
             let gameSettings = StoredGameSettings(with: gameType)
-            gameSettings.cardWidthsPerScreen = -self.cardScaleSlider.value
+            //gameSettings.cardWidthsPerScreen = -self.cardScaleSlider.value
+            gameSettings.cardWidthsPerScreen = self.cardScaleSlider.widthsPerScreen
         }
         
-        if StoredSettings.instance.cardWidthsPerScreen != -self.cardScaleSlider.value {
-            StoredSettings.instance.cardWidthsPerScreen = -self.cardScaleSlider.value
+        if StoredSettings.instance.cardWidthsPerScreen != self.cardScaleSlider.widthsPerScreen {
+            StoredSettings.instance.cardWidthsPerScreen = self.cardScaleSlider.widthsPerScreen
             self.delegate?.uiSettingsChanged()
         }
     }
@@ -197,10 +202,10 @@ class SettingsTableContoller : UIViewController {
             }
             
             if !gameConfig.canChangeCardSize {
-                self.cardScaleSlider.value = -gameConfig.defaultSettings.cardWidthsPerScreen
+                self.cardScaleSlider.widthsPerScreen = gameConfig.defaultSettings.cardWidthsPerScreen
                 self.cardScaleSlider.isEnabled = false
             } else {
-                self.cardScaleSlider.value = -self.selectedSettings.cardWidthsPerScreen
+                self.cardScaleSlider.widthsPerScreen = self.selectedSettings.cardWidthsPerScreen
                 self.cardScaleSlider.isEnabled = true
             }
         }
@@ -298,6 +303,8 @@ extension SettingsTableContoller : UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == SettingsSection.cards1.rawValue && (indexPath.row == 1 || indexPath.row == 2) {
             return self.sliderRowHeight
+        } else if (indexPath.section == SettingsSection.size.rawValue) {
+            return self.cardScaleSlider.frame.height
         }
         return self.standardRowHeight
     }
