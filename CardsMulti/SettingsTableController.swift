@@ -448,6 +448,7 @@ extension SettingsTableContoller : UITableViewDataSource {
             cell.selectionStyle = .none
             cell.textLabel?.text = "card size".localized
             cell.accessoryView = self.cardScaleSlider
+            cell.layer.zPosition = 1
         case SettingsSection.sound.rawValue:
             cell.selectionStyle = .none
             cell.textLabel?.text = "sound".localized

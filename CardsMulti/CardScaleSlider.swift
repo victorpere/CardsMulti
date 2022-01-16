@@ -11,6 +11,7 @@ import UIKit
 class CardScaleSlider : UISlider {
     
     let sliderIconImageName = "back"
+    let sliderTrackImageName = "slider_frame"
     let sliderCGImage: CGImage?
     
     weak var settingsTableController: SettingsTableContoller?
@@ -38,6 +39,12 @@ class CardScaleSlider : UISlider {
 
         super.init(frame: CGRect(x: 0, y: 0, width: width, height: 51))
         
+        var sliderTrackImage = UIImage(named: self.sliderTrackImageName)
+        let insets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        sliderTrackImage = sliderTrackImage?.resizableImage(withCapInsets: insets)
+        self.setMinimumTrackImage(sliderTrackImage, for: .normal)
+        self.setMaximumTrackImage(sliderTrackImage, for: .normal)
+        
         self.minimumValue = self.screenWidth / StoredSettings.maxCardWidthsPerScreen
         self.maximumValue = self.screenWidth / StoredSettings.minCardWidthsPerScreen
         self.value = self.screenWidth / StoredSettings.instance.cardWidthsPerScreen
@@ -45,6 +52,7 @@ class CardScaleSlider : UISlider {
         self.updateThumbImage()
         self.addTarget(self, action: #selector(sliderMoved), for: .valueChanged)
         self.addTarget(self, action: #selector(sliderMoveDidEnd), for: .touchUpInside)
+        self.addTarget(self, action: #selector(sliderMoveDidEnd), for: .touchUpOutside)
     }
     
     required init?(coder: NSCoder) {
