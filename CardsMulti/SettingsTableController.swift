@@ -24,7 +24,6 @@ class SettingsTableContoller : UIViewController {
     weak var minSlider: CardSlider?
     weak var maxSlider: CardSlider?
     
-    //var cardScaleSlider: UISlider!
     var cardScaleSlider: CardScaleSlider!
     var soundSwitch: Switch!
         
@@ -93,13 +92,9 @@ class SettingsTableContoller : UIViewController {
         
         self.elementWidth = self.view.frame.width / 2
         
-        //self.cardScaleSlider = UISlider(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 2, height: self.standardRowHeight))
-        self.cardScaleSlider = CardScaleSlider(width: self.view.frame.width / 2)
-        self.cardScaleSlider.settingsTableController = self
-        //self.cardScaleSlider.minimumValue = -StoredSettings.maxCardWidthsPerScreen
-        //self.cardScaleSlider.maximumValue = -StoredSettings.minCardWidthsPerScreen
-        //self.cardScaleSlider.value = -StoredSettings.instance.cardWidthsPerScreen
-        //self.cardScaleSlider.setThumbImage(UIImage(named: "back"), for: .normal)
+        self.cardScaleSlider = CardScaleSlider(width: self.view.frame.width / 2,
+                                               viewWidth: self.view.frame.width)
+        //self.cardScaleSlider.settingsTableController = self
         
         self.soundSwitch = Switch(width: elementWidth)
         self.soundSwitch.isOn = self.storedSettings.soundOn
@@ -180,12 +175,11 @@ class SettingsTableContoller : UIViewController {
     private func saveUISettings() {
         if let gameType = GameType(rawValue: self.selectedSettings.game) {
             let gameSettings = StoredGameSettings(with: gameType)
-            //gameSettings.cardWidthsPerScreen = -self.cardScaleSlider.value
-            gameSettings.cardWidthsPerScreen = self.cardScaleSlider.widthsPerScreen
+            gameSettings.cardWidthsPerScreen = self.selectedSettings.cardWidthsPerScreen
         }
         
-        if StoredSettings.instance.cardWidthsPerScreen != self.cardScaleSlider.widthsPerScreen {
-            StoredSettings.instance.cardWidthsPerScreen = self.cardScaleSlider.widthsPerScreen
+        if StoredSettings.instance.cardWidthsPerScreen != self.selectedSettings.cardWidthsPerScreen {
+            StoredSettings.instance.cardWidthsPerScreen = self.selectedSettings.cardWidthsPerScreen
             self.delegate?.uiSettingsChanged()
         }
     }
@@ -201,13 +195,7 @@ class SettingsTableContoller : UIViewController {
                 self.selectedSettings.sync(to: gameSettings)
             }
             
-            if !gameConfig.canChangeCardSize {
-                self.cardScaleSlider.widthsPerScreen = gameConfig.defaultSettings.cardWidthsPerScreen
-                self.cardScaleSlider.isEnabled = false
-            } else {
-                self.cardScaleSlider.widthsPerScreen = self.selectedSettings.cardWidthsPerScreen
-                self.cardScaleSlider.isEnabled = true
-            }
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: SettingsSection.size.rawValue)], with: .automatic)
         }
     }
     
@@ -447,7 +435,14 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.size.rawValue:
             cell.selectionStyle = .none
             cell.textLabel?.text = "card size".localized
-            cell.accessoryView = self.cardScaleSlider
+            
+            let cardScaleSlider = CardScaleSlider(width: self.view.frame.width / 2, viewWidth: self.view.frame.width)
+            cardScaleSlider.isEnabled = self.selectedConfig.canChangeCardSize
+            cardScaleSlider.widthsPerScreen = self.selectedSettings.cardWidthsPerScreen
+            cardScaleSlider.settingsTableController = self
+            self.cardScaleSlider = cardScaleSlider
+            cell.accessoryView = cardScaleSlider
+            
             cell.layer.zPosition = 1
         case SettingsSection.sound.rawValue:
             cell.selectionStyle = .none

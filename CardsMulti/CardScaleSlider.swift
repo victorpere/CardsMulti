@@ -16,7 +16,7 @@ class CardScaleSlider : UISlider {
     
     weak var settingsTableController: SettingsTableContoller?
     
-    private let screenWidth = Float(UIScreen.main.bounds.width)
+    private let screenWidth: Float // = Float(UIScreen.main.bounds.width)
     
     // MARK: - Computed properties
     
@@ -33,9 +33,10 @@ class CardScaleSlider : UISlider {
     
     // MARK: - Initializers
     
-    init(width: CGFloat) {
+    init(width: CGFloat, viewWidth: CGFloat) {
         let sliderIconImage = UIImage(named: self.sliderIconImageName)
         self.sliderCGImage = sliderIconImage?.cgImage
+        self.screenWidth = Float(viewWidth)
 
         super.init(frame: CGRect(x: 0, y: 0, width: width, height: 51))
         
@@ -67,6 +68,7 @@ class CardScaleSlider : UISlider {
     
     @objc private func sliderMoveDidEnd() {
         print("size slider move end")
+        self.settingsTableController?.selectedSettings.cardWidthsPerScreen = self.widthsPerScreen
         self.updateRowHeight()
     }
     
@@ -82,6 +84,8 @@ class CardScaleSlider : UISlider {
     }
     
     private func updateRowHeight() {
-        self.settingsTableController?.tableView.reloadData()
+        //self.settingsTableController?.tableView.reloadData()
+        
+        self.settingsTableController?.tableView.reloadRows(at: [IndexPath(row: 0, section: SettingsSection.size.rawValue)], with: .automatic)
     }
 }
