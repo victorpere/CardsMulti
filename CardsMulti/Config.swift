@@ -27,6 +27,8 @@ public final class Config {
     public static let cardWidthFullSizePixels: CGFloat = 500.0
     
     public static let snapDistance: CGFloat = 20
+    public static let fanRadiusCoefficient: CGFloat = 100
+    public static let fanWidthCoefficient: CGFloat = 1
     
     public static let flashMessageFadeDuration: TimeInterval = 0.25
     public static let flashMessageDuration: TimeInterval = 2.0
