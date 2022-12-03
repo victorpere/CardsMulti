@@ -16,9 +16,7 @@ class WsRequestSender {
     
     var delegate: WsRequestSenderDelegate?
     
-    var isConnected: Bool {
-        return self.webSocket.isConnected
-    }
+    var isConnected = false
     
     // MARK: - Private properties
     
@@ -245,39 +243,50 @@ class WsRequestSender {
 // MARK: - WebSocketDelegate
 
 extension WsRequestSender : WebSocketDelegate {
-    func websocketDidConnect(socket: WebSocketClient) {
-        print("websocketDidConnect")        
-        self.delegate?.didConnect()
-        
-        if let action = self.waitingAction {
-            action()
-            self.waitingAction = nil
-        }
-    }
-    
-    func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
-        print("websocketDidDisconnect")
-        self.delegate?.didDisconnect()
-    }
-    
-    func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-        print("websocketDidReceiveMessage")
-        
-        let data = Data(text.utf8)
-        do {
-            try self.handleReceivedData(data)
-        } catch {
-            self.delegate?.didReceiveTextMessage(text, from: "unknown")
-        }
-    }
-    
-    func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
-        print("websocketDidReceiveData")
-        
-        do {
-            try self.handleReceivedData(data)
-        } catch {
-            print("Error loading json from websocket data")
+    func didReceive(event: WebSocketEvent, client: WebSocket) {
+        switch event {
+        case .connected(_):
+            print("websocket connected")
+            self.isConnected = true
+            self.delegate?.didConnect()
+            
+            if let action = self.waitingAction {
+                action()
+                self.waitingAction = nil
+            }
+        case .disconnected(let reason, let code):
+            print("websocket disconnected reson:\(reason) code:\(code)")
+            self.isConnected = false
+            self.delegate?.didDisconnect()
+        case .text(let text):
+            print("websocket text")
+            let data = Data(text.utf8)
+            do {
+                try self.handleReceivedData(data)
+            } catch {
+                self.delegate?.didReceiveTextMessage(text, from: "unknown")
+            }
+        case .binary(let data):
+            print("websocket data")
+            do {
+                try self.handleReceivedData(data)
+            } catch {
+                print("Error loading json from websocket data")
+            }
+        case .pong(_):
+            break
+        case .ping(_):
+            break
+        case .error(let error):
+            print("websocket error \(error?.localizedDescription ?? "unknown")")
+            self.isConnected = false
+        case .viabilityChanged(_):
+            break
+        case .reconnectSuggested(_):
+            break
+        case .cancelled:
+            print("websocket cancelled")
+            self.isConnected = false
         }
     }
 }
