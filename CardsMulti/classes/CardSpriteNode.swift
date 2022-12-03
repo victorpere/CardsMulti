@@ -583,7 +583,7 @@ protocol CardSpriteNodeDelegate {
 // MARK: - Array of CardSpriteNode extension
 
 extension Array where Element:CardSpriteNode {
-    
+        
     /// Returns a string array representing the card symbols in order of their zPositions
     var zPositionsArray: [String?] {
         let cardsSorted = self.sorted { $0.zPosition < $1.zPosition }
@@ -640,12 +640,12 @@ extension Array where Element:CardSpriteNode {
     /**
      
      */
-    func fan(flipEachCard: Bool = false, faceUp: Bool = false, sendPosition: Bool, animateReceiver: Bool = false) {        
+    func fan(faceUp: Bool = false, sendPosition: Bool, animateReceiver: Bool = false) {
         if let topCardPosition = (self.last?.position) {
-            // TODO: fan radius and dist between cards based on number of cards
-            let fanRadius: CGFloat = 100
-            let radianPerCard: CGFloat = 0.2
-            //let arcSize = CGFloat(cards.count) * radianPerCard
+            let fanRadius: CGFloat = log(CGFloat(self.count)) * Config.fanRadiusCoefficient
+            let radianPerCard: CGFloat = Config.fanWidthCoefficient / CGFloat(self.count)
+            print("Fan radius: \(fanRadius)")
+            print("Radian per card: \(radianPerCard)")
             
             for (cardNumber, card) in self.sorted(by: { $0.zPosition < $1.zPosition }).enumerated() {
                 let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(self.count - 1) / 2)
@@ -655,12 +655,6 @@ extension Array where Element:CardSpriteNode {
                 let dy: CGFloat = (fanRadius * cos(angle)) - fanRadius
                 
                 let newPosition = CGPoint(x: topCardPosition.x + dx, y: topCardPosition.y + dy)
-                
-                Global.displayCards([card])
-                print("Offset: \(offset)")
-                print("Old position: \(topCardPosition)")
-                print("New Position: \(newPosition)")
-                print("Angle: \(angle)")
                 
                 card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: CardSpriteNode.flipDuration, sendPosition: true, animateReceiver: true)
             }

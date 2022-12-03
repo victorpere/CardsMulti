@@ -720,7 +720,7 @@ class GameScene: SKScene {
     }
     
     func stoppedCutting(touchLocation: CGPoint) {
-        print ("cutting \(self.cutStartPosition) -> \(touchLocation)")
+        print ("cutting \(self.cutStartPosition!) -> \(touchLocation)")
         
         let origin = CGPoint(x: min(touchLocation.x, self.cutStartPosition.x), y: min(touchLocation.y, self.cutStartPosition.y))
         let width = abs(touchLocation.x - self.cutStartPosition.x)
@@ -943,33 +943,7 @@ class GameScene: SKScene {
         - faceUp: whether to flip all cards face up
      */
     func fan(cards: [CardSpriteNode], faceUp: Bool) {
-        // TODO: fan radius and dist between cards based on number of cards
-        let fanRadius: CGFloat = 100
-        let radianPerCard: CGFloat = 0.2
-        //let arcSize = CGFloat(cards.count) * radianPerCard
-        
-        if let topCardPosition = cards.last?.position {
-            for (cardNumber, card) in cards.sorted(by: { $0.zPosition < $1.zPosition }).enumerated() {
-                let offset: CGFloat = CGFloat(cardNumber) - (CGFloat(cards.count - 1) / 2)
-                //let offset: CGFloat =  (CGFloat(cards.count - 1) / 2) - CGFloat(cardNumber)
-                let angle: CGFloat = radianPerCard * offset
-                
-                let dx: CGFloat = fanRadius * sin(angle)
-                let dy: CGFloat = (fanRadius * cos(angle)) - fanRadius
-                
-                let newPosition = CGPoint(x: topCardPosition.x + dx, y: topCardPosition.y + dy)
-                
-                Global.displayCards([card])
-                print("Offset: \(offset)")
-                print("Old position: \(topCardPosition)")
-                print("New Position: \(newPosition)")
-                print("Angle: \(angle)")
-                
-                //card.rotate(to: -angle, duration: self.shortDuration, sendPosition: true)
-                card.moveAndFlip(to: newPosition, rotateToAngle: -angle, faceUp: faceUp, duration: self.resetDuration, sendPosition: true, animateReceiver: true)
-            }
-        }
-        
+        cards.fan(faceUp: faceUp, sendPosition: true, animateReceiver: true)        
         self.deselectNodeForTouch()
     }
 

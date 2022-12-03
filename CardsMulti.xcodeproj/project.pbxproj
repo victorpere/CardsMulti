@@ -31,6 +31,7 @@
 		574725C8243C072E0094FF39 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574725C7243C072E0094FF39 /* GridView.swift */; };
 		5748641826DE62F4005517BB /* StoredGameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5748641726DE62F4005517BB /* StoredGameSettings.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
+		576A36462752C6540045B159 /* CardScaleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A36452752C6540045B159 /* CardScaleSlider.swift */; };
 		578742BB2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */; };
 		578742BC2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */; };
 		57897FF81E85652400B1D4A6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF71E85652400B1D4A6 /* Config.swift */; };
@@ -193,6 +194,7 @@
 		574725C7243C072E0094FF39 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		5748641726DE62F4005517BB /* StoredGameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredGameSettings.swift; sourceTree = "<group>"; };
 		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
+		576A36452752C6540045B159 /* CardScaleSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScaleSlider.swift; sourceTree = "<group>"; };
 		578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceivedDataHandler.swift; sourceTree = "<group>"; };
 		57897FF71E85652400B1D4A6 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		57897FF91E85658D00B1D4A6 /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				57E97B0C1E7479F5000243B2 /* BottomButton.swift */,
 				57897FF91E85658D00B1D4A6 /* Switch.swift */,
 				57C626112346E6D6008A9872 /* CardSlider.swift */,
+				576A36452752C6540045B159 /* CardScaleSlider.swift */,
 				57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */,
 				57BB31D42353BA8700AE2CDC /* PlayerStatusLabel.swift */,
 				57BB31DC23569DA200AE2CDC /* SettingsTableController.swift */,
@@ -744,15 +747,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CardsMulti/Pods-CardsMulti-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 			);
@@ -843,6 +842,7 @@
 				574725C8243C072E0094FF39 /* GridView.swift in Sources */,
 				57E97B0D1E7479F6000243B2 /* BottomButton.swift in Sources */,
 				57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */,
+				576A36462752C6540045B159 /* CardScaleSlider.swift in Sources */,
 				57D570982687B2490050B28E /* Settings.swift in Sources */,
 				57B053D51E4E3BD20057E62F /* AppDelegate.swift in Sources */,
 			);
@@ -1095,12 +1095,12 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.8.7;
+				MARKETING_VERSION = 0.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1116,12 +1116,12 @@
 				CODE_SIGN_ENTITLEMENTS = CardsMulti/CardsMulti.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.8.7;
+				MARKETING_VERSION = 0.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

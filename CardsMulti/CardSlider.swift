@@ -13,7 +13,10 @@ class CardSlider : UISlider {
     let slider_track = "slider_frame"
     let MIN: Float = 3.0
     let MAX: Float = 10.0
+    let minRank: Int
+    let maxRank: Int
     let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
+    var thumbImages = Dictionary<Int, UIImage>()
     
     weak var minSlider: CardSlider?
     weak var maxSlider: CardSlider?
@@ -33,6 +36,8 @@ class CardSlider : UISlider {
         self.minimumValue = MIN
         self.maximumValue = MAX
         
+        self.initThumbImages()
+        
         var sliderTrackImage = UIImage(named: self.slider_track)
         let insets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         sliderTrackImage = sliderTrackImage?.resizableImage(withCapInsets: insets)
@@ -45,6 +50,8 @@ class CardSlider : UISlider {
     }
     
     private override init(frame: CGRect) {
+        self.minRank = Int(self.MIN - 1)
+        self.maxRank = Int(self.MAX)
         super.init(frame: frame)
     }
     
@@ -92,11 +99,16 @@ class CardSlider : UISlider {
     // MARK: - Private methods
     
     private func setThumbImage() {
-        let imageName = self.slider_icon + String(self.rank)
-        let image = UIImage(named: imageName)
-        
         DispatchQueue.main.async {
-            self.setThumbImage(image, for: .normal)
+            self.setThumbImage(self.thumbImages[self.rank], for: .normal)
+        }
+    }
+    
+    private func initThumbImages() {
+        for i in self.minRank...self.maxRank {
+            let imageName = self.slider_icon + String(i)
+            let image = UIImage(named: imageName)
+            self.thumbImages[i] = image
         }
     }
 }
