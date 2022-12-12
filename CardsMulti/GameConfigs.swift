@@ -82,6 +82,9 @@ class GameConfigs {
                             if let value = settingsDictionary[GameConfigKey.defaultSettings.rawValue] as? NSDictionary {
                                 gameConfig.defaultSettings = self.defaultSettings(fromDictionary: value)
                             }
+                            if let value = settingsDictionary[GameConfigKey.buttons.rawValue] as? [String] {
+                                gameConfig.buttons = value
+                            }
                             
                             self.configs[gameType] = gameConfig
                         }
@@ -141,6 +144,7 @@ struct GameConfig {
     var customOptions: NSDictionary?
     
     var defaultSettings = TemporarySettings()
+    var buttons: [String] = []
 }
 
 // MARK: - Enum GameConfigKey
@@ -163,6 +167,7 @@ enum GameConfigKey : String {
     case acesEnabled = "acesEnabled"
     case cardWidthsPerScreen = "cardWidthsPerScreen"
     case margin = "margin"
+    case buttons = "buttons"
 }
 
 // MARK: - Enum GameConfigError

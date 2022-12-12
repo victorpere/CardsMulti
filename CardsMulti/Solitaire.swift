@@ -73,6 +73,8 @@ class Solitaire : GameScene {
             }
             return true
         }
+        
+        self.buttonActions["autocomplete"] = self.autoComplete
     }
     
     required init?(coder aDecoder: NSCoder) {

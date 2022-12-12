@@ -11,7 +11,7 @@ import GameplayKit
 import MultipeerConnectivity
 import AudioToolbox
 
-class GameScene: SKScene {
+class GameScene: GameSceneBase {
     /// MCPeerID of this device
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     
