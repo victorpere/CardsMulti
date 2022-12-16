@@ -4,7 +4,7 @@
         "defaultSettings": {
             "cardWidthsPerScreen": 6.0
         },
-        "buttons": [ "lineUp", "sort" ]
+        "buttons": [ "cards", "cards_sort" ]
     },
     {
         "gameType": "Solitaire",

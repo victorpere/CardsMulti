@@ -134,10 +134,9 @@ class GameViewController: UIViewController {
     // MARK: - Action methods
     
     @objc func buttonAction(sender: BottomButton) {
-        let btnsendtag: BottomButton = sender
-        switch btnsendtag.name {
+        switch sender.name {
         case "restart":
-            self.restartGame()
+            self.scene.restartGame(sync: true)
             break
         case "players":
             if self.connectionService.connected {
@@ -146,17 +145,11 @@ class GameViewController: UIViewController {
                 self.showNotConnectedMenu(fromButton: sender)
             }
             break
-        case "lineUp":
-            self.lineUpCards()
-            break
         case "settings":
             self.openSettings(fromButton: sender)
             break
-        case "sort":
-            self.sortCards()
-            break
         default:
-            if let buttonName = btnsendtag.name {
+            if let buttonName = sender.name {
                 self.scene.performAction(action: buttonName)
             }
             break
@@ -167,18 +160,6 @@ class GameViewController: UIViewController {
     
     func saveGame() {
         self.scene.saveGame()
-    }
-    
-    func restartGame() {
-        self.scene.restartGame(sync: true)
-    }
-    
-    func lineUpCards() {
-        self.scene.resetHand(sort: false)
-    }
-    
-    func sortCards() {
-        self.scene.resetHand(sort: true)
     }
     
     func showNotConnectedMenu(fromButton button: BottomButton) {
@@ -442,7 +423,7 @@ class GameViewController: UIViewController {
         
         if let gameButtons = gameConfig?.buttons {
             for buttonName in gameButtons {
-                let button = BottomButton(withIconNamed: "icon_cards", viewFrame: self.safeFrame, buttonNumber: CGFloat(buttonNumber), numberOfButtons: CGFloat(numberOfButtons), tag: numberOfButtons, name: buttonName)
+                let button = BottomButton(withIconNamed: "icon_\(buttonName)", viewFrame: self.safeFrame, buttonNumber: CGFloat(buttonNumber), numberOfButtons: CGFloat(numberOfButtons), tag: numberOfButtons, name: buttonName)
                 button.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
                 self.buttons.append(button)
                 self.view.addSubview(button)

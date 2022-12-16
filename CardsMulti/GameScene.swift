@@ -177,6 +177,9 @@ class GameScene: GameSceneBase {
                 self.restartGame(sync: true)
             }, cancelAction: nil)
         }
+        
+        self.buttonActions["cards"] = { () -> Void in self.resetHand(sort: false)}
+        self.buttonActions["cards_sort"] = { () -> Void in self.resetHand(sort: true)}
     }
     
     override func sceneDidLoad() {
