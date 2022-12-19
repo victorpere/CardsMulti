@@ -78,7 +78,7 @@ class GameViewController: UIViewController {
         
         self.connectionsLabel = UILabel(frame: CGRect(x: self.view.safeAreaInsets.left, y: self.view.frame.width, width: self.safeFrame.width, height: 15))
         self.connectionsLabel.textColor = UIColor.green
-        self.connectionsLabel.font = UIFont(name: "Helvetica", size: 12)
+        self.connectionsLabel.font = UIFont(name: Config.uiFontName, size: 12)
         self.connectionsLabel.text = "\("connections".localized): "
         self.view.addSubview(self.connectionsLabel)
         
@@ -87,7 +87,7 @@ class GameViewController: UIViewController {
         
         self.awsStatusLabel = UILabel(frame: CGRect(x: self.view.frame.width - self.view.safeAreaInsets.right - 35, y: self.view.frame.width, width: 35, height: 15))
         self.awsStatusLabel.textColor = UIColor.green
-        self.awsStatusLabel.font = UIFont(name: "Helvetica", size: 12)
+        self.awsStatusLabel.font = UIFont(name: Config.uiFontName, size: 12)
         self.view.addSubview(self.awsStatusLabel)
         
         self.playerAcrossLabel = PlayerStatusLabel(withFrameDimension: self.safeFrame.width, inPosition: .top, withInsets: self.view.safeAreaInsets)
@@ -101,7 +101,7 @@ class GameViewController: UIViewController {
 
         self.positionLabel = UILabel(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 120))
         self.positionLabel.textColor = UIColor.green
-        self.positionLabel.font = UIFont(name: "Helvetica", size: 10)
+        self.positionLabel.font = UIFont(name: Config.uiFontName, size: 10)
         self.positionLabel.numberOfLines = 0
         self.positionLabel.text = "\(self.connectionService.myPeerId)\n\(self.connectionService.myPosition)\n"
         for player in self.connectionService.players {
