@@ -3,7 +3,8 @@
         "gameType": "FreePlay",
         "defaultSettings": {
             "cardWidthsPerScreen": 6.0
-        }
+        },
+        "buttons": [ "cards", "cards_sort" ]
     },
     {
         "gameType": "Solitaire",
@@ -27,7 +28,8 @@
                 "type": "Int",
                 "defaultValue": 3
             }
-        }
+        },
+        "buttons": [ "autocomplete" ]
     },
     {
         "gameType": "FreeCell",
@@ -46,6 +48,7 @@
             "acesEnabled": true,
             "cardWidthsPerScreen": 9.0,
             "margin": 4.5
-        }
+        },
+        "buttons": [ "autocomplete" ]
     }
 ]

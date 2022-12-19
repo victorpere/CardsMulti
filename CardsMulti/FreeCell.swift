@@ -80,6 +80,8 @@ class FreeCell : GameScene {
                 self.restartGame(sync: true)
             }, cancelAction: nil)
         }
+        
+        self.buttonActions["autocomplete"] = self.autoComplete
     }
     
     required init?(coder aDecoder: NSCoder) {

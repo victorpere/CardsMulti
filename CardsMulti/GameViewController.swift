@@ -35,13 +35,13 @@ class GameViewController: UIViewController {
     var skView: SKView!
     var scene: GameScene!
     
-    
-    var restartButton: BottomButton!
-    var settingsButton: BottomButton!
-    var numberOfPlayersButton: BottomButton!
-    var lineUpCardsButton: BottomButton!
-    var sortCardsButton: BottomButton!
-    var scoresButton: BottomButton!
+    var buttons: [BottomButton] = []
+//    var restartButton: BottomButton!
+//    var settingsButton: BottomButton!
+//    var numberOfPlayersButton: BottomButton!
+//    var lineUpCardsButton: BottomButton!
+//    var sortCardsButton: BottomButton!
+//    var scoresButton: BottomButton!
     
     // MARK: - View methods
 
@@ -110,31 +110,8 @@ class GameViewController: UIViewController {
         self.view.addSubview(self.positionLabel)
         self.positionLabel.isHidden = true
         
-        self.lineUpCardsButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.safeFrame, buttonNumber: 0, numberOfButtons: self.numberOfButtons, tag: 3)
-        self.lineUpCardsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
-        self.view.addSubview(self.lineUpCardsButton)
+        self.setUpButtons()
         
-        self.sortCardsButton = BottomButton(withIconNamed: "icon_cards_sort", viewFrame: self.safeFrame, buttonNumber: 1, numberOfButtons: self.numberOfButtons, tag: 5)
-        self.sortCardsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
-        self.view.addSubview(self.sortCardsButton)
-        
-        self.settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.safeFrame, buttonNumber: 2, numberOfButtons: self.numberOfButtons, tag: 4)
-        self.settingsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
-        self.view.addSubview(self.settingsButton)
-        
-        self.numberOfPlayersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.safeFrame, buttonNumber: 3, numberOfButtons: self.numberOfButtons, tag: 2)
-        self.numberOfPlayersButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
-        self.view.addSubview(self.numberOfPlayersButton)
-        
-        self.restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.safeFrame, buttonNumber: 4, numberOfButtons: self.numberOfButtons, tag: 1)
-        self.restartButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
-        self.view.addSubview(self.restartButton)
-        
-        self.scoresButton = BottomButton(withIconNamed: "icon_cards", viewFrame: self.view.frame, buttonNumber: 5, numberOfButtons: self.numberOfButtons, tag: 6)
-        self.scoresButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
-        //view.addSubview(self.scoresButton)
-        
-        //let skView = self.view as! SKView
         let sceneFrame = CGRect(x: self.safeFrame.minX,
                                 y: self.safeFrame.minY,
                                 width: self.safeFrame.width,
@@ -150,37 +127,32 @@ class GameViewController: UIViewController {
         self.skView.allowsTransparency = true
         
         //self.skView.isMultipleTouchEnabled = true
-        self.startGame()
+        
+        self.startGame(loadFromSave: true)
     }
     
     // MARK: - Action methods
     
-    @objc func buttonAction(sender: UIButton) {
-        let btnsendtag: UIButton = sender
-        switch btnsendtag.tag {
-        case 1:
-            self.restartGame()
-        case 2:
-            if self.connectionService.connected {
-                self.showConnectedMenu()
-            } else {
-                self.showNotConnectedMenu()
-            }
-        case 3:
-            self.lineUpCards()
-        case 4:
-            self.openSettings()
-        case 5:
-            self.sortCards()
-        case 6:
-            // test websockets
-            //WsRequestSender.instnc.connect()
-            //WsRequestSender.instance.disconnect()
-            
-            // scores
-            //self.openScores()
+    @objc func buttonAction(sender: BottomButton) {
+        switch sender.name {
+        case "restart":
+            self.scene.restartGame(sync: true)
             break
-        default: break
+        case "players":
+            if self.connectionService.connected {
+                self.showConnectedMenu(fromButton: sender)
+            } else {
+                self.showNotConnectedMenu(fromButton: sender)
+            }
+            break
+        case "settings":
+            self.openSettings(fromButton: sender)
+            break
+        default:
+            if let buttonName = sender.name {
+                self.scene.performAction(action: buttonName)
+            }
+            break
         }
     }
     
@@ -190,76 +162,10 @@ class GameViewController: UIViewController {
         self.scene.saveGame()
     }
     
-    func startGame(loadFromSave: Bool = true) {
-
-        //connectionsLabel.isHidden = true
-        
-        switch StoredSettings.instance.game {
-        case GameType.freePlay.rawValue:
-            self.connectionsLabel.isHidden = false
-            self.playerLeftLabel.isHidden = false
-            self.playerAcrossLabel.isHidden = false
-            self.playerRightLabel.isHidden = false
-            self.awsStatusLabel.isHidden = false
-            self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
-        case GameType.solitare.rawValue:
-            self.connectionsLabel.isHidden = true
-            self.playerLeftLabel.isHidden = true
-            self.playerAcrossLabel.isHidden = true
-            self.playerRightLabel.isHidden = true
-            self.awsStatusLabel.isHidden = true
-            self.scene = Solitaire(size: self.skView.frame.size, loadFromSave: loadFromSave)
-//        case GameType.GoFish.rawValue:
-//            self.connectionsLabel.isHidden = false
-//            self.playerLeftLabel.isHidden = false
-//            self.playerAcrossLabel.isHidden = false
-//            self.playerRightLabel.isHidden = false
-//            self.awsStatusLabel.isHidden = false
-//            self.scene = GameGoFish(size: self.skView.frame.size, loadFromSave: loadFromSave)
-        case GameType.freeCell.rawValue:
-            self.connectionsLabel.isHidden = true
-            self.playerLeftLabel.isHidden = true
-            self.playerAcrossLabel.isHidden = true
-            self.playerRightLabel.isHidden = true
-            self.awsStatusLabel.isHidden = true
-            self.scene = FreeCell(size: self.skView.frame.size, loadFromSave: loadFromSave)
-
-        default:
-            self.connectionsLabel.isHidden = false
-            self.playerLeftLabel.isHidden = false
-            self.playerAcrossLabel.isHidden = false
-            self.playerRightLabel.isHidden = false
-            self.awsStatusLabel.isHidden = false
-            self.scene = GameScene(size: self.skView.frame.size, loadFromSave: loadFromSave)
-        }
-        
-        self.checkForceTouch()
-        self.scene.gameSceneDelegate = self
-        self.updateScenePlayers()
-        
-        /* Set the scale mode to scale to fit the window */
-        self.scene.scaleMode = .aspectFill
-        self.scene.backgroundColor = UIColor.clear
-        
-        self.skView.presentScene(self.scene)
-    }
-    
-    func restartGame() {
-        self.scene.restartGame(sync: true)
-    }
-    
-    func lineUpCards() {
-        self.scene.resetHand(sort: false)
-    }
-    
-    func sortCards() {
-        self.scene.resetHand(sort: true)
-    }
-    
-    func showNotConnectedMenu() {
+    func showNotConnectedMenu(fromButton button: BottomButton) {
         if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: self.scene.gameType), gameConfig.maxPlayers < 2 {
             self.showActionDialog(title: "sigle player game".localized, text: "you can switch to a multiplayer game in settings".localized, actionTitle: "open settings".localized, action: { () -> Void in
-                self.openSettings()
+                self.openSettings(fromButton: button)
             })
             return
         }
@@ -297,13 +203,13 @@ class GameViewController: UIViewController {
         
         let presentationController = peerBrowser.popoverPresentationController
         presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = self.numberOfPlayersButton
-        presentationController?.sourceRect = self.numberOfPlayersButton.bounds
+        presentationController?.sourceView = button
+        presentationController?.sourceRect = button.bounds
         
         self.present(peerBrowser, animated: true, completion: nil)
     }
     
-    func showConnectedMenu() {
+    func showConnectedMenu(fromButton button: BottomButton) {
         var title: String?
         if let gameCode = self.connectionService.gameCode {
             title = "\("connected to game".localized) \(gameCode)"
@@ -312,7 +218,7 @@ class GameViewController: UIViewController {
         let connectionAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         
         let inviteButton = UIAlertAction(title: "invite a friend to join".localized, style: .default, handler: { (alert) -> Void in
-            self.createInvitation()
+            self.createInvitation(fromButton: button)
         })
         
         let disconnectButton = UIAlertAction(title: "disconnect from the game".localized, style: .default, handler: { (alert) -> Void in
@@ -327,13 +233,13 @@ class GameViewController: UIViewController {
         
         let presentationController = connectionAlert.popoverPresentationController
         presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = self.numberOfPlayersButton
-        presentationController?.sourceRect = self.numberOfPlayersButton.bounds
+        presentationController?.sourceView = button
+        presentationController?.sourceRect = button.bounds
         
         self.present(connectionAlert, animated: true, completion: nil)
     }
     
-    func openSettings() {
+    func openSettings(fromButton button: BottomButton) {
         let settingsViewController = SettingsTableContoller(nibName: nil, bundle: nil)
         settingsViewController.delegate = self
         let navSettingsViewController = UINavigationController(rootViewController: settingsViewController)
@@ -342,13 +248,13 @@ class GameViewController: UIViewController {
         
         let presentationController = navSettingsViewController.popoverPresentationController
         presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = self.settingsButton
-        presentationController?.sourceRect = self.settingsButton.bounds
+        presentationController?.sourceView = button
+        presentationController?.sourceRect = button.bounds
         
         self.present(navSettingsViewController, animated: true, completion: nil)
     }
     
-    func openScores() {
+    func openScores(fromButton button: BottomButton) {
         let scoresViewController = ScoresViewController(withScene: self.scene)
         
         let navScoresViewController = UINavigationController(rootViewController: scoresViewController)
@@ -357,8 +263,8 @@ class GameViewController: UIViewController {
         
         let presentationConroller = navScoresViewController.popoverPresentationController
         presentationConroller?.permittedArrowDirections = .down
-        presentationConroller?.sourceView = self.scoresButton
-        presentationConroller?.sourceRect = self.scoresButton.bounds
+        presentationConroller?.sourceView = button
+        presentationConroller?.sourceRect = button.bounds
         
         self.present(navScoresViewController, animated: true, completion: nil)
     }
@@ -475,12 +381,79 @@ class GameViewController: UIViewController {
     
     // MARK: - Private methods
     
+    private func startGame(loadFromSave: Bool = true) {
+        let gameType = GameType(rawValue: StoredSettings.instance.game)
+        let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType)
+        
+        self.connectionsLabel.isHidden = gameConfig?.maxPlayers == 1
+        self.playerLeftLabel.isHidden = gameConfig?.maxPlayers == 1
+        self.playerAcrossLabel.isHidden = gameConfig?.maxPlayers == 1
+        self.playerRightLabel.isHidden = gameConfig?.maxPlayers == 1
+        self.awsStatusLabel.isHidden = gameConfig?.maxPlayers == 1
+        
+        self.scene = GameSceneFactory.CreateGameScene(ofType: gameType ?? .freePlay, ofSize: self.skView.frame.size, loadFromSave: loadFromSave) as? GameScene
+        
+        self.checkForceTouch()
+        self.scene.gameSceneDelegate = self
+        self.updateScenePlayers()
+        
+        /* Set the scale mode to scale to fit the window */
+        self.scene.scaleMode = .aspectFill
+        self.scene.backgroundColor = UIColor.clear
+        
+        self.skView.presentScene(self.scene)
+    }
+    
+    /**
+     Sets up buttons for the current game type
+     */
+    private func setUpButtons() {
+        for button in self.buttons {
+            button.removeFromSuperview()
+        }
+        
+        self.buttons.removeAll()
+        
+        let gameType = GameType(rawValue: StoredSettings.instance.game)
+        let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType)
+        
+        let numberOfGlobalButtons = 3
+        let numberOfButtons = (gameConfig?.buttons.count ?? 0) + numberOfGlobalButtons
+        var buttonNumber = 0
+        
+        if let gameButtons = gameConfig?.buttons {
+            for buttonName in gameButtons {
+                let button = BottomButton(withIconNamed: "icon_\(buttonName)", viewFrame: self.safeFrame, buttonNumber: CGFloat(buttonNumber), numberOfButtons: CGFloat(numberOfButtons), tag: numberOfButtons, name: buttonName)
+                button.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+                self.buttons.append(button)
+                self.view.addSubview(button)
+                buttonNumber += 1
+            }
+        }
+        
+        let settingsButton = BottomButton(withIconNamed: "icon_settings", viewFrame: self.safeFrame, buttonNumber: CGFloat(buttonNumber), numberOfButtons: CGFloat(numberOfButtons), tag: 4, name: "settings")
+        settingsButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.buttons.append(settingsButton)
+        self.view.addSubview(settingsButton)
+        buttonNumber += 1
+        
+        let playersButton = BottomButton(withIconNamed: "icon_players", viewFrame: self.safeFrame, buttonNumber: CGFloat(buttonNumber), numberOfButtons: CGFloat(numberOfButtons), tag: 2, name: "players")
+        playersButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.buttons.append(playersButton)
+        self.view.addSubview(playersButton)
+        buttonNumber += 1
+        
+        let restartButton = BottomButton(withIconNamed: "icon_restart", viewFrame: self.safeFrame, buttonNumber: CGFloat(buttonNumber), numberOfButtons: CGFloat(numberOfButtons), tag: 1, name: "restart")
+        restartButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
+        self.buttons.append(restartButton)
+        self.view.addSubview(restartButton)
+    }
+    
     /**
      Creates an invitation link to the current game and opens a sharing dialog
      */
-    private func createInvitation() {
+    private func createInvitation(fromButton button: BottomButton?) {
         if self.connectionService.gameId != nil {
-            //let params = [URLQueryItem(name: "gamecode", value: self.connectionService.gameCode)]
             let params = [URLQueryItem(name: "gameid", value: self.connectionService.gameId)]
             guard let url = Global.appLinkUrl(method: "join", params: params) else {
                 self.showAlert(title: "something went wrong".localized, text: "couldn't retrieve the game information".localized)
@@ -491,8 +464,8 @@ class GameViewController: UIViewController {
             
             let presentationController = inviteViewController.popoverPresentationController
             presentationController?.permittedArrowDirections = .down
-            presentationController?.sourceView = self.numberOfPlayersButton
-            presentationController?.sourceRect = self.numberOfPlayersButton.bounds
+            presentationController?.sourceView = button
+            presentationController?.sourceRect = button?.bounds ?? CGRect(x: 0, y: 0, width: 0, height: 0)
 
             self.present(inviteViewController, animated: true, completion: nil)
         } else {
@@ -624,7 +597,8 @@ extension GameViewController : ConnectionServiceManagerDelegate {
     
     func didGreateGameAWS(gameCode: String) {
         self.awsStatusLabel.text = gameCode
-        self.createInvitation()
+        // TODO: test on iPad
+        self.createInvitation(fromButton: nil)
     }
     
     func didNotFindGame() {
@@ -749,7 +723,9 @@ extension GameViewController : SettingsTableControllerDelegate {
     
     func gameChanged() {
         self.scene.saveGame()
-        self.startGame(loadFromSave: true)
+        self.setUpButtons()
+        self.startGame()
+        //self.configured = false
         
         var message = Message()
         message.systemMessage = UIStrings.changedGame

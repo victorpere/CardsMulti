@@ -195,8 +195,9 @@ class ConnectionServiceManager : NSObject {
     }
     
     func sendPlayerData() {
-        let encodedData = NSKeyedArchiver.archivedData(withRootObject: self.players)
-        self.sendData(data: encodedData)
+        if let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: self.players, requiringSecureCoding: false) {
+            self.sendData(data: encodedData)
+        }
     }
     
     /**
@@ -417,7 +418,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
                  fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
 
-        if let receivedPlayers = NSKeyedUnarchiver.unarchiveObject(with: data) as? [MCPeerID?] {
+        if let receivedPlayers = (try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: data) as? [MCPeerID?]) {
             self.players = receivedPlayers
             
             for (i, player) in self.players.enumerated() {
@@ -430,7 +431,6 @@ extension ConnectionServiceManager : MCSessionDelegate {
             self.delegate?.updatePositions(myPosition: self.myPosition)
         } else {
             self.delegate?.didReceive(data: data)
-            //self.delegate?.receivedData(manager: self, data: data, type: .game)
         }
     }
     

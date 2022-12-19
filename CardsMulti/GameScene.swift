@@ -11,7 +11,7 @@ import GameplayKit
 import MultipeerConnectivity
 import AudioToolbox
 
-class GameScene: SKScene {
+class GameScene: GameSceneBase {
     /// MCPeerID of this device
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
     
@@ -177,6 +177,9 @@ class GameScene: SKScene {
                 self.restartGame(sync: true)
             }, cancelAction: nil)
         }
+        
+        self.buttonActions["cards"] = { () -> Void in self.resetHand(sort: false)}
+        self.buttonActions["cards_sort"] = { () -> Void in self.resetHand(sort: true)}
     }
     
     override func sceneDidLoad() {
