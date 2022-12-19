@@ -36,6 +36,8 @@ public final class Config {
     public static let flashMessageFontSize: CGFloat = 20
     public static let flashMessageLabelHeight: CGFloat = 40
     
+    public static let preferredPopoverSize = CGSize(width: 375, height: 676)
+    
     public static let uiFontName: String = "Helvetica"
     
     public static let maxPlayers: Int = 4
