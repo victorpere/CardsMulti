@@ -162,132 +162,12 @@ class GameViewController: UIViewController {
         self.scene.saveGame()
     }
     
-    func showNotConnectedMenu(fromButton button: BottomButton) {
-        if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: self.scene.gameType), gameConfig.maxPlayers < 2 {
-            self.showActionDialog(title: "sigle player game".localized, text: "you can switch to a multiplayer game in settings".localized, actionTitle: "open settings".localized, action: { () -> Void in
-                self.openSettings(fromButton: button)
-            })
-            return
-        }
-        
-        var title = "create or join a game".localized
-        if self.connectionService.foundPeers.count > 0 {
-            title = "Join a nearby device, or create or join a remote game"
-        }
-        
-        let peerBrowser = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
-        for peerID in self.connectionService.foundPeers {
-            let peerAction = UIAlertAction(title: String(format: "join %@".localized, peerID.displayName), style: .default, handler: { (alert) -> Void in
-                self.connectionService.invitePeer(peerID)
-            } )
-            peerBrowser.addAction(peerAction)
-        }
-        
-        // button to create AWS game
-        let createGameAction = UIAlertAction(title: "invite a friend to join".localized, style: .default,
-                                             handler: { (alert) -> Void in
-                                                self.connectionService.createGame()
-        })
-        peerBrowser.addAction(createGameAction)
-        
-        // button to join AWS game
-        let joinGameAction = UIAlertAction(title: "join a game".localized, style: .default, handler: { (alert) -> Void in
-            self.showTextDialog(title: "join a game".localized, text: "game code".localized, keyboardType: .numberPad, okAction: { (gameCode) -> Void in
-                self.connectionService.findGames(withGameCode: gameCode)
-            })
-        })
-        peerBrowser.addAction(joinGameAction)
-        
-        let cancelButton = UIAlertAction(title: "cancel".localized, style: .cancel) { (alert) -> Void in }
-        peerBrowser.addAction(cancelButton)
-        
-        let presentationController = peerBrowser.popoverPresentationController
-        presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = button
-        presentationController?.sourceRect = button.bounds
-        
-        self.present(peerBrowser, animated: true, completion: nil)
-    }
-    
-    func showConnectedMenu(fromButton button: BottomButton) {
-        var title: String?
-        if let gameCode = self.connectionService.gameCode {
-            title = "\("connected to game".localized) \(gameCode)"
-        }
-        
-        let connectionAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
-        
-        let inviteButton = UIAlertAction(title: "invite a friend to join".localized, style: .default, handler: { (alert) -> Void in
-            self.createInvitation(fromButton: button)
-        })
-        
-        let disconnectButton = UIAlertAction(title: "disconnect from the game".localized, style: .default, handler: { (alert) -> Void in
-            self.connectionService.disconnectFromGame()
-            self.connectionService.disconnect()
-        } )
-        let cancelButton = UIAlertAction(title: "cancel".localized, style: .cancel) { (alert) -> Void in }
-        
-        connectionAlert.addAction(inviteButton)
-        connectionAlert.addAction(disconnectButton)
-        connectionAlert.addAction(cancelButton)
-        
-        let presentationController = connectionAlert.popoverPresentationController
-        presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = button
-        presentationController?.sourceRect = button.bounds
-        
-        self.present(connectionAlert, animated: true, completion: nil)
-    }
-    
-    func openSettings(fromButton button: BottomButton) {
-        let settingsViewController = SettingsTableContoller(nibName: nil, bundle: nil)
-        settingsViewController.delegate = self
-        let navSettingsViewController = UINavigationController(rootViewController: settingsViewController)
-        navSettingsViewController.modalPresentationStyle = .popover
-        settingsViewController.preferredContentSize = CGSize(width: 375, height: 676)
-        
-        let presentationController = navSettingsViewController.popoverPresentationController
-        presentationController?.permittedArrowDirections = .down
-        presentationController?.sourceView = button
-        presentationController?.sourceRect = button.bounds
-        
-        self.present(navSettingsViewController, animated: true, completion: nil)
-    }
-    
-    func openScores(fromButton button: BottomButton) {
-        let scoresViewController = ScoresViewController(withScene: self.scene)
-        
-        let navScoresViewController = UINavigationController(rootViewController: scoresViewController)
-        navScoresViewController.modalPresentationStyle = .popover
-        scoresViewController.preferredContentSize = CGSize(width: 375, height: 676)
-        
-        let presentationConroller = navScoresViewController.popoverPresentationController
-        presentationConroller?.permittedArrowDirections = .down
-        presentationConroller?.sourceView = button
-        presentationConroller?.sourceRect = button.bounds
-        
-        self.present(navScoresViewController, animated: true, completion: nil)
-    }
-    
     func checkForceTouch() {
         if self.traitCollection.forceTouchCapability == UIForceTouchCapability.available {
             print("force touch available")
             if self.scene != nil {
                 self.scene.forceTouchEnabled = true
             }
-        }
-    }
-
-
-    override var shouldAutorotate: Bool {
-        return true
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
         }
     }
 
@@ -447,6 +327,101 @@ class GameViewController: UIViewController {
         restartButton.addTarget(self, action: #selector(self.buttonAction), for: .touchUpInside)
         self.buttons.append(restartButton)
         self.view.addSubview(restartButton)
+    }
+    
+    private func presentNavigationPopover(_ viewControllerToPresent: UIViewController, fromButton button: UIButton){
+        let navigationController = UINavigationController(rootViewController: viewControllerToPresent)
+        navigationController.modalPresentationStyle = .popover
+        viewControllerToPresent.preferredContentSize = Config.preferredPopoverSize
+        
+        self.presentPopover(navigationController, fromButton: button)
+    }
+    
+    private func presentPopover(_ viewControllerToPresent: UIViewController, fromButton button: UIButton) {
+        let presentationConroller = viewControllerToPresent.popoverPresentationController
+        presentationConroller?.permittedArrowDirections = .down
+        presentationConroller?.sourceView = button
+        presentationConroller?.sourceRect = button.bounds
+        
+        self.present(viewControllerToPresent, animated: true, completion: nil)
+    }
+    
+    private func showNotConnectedMenu(fromButton button: BottomButton) {
+        if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: self.scene.gameType), gameConfig.maxPlayers < 2 {
+            self.showActionDialog(title: "sigle player game".localized, text: "you can switch to a multiplayer game in settings".localized, actionTitle: "open settings".localized, action: { () -> Void in
+                self.openSettings(fromButton: button)
+            })
+            return
+        }
+        
+        var title = "create or join a game".localized
+        if self.connectionService.foundPeers.count > 0 {
+            title = "Join a nearby device, or create or join a remote game"
+        }
+        
+        let peerBrowser = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
+        for peerID in self.connectionService.foundPeers {
+            let peerAction = UIAlertAction(title: String(format: "join %@".localized, peerID.displayName), style: .default, handler: { (alert) -> Void in
+                self.connectionService.invitePeer(peerID)
+            } )
+            peerBrowser.addAction(peerAction)
+        }
+        
+        // button to create AWS game
+        let createGameAction = UIAlertAction(title: "invite a friend to join".localized, style: .default,
+                                             handler: { (alert) -> Void in
+                                                self.connectionService.createGame()
+        })
+        peerBrowser.addAction(createGameAction)
+        
+        // button to join AWS game
+        let joinGameAction = UIAlertAction(title: "join a game".localized, style: .default, handler: { (alert) -> Void in
+            self.showTextDialog(title: "join a game".localized, text: "game code".localized, keyboardType: .numberPad, okAction: { (gameCode) -> Void in
+                self.connectionService.findGames(withGameCode: gameCode)
+            })
+        })
+        peerBrowser.addAction(joinGameAction)
+        
+        let cancelButton = UIAlertAction(title: "cancel".localized, style: .cancel) { (alert) -> Void in }
+        peerBrowser.addAction(cancelButton)
+        
+        self.presentPopover(peerBrowser, fromButton: button)
+    }
+    
+    private func showConnectedMenu(fromButton button: BottomButton) {
+        var title: String?
+        if let gameCode = self.connectionService.gameCode {
+            title = "\("connected to game".localized) \(gameCode)"
+        }
+        
+        let connectionAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
+        
+        let inviteButton = UIAlertAction(title: "invite a friend to join".localized, style: .default, handler: { (alert) -> Void in
+            self.createInvitation(fromButton: button)
+        })
+        
+        let disconnectButton = UIAlertAction(title: "disconnect from the game".localized, style: .default, handler: { (alert) -> Void in
+            self.connectionService.disconnectFromGame()
+            self.connectionService.disconnect()
+        } )
+        let cancelButton = UIAlertAction(title: "cancel".localized, style: .cancel) { (alert) -> Void in }
+        
+        connectionAlert.addAction(inviteButton)
+        connectionAlert.addAction(disconnectButton)
+        connectionAlert.addAction(cancelButton)
+        
+        self.presentPopover(connectionAlert, fromButton: button)
+    }
+    
+    private func openSettings(fromButton button: BottomButton) {
+        let settingsViewController = SettingsTableContoller(nibName: nil, bundle: nil)
+        settingsViewController.delegate = self
+        self.presentNavigationPopover(settingsViewController, fromButton: button)
+    }
+    
+    private func openScores(fromButton button: BottomButton) {
+        let scoresViewController = ScoresViewController(withScene: self.scene)
+        self.presentNavigationPopover(scoresViewController, fromButton: button)
     }
     
     /**
