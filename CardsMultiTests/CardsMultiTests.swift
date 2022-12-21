@@ -11,22 +11,21 @@ import XCTest
 
 class CardsMultiTests: XCTestCase {
     
-    var vc: GameViewController?
+    var vc: GameViewController!
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
         
         self.vc = GameViewController()
-        self.vc!.viewDidLoad()
-        self.vc!.viewDidLayoutSubviews()
+        self.vc.viewDidLoad()
+        self.vc.viewDidLayoutSubviews()
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
         
-        self.vc = nil
     }
     
     /*
@@ -46,25 +45,15 @@ class CardsMultiTests: XCTestCase {
     */
     
     func testViewControllerLoad() {
-        XCTAssertNotNil(self.vc!.view, "View did not load for GameViewController")
+        XCTAssertNotNil(self.vc.view, "View did not load for GameViewController")
     }
 
     func testskViewLoad() {
-        XCTAssertNotNil(self.vc!.skView, "skView did not load for GameViewController")
+        XCTAssertNotNil(self.vc.skView, "skView did not load for GameViewController")
     }
     
     func testScene() {
-        XCTAssertNotNil(self.vc!.scene, "Scene did not load")
-    }
-    
-    func testDeck() {
-        XCTAssertNotNil(self.vc!.scene)
-        self.vc!.scene.restartGame(sync: false)
-        let deck = self.vc!.scene.allCards
-        
-        for card in deck {
-            XCTAssertNotNil(card.card, "Card object is null")
-        }
+        XCTAssertNotNil(self.vc.scene, "Scene did not load")
     }
  
 }
