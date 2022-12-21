@@ -11,7 +11,6 @@ import XCTest
 
 class CardsMultiTests: XCTestCase {
     
-    var settings = Settings()
     var vc: GameViewController?
     
     override func setUp() {
@@ -20,6 +19,7 @@ class CardsMultiTests: XCTestCase {
         
         self.vc = GameViewController()
         self.vc!.viewDidLoad()
+        self.vc!.viewDidLayoutSubviews()
     }
     
     override func tearDown() {
@@ -53,18 +53,16 @@ class CardsMultiTests: XCTestCase {
         XCTAssertNotNil(self.vc!.skView, "skView did not load for GameViewController")
     }
     
-    func testSettings() {
-        XCTAssertTrue(settings.minRank <= settings.maxRank, "Settings: min rank is greater than max rank")
-    }
-    
     func testScene() {
         XCTAssertNotNil(self.vc!.scene, "Scene did not load")
     }
     
     func testDeck() {
-        let deck = self.vc!.scene?.allCards
-
-        for card in deck! {
+        XCTAssertNotNil(self.vc!.scene)
+        self.vc!.scene.restartGame(sync: false)
+        let deck = self.vc!.scene.allCards
+        
+        for card in deck {
             XCTAssertNotNil(card.card, "Card object is null")
         }
     }

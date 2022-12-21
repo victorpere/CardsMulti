@@ -14,12 +14,12 @@ class GameConfigsTests : XCTestCase {
     func testGameConfigs() {
         //let file = Bundle.main.path(forResource: "gameConfigs1.json", ofType: nil)!
         
-        let bundle = Bundle(for: type(of: self))
-        let file = bundle.path(forResource: "gameConfigs1", ofType: "json")!
+        //let bundle = Bundle(for: type(of: self))
+        //let file = bundle.path(forResource: "gameConfigs1", ofType: "json")!
         
-        let gameConfigs = GameConfigs(withFile: file)
-        
-        XCTAssertGreaterThan(gameConfigs.configs.count, 0)
+        let gameConfigs = GameConfigs.sharedInstance
+        let gameConfig = gameConfigs.gameConfig(for: .freePlay)
+        XCTAssertNotNil(gameConfig)
     }
     
 }
