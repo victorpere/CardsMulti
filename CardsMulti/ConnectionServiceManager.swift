@@ -195,7 +195,14 @@ class ConnectionServiceManager : NSObject {
     }
     
     func sendPlayerData() {
-        if let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: self.players, requiringSecureCoding: false) {
+        var playerDictionary = Dictionary<Int, MCPeerID>()
+        for i in 0..<self.players.count {
+            if let player = self.players[i] {
+                playerDictionary[i] = player
+            }
+        }
+
+        if let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: playerDictionary, requiringSecureCoding: true) {
             self.sendData(data: encodedData)
         }
     }
@@ -417,10 +424,12 @@ extension ConnectionServiceManager : MCSessionDelegate {
                  didReceive data: Data,
                  fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
-
-        if let receivedPlayers = (try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: data) as? [MCPeerID?]) {
-            self.players = receivedPlayers
+        if let receivedPlayers = (try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSDictionary.self, MCPeerID.self], from: data) as? NSDictionary) {
             
+            for i in 0..<self.players.count {
+                self.players[i] = receivedPlayers[i] as? MCPeerID
+            }
+
             for (i, player) in self.players.enumerated() {
                 if let peerId = player {
                     self.playersAWS[i] = Player(peerId: peerId)
@@ -536,7 +545,6 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
     }
     
     func didReceiveNewConnection(connectionId: String, playerName: String, connections: [ConnectionInfo]) {
-        
         if connectionId != self.myself.connectionId || connections.count == 1 {
             let newPlayer = Player(connectionId: connectionId, displayName: playerName)
             
