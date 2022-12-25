@@ -9,7 +9,7 @@
 import GameplayKit
 
 class Global {
-    static func newShuffledDeck(name: String, settings: StoredSettings) -> [CardSpriteNode] {
+    static func newShuffledDeck(name: String, settings: Settings) -> [CardSpriteNode] {
         var deck = [CardSpriteNode]()
         
         var suitNum = 0

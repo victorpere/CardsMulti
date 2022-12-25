@@ -22,8 +22,9 @@ class RequestDataTests: XCTestCase {
     }
     
     func testDataArray() {
-        let cards = Global.newShuffledDeck(name: "test", settings: Settings.instance)
-        let cardDictionaryArray = Global.cardDictionaryArray(with: cards, playerPosition: .top, width: 0, yOffset: 0, moveToFront: false, animate: false)
+        let settings = TemporarySettings()
+        let cards = Global.newShuffledDeck(name: "test", settings: settings)
+        let cardDictionaryArray = Global.cardDictionaryArray(with: cards, playerPosition: .top, width: 0, yOffset: 0, moveToFront: false, animate: false, velocity: nil)
         let requestData = RequestData(withType: .game, andArray: cardDictionaryArray)
         
         XCTAssertEqual(RequestType.game, requestData.type)
@@ -46,8 +47,9 @@ class RequestDataTests: XCTestCase {
     }
     
     func testGameDataFromArray() {
-        let cards = Global.newShuffledDeck(name: "test", settings: Settings.instance)
-        let cardDictionaryArray = Global.cardDictionaryArray(with: cards, playerPosition: .top, width: 0, yOffset: 0, moveToFront: false, animate: false)
+        let settings = TemporarySettings()
+        let cards = Global.newShuffledDeck(name: "test", settings: settings)
+        let cardDictionaryArray = Global.cardDictionaryArray(with: cards, playerPosition: .top, width: 0, yOffset: 0, moveToFront: false, animate: false, velocity: nil)
         let requestData = RequestData(withType: .game, andArray: cardDictionaryArray)
 
         let data = try? requestData.encodedData()
