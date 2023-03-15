@@ -1,0 +1,111 @@
+/* 
+  Localizable.strings
+  CardsMulti
+
+  Created by Victor on 2021-06-16.
+  Copyright © 2021 Victorius Software Inc. All rights reserved.
+*/
+
+
+"cancel"    = "Скасувати";
+"ok"        = "ОК";
+"allow"     = "Дозволяти";
+
+"settings"  = "Налштування";
+"player"    = "Гравець";
+"name"      = "Імʼя";
+"game"      = "Гра";
+"free play" = "Вилна гра";
+"solitaire" = "Пасьянс";
+"freecell"  = "Вилна клітина";
+"cards"     = "Карти";
+"pip cards" = "піп-карти";
+"minimum rank"  = "від";
+"maximum rank"  = "до";
+"jack"      = "Валет";
+"queen"     = "Королева";
+"king"      = "Король";
+"ace"       = "Туз";
+"card size" = "Розмір карти";
+"sound"     = "Звук";
+
+"game will restart" = "Гра перезапуститься";
+"are you sure?"     = "Ви впевнені?";
+
+"sigle player game" = "Одиночна гра";
+"you can switch to a multiplayer game in settings" = "Ви можете переключитися на мультиплеер в налшутваннях";
+"open settings"     = "Відкрити налшутвання";
+
+"game over" = "Гра закінчена";
+"new game"  = "Почати гру";
+
+"create or join a game"     = "Мультиплеер";
+"invite a friend to join"   = "Запросити приєднатися до гри";
+"join a game"               = "Приєднатися до гри";
+"disconnect from the game"  = "Відключитися від гри";
+"game code"                 = "Код";
+"connected to game"         = "Підключені до гри";
+"already joined a game"     = "Ви вже підключені до гри";
+"disconnect from the current game before joining another one"   = "Відключіться від гри, перш ніж підкльчитись до іншої";
+"something went wrong"      = "Щось не так";
+"couldn't retrieve the game information"    = "Не вдалося отримати інформацію про гру";
+"joined the game"           = "підключився до гри";
+"disconnected"              = "Відключився";
+"wants to connect to the game"  = "хоче підключитися до гри";
+"do you want to reconnect to last game?"    = "Ви хочете повторно підключитися до останньой гри?";
+"reconnect"     = "Повторно підключичися";
+"could not find game"   = "Не вдалося знайти гру";
+"found game"    = "Знайдена гра";
+"created by"    = "Створена гравцем";
+"join"          = "Приєднатися";
+"joined game code"  = "Приєдналися до гри з кодом";
+"message from"  = "Повідомлення від";
+"disconnected from game"    = "Відключівся від гри";
+"join %@"       = "Приєднатися до %@";
+
+"shuffle"   = "Перетасувати";
+"stack"     = "Укладати";
+"fan"       = "Віялом";
+"deal"      = "Роздати";
+"flip face down"    = "Flip face down";
+"flip face up"      = "Flip face up";
+"%d cards selected"     = "Вибрано %d карт";
+"recall cards from %@"        = "Вернути карти %@";
+"bottom"    = "знизу";
+"top"       = "зверху";
+"left"      = "зліва";
+"right"     = "справа";
+"autocomplete"  = "Автозаповнення";
+
+"connections"   = "Підключені";
+"%d cards"      = "%d карт";
+
+// UIStrings
+
+"Error"                                     = "Помилка";
+"In-App Purchases may be restricted on your device" = "Купівля може бути недоступна на вашему пристрої";
+"Product request status"                    = "Статус заявки на купівлю";
+"Purchase status"                           = "Статус купівлі";
+"You are not authorized to make payments"   = "Ви не маєте права здійснювати платежі";
+
+"Store"                                     = "Магазин";
+"Purchased"                                 = "Куплено";
+"Restore Purchases"                         = "Відновити куплене";
+"Could not purchase %@"                     = "Купівля %@ ";
+"Could not retrieve product information"    = "Не вдалося отримати інформацію про товар";
+
+"OK"                                        = "ОК";
+
+"Reset score"                               = "Скинути рахунок";
+"Settings have changed"                     = "Налаштування змінилися";
+"Game and settings have changed"            = "Гра і налаштування змінилися";
+"Restart game?"                             = "Почати гру знову?";
+
+// Messages
+
+"%@ shuffled all cards"                     = "%@ стасував всі карти";
+"%@ is dealing %d cards"                    = "%@ роздає %d карт";
+"%@ shuffled %d cards"                      = "%@ стасував %d карт";
+"%@ changed card appearance"                = "%@ змінив(ла) вигляд карт";
+"%@ changed card deck"                      = "%@ змінив(ла) колоду";
+"%@ changed game to %@"                     = "%@ змінив(ла) гру на %@";
