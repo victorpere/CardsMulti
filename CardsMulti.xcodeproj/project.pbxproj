@@ -244,6 +244,7 @@
 		57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpMenu.swift; sourceTree = "<group>"; };
 		57BB31D42353BA8700AE2CDC /* PlayerStatusLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStatusLabel.swift; sourceTree = "<group>"; };
 		57BB31DC23569DA200AE2CDC /* SettingsTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableController.swift; sourceTree = "<group>"; };
+		57C3551F2997422500884C52 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		57C626112346E6D6008A9872 /* CardSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSlider.swift; sourceTree = "<group>"; };
 		57C8B91B241715A700100DDE /* Score.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Score.swift; sourceTree = "<group>"; };
 		57D3DB9B257BF1DC00A52171 /* RequestDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDataTests.swift; sourceTree = "<group>"; };
@@ -654,6 +655,7 @@
 				en,
 				Base,
 				ru,
+				uk,
 			);
 			mainGroup = 57B053C81E4E3BD20057E62F;
 			productRefGroup = 57B053D21E4E3BD20057E62F /* Products */;
@@ -973,6 +975,7 @@
 			children = (
 				5732550E267A683C003B8834 /* en */,
 				57325510267A6878003B8834 /* ru */,
+				57C3551F2997422500884C52 /* uk */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
