@@ -30,7 +30,7 @@ class ReceivedDataHandler {
      
      - parameter data: data containing synchronization array or dictionary
      */
-    func handle(data receivedData: Data) {
+    func handle(data receivedData: Data, from sender: String?) {
         if let requestDataArray = try? Array(withData: receivedData) {
             for requestDataElement in requestDataArray {
                 self.handleRequestData(requestDataElement)

@@ -525,9 +525,9 @@ extension GameViewController : ConnectionServiceManagerDelegate {
         self.updateScenePlayers()
     }
     
-    func didReceive(data receivedData: Data) {
+    func didReceive(data receivedData: Data, from sender: String?) {
         let dataHandler = ReceivedDataHandler(withScene: self.scene, connectionServiceManager: self.connectionService)
-        dataHandler.handle(data: receivedData)
+        dataHandler.handle(data: receivedData, from: sender)
     }
     
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void) {

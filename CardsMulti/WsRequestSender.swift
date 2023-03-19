@@ -230,7 +230,7 @@ class WsRequestSender {
             case .TextMessage:
                 self.delegate?.didReceiveTextMessage(wsMessage.text, from: wsMessage.sender)
             case .GameData:
-                self.delegate?.didReceiveGameData(data: wsMessage.data, type: wsMessage.dataType)
+                self.delegate?.didReceiveGameData(data: wsMessage.data, ofType: wsMessage.dataType, from: wsMessage.sender)
             default:
                 break
             }
@@ -305,7 +305,7 @@ protocol WsRequestSenderDelegate {
     func didReceiveDisconnnection(connectionId: String, playerName: String, connections: [ConnectionInfo])
     func didReceiveConnectionsUpdate(connections: [ConnectionInfo])
     func didReceiveTextMessage(_ message: String, from sender: String)
-    func didReceiveGameData(data: Data?, type dataType: WsDataType?)
+    func didReceiveGameData(data: Data?, ofType dataType: WsDataType?, from sender: String)
     func didReceivePlayerData(data: Data?)
 }
 

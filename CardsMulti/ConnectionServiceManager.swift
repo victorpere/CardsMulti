@@ -11,7 +11,7 @@ import MultipeerConnectivity
 
  protocol ConnectionServiceManagerDelegate {
     
-    func didReceive(data: Data)
+    func didReceive(data: Data, from sender: String?)
     func receivedInvitation(from peerID: MCPeerID, invitationHandler: @escaping (Bool, MCSession?) -> Void)
     func syncToMe(recipients: [Player]?)
     func newDeviceConnected(peerID: MCPeerID, connectedDevices: [MCPeerID])
@@ -439,7 +439,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
             self.reassignHost()
             self.delegate?.updatePositions(myPosition: self.myPosition)
         } else {
-            self.delegate?.didReceive(data: data)
+            self.delegate?.didReceive(data: data, from: peerID.displayName)
         }
     }
     
@@ -598,15 +598,13 @@ extension ConnectionServiceManager : WsRequestSenderDelegate {
         self.delegate?.didReceiveTextMessageAWS(message, from: sender)
     }
     
-    func didReceiveGameData(data: Data?, type dataType: WsDataType?) {
+    func didReceiveGameData(data: Data?, ofType dataType: WsDataType?, from sender: String) {
         switch dataType {
         case .player:
             self.didReceivePlayerData(data: data)
         default:
             if let receivedData = data {
-                self.delegate?.didReceive(data: receivedData)
-                
-                //self.delegate?.receivedData(manager: self, data: receivedData, type: dataType)
+                self.delegate?.didReceive(data: receivedData, from: sender)
             }
         }
     }
