@@ -67,8 +67,8 @@
 "stack"     = "Укладати";
 "fan"       = "Віялом";
 "deal"      = "Роздати";
-"flip face down"    = "Flip face down";
-"flip face up"      = "Flip face up";
+"flip face down"    = "Сорочкою вгору";
+"flip face up"      = "Сорочкою вниз";
 "%d cards selected"     = "Вибрано %d карт";
 "recall cards from %@"        = "Вернути карти %@";
 "bottom"    = "знизу";
