@@ -906,36 +906,18 @@ class GameScene: GameSceneBase {
     }
     
     /**
-     Shuffles a set of cards
+     Shuffles a set of cards and sends respective message
      
      - parameter cards: set of cards to be shuffled
      */
     func shuffle(cards: [CardSpriteNode]) {
-        // TODO: flip before shuffling
-        // TODO: shuffling animation
-        print("shuffling cards")
-        print("old order:")
-        Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
-        
-        if let topCardPosition = cards.last?.position {
-            var shuffledCards = cards
-            Global.shuffle(&shuffledCards)
-            
-            for card in shuffledCards {
-                card.moveToFront()
-            }
-            
-            // stacking cards also sends position to other devices
-            cards.stack(atPosition: topCardPosition, sendPosition: true, animateReceiver: true, delegate: self)
-            
+        if let topCardPosition = cards.shuffle(delegate: self) {
             var message = Message()
             message.systemMessage = UIStrings.shuffledNCards
             message.arguments = [self.settings.displayName, cards.count]
             message.location =  topCardPosition.relativePoint(for: self.playerPosition, width: self.size.width, yOffset: self.dividerLine.position.y)
             self.sendMessage(message)
         }
-        print("new order:")
-        Global.displayCards(cards.sorted { $0.zPosition < $1.zPosition })
     }
     
     /**

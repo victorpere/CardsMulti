@@ -662,6 +662,40 @@ extension Array where Element:CardSpriteNode {
     }
     
     /**
+     Shuffles array of cards
+     
+     - parameters:
+        - delegate: delegate for sending updated positions
+     */
+    func shuffle(delegate: CardSpriteNodeDelegate) -> CGPoint? {
+        // TODO: flip before shuffling
+        // TODO: shuffling animation
+        
+        if let topCardPosition = self.last?.position {
+            print("shuffling cards")
+            print("old order:")
+            Global.displayCards(self.sorted { $0.zPosition < $1.zPosition })
+            
+            var shuffledCards: [CardSpriteNode] = self
+            Global.shuffle(&shuffledCards)
+            
+            for card in shuffledCards {
+                card.moveToFront()
+            }
+            
+            // stacking cards also sends position to other devices
+            self.stack(atPosition: topCardPosition, sendPosition: true, animateReceiver: true, delegate: delegate)
+            
+            print("new order:")
+            Global.displayCards(self.sorted { $0.zPosition < $1.zPosition })
+            
+            return topCardPosition
+        }
+        
+        return nil
+    }
+    
+    /**
      Handles received array of card data
      */
     func handle(recievedCardDictionaryArray cardDictionaryArray: NSArray, forScene scene: GameScene) {
