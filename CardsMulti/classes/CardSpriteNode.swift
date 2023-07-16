@@ -667,8 +667,7 @@ extension Array where Element:CardSpriteNode {
      - parameters:
         - delegate: delegate for sending updated positions
      */
-    func shuffle(delegate: CardSpriteNodeDelegate) -> CGPoint? {
-        // TODO: flip before shuffling
+    func shuffle(delegate: CardSpriteNodeDelegate, flipFaceDown: Bool = true) -> CGPoint? {
         // TODO: shuffling animation
         
         if let topCardPosition = self.last?.position {
@@ -684,7 +683,7 @@ extension Array where Element:CardSpriteNode {
             }
             
             // stacking cards also sends position to other devices
-            self.stack(atPosition: topCardPosition, sendPosition: true, animateReceiver: true, delegate: delegate)
+            self.stack(atPosition: topCardPosition, flipEachCard: true, faceUp: false, sendPosition: true, animateReceiver: true, delegate: delegate)
             
             print("new order:")
             Global.displayCards(self.sorted { $0.zPosition < $1.zPosition })
