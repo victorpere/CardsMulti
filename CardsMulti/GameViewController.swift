@@ -191,29 +191,36 @@ class GameViewController: UIViewController {
     
     func updatePlayerLabels() {
         DispatchQueue.global(qos: .default).async {
-            let positionToLeft = self.connectionService.myPosition.positionToLeft
-            let positionAcross = self.connectionService.myPosition.positionAcross
-            let positionToRight = self.connectionService.myPosition.positionToRight
-            if let playerToLeft = self.connectionService.players[positionToLeft.rawValue] {
-                //self.playerLeftLabel.text = playerToLeft.displayName
-                self.playerLeftLabel.update(playerName: playerToLeft.displayName)
+            if self.connectionService.gameId != nil {
+                let positionToLeft = self.connectionService.myPositionAWS.positionToLeft
+                let positionAcross = self.connectionService.myPositionAWS.positionAcross
+                let positionToRight = self.connectionService.myPositionAWS.positionToRight
+                
+                self.playerLeftLabel.update(playerName: self.connectionService.playersAWS.first(where: {$0?.position == positionToLeft})??.displayName)
+                self.playerAcrossLabel.update(playerName: self.connectionService.playersAWS.first(where: {$0?.position == positionAcross})??.displayName)
+                self.playerRightLabel.update(playerName: self.connectionService.playersAWS.first(where: {$0?.position == positionToRight})??.displayName)
             } else {
-                //self.playerLeftLabel.text = ""
-                self.playerLeftLabel.update(playerName: "")
-            }
-            if let playerAcross = self.connectionService.players[positionAcross.rawValue] {
-                //self.playerAcrossLabel.text = playerAcross.displayName
-                self.playerAcrossLabel.update(playerName: playerAcross.displayName)
-            } else {
-                //self.playerAcrossLabel.text = ""
-                self.playerAcrossLabel.update(playerName: "")
-            }
-            if let playerToRight = self.connectionService.players[positionToRight.rawValue] {
-                //self.playerRightLabel.text = playerToRight.displayName
-                self.playerRightLabel.update(playerName: playerToRight.displayName)
-            } else {
-                //self.playerRightLabel.text = ""
-                self.playerRightLabel.update(playerName: "")
+                let positionToLeft = self.connectionService.myPosition.positionToLeft
+                let positionAcross = self.connectionService.myPosition.positionAcross
+                let positionToRight = self.connectionService.myPosition.positionToRight
+                
+                if let playerToLeft = self.connectionService.players[positionToLeft.rawValue] {
+                    self.playerLeftLabel.update(playerName: playerToLeft.displayName)
+                } else {
+                    self.playerLeftLabel.update(playerName: "")
+                }
+                
+                if let playerAcross = self.connectionService.players[positionAcross.rawValue] {
+                    self.playerAcrossLabel.update(playerName: playerAcross.displayName)
+                } else {
+                    self.playerAcrossLabel.update(playerName: "")
+                }
+                
+                if let playerToRight = self.connectionService.players[positionToRight.rawValue] {
+                    self.playerRightLabel.update(playerName: playerToRight.displayName)
+                } else {
+                    self.playerRightLabel.update(playerName: "")
+                }
             }
         }
     }

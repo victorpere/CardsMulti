@@ -58,8 +58,8 @@ class PlayerStatusLabel : UILabel {
     
     // MARK: - Public methods
     
-    func update(playerName: String) {
-        self.playerNameLabel = playerName
+    func update(playerName: String?) {
+        self.playerNameLabel = playerName ?? ""
         self.updateText()
     }
     
