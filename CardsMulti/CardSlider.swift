@@ -11,7 +11,7 @@ import UIKit
 class CardSlider : UISlider {
     let slider_icon = "icon_card_slider"
     let slider_track = "slider_frame"
-    let MIN: Float = 3.0
+    let MIN: Float = 2.0
     let MAX: Float = 10.0
     let minRank: Int
     let maxRank: Int
@@ -21,7 +21,7 @@ class CardSlider : UISlider {
     weak var minSlider: CardSlider?
     weak var maxSlider: CardSlider?
     
-    var rank: Int { return self.value == self.MIN ? Int(self.MIN - 1) : Int(self.value) }
+    var rank: Int { Int(round(self.value)) }
     var lastRank: Int!
     
     /// Action to be performed when the rank has changed
@@ -33,6 +33,8 @@ class CardSlider : UISlider {
         let frame = CGRect(x: 0, y: 0, width: width, height: 51)
         self.init(frame: frame)
         self.addTarget(self, action: #selector(sliderMoved), for: .valueChanged)
+        self.addTarget(self, action: #selector(stoppedMoving), for: .touchUpInside)
+        self.addTarget(self, action: #selector(stoppedMoving), for: .touchUpOutside)
         self.minimumValue = MIN
         self.maximumValue = MAX
         
@@ -44,13 +46,13 @@ class CardSlider : UISlider {
         self.setMinimumTrackImage(sliderTrackImage, for: .normal)
         self.setMaximumTrackImage(sliderTrackImage, for: .normal)
         
-        self.value = Float(initialRank) + 0.5
+        self.value = Float(initialRank)
         self.lastRank = initialRank
         self.setThumbImage()
     }
     
     private override init(frame: CGRect) {
-        self.minRank = Int(self.MIN - 1)
+        self.minRank = Int(self.MIN)
         self.maxRank = Int(self.MAX)
         super.init(frame: frame)
     }
@@ -83,6 +85,10 @@ class CardSlider : UISlider {
         if self.maxSlider?.value ?? self.MAX < self.value {
             self.maxSlider?.setValue(to: self.value)
         }
+    }
+    
+    @objc func stoppedMoving(sender: CardSlider) {
+        self.value = Float(self.rank)
     }
     
     // MARK: - Public methods
