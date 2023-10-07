@@ -535,7 +535,7 @@ class GameScene: GameSceneBase {
         message.arguments = [self.settings.displayName, numberOfCards]
         self.sendMessage(message)
         
-        let _ = self.deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards)
+        let _ = self.deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards) { _ in }
         self.deselectNodeForTouch()
     }
     
@@ -548,7 +548,7 @@ class GameScene: GameSceneBase {
      
      - returns: a tuple containing remaining cards and the duration the deal is going to take
      */
-    func deal(fromCards cards: [CardSpriteNode], numberOfCards: Int) -> (remainingCards: [CardSpriteNode], duration: Double) {
+    func deal(fromCards cards: [CardSpriteNode], numberOfCards: Int, completion: @escaping ([CardSpriteNode]) -> ()) -> (remainingCards: [CardSpriteNode], duration: Double) {
         var cardsToDeal = Array(cards.sorted { $0.zPosition > $1.zPosition }.prefix(upTo: numberOfCards * self.numberOfPlayers))
         let remainingCards = Array(Set(cards).subtracting(cardsToDeal))
         let duration = Double(numberOfCards * self.numberOfPlayers) * self.resetDuration
@@ -564,6 +564,8 @@ class GameScene: GameSceneBase {
                     }
                 }
             }
+            
+            completion(remainingCards)
         }
         
         return (remainingCards, duration)

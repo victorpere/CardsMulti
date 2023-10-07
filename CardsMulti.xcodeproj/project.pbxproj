@@ -13,6 +13,9 @@
 		5702182A2373B52600310A67 /* CardSizeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 570218252373B39600310A67 /* CardSizeTableViewCell.xib */; };
 		5702182B2373B6D500310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
 		5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570218272373B44100310A67 /* CardSizeTableViewCell.swift */; };
+		57085DCD2ACBA6160084A42B /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
+		57085E082AD1095C0084A42B /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
+		57085E092AD109600084A42B /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
 		570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A810F249EB8FC001096E1 /* WsMessage.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		571BBC63294557D100C43B69 /* GameSceneBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571BBC61294557D100C43B69 /* GameSceneBase.swift */; };
@@ -823,6 +826,7 @@
 				57DA7BD026AC949800F3CA8F /* StoreObserver.swift in Sources */,
 				574693522367CB9D00AB6516 /* StoredBase.swift in Sources */,
 				57A7169926E6A5E20073C0E1 /* Message.swift in Sources */,
+				57085DCD2ACBA6160084A42B /* GameGoFish.swift in Sources */,
 				57F400FF248D6D7800EF71D5 /* WsRequestSender.swift in Sources */,
 				57DA7BD826ACA96600F3CA8F /* StoreManager.swift in Sources */,
 				5748641826DE62F4005517BB /* StoredGameSettings.swift in Sources */,
@@ -885,6 +889,7 @@
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
 				57DD91A125853F900086336D /* WsRequestSender.swift in Sources */,
 				5781B06F2952966D009D3C4A /* UIViewController.swift in Sources */,
+				57085E082AD1095C0084A42B /* GameGoFish.swift in Sources */,
 				57DA7BCC26A8546600F3CA8F /* FreeCell.swift in Sources */,
 				578B1C591E7EFB17008B8381 /* BottomButton.swift in Sources */,
 				57C626132346E6DB008A9872 /* CardSlider.swift in Sources */,
@@ -943,6 +948,7 @@
 				57D6560623651BBE00DA69C4 /* CoreGraphics.swift in Sources */,
 				57B87330234584D5001A54DD /* Switch.swift in Sources */,
 				57BB31D72353BAA200AE2CDC /* PlayerStatusLabel.swift in Sources */,
+				57085E092AD109600084A42B /* GameGoFish.swift in Sources */,
 				57D57088267FD5950050B28E /* TextEditCell.swift in Sources */,
 				57DD91BD25853FFE0086336D /* ScoreCell.swift in Sources */,
 				57DD91B125853FEF0086336D /* PopUpMenu.swift in Sources */,

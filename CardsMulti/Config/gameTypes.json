@@ -50,5 +50,24 @@
             "margin": 4.5
         },
         "buttons": [ "autocomplete" ]
+    },
+    {
+        "gameType": "GoFish",
+        "maxPlayers": 2,
+        "canChangeCardSize": true,
+        "canChangeDeck": false,
+        "canRotateCards": true,
+        "defaultSettings": {
+            "pipsEnabled": true,
+            "minValue": 2,
+            "maxValue": 10,
+            "jacksEnabled": true,
+            "queensEnabled": true,
+            "kingsEnabled": true,
+            "acesEnabled": true,
+            "cardWidthsPerScreen": 6.0,
+            "margin": 4.5
+        },
+        "buttons": [ "cards", "cards_sort" ]
     }
 ]
