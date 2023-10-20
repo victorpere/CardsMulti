@@ -55,19 +55,8 @@ class TemporarySettings : Settings, GameSettings {
         self.customOptions = gameSettings.customOptions
     }
     
-    func sync(toSettings settings: Settings) {
-        self.displayName = settings.displayName
-        self.game = settings.game
-        self.minRank = settings.minRank
-        self.maxRank = settings.maxRank
-        self.pipsEnabled = settings.pipsEnabled
-        self.jacksEnabled = settings.jacksEnabled
-        self.queensEnabled = settings.queensEnabled
-        self.kingsEnabled = settings.kingsEnabled
-        self.acesEnabled = settings.acesEnabled
-        self.cardWidthsPerScreen = settings.cardWidthsPerScreen
-        self.soundOn = settings.soundOn
-        self.margin = settings.margin
-        self.customOptions = settings.customOptions
+    func syncUI(to gameSettings: GameSettings) {
+        self.cardWidthsPerScreen = gameSettings.cardWidthsPerScreen
+        self.margin = gameSettings.margin
     }
 }

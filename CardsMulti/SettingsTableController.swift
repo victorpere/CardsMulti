@@ -109,7 +109,9 @@ class SettingsTableContoller : UIViewController {
         self.tableView.dataSource = self
         self.tableView.sectionFooterHeight = 0
         
-        self.didSelectGame(ofType: GameType(rawValue: self.storedSettings.game))
+        if let gameType = GameType(rawValue: self.storedSettings.game) {
+            self.didSelectGame(ofType: gameType)
+        }
         
         self.view.addSubview(self.tableView)
     }
@@ -181,18 +183,23 @@ class SettingsTableContoller : UIViewController {
         if StoredSettings.instance.cardWidthsPerScreen != self.selectedSettings.cardWidthsPerScreen {
             StoredSettings.instance.cardWidthsPerScreen = self.selectedSettings.cardWidthsPerScreen
             self.delegate?.uiSettingsChanged()
+            
         }
     }
     
-    private func didSelectGame(ofType gameType: GameType?) {
+    private func didSelectGame(ofType gameType: GameType) {
         if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) {
             self.selectedConfig = gameConfig
             
-            if !gameConfig.canChangeDeck {
-                self.selectedSettings.sync(to: gameConfig.defaultSettings)
-            } else if gameType != nil {
-                let gameSettings = StoredGameSettings(with: gameType!)
+            if gameConfig.canChangeDeck {
+                let gameSettings = StoredGameSettings(with: gameType)
                 self.selectedSettings.sync(to: gameSettings)
+            } else if gameConfig.canChangeCardSize {
+                let gameSettigs = StoredGameSettings(with: gameType)
+                self.selectedSettings.sync(to: gameConfig.defaultSettings)
+                self.selectedSettings.syncUI(to: gameSettigs)
+            } else {
+                self.selectedSettings.sync(to: gameConfig.defaultSettings)
             }
             
             self.tableView.reloadRows(at: [IndexPath(row: 0, section: SettingsSection.size.rawValue)], with: .automatic)
@@ -218,7 +225,9 @@ extension SettingsTableContoller : UITableViewDelegate {
         switch indexPath.section {
         case SettingsSection.game.rawValue:
             if indexPath.row != self.selectedSettings.game {
-                let gameType = GameType(rawValue: indexPath.row)
+                guard let gameType = GameType(rawValue: indexPath.row) else {
+                    return
+                }
                 
                 // if the game type is a product and has not been purchased
                 if let config = GameConfigs.sharedInstance.gameConfig(for: gameType), let productId = config.productId, !self.productIdentifiers.purchasedIdentifiers.contains(productId) {
@@ -504,7 +513,7 @@ extension SettingsTableContoller: StoreManagerDelegate {
 
 // MARK: - Protocol SettingsTableControllerDelegate
 
-protocol SettingsTableControllerDelegate {
+protocol SettingsTableControllerDelegate: AnyObject {
     func settingsChanged()
     func uiSettingsChanged()
     func gameChanged()

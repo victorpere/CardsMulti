@@ -36,7 +36,4 @@ protocol GameSettings {
     var cardWidthsPerScreen: Float { get set }
     var margin: Float { get set }
     var customOptions: NSDictionary? { get set }
-    
-    func sync(to gameSettings: GameSettings)
-    func sync(toSettings settings: Settings)
 }
