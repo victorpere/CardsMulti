@@ -278,7 +278,7 @@ extension SettingsTableContoller : UITableViewDataSource {
         case SettingsSection.player.rawValue:
             return 1
         case SettingsSection.game.rawValue:
-            return GameType.allCases.count
+            return GameConfigs.sharedInstance.configs.count
         case SettingsSection.cards1.rawValue:
             if self.selectedSettings.pipsEnabled {
                 return 3
@@ -334,10 +334,10 @@ extension SettingsTableContoller : UITableViewDataSource {
             }
             
             break
-        case SettingsSection.game.rawValue:
-            cell.textLabel?.text = GameType(rawValue: indexPath.row)?.name
-            
+        case SettingsSection.game.rawValue:            
             if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: indexPath.row)) {
+                cell.textLabel?.text = gameConfig.gameType.name
+                
                 if gameConfig.maxPlayers > 1 {
                     cell.imageView?.image = UIImage(named: "icon_players")
                 }

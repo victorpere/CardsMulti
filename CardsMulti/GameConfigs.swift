@@ -14,9 +14,7 @@ class GameConfigs {
     
     var defaultSettings = TemporarySettings()
     
-    // MARK: - Private properties
-    
-    private var configs: [GameType: GameConfig]
+    var configs: [GameType: GameConfig]
     
     // MARK: - Initializers
     
