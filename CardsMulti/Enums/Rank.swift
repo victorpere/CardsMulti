@@ -6,7 +6,7 @@
 //  Copyright © 2017 Victor. All rights reserved.
 //
 
-enum Rank: Int {
+enum Rank: Int, CaseIterable {
     case two = 2, three,four, five
     case six, seven, eight, nine, ten
     case jack, queen, king

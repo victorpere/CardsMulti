@@ -16,6 +16,7 @@
 		57085DCD2ACBA6160084A42B /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
 		57085E082AD1095C0084A42B /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
 		57085E092AD109600084A42B /* GameGoFish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C3972233697E200A2882C /* GameGoFish.swift */; };
+		57085E0F2AD342F40084A42B /* RankPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57085E0E2AD342F40084A42B /* RankPickerView.swift */; };
 		570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A810F249EB8FC001096E1 /* WsMessage.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		571BBC63294557D100C43B69 /* GameSceneBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571BBC61294557D100C43B69 /* GameSceneBase.swift */; };
@@ -190,6 +191,7 @@
 		3C6DB5156A4A8348D5666310 /* Pods_CardsMultiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CardsMultiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		570218252373B39600310A67 /* CardSizeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CardSizeTableViewCell.xib; sourceTree = "<group>"; };
 		570218272373B44100310A67 /* CardSizeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSizeTableViewCell.swift; sourceTree = "<group>"; };
+		57085E0E2AD342F40084A42B /* RankPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankPickerView.swift; sourceTree = "<group>"; };
 		570A810F249EB8FC001096E1 /* WsMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WsMessage.swift; sourceTree = "<group>"; };
 		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
 		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -323,11 +325,20 @@
 			path = Xibs;
 			sourceTree = "<group>";
 		};
+		57085E0D2AD342C40084A42B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				57085E0E2AD342F40084A42B /* RankPickerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		570C3971233697B100A2882C /* GameScenes */ = {
 			isa = PBXGroup;
 			children = (
 				571BBC61294557D100C43B69 /* GameSceneBase.swift */,
 				571BBC62294557D100C43B69 /* GameSceneFactory.swift */,
+				57B053DA1E4E3BD20057E62F /* GameScene.swift */,
 				570C3972233697E200A2882C /* GameGoFish.swift */,
 				578F40C323778D9300719821 /* Solitaire.swift */,
 				578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */,
@@ -415,9 +426,9 @@
 				57B054101E4E75D90057E62F /* Classes */,
 				57B0540A1E4E75970057E62F /* Enums */,
 				57E97B0B1E7479B7000243B2 /* UI */,
+				57085E0D2AD342C40084A42B /* Views */,
 				57B053D41E4E3BD20057E62F /* AppDelegate.swift */,
 				57B054081E4E40750057E62F /* ConnectionServiceManager.swift */,
-				57B053DA1E4E3BD20057E62F /* GameScene.swift */,
 				57B053DC1E4E3BD20057E62F /* GameViewController.swift */,
 				57B053DE1E4E3BD20057E62F /* Main.storyboard */,
 				57B053E11E4E3BD20057E62F /* Assets.xcassets */,
@@ -842,6 +853,7 @@
 				57272556256AE697008A8171 /* RequestData.swift in Sources */,
 				57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */,
 				57E97B0A1E7368B4000243B2 /* Position.swift in Sources */,
+				57085E0F2AD342F40084A42B /* RankPickerView.swift in Sources */,
 				57D5709026879DA60050B28E /* UIViewController.swift in Sources */,
 				578742BB2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
 				57DA7BDE26ADECEA00F3CA8F /* ProductIdentifiers.swift in Sources */,
@@ -1055,7 +1067,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1110,7 +1122,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -1131,7 +1143,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;
@@ -1152,7 +1164,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NB9MQB54L9;
 				INFOPLIST_FILE = CardsMulti/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victoriussoftware.CardsMulti;

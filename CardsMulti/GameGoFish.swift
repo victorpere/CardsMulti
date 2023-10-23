@@ -17,6 +17,8 @@ class GameGoFish : GameScene {
     
     init(size: CGSize, loadFromSave: Bool) {
         super.init(size: size, gameType: .goFish, loadFromSave: loadFromSave)
+        
+        self.buttonActions["autocomplete"] = self.playTurn
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -60,7 +62,17 @@ class GameGoFish : GameScene {
             self.stockPile = remainingCards
             
             self.pool(cardNodes: remainingCards, centeredIn: self.playArea.center, withRadius: self.playArea.height / 3, flipFaceUp: false)
+            
         }
         
+    }
+    
+    // MARK: - Private methods
+    
+    private func playTurn() {
+        let view = RankPickerView() { rank in
+            print("rank selected: \(rank.symbol)")
+        }
+        self.gameSceneDelegate?.presentView(view)
     }
 }

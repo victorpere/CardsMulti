@@ -68,6 +68,6 @@
             "cardWidthsPerScreen": 6.0,
             "margin": 4.5
         },
-        "buttons": [ "cards", "cards_sort" ]
+        "buttons": [ "autocomplete", "cards", "cards_sort" ]
     }
 ]

@@ -85,9 +85,6 @@ class GameScene: GameSceneBase {
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
     
-    /// The delegate of the scene (should be the view controller)
-    var gameSceneDelegate: GameSceneDelegate?
-    
     var moveSound = Actions.getCardMoveSound()
     var flipSound = Actions.getCardFlipSound()
     
@@ -178,8 +175,8 @@ class GameScene: GameSceneBase {
             }, cancelAction: nil)
         }
         
-        self.buttonActions["cards"] = { () -> Void in self.resetHand(sort: false)}
-        self.buttonActions["cards_sort"] = { () -> Void in self.resetHand(sort: true)}
+        self.buttonActions["cards"] = { () -> Void in self.lineUpHand(sort: false)}
+        self.buttonActions["cards_sort"] = { () -> Void in self.lineUpHand(sort: true)}
     }
     
     override func sceneDidLoad() {
@@ -740,7 +737,7 @@ class GameScene: GameSceneBase {
      
      - parameter sort: whether to order cards by suit and rank
      */
-    func resetHand(sort: Bool) {
+    func lineUpHand(sort: Bool) {
         let usableWidth = self.frame.size.width - (self.border * 2)
 
         var hand = self.cards(inPosition: .bottom)
@@ -1309,22 +1306,7 @@ extension GameScene : CardSpriteNodeDelegate {
     }
 }
 
-// MARK: - Protocol GameSceneDelegate
 
-protocol GameSceneDelegate {
-    
-    func sendData(data: Data, type dataType: WsDataType)
-
-    func peers() -> [MCPeerID?]
-    
-    func presentPopUpMenu(title: String?, withItems items: [PopUpMenuItem]?, at location: CGPoint)
-    
-    func updatePlayer(numberOfCards: Int, inPosition position: Position)
-    
-    func presentAlert(title: String?, text: String?, actionTitle: String, action: @escaping (() -> Void), cancelAction: (() -> Void)?)
-    
-    func flashMessage(_ message: String)
-}
 
 
 
