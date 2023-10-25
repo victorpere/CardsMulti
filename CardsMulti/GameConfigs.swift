@@ -16,10 +16,14 @@ class GameConfigs {
     
     var configs: [GameType: GameConfig]
     
+    lazy var configArray: [GameConfig] = {
+        self.configs.map { $0.value }.sorted { $0.gameType.rawValue < $1.gameType.rawValue }
+    }()
+    
     // MARK: - Initializers
     
     private init(withFile file: String?) {
-        self.configs = [GameType: GameConfig]()
+        self.configs = [:] // [GameType: GameConfig]()
         
         if file != nil, let data = NSData(contentsOfFile: file!) as Data? {
             try? self.decode(settingsFileContent: data)

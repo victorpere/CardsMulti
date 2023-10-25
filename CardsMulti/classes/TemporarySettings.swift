@@ -8,10 +8,10 @@
 
 import Foundation
 
-class TemporarySettings : Settings, GameSettings {
-    var displayName: String = ""
+class TemporarySettings : Settings, GameSettings, ObservableObject {
+    @Published var displayName: String = ""
     var cardSet: String?
-    var game: Int = 0
+    @Published var game: Int = 0
     var minRank: Int = 2
     var maxRank: Int = 10
     var pipsEnabled: Bool = true
@@ -58,5 +58,23 @@ class TemporarySettings : Settings, GameSettings {
     func syncUI(to gameSettings: GameSettings) {
         self.cardWidthsPerScreen = gameSettings.cardWidthsPerScreen
         self.margin = gameSettings.margin
+    }
+    
+    func store() {
+        StoredSettings.instance.displayName = self.displayName
+        StoredSettings.instance.game = self.game
+        
+        StoredSettings.instance.minRank = self.minRank
+        StoredSettings.instance.maxRank = self.maxRank
+        StoredSettings.instance.pipsEnabled = self.pipsEnabled
+        StoredSettings.instance.jacksEnabled = self.jacksEnabled
+        StoredSettings.instance.queensEnabled = self.queensEnabled
+        StoredSettings.instance.kingsEnabled = self.kingsEnabled
+        StoredSettings.instance.acesEnabled = self.acesEnabled
+        StoredSettings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
+        StoredSettings.instance.margin = self.margin
+        StoredSettings.instance.customOptions = self.customOptions
+        
+        StoredSettings.instance.soundOn = self.soundOn
     }
 }

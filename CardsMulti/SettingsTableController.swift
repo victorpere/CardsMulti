@@ -19,7 +19,7 @@ class SettingsTableContoller : UIViewController {
     var selectedConfig: GameConfig
     
     var tableView: UITableView!
-    var delegate: SettingsTableControllerDelegate!
+    var delegate: SettingsDelegate!
     
     weak var minSlider: CardSlider?
     weak var maxSlider: CardSlider?
@@ -513,7 +513,7 @@ extension SettingsTableContoller: StoreManagerDelegate {
 
 // MARK: - Protocol SettingsTableControllerDelegate
 
-protocol SettingsTableControllerDelegate: AnyObject {
+protocol SettingsDelegate: AnyObject {
     func settingsChanged()
     func uiSettingsChanged()
     func gameChanged()
