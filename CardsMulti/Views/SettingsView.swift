@@ -18,11 +18,14 @@ struct SettingsView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @State private var selectedGameConfig: GameConfig?
+    
     // MARK: - Initializers
     
     init(delegate: SettingsDelegate?) {
         self.delegate = delegate
         self._selectedSettings = .init(wrappedValue: TemporarySettings(with: StoredSettings.instance))
+        self._selectedGameConfig = .init(wrappedValue: GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: StoredSettings.instance.game)))
     }
     
     // MARK: - View builder
@@ -54,6 +57,22 @@ struct SettingsView: View {
                                 Text(GameType(rawValue: self.selectedSettings.game)?.name.localized ?? "").foregroundColor(.secondary)
                             }
                         }
+                        
+                        if let gameConfig = self.selectedGameConfig, gameConfig.canChangeDeck {
+                            NavigationLink(destination: { Text("customize deck")}) {
+                                Text("customize deck".localized)
+                            }
+                        }
+                    }
+                }
+                
+                Section {
+                    List {
+                        HStack {
+                            Toggle(isOn: self.$selectedSettings.soundOn) {
+                                Text("sound".localized)
+                            }
+                        }
                     }
                 }
             }
@@ -76,6 +95,8 @@ struct SettingsView: View {
     /// Loads saved or default settings based on game type
     private func didSelectGame(ofType gameType: GameType) {
         if let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) {
+            selectedGameConfig = gameConfig
+            
             if gameConfig.canChangeDeck {
                 let gameSettings = StoredGameSettings(with: gameType)
                 self.selectedSettings.sync(to: gameSettings)

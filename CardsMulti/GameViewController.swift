@@ -422,12 +422,14 @@ class GameViewController: UIViewController {
     }
     
     private func openSettings(fromButton button: BottomButton) {
-//        let settingsViewController = SettingsTableContoller(nibName: nil, bundle: nil)
-//        settingsViewController.delegate = self
-//        self.presentNavigationPopover(settingsViewController, fromButton: button)
-//        
-        let settingsView = SettingsView(delegate: self)
-        self.presentView(settingsView)
+        if Config.useSwiftUI {
+            let settingsView = SettingsView(delegate: self)
+            self.presentView(settingsView)
+        } else {
+            let settingsViewController = SettingsTableContoller(nibName: nil, bundle: nil)
+            settingsViewController.delegate = self
+            self.presentNavigationPopover(settingsViewController, fromButton: button)
+        }
     }
     
     private func openScores(fromButton button: BottomButton) {

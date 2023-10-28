@@ -42,6 +42,16 @@
 		5748641826DE62F4005517BB /* StoredGameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5748641726DE62F4005517BB /* StoredGameSettings.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
 		576A36462752C6540045B159 /* CardScaleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A36452752C6540045B159 /* CardScaleSlider.swift */; };
+		576C1D082AEDCAE1003276F7 /* RankPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57085E0E2AD342F40084A42B /* RankPickerView.swift */; };
+		576C1D092AEDCAE2003276F7 /* RankPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57085E0E2AD342F40084A42B /* RankPickerView.swift */; };
+		576C1D0A2AEDCAE9003276F7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F12AE612B5004AA6B8 /* SettingsView.swift */; };
+		576C1D0C2AEDCAEF003276F7 /* PickerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F82AE76753004AA6B8 /* PickerCellView.swift */; };
+		576C1D0D2AEDCAF0003276F7 /* PickerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F82AE76753004AA6B8 /* PickerCellView.swift */; };
+		576C1D0E2AEDCAF3003276F7 /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F62AE61388004AA6B8 /* TextFieldView.swift */; };
+		576C1D0F2AEDCAF4003276F7 /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F62AE61388004AA6B8 /* TextFieldView.swift */; };
+		576C1D102AEDCAF7003276F7 /* TextEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F32AE6131B004AA6B8 /* TextEditView.swift */; };
+		576C1D112AEDCAF7003276F7 /* TextEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F32AE6131B004AA6B8 /* TextEditView.swift */; };
+		576C1D122AEDCB4C003276F7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F12AE612B5004AA6B8 /* SettingsView.swift */; };
 		5781B069295292AD009D3C4A /* CardScaleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A36452752C6540045B159 /* CardScaleSlider.swift */; };
 		5781B06A295292CE009D3C4A /* FlashMessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A7169426E6672C0073C0E1 /* FlashMessageLabel.swift */; };
 		5781B06B295292F1009D3C4A /* GameSceneBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571BBC61294557D100C43B69 /* GameSceneBase.swift */; };
@@ -924,6 +934,7 @@
 				57DA7BDC26ADB51800F3CA8F /* ProductsTableController.swift in Sources */,
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
 				57DD91A125853F900086336D /* WsRequestSender.swift in Sources */,
+				576C1D0E2AEDCAF3003276F7 /* TextFieldView.swift in Sources */,
 				5781B06F2952966D009D3C4A /* UIViewController.swift in Sources */,
 				57085E082AD1095C0084A42B /* GameGoFish.swift in Sources */,
 				57DA7BCC26A8546600F3CA8F /* FreeCell.swift in Sources */,
@@ -935,6 +946,7 @@
 				578B1C5B1E7EFB33008B8381 /* CardSpriteNode.swift in Sources */,
 				5781B06E29529338009D3C4A /* StoredGameSettings.swift in Sources */,
 				57BB31D62353BAA200AE2CDC /* PlayerStatusLabel.swift in Sources */,
+				576C1D0A2AEDCAE9003276F7 /* SettingsView.swift in Sources */,
 				57DA7BE226AE4B1A00F3CA8F /* SKProduct.swift in Sources */,
 				57B053F01E4E3BD20057E62F /* CardsMultiTests.swift in Sources */,
 				57DD91A925853FB30086336D /* Solitaire.swift in Sources */,
@@ -949,10 +961,12 @@
 				57D57080267FD3E90050B28E /* GameConfigsTests.swift in Sources */,
 				5781B06D2952931E009D3C4A /* Message.swift in Sources */,
 				57DA7BDF26ADECEA00F3CA8F /* ProductIdentifiers.swift in Sources */,
+				576C1D102AEDCAF7003276F7 /* TextEditView.swift in Sources */,
 				578B1C5F1E7EFBD6008B8381 /* Global.swift in Sources */,
 				57E0935D212730E500D4E4F6 /* Config.swift in Sources */,
 				578B1C601E7EFBD9008B8381 /* Card.swift in Sources */,
 				57BB31DE23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
+				576C1D082AEDCAE1003276F7 /* RankPickerView.swift in Sources */,
 				57DD919D25853F850086336D /* RequestData.swift in Sources */,
 				57D3DB9C257BF1DC00A52171 /* RequestDataTests.swift in Sources */,
 				57DD919525853F7C0086336D /* PlayArea.swift in Sources */,
@@ -961,6 +975,7 @@
 				5781B069295292AD009D3C4A /* CardScaleSlider.swift in Sources */,
 				578B1C5C1E7EFB37008B8381 /* Position.swift in Sources */,
 				57213CF1268903F600753AC4 /* TemporarySettings.swift in Sources */,
+				576C1D0C2AEDCAEF003276F7 /* PickerCellView.swift in Sources */,
 				578742BC2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
 				57DA7BD126AC962600F3CA8F /* StoreObserver.swift in Sources */,
 				5781B06C29529300009D3C4A /* UIStrings.swift in Sources */,
@@ -987,12 +1002,17 @@
 				57085E092AD109600084A42B /* GameGoFish.swift in Sources */,
 				57D57088267FD5950050B28E /* TextEditCell.swift in Sources */,
 				57DD91BD25853FFE0086336D /* ScoreCell.swift in Sources */,
+				576C1D112AEDCAF7003276F7 /* TextEditView.swift in Sources */,
+				576C1D0F2AEDCAF4003276F7 /* TextFieldView.swift in Sources */,
 				57DD91B125853FEF0086336D /* PopUpMenu.swift in Sources */,
+				576C1D0D2AEDCAF0003276F7 /* PickerCellView.swift in Sources */,
 				57BB31DF23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
 				5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */,
 				578F40C82377924400719821 /* SnapLocation.swift in Sources */,
 				57DD91C5258540020086336D /* GridView.swift in Sources */,
+				576C1D092AEDCAE2003276F7 /* RankPickerView.swift in Sources */,
 				574693542367CBCD00AB6516 /* StoredBase.swift in Sources */,
+				576C1D122AEDCB4C003276F7 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

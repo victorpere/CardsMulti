@@ -46,6 +46,8 @@ struct Config {
     
     static let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
     
+    static let useSwiftUI = true
+    
     static var isDebug: Bool {
         #if DEBUG
           return true
