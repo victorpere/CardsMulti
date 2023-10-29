@@ -29,11 +29,9 @@ class StoredBase : NSObject {
     func setSetting<T>(forKey key: String, toValue value: T?) {
         guard let value = value else { return }
         self.userDefaults.setValue(value, forKey: key)
-        self.userDefaults.synchronize()
     }
     
     func removeSetting(forKey key: String) {
         self.userDefaults.removeObject(forKey: key)
-        self.userDefaults.synchronize()
     }
 }
