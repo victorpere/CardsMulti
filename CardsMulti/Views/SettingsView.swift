@@ -13,6 +13,7 @@ struct SettingsView: View {
     // MARK: - Properties
     
     @StateObject var selectedSettings: TemporarySettings
+    @StateObject var productManager: ProductManager
     
     weak var delegate: SettingsDelegate?
     
@@ -26,6 +27,7 @@ struct SettingsView: View {
         self.delegate = delegate
         self._selectedSettings = .init(wrappedValue: TemporarySettings(with: StoredSettings.instance))
         self._selectedGameConfig = .init(wrappedValue: GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: StoredSettings.instance.game)))
+        self._productManager = .init(wrappedValue: ProductManager.instance)
     }
     
     // MARK: - View builder
@@ -46,6 +48,12 @@ struct SettingsView: View {
                                 ForEach(GameConfigs.sharedInstance.configArray, id: \.self.gameType) { gameConfig in
                                     PickerCellView(value: gameConfig.gameType.rawValue, selectedValue: self.$selectedSettings.game) {
                                         Text(gameConfig.gameType.name.localized)
+                                    }.rightContent {
+                                        if let productId = gameConfig.productId {
+                                            if let productInfo = self.productManager.products[productId] {
+                                                Text(productInfo.price)
+                                            }
+                                        }
                                     }
                                 }
                             }.navigationTitle("game".localized)
@@ -86,6 +94,9 @@ struct SettingsView: View {
                     self.didSelectGame(ofType: gameType)
                 }
             }
+        }
+        .onAppear() {
+            self.productManager.fetchProductInformation()
         }
     }
     
