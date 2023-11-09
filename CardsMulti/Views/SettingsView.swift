@@ -46,9 +46,10 @@ struct SettingsView: View {
                         NavigationLink(destination: {
                             List {
                                 ForEach(GameConfigs.sharedInstance.configArray, id: \.self.gameType) { gameConfig in
-                                    PickerCellView(value: gameConfig.gameType.rawValue, selectedValue: self.$selectedSettings.game) {
+                                    PickerCellView(value: gameConfig.gameType.rawValue, selectedValue: self.$selectedSettings.game, confirmationAlertTitle: String(format: UIStrings.wouldYouLikeToPurchase, gameConfig.gameType.name.localized), pickAction: self.canGameBeSelected, confirmationAction: self.purchaseGame) {
                                         Text(gameConfig.gameType.name.localized)
-                                    }.rightContent {
+                                    }
+                                    .rightContent {
                                         if let productId = gameConfig.productId {
                                             if let productInfo = self.productManager.products[productId] {
                                                 Text(productInfo.price)
@@ -101,6 +102,33 @@ struct SettingsView: View {
     }
     
     // MARK: - Private methods
+    
+    private func canGameBeSelected(value: Int) -> Bool {
+        if let gameType = GameType(rawValue: value), let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) {
+            if gameConfig.productId == nil {
+                return true
+            }
+            
+            if let productId = gameConfig.productId, let productInfo = self.productManager.products[productId] {
+                if productInfo.purchased {
+                    return true
+                }
+                
+                if Config.isDebug {
+                    //return true
+                }
+            }
+        }
+        
+        return false
+    }
+    
+    private func purchaseGame(value: Int) {
+        if let gameType = GameType(rawValue: value), let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType), let productId = gameConfig.productId {
+            
+            self.selectedSettings.game = value
+        }
+    }
     
     // TODO: move to TemporarySettings?
     /// Loads saved or default settings based on game type

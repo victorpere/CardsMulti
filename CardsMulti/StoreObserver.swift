@@ -46,6 +46,13 @@ class StoreObserver: NSObject {
         SKPaymentQueue.default().add(payment)
     }
     
+    func purchase(_ productIdentifier: String) {
+        print("Start purchase: \(productIdentifier)")
+        var payment = SKMutablePayment()
+        payment.productIdentifier = productIdentifier
+        SKPaymentQueue.default().add(payment)
+    }
+    
     func restore() {
         if !self.restored.isEmpty {
             self.restored.removeAll()

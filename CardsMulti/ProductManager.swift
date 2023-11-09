@@ -47,6 +47,11 @@ class ProductManager: ObservableObject {
         StoreObserver.sharedInstance.restore()
     }
     
+    ///  Initiate purchase of product 
+    func purchase(productId: String) {
+        StoreObserver.sharedInstance.purchase(productId)
+    }
+    
     // MARK: - Private methods
     
     fileprivate func updatePurchased() {
@@ -87,6 +92,8 @@ extension ProductManager: StoreObserverDelegate {
         } else {
             self.purchasedProductIds = [identifier]
         }
+        
+        self.products[identifier]?.purchased = true
     }
     
     func didFailToPurchaseProduct(identifier: String) {
