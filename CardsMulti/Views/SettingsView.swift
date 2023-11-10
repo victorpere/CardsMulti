@@ -12,10 +12,11 @@ struct SettingsView: View {
     
     // MARK: - Properties
     
-    @StateObject var selectedSettings: TemporarySettings
-    @StateObject var productManager: ProductManager
+    @StateObject private var selectedSettings: TemporarySettings
     
-    weak var delegate: SettingsDelegate?
+    @StateObject private var productManager: ProductManager
+    
+    weak private var delegate: SettingsDelegate?
     
     @Environment(\.dismiss) private var dismiss
     
@@ -46,15 +47,20 @@ struct SettingsView: View {
                         NavigationLink(destination: {
                             List {
                                 ForEach(GameConfigs.sharedInstance.configArray, id: \.self.gameType) { gameConfig in
-                                    PickerCellView(value: gameConfig.gameType.rawValue, selectedValue: self.$selectedSettings.game, confirmationAlertTitle: String(format: UIStrings.wouldYouLikeToPurchase, gameConfig.gameType.name.localized), pickAction: self.canGameBeSelected, confirmationAction: self.purchaseGame) {
+                                    PickerCellView(value: gameConfig.gameType.rawValue, selectedValue: self.$selectedSettings.game, confirmationAlertTitle: String(format: UIStrings.wouldYouLikeToPurchase, gameConfig.gameType.name.localized), canBePickedWithoutConfirmation: self.canGameBeSelected, confirmationAction: self.purchaseGame) {
                                         Text(gameConfig.gameType.name.localized)
                                     }
                                     .rightContent {
-                                        if let productId = gameConfig.productId {
-                                            if let productInfo = self.productManager.products[productId] {
-                                                Text(productInfo.price)
+                                    if let productId = gameConfig.productId, let productInfo = self.productManager.products[productId] {
+                                            if !productInfo.purchased {
+                                                if productInfo.purchasing {
+                                                    ProgressView()
+                                                } else {
+                                                    Text(productInfo.price)
+                                                }
                                             }
                                         }
+
                                     }
                                 }
                             }.navigationTitle("game".localized)
@@ -103,6 +109,7 @@ struct SettingsView: View {
     
     // MARK: - Private methods
     
+    /// Determines whether the game can be selected or is an unpurchased product
     private func canGameBeSelected(value: Int) -> Bool {
         if let gameType = GameType(rawValue: value), let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) {
             if gameConfig.productId == nil {
@@ -115,7 +122,7 @@ struct SettingsView: View {
                 }
                 
                 if Config.isDebug {
-                    //return true
+                    return true
                 }
             }
         }
@@ -123,10 +130,12 @@ struct SettingsView: View {
         return false
     }
     
+    // TODO: game purchase
+    /// Purchases the game
     private func purchaseGame(value: Int) {
         if let gameType = GameType(rawValue: value), let gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType), let productId = gameConfig.productId {
             
-            self.selectedSettings.game = value
+            self.productManager.purchase(productId: productId)
         }
     }
     

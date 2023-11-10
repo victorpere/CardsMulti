@@ -9,16 +9,28 @@
 import SwiftUI
 
 struct PickerCellView<Content: View>: View {
+    
+    /// Value representing the item
     var value: Int
+    
+    /// Binding for the value representing the selected item
     @Binding var selectedValue: Int
-    var confirmationAlertTitle: String?
-    var pickAction: ((Int) -> Bool)?
+    
+    /// Title for confirmation dialog
+    var confirmationAlertTitle: String = ""
+    
+    /// Closure to determine whether the item can be selected or requires a confirmation dialog
+    var canBePickedWithoutConfirmation: ((Int) -> Bool) = { _ in return true }
+    
+    /// Closer to be executed after confirmation
     var confirmationAction: ((Int) -> Void)?
     
+    /// Main content of the item
     @ViewBuilder let content: Content
     
     @State private var showingAlert = false
     
+    /// Content to be displayed on the right side of the item
     func rightContent<RightContent: View>(@ViewBuilder _ rightContent: () -> RightContent) -> some View {
         HStack {
             self
@@ -30,7 +42,7 @@ struct PickerCellView<Content: View>: View {
     var body: some View {
         Button(action: {
             if self.selectedValue != self.value {
-                if self.pickAction == nil || self.pickAction!(self.value) {
+                if self.canBePickedWithoutConfirmation(self.value) {
                     self.selectedValue = self.value
                 } else {
                     self.showingAlert = true
@@ -47,7 +59,7 @@ struct PickerCellView<Content: View>: View {
             }
         }.buttonStyle(.automatic)
             .foregroundColor(.primary)
-            .confirmationDialog(self.confirmationAlertTitle ?? "", isPresented: self.$showingAlert, titleVisibility: .visible) {
+            .confirmationDialog(self.confirmationAlertTitle, isPresented: self.$showingAlert, titleVisibility: .visible) {
                 Button(UIStrings.ok) {
                     self.confirmationAction?(self.value)
                 }

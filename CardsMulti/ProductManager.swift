@@ -22,7 +22,7 @@ class ProductManager: ObservableObject {
         
         if let path = Config.productIdsFilePath, let identifiers = NSArray(contentsOfFile: path) as? [String] {
             self.products = identifiers.reduce(into: [String: ProductInfo]()) {
-                $0[$1] = ProductInfo(id: $1, price: "", purchased: false)
+                $0[$1] = ProductInfo(id: $1, price: "", purchased: false, purchasing: false)
             }
         }
         
@@ -49,6 +49,7 @@ class ProductManager: ObservableObject {
     
     ///  Initiate purchase of product 
     func purchase(productId: String) {
+        self.products[productId]?.purchasing = true
         StoreObserver.sharedInstance.purchase(productId)
     }
     
@@ -70,7 +71,7 @@ class ProductManager: ObservableObject {
 extension ProductManager: StoreManagerDelegate {
     func didReceive(availableProducts: [SKProduct]) {
         self.products = availableProducts.reduce(into: [String: ProductInfo]()) {
-            $0[$1.productIdentifier] = ProductInfo(id: $1.productIdentifier, price: $1.formattedPrice, purchased: false)
+            $0[$1.productIdentifier] = ProductInfo(id: $1.productIdentifier, price: $1.formattedPrice, purchased: false, purchasing: false)
         }
         
         self.updatePurchased()
@@ -93,11 +94,14 @@ extension ProductManager: StoreObserverDelegate {
             self.purchasedProductIds = [identifier]
         }
         
+        self.products[identifier]?.purchasing = false
         self.products[identifier]?.purchased = true
     }
     
     func didFailToPurchaseProduct(identifier: String) {
         // TODO: handle failure to purchase
+        
+        self.products[identifier]?.purchasing = false
     }
 }
 
@@ -105,4 +109,5 @@ struct ProductInfo {
     var id: String
     var price: String
     var purchased: Bool
+    var purchasing: Bool
 }
