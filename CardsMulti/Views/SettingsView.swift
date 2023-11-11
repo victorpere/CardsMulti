@@ -73,9 +73,19 @@ struct SettingsView: View {
                             }
                         }
                         
-                        if let gameConfig = self.selectedGameConfig, gameConfig.canChangeDeck {
-                            NavigationLink(destination: { Text("customize deck")}) {
-                                Text("customize deck".localized)
+                        if let gameConfig = self.selectedGameConfig {
+                            if gameConfig.canChangeDeck {
+                                // TODO: customize deck view
+                                NavigationLink(destination: { Text("customize deck view")}) {
+                                    Text("customize deck".localized)
+                                }
+                            }
+                            
+                            if gameConfig.canChangeCardSize {
+                                // TODO: change card size view
+                                NavigationLink(destination: { Text("change card size view")}) {
+                                    Text("change card size".localized)
+                                }
                             }
                         }
                     }
@@ -87,6 +97,18 @@ struct SettingsView: View {
                             Toggle(isOn: self.$selectedSettings.soundOn) {
                                 Text("sound".localized)
                             }
+                        }
+                    }
+                }
+                
+                Section(header: Text(UIStrings.store)) {
+                    List {
+                        HStack {
+                            Button(action: {
+                                self.productManager.restorePurchased()
+                            }) {
+                                Text(UIStrings.restorePurchases)
+                            }.buttonStyle(.automatic)
                         }
                     }
                 }
@@ -121,9 +143,9 @@ struct SettingsView: View {
                     return true
                 }
                 
-                if Config.isDebug {
-                    return true
-                }
+                #if DEBUG
+                return true
+                #endif
             }
         }
         
