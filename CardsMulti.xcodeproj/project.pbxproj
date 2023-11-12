@@ -43,6 +43,8 @@
 		5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5A2AEDF79D00733918 /* ProductManager.swift */; };
 		5750E3EA2AF888FA00FE7AE1 /* StoredValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5F2AF486F300733918 /* StoredValue.swift */; };
 		5750E3F02AFFD1F800FE7AE1 /* SettingsCardSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */; };
+		5750E3F32B018A0E00FE7AE1 /* SettingsCardSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */; };
+		5750E3F42B018A1600FE7AE1 /* SettingsCardSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
 		576A36462752C6540045B159 /* CardScaleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A36452752C6540045B159 /* CardScaleSlider.swift */; };
 		576C1D082AEDCAE1003276F7 /* RankPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57085E0E2AD342F40084A42B /* RankPickerView.swift */; };
@@ -952,6 +954,7 @@
 				578B1C631E7EFBE4008B8381 /* Suit.swift in Sources */,
 				57EA2B5E25B39DFD00536B47 /* MathTests.swift in Sources */,
 				5781B06B295292F1009D3C4A /* GameSceneBase.swift in Sources */,
+				5750E3F32B018A0E00FE7AE1 /* SettingsCardSizeView.swift in Sources */,
 				57D570992687B2490050B28E /* Settings.swift in Sources */,
 				5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */,
 				57DA7BDC26ADB51800F3CA8F /* ProductsTableController.swift in Sources */,
@@ -1028,6 +1031,7 @@
 				57DD91BD25853FFE0086336D /* ScoreCell.swift in Sources */,
 				576C1D112AEDCAF7003276F7 /* TextEditView.swift in Sources */,
 				576C1D0F2AEDCAF4003276F7 /* TextFieldView.swift in Sources */,
+				5750E3F42B018A1600FE7AE1 /* SettingsCardSizeView.swift in Sources */,
 				57DD91B125853FEF0086336D /* PopUpMenu.swift in Sources */,
 				576C1D0D2AEDCAF0003276F7 /* PickerCellView.swift in Sources */,
 				57BB31DF23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
