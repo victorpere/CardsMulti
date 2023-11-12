@@ -25,6 +25,8 @@ struct Config {
     static let cardBackImageName = "back"
     
     static let cardWidthFullSizePixels: CGFloat = 500.0
+    static let minCardWidthsPerScreen: Float = 3
+    static let maxCardWidthsPerScreen: Float = 10
     
     static let snapDistance: CGFloat = 20
     static let fanRadiusCoefficient: CGFloat = 100

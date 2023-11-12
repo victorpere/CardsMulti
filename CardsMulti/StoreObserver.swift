@@ -48,7 +48,7 @@ class StoreObserver: NSObject {
     
     func purchase(_ productIdentifier: String) {
         print("Start purchase: \(productIdentifier)")
-        var payment = SKMutablePayment()
+        let payment = SKMutablePayment()
         payment.productIdentifier = productIdentifier
         SKPaymentQueue.default().add(payment)
     }

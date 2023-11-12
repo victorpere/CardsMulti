@@ -83,8 +83,11 @@ struct SettingsView: View {
                             
                             if gameConfig.canChangeCardSize {
                                 // TODO: change card size view
-                                NavigationLink(destination: { Text("change card size view")}) {
+                                NavigationLink(destination: {
+                                    SettingsCardSizeView(cardWidthsPerScreen: self.$selectedSettings.cardWidthsPerScreen)
+                                }) {
                                     Text("change card size".localized)
+                                    
                                 }
                             }
                         }
@@ -186,6 +189,9 @@ struct SettingsView: View {
         if self.selectedSettings.game != StoredSettings.instance.game {
             self.selectedSettings.store()
             self.delegate?.gameChanged()
+        } else if self.selectedSettings.cardWidthsPerScreen != StoredSettings.instance.cardWidthsPerScreen {
+            self.selectedSettings.store()
+            self.delegate?.uiSettingsChanged()
         } else {
             self.selectedSettings.store()
         }

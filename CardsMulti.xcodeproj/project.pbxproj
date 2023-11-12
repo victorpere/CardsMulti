@@ -42,6 +42,7 @@
 		5748641826DE62F4005517BB /* StoredGameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5748641726DE62F4005517BB /* StoredGameSettings.swift */; };
 		5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5A2AEDF79D00733918 /* ProductManager.swift */; };
 		5750E3EA2AF888FA00FE7AE1 /* StoredValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5F2AF486F300733918 /* StoredValue.swift */; };
+		5750E3F02AFFD1F800FE7AE1 /* SettingsCardSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
 		576A36462752C6540045B159 /* CardScaleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A36452752C6540045B159 /* CardScaleSlider.swift */; };
 		576C1D082AEDCAE1003276F7 /* RankPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57085E0E2AD342F40084A42B /* RankPickerView.swift */; };
@@ -232,6 +233,7 @@
 		574693552367CD4600AB6516 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		574725C7243C072E0094FF39 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		5748641726DE62F4005517BB /* StoredGameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredGameSettings.swift; sourceTree = "<group>"; };
+		5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCardSizeView.swift; sourceTree = "<group>"; };
 		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
 		576A36452752C6540045B159 /* CardScaleSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScaleSlider.swift; sourceTree = "<group>"; };
 		578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceivedDataHandler.swift; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 				571278F52AE61371004AA6B8 /* Modules */,
 				57085E0E2AD342F40084A42B /* RankPickerView.swift */,
 				571278F12AE612B5004AA6B8 /* SettingsView.swift */,
+				5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -908,6 +911,7 @@
 				57DA7BDE26ADECEA00F3CA8F /* ProductIdentifiers.swift in Sources */,
 				571278F92AE76753004AA6B8 /* PickerCellView.swift in Sources */,
 				573FD5862399F30C009BDBF9 /* GameType.swift in Sources */,
+				5750E3F02AFFD1F800FE7AE1 /* SettingsCardSizeView.swift in Sources */,
 				574050551E5F82AA00316AEB /* UIDevice.swift in Sources */,
 				573FD588239F343F009BDBF9 /* PlayArea.swift in Sources */,
 				571BBC63294557D100C43B69 /* GameSceneBase.swift in Sources */,
