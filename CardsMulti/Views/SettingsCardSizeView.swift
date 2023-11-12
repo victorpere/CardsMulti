@@ -18,10 +18,11 @@ struct SettingsCardSizeView: View {
         VStack {
             Text(String(format: "%.2f", self.cardSize))
             
-            Slider(value: self.$cardSize, in: self.screenWidth / Config.maxCardWidthsPerScreen...self.screenWidth / Config.minCardWidthsPerScreen, onEditingChanged: { _ in
-                self.cardWidthsPerScreen = self.screenWidth / self.cardSize
-            })
-                .padding([.leading,.trailing], 10)
+            Slider(value: self.$cardSize, in: self.screenWidth / Config.maxCardWidthsPerScreen...self.screenWidth / Config.minCardWidthsPerScreen, onEditingChanged: { editing in
+                if !editing {
+                    self.cardWidthsPerScreen = self.screenWidth / self.cardSize
+                }
+            }).padding([.leading,.trailing], 10)
             
         }
         .onAppear() {
