@@ -8,22 +8,22 @@
 
 import SwiftUI
 
-struct PickerCellView<Content: View>: View {
+struct PickerCellView<Content: View, SelectionValue: Hashable>: View {
     
     /// Value representing the item
-    var value: Int
+    var value: SelectionValue
     
     /// Binding for the value representing the selected item
-    @Binding var selectedValue: Int
+    @Binding var selectedValue: SelectionValue
     
     /// Title for confirmation dialog
     var confirmationAlertTitle: String = ""
     
     /// Closure to determine whether the item can be selected or requires a confirmation dialog
-    var canBePickedWithoutConfirmation: ((Int) -> Bool) = { _ in return true }
+    var canBePickedWithoutConfirmation: ((SelectionValue) -> Bool) = { _ in return true }
     
     /// Closer to be executed after confirmation
-    var confirmationAction: ((Int) -> Void)?
+    var confirmationAction: ((SelectionValue) -> Void)?
     
     /// Main content of the item
     @ViewBuilder let content: Content
