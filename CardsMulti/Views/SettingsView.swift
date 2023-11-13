@@ -128,7 +128,9 @@ struct SettingsView: View {
             })
             .onChange(of: self.selectedSettings.game) { _ in
                 if let gameType = GameType(rawValue: self.selectedSettings.game) {
-                    self.didSelectGame(ofType: gameType)
+                    withAnimation() {
+                        self.didSelectGame(ofType: gameType)
+                    }
                 }
             }
         }
