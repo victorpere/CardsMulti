@@ -28,15 +28,21 @@ struct SettingsCardSizeView: View {
                             .frame(width: CGFloat(self.cardWidth), height: uiImage.size.height * CGFloat(self.maxCardWidth) / uiImage.size.width)
                     }
                     
-                    Text(String(format: "%.2f", self.cardWidth))
-                    
-                    Slider(value: self.$cardWidth, in: self.minCardWidth...self.maxCardWidth, onEditingChanged: { editing in
-                        if !editing {
-                            self.cardWidthsPerScreen = self.screenWidth / self.cardWidth
+                    Picker("" ,selection: self.$cardWidth.animation()) {
+                        ForEach (Config.presetCardWidthsPerScreen, id: \.self.value) { presetCardWidth in
+                            Text(presetCardWidth.key.localized).tag(self.screenWidth / presetCardWidth.value)
                         }
-                    }).padding([.leading,.trailing], 10)
+                    }
+                    .padding([.top], 20)
+                    .pickerStyle(.segmented)
+                    
+                    Slider(value: self.$cardWidth.animation(), in: self.minCardWidth...self.maxCardWidth)
+                        .padding([.leading,.trailing], 10)
                         .padding([.top], 40)
                     
+                }
+                .onChange(of: self.cardWidth) { _ in
+                    self.cardWidthsPerScreen = self.screenWidth / self.cardWidth
                 }
                 .onAppear() {
                     self.cardWidth = self.screenWidth / self.cardWidthsPerScreen
