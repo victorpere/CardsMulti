@@ -77,17 +77,22 @@ struct SettingsView: View {
                             if gameConfig.canChangeDeck {
                                 // TODO: customize deck view
                                 NavigationLink(destination: { Text("customize deck view")}) {
-                                    Text("customize deck".localized)
+                                    Text("deck".localized)
                                 }
                             }
                             
                             if gameConfig.canChangeCardSize {
-                                // TODO: change card size view
                                 NavigationLink(destination: {
-                                    SettingsCardSizeView(cardWidthsPerScreen: self.$selectedSettings.cardWidthsPerScreen)
+                                    GeometryReader { geo in
+                                        SettingsCardSizeView(cardWidthsPerScreen: self.$selectedSettings.cardWidthsPerScreen, screenWidth: Float(geo.size.width))
+                                    }
                                 }) {
-                                    Text("change card size".localized)
-                                    
+                                    HStack {
+                                        Text("card size".localized)
+                                        Spacer()
+                                        Text((self.selectedSettings.presetCardSize ?? "custom").localized)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
                         }

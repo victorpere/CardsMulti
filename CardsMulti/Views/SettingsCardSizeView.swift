@@ -10,12 +10,20 @@ import SwiftUI
 
 struct SettingsCardSizeView: View {
     @Binding var cardWidthsPerScreen: Float
+    var screenWidth: Float
     
     @State private var cardWidth: Float = 0
-    private let screenWidth = Float(UIScreen.main.bounds.width)
-    private let minCardWidth = Float(UIScreen.main.bounds.width) / Config.maxCardWidthsPerScreen
-    private let maxCardWidth = Float(UIScreen.main.bounds.width) / Config.minCardWidthsPerScreen
+    
+    private let minCardWidth: Float
+    private let maxCardWidth: Float
     private let uiImage = UIImage(named: "back")
+    
+    init(cardWidthsPerScreen: Binding<Float>, screenWidth: Float) {
+        self._cardWidthsPerScreen = cardWidthsPerScreen
+        self.screenWidth = screenWidth
+        self.minCardWidth = screenWidth / Config.maxCardWidthsPerScreen
+        self.maxCardWidth = screenWidth / Config.minCardWidthsPerScreen
+    }
     
     var body: some View {
         Form {

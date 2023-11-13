@@ -24,6 +24,14 @@ class TemporarySettings : Settings, GameSettings, ObservableObject {
     var soundOn: Bool = true
     var customOptions: NSDictionary?
     
+    var presetCardSize: String? {
+        if let presetCardWidth = Config.presetCardWidthsPerScreen.first(where: { $0.value == self.cardWidthsPerScreen}) {
+            return presetCardWidth.key
+        }
+        
+        return nil
+    }
+    
     init() { }
     
     init(with settings: Settings) {
