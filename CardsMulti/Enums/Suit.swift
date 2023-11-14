@@ -6,7 +6,7 @@
 //  Copyright © 2017 Victor. All rights reserved.
 //
 
-enum Suit: Int {
+enum Suit: Int, CaseIterable, Codable {
     case spades, hearts, diamonds, clubs
     var symbol: String {
         switch self {

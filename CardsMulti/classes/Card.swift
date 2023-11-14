@@ -6,9 +6,35 @@
 //  Copyright © 2017 Victor. All rights reserved.
 //
 
-class Card {
+struct Card: Codable {
     let suit: Suit
     let rank: Rank
+    
+    init(suit: Suit, rank: Rank) {
+        self.suit = suit
+        self.rank = rank
+    }
+    
+    // MARK: - decode/encode
+    
+    private enum CodingKeys: String, CodingKey {
+        case suit
+        case rank
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.suit = try values.decode(Suit.self, forKey: .suit)
+        self.rank = try values.decode(Rank.self, forKey: .rank)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.suit, forKey: .suit)
+        try container.encode(self.rank, forKey: .rank)
+    }
+    
+    // MARK: - Computed properties
     
     var spriteName: String {
         get {
@@ -18,11 +44,6 @@ class Card {
     
     var symbol: String {
         return (self.suit.symbol + self.rank.symbol)
-    }
-    
-    init(suit: Suit, rank:Rank) {
-        self.suit = suit
-        self.rank = rank
     }
     
     func beats(_ card: Card, trump: Suit) -> Bool {
