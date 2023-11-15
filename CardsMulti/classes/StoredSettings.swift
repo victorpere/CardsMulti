@@ -19,42 +19,17 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     static let defaultMinRank = 2
     static let defaultMaxRank = 10
     
-    static let defaultCardWidthsPerScreen: Float = 6
-    static let minCardWidthsPerScreen: Float = 3
-    static let maxCardWidthsPerScreen: Float = 10
-    
-    private let defaultMargin: Float = 5
-    
     // MARK: - Properties
     
-    var displayName: String {
-        get {
-            return self.settingOrDefault(forKey: "displayName", defaultValue: UIDevice.current.name)
-        }
-        set(value) {
-            self.setSetting(forKey: "displayName", toValue: value)
-        }
-    }
+    @StoredWithDefault (key: "displayName", defaultValue: UIDevice.current.name) var displayName: String
+    @StoredValue (key: "cardSet") var cardSet: String?
+    @StoredWithDefault (key: "game", defaultValue: GameType.freePlay.rawValue) var game: Int
+    @StoredWithDefault (key: "cardWidthsPerScreen", defaultValue: Config.defaultCardWidthsPerScreen) var cardWidthsPerScreen: Float
     
-    var cardSet: String? {
-        get {
-            return self.settingOrDefault(forKey: "cardSet", defaultValue: nil)
-            //return "02en"
-        }
-        set(value) {
-            self.setSetting(forKey: "cardSet", toValue: value)
-        }
-    }
+    @StoredWithDefault (key: "soundOn", defaultValue: true) var soundOn: Bool
+    @StoredValue (key: "customOptions") var customOptions: NSDictionary?
     
-    var game: Int {
-        get {
-            return self.settingOrDefault(forKey: "game", defaultValue: GameType.freePlay.rawValue)
-        }
-        set(value) {
-            self.setSetting(forKey: "game", toValue: value)
-        }
-    }
-    
+    // TODO: replace with CardDeck
     var minRank: Int {
         get {
             return self.settingOrDefault(forKey: "minRank", defaultValue: StoredSettings.defaultMinRank)
@@ -118,40 +93,14 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    var cardWidthsPerScreen: Float {
-        get {
-            return self.settingOrDefault(forKey: "cardWidthsPerScreen", defaultValue: StoredSettings.defaultCardWidthsPerScreen)
-        }
-        set(value) {
-            self.setSetting(forKey: "cardWidthsPerScreen", toValue: value)
-        }
-    }
-    
+    // TODO: use StoredWithDefault
     var margin: Float {
         get {
-            let config = GameConfigs.sharedInstance.gameConfig(for: GameType.init(rawValue: self.game))
+            let config = GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: self.game))
             return config?.defaultSettings.margin ?? GameConfigs.sharedInstance.defaultSettings.margin
         }
         set(value) {
             self.setSetting(forKey: "margin", toValue: value)
-        }
-    }
-    
-    var soundOn: Bool {
-        get {
-            return self.settingOrDefault(forKey: "soundOn", defaultValue: true)
-        }
-        set(value) {
-            self.setSetting(forKey: "soundOn", toValue: value)
-        }
-    }
-    
-    var customOptions: NSDictionary? {
-        get {
-            return self.settingOrDefault(forKey: "customOptions", defaultValue: nil)
-        }
-        set(value) {
-            self.setSetting(forKey: "customOptions", toValue: value)
         }
     }
     

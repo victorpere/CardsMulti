@@ -79,7 +79,7 @@ class StoredGameSettings : StoredBase, GameSettings {
     
     var cardWidthsPerScreen: Float {
         get {
-            return self.settingOrDefault(forKey: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", defaultValue: StoredSettings.defaultCardWidthsPerScreen)
+            return self.settingOrDefault(forKey: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", defaultValue: Config.defaultCardWidthsPerScreen)
         }
         set(value) {
             self.setSetting(forKey: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", toValue: value)

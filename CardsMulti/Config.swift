@@ -25,6 +25,7 @@ struct Config {
     static let cardBackImageName = "back"
     
     static let cardWidthFullSizePixels: CGFloat = 500.0
+    static let defaultCardWidthsPerScreen: Float = 6
     static let minCardWidthsPerScreen: Float = 3
     static let maxCardWidthsPerScreen: Float = 10
     static let presetCardWidthsPerScreen: KeyValuePairs<String, Float> = ["small": 8, "medium": 6, "large": 4, "xlarge": 3]

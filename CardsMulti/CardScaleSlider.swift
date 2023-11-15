@@ -46,8 +46,8 @@ class CardScaleSlider : UISlider {
         self.setMinimumTrackImage(sliderTrackImage, for: .normal)
         self.setMaximumTrackImage(sliderTrackImage, for: .normal)
         
-        self.minimumValue = self.screenWidth / StoredSettings.maxCardWidthsPerScreen
-        self.maximumValue = self.screenWidth / StoredSettings.minCardWidthsPerScreen
+        self.minimumValue = self.screenWidth / Config.maxCardWidthsPerScreen
+        self.maximumValue = self.screenWidth / Config.minCardWidthsPerScreen
         self.value = self.screenWidth / StoredSettings.instance.cardWidthsPerScreen
         
         self.updateThumbImage()
