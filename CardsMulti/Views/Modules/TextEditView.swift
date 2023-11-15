@@ -20,6 +20,7 @@ struct TextEditView: View {
             }
                 .focused(self.$focused)
                 .submitLabel(.done)
+                .disableAutocorrection(true)
         }.onAppear {
             self.focused = true
         }.navigationTitle(self.label).navigationBarTitleDisplayMode(.inline)
