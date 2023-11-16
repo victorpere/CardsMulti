@@ -13,6 +13,7 @@ struct SettingsCardSizeView: View {
     var screenWidth: Float
     
     @State private var cardWidth: Float = 0
+    @State private var customSize = false
     
     private let minCardWidth: Float
     private let maxCardWidth: Float
@@ -44,16 +45,32 @@ struct SettingsCardSizeView: View {
                     .padding([.top], 20)
                     .pickerStyle(.segmented)
                     
-                    Slider(value: self.$cardWidth.animation(), in: self.minCardWidth...self.maxCardWidth)
-                        .padding([.leading,.trailing], 10)
-                        .padding([.top], 40)
-                    
+                    if self.customSize {
+                        Slider(value: self.$cardWidth.animation(), in: self.minCardWidth...self.maxCardWidth)
+                            .padding([.leading,.trailing], 10)
+                            .padding([.top], 40)
+                    } else {
+                        Button("custom".localized) {
+                            withAnimation() {
+                                self.customSize = true
+                            }
+                        }.padding([.top], 40)
+                            .padding([.bottom],10)
+                    }
                 }
-                .onChange(of: self.cardWidth) { _ in
-                    self.cardWidthsPerScreen = self.screenWidth / self.cardWidth
+                .onChange(of: self.cardWidth) { cardWidth in
+                    self.cardWidthsPerScreen = self.screenWidth / cardWidth
+                    if Config.presetCardWidthsPerScreen.contains(where: { w in w.value == self.cardWidthsPerScreen }) {
+                        withAnimation() {
+                            self.customSize = false
+                        }
+                    }
                 }
                 .onAppear() {
                     self.cardWidth = self.screenWidth / self.cardWidthsPerScreen
+                    if !Config.presetCardWidthsPerScreen.contains(where: { w in w.value == self.cardWidthsPerScreen }) {
+                        self.customSize = true
+                    }
                 }
             }
         }
