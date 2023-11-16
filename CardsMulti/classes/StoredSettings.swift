@@ -21,10 +21,10 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     
     // MARK: - Properties
     
-    @StoredWithDefault (key: "displayName", defaultValue: UIDevice.current.name) var displayName: String
+    @StoredWithDefault (key: SettingsKey.displayName.rawValue, defaultValue: UIDevice.current.name) var displayName: String
     @StoredValue (key: "cardSet") var cardSet: String?
-    @StoredWithDefault (key: "game", defaultValue: GameType.freePlay.rawValue) var game: Int
-    @StoredWithDefault (key: "cardWidthsPerScreen", defaultValue: Config.defaultCardWidthsPerScreen) var cardWidthsPerScreen: Float
+    @StoredWithDefault (key: SettingsKey.game.rawValue, defaultValue: GameType.freePlay.rawValue) var game: Int
+    @StoredWithDefault (key: SettingsKey.cardWidthsPerScreen.rawValue, defaultValue: Config.defaultCardWidthsPerScreen) var cardWidthsPerScreen: Float
     
     @StoredWithDefault (key: "soundOn", defaultValue: true) var soundOn: Bool
     @StoredValue (key: "customOptions") var customOptions: NSDictionary?
