@@ -47,6 +47,7 @@
 		5750E3F42B018A1600FE7AE1 /* SettingsCardSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */; };
 		5750E3F62B0309D200FE7AE1 /* CardDeck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3F52B0309D200FE7AE1 /* CardDeck.swift */; };
 		5750E3F72B039B3100FE7AE1 /* CardDeck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3F52B0309D200FE7AE1 /* CardDeck.swift */; };
+		5750E3F92B070C8500FE7AE1 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5750E3F82B070C8500FE7AE1 /* CardTests.swift */; };
 		575F28071E62501600AE0C53 /* card_slide.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 575F28061E62501600AE0C53 /* card_slide.m4a */; };
 		576A36462752C6540045B159 /* CardScaleSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A36452752C6540045B159 /* CardScaleSlider.swift */; };
 		576C1D082AEDCAE1003276F7 /* RankPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57085E0E2AD342F40084A42B /* RankPickerView.swift */; };
@@ -239,6 +240,7 @@
 		5748641726DE62F4005517BB /* StoredGameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredGameSettings.swift; sourceTree = "<group>"; };
 		5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCardSizeView.swift; sourceTree = "<group>"; };
 		5750E3F52B0309D200FE7AE1 /* CardDeck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDeck.swift; sourceTree = "<group>"; };
+		5750E3F82B070C8500FE7AE1 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
 		575F28061E62501600AE0C53 /* card_slide.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_slide.m4a; sourceTree = "<group>"; };
 		576A36452752C6540045B159 /* CardScaleSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScaleSlider.swift; sourceTree = "<group>"; };
 		578742BA2586D054004C9DBB /* ReceivedDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceivedDataHandler.swift; sourceTree = "<group>"; };
@@ -492,6 +494,7 @@
 				57D3DB9B257BF1DC00A52171 /* RequestDataTests.swift */,
 				57EA2B5D25B39DFD00536B47 /* MathTests.swift */,
 				57D5707F267FD3E90050B28E /* GameConfigsTests.swift */,
+				5750E3F82B070C8500FE7AE1 /* CardTests.swift */,
 			);
 			path = CardsMultiTests;
 			sourceTree = "<group>";
@@ -964,6 +967,7 @@
 				5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */,
 				57DA7BDC26ADB51800F3CA8F /* ProductsTableController.swift in Sources */,
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
+				5750E3F92B070C8500FE7AE1 /* CardTests.swift in Sources */,
 				57DD91A125853F900086336D /* WsRequestSender.swift in Sources */,
 				576C1D0E2AEDCAF3003276F7 /* TextFieldView.swift in Sources */,
 				5781B06F2952966D009D3C4A /* UIViewController.swift in Sources */,

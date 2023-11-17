@@ -20,12 +20,26 @@ enum Suit: Int, CaseIterable, Codable {
             return "♣️"
         }
     }
+    
     var color: SuitColor {
         switch self {
         case .spades, .clubs:
             return SuitColor.black
         case .hearts, .diamonds:
             return SuitColor.red
+        }
+    }
+    
+    var unicode: String {
+        switch self {
+        case .spades:
+            return "1f0a"
+        case .hearts:
+            return "1f0b"
+        case .diamonds:
+            return "1f0d"
+        case .clubs:
+            return "1f0d"
         }
     }
 }

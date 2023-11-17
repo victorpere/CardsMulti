@@ -36,6 +36,18 @@ struct Card: Codable {
     
     // MARK: - Computed properties
     
+    /// returns a unicode character representing the card
+    var unicode: String {
+        let codestr = "\(self.suit.unicode)\(self.rank.unicode)"
+        if let code = Int(codestr, radix: 16) {
+            if let unicode = UnicodeScalar(code) {
+                return "\(unicode)"
+            }
+        }
+        
+        return "?"
+    }
+    
     var spriteName: String {
         get {
             return self.rank.name + "_of_" + String(describing: self.suit)
