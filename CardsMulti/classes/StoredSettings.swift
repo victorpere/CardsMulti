@@ -29,6 +29,8 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     @StoredWithDefault (key: "soundOn", defaultValue: true) var soundOn: Bool
     @StoredValue (key: "customOptions") var customOptions: NSDictionary?
     
+    @StoredEncodedValue (key: "deck") var deck: [Card]?
+    
     // TODO: replace with CardDeck
     var minRank: Int {
         get {

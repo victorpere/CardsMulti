@@ -26,3 +26,23 @@ import Foundation
         set { UserDefaults.standard.set(newValue, forKey: self.key)}
     }
 }
+
+@propertyWrapper struct StoredEncodedValue<T: Codable> {
+    let key: String
+    
+    var wrappedValue: T? {
+        get {
+            if let data = UserDefaults.standard.data(forKey: self.key) {
+                let jsonDecoder = JSONDecoder()
+                return try? jsonDecoder.decode(T.self, from: data)
+            }
+            return nil
+        }
+        set {
+            let jsonEncoder = JSONEncoder()
+            if let data = try? jsonEncoder.encode(newValue) {
+                UserDefaults.standard.set(data, forKey: self.key)
+            }
+        }
+    }
+}

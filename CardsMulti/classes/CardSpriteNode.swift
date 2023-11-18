@@ -583,6 +583,10 @@ protocol CardSpriteNodeDelegate {
 // MARK: - Array of CardSpriteNode extension
 
 extension Array where Element:CardSpriteNode {
+    
+    init(cards: [Card]) {
+        self = cards.map { CardSpriteNode(card: $0, name: nil) as! Element }
+    }
         
     /// Returns a string array representing the card symbols in order of their zPositions
     var zPositionsArray: [String?] {
