@@ -13,6 +13,7 @@
         "canChangeDeck": false,
         "canRotateCards": false,
         "defaultSettings": {
+            "deckName": "standard",
             "pipsEnabled": true,
             "minValue": 2,
             "maxValue": 10,

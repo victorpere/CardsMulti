@@ -92,6 +92,10 @@
 		578F40C62377923100719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
 		578F40C72377924400719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
 		578F40C82377924400719821 /* SnapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C52377923100719821 /* SnapLocation.swift */; };
+		57A698C12B099F6500EC45BB /* cardDecks.json in Resources */ = {isa = PBXBuildFile; fileRef = 57A698C02B099F6500EC45BB /* cardDecks.json */; };
+		57A698C32B09A5AD00EC45BB /* CardDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A698C22B09A5AD00EC45BB /* CardDecks.swift */; };
+		57A698C42B0AD06E00EC45BB /* CardDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A698C22B09A5AD00EC45BB /* CardDecks.swift */; };
+		57A698C62B0AD09B00EC45BB /* CardDeckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A698C52B0AD09B00EC45BB /* CardDeckTests.swift */; };
 		57A7169526E6672C0073C0E1 /* FlashMessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A7169426E6672C0073C0E1 /* FlashMessageLabel.swift */; };
 		57A7169926E6A5E20073C0E1 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A7169826E6A5E20073C0E1 /* Message.swift */; };
 		57B053D51E4E3BD20057E62F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B053D41E4E3BD20057E62F /* AppDelegate.swift */; };
@@ -253,6 +257,9 @@
 		578DB66A2677E1620034BB45 /* TextEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditCell.swift; sourceTree = "<group>"; };
 		578F40C323778D9300719821 /* Solitaire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solitaire.swift; sourceTree = "<group>"; };
 		578F40C52377923100719821 /* SnapLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLocation.swift; sourceTree = "<group>"; };
+		57A698C02B099F6500EC45BB /* cardDecks.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cardDecks.json; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.json; };
+		57A698C22B09A5AD00EC45BB /* CardDecks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDecks.swift; sourceTree = "<group>"; };
+		57A698C52B0AD09B00EC45BB /* CardDeckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDeckTests.swift; sourceTree = "<group>"; };
 		57A7169426E6672C0073C0E1 /* FlashMessageLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashMessageLabel.swift; sourceTree = "<group>"; };
 		57A7169826E6A5E20073C0E1 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Message.swift; path = classes/Message.swift; sourceTree = "<group>"; };
 		57B053D11E4E3BD20057E62F /* CardsMulti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardsMulti.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -433,6 +440,7 @@
 			children = (
 				57897FF71E85652400B1D4A6 /* Config.swift */,
 				57D57079267F840B0050B28E /* GameConfigs.swift */,
+				57A698C22B09A5AD00EC45BB /* CardDecks.swift */,
 			);
 			name = Config;
 			sourceTree = "<group>";
@@ -495,6 +503,7 @@
 				57EA2B5D25B39DFD00536B47 /* MathTests.swift */,
 				57D5707F267FD3E90050B28E /* GameConfigsTests.swift */,
 				5750E3F82B070C8500FE7AE1 /* CardTests.swift */,
+				57A698C52B0AD09B00EC45BB /* CardDeckTests.swift */,
 			);
 			path = CardsMultiTests;
 			sourceTree = "<group>";
@@ -561,6 +570,7 @@
 			isa = PBXGroup;
 			children = (
 				57D5707D267FAFA90050B28E /* gameTypes.json */,
+				57A698C02B099F6500EC45BB /* cardDecks.json */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -752,6 +762,7 @@
 				57DA7BD526ACA6D900F3CA8F /* ProductIds.plist in Resources */,
 				57B053E01E4E3BD20057E62F /* Main.storyboard in Resources */,
 				5740504E1E5E890000316AEB /* card_flip.m4a in Resources */,
+				57A698C12B099F6500EC45BB /* cardDecks.json in Resources */,
 				57DA7C2026BC976200F3CA8F /* Products.plist in Resources */,
 				57B053E21E4E3BD20057E62F /* Assets.xcassets in Resources */,
 				5732550D267A683C003B8834 /* Localizable.strings in Resources */,
@@ -894,6 +905,7 @@
 				570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */,
 				57B054171E4E766A0057E62F /* Math.swift in Sources */,
 				57BB31DD23569DA200AE2CDC /* SettingsTableController.swift in Sources */,
+				57A698C32B09A5AD00EC45BB /* CardDecks.swift in Sources */,
 				5750E3F62B0309D200FE7AE1 /* CardDeck.swift in Sources */,
 				57DA7BD026AC949800F3CA8F /* StoreObserver.swift in Sources */,
 				574693522367CB9D00AB6516 /* StoredBase.swift in Sources */,
@@ -1007,6 +1019,7 @@
 				57D3DB9C257BF1DC00A52171 /* RequestDataTests.swift in Sources */,
 				57DD919525853F7C0086336D /* PlayArea.swift in Sources */,
 				57D5707B267F84FB0050B28E /* GameConfigs.swift in Sources */,
+				57A698C42B0AD06E00EC45BB /* CardDecks.swift in Sources */,
 				578B1C5D1E7EFBCB008B8381 /* StoredSettings.swift in Sources */,
 				5781B069295292AD009D3C4A /* CardScaleSlider.swift in Sources */,
 				5750E3EA2AF888FA00FE7AE1 /* StoredValue.swift in Sources */,
@@ -1015,6 +1028,7 @@
 				576C1D0C2AEDCAEF003276F7 /* PickerCellView.swift in Sources */,
 				578742BC2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
 				57DA7BD126AC962600F3CA8F /* StoreObserver.swift in Sources */,
+				57A698C62B0AD09B00EC45BB /* CardDeckTests.swift in Sources */,
 				5781B06C29529300009D3C4A /* UIStrings.swift in Sources */,
 				57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */,
 				57DD91C1258540010086336D /* GridView.swift in Sources */,

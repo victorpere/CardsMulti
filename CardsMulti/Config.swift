@@ -17,7 +17,7 @@ struct Config {
     static let appLinksDomain = "victoriussoftware.com"
     
     static let configFilePath = Bundle.main.path(forResource: "gameTypes", ofType: "json")
-    
+    static let cardDecksFilePath = Bundle.main.path(forResource: "cardDecks", ofType: "json")
     static let productIdsFilePath = Bundle.main.path(forResource: "ProductIds", ofType: "plist")
     
     static let mainColor: UIColor = UIColor(red: 0.7, green: 0.7, blue: 0.5, alpha: 1.0)
