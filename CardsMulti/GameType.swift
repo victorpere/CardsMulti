@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum GameType: Int, CaseIterable {
+enum GameType: Int, CaseIterable, Codable {
     case freePlay = 0
     case solitare = 1
     case freeCell = 2

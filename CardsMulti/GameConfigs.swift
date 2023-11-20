@@ -78,9 +78,6 @@ class GameConfigs {
                             if let value = settingsDictionary[GameConfigKey.canRotateCards.rawValue] as? Bool {
                                 gameConfig.canRotateCards = value
                             }
-                            if let value = settingsDictionary[GameConfigKey.customOptions.rawValue] as? NSDictionary {
-                                gameConfig.customOptions = value
-                            }
                             if let value = settingsDictionary[GameConfigKey.defaultSettings.rawValue] as? NSDictionary {
                                 gameConfig.defaultSettings = self.defaultSettings(fromDictionary: value)
                             }
@@ -136,15 +133,13 @@ class GameConfigs {
 
 // MARK: - Struct GameConfig
 
-struct GameConfig {
+struct GameConfig: Codable {
     var gameType: GameType
     var productId: String?
     var maxPlayers: Int = 4
     var canChangeCardSize: Bool = true
     var canChangeDeck: Bool = true
     var canRotateCards: Bool = true
-    var customOptions: NSDictionary?
-    
     var defaultSettings = TemporarySettings()
     var buttons: [String] = []
 }

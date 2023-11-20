@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TemporarySettings : Settings, GameSettings, ObservableObject {
+class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
     @Published var displayName: String = ""
     var cardSet: String?
     @Published var game: Int = 0
@@ -32,6 +32,8 @@ class TemporarySettings : Settings, GameSettings, ObservableObject {
         return nil
     }
     
+    // MARK: - Initializers
+    
     init() { }
     
     init(with settings: Settings) {
@@ -49,6 +51,32 @@ class TemporarySettings : Settings, GameSettings, ObservableObject {
         self.margin = settings.margin
         self.customOptions = settings.customOptions
     }
+    
+    // MARK: - Encode / decode
+    
+    private enum CodingKeys: String, CodingKey {
+        case displayName
+        case game
+        case cardWidthsPerScreen
+        case soundOn
+        case margin
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.game = try values.decode(Int.self, forKey: .game)
+        self.cardWidthsPerScreen = try values.decode(Float.self, forKey: .cardWidthsPerScreen)
+        self.margin = try values.decode(Float.self, forKey: .margin)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.game, forKey: .game)
+        try container.encode(self.cardWidthsPerScreen, forKey: .cardWidthsPerScreen)
+        try container.encode(self.margin, forKey: .margin)
+    }
+
+    // MARK: - Public methods
     
     func sync(to gameSettings: GameSettings) {
         self.minRank = gameSettings.minRank
@@ -86,3 +114,4 @@ class TemporarySettings : Settings, GameSettings, ObservableObject {
         StoredSettings.instance.soundOn = self.soundOn
     }
 }
+
