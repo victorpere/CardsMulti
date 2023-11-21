@@ -1,13 +1,18 @@
 [
     {
-        "gameType": "FreePlay",
+        "gameType": 0,
+        "maxPlayers": 4,
+        "canChangeCardSize": true,
+        "canChangeDeck": true,
+        "canRotateCards": true,
         "defaultSettings": {
-            "cardWidthsPerScreen": 6.0
+            "cardWidthsPerScreen": 6.0,
+            "margin": 5.0
         },
         "buttons": [ "cards", "cards_sort" ]
     },
     {
-        "gameType": "Solitaire",
+        "gameType": 1,
         "maxPlayers": 1,
         "canChangeCardSize": false,
         "canChangeDeck": false,
@@ -33,7 +38,7 @@
         "buttons": [ "autocomplete" ]
     },
     {
-        "gameType": "FreeCell",
+        "gameType": 2,
         "productId": "cardsmulti_game_freecell",
         "maxPlayers": 1,
         "canChangeCardSize": false,
@@ -53,7 +58,7 @@
         "buttons": [ "autocomplete" ]
     },
     {
-        "gameType": "GoFish",
+        "gameType": 3,
         "maxPlayers": 2,
         "canChangeCardSize": true,
         "canChangeDeck": false,

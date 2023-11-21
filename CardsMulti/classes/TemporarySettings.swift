@@ -64,14 +64,12 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
     
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        self.game = try values.decode(Int.self, forKey: .game)
         self.cardWidthsPerScreen = try values.decode(Float.self, forKey: .cardWidthsPerScreen)
         self.margin = try values.decode(Float.self, forKey: .margin)
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.game, forKey: .game)
         try container.encode(self.cardWidthsPerScreen, forKey: .cardWidthsPerScreen)
         try container.encode(self.margin, forKey: .margin)
     }
