@@ -12,9 +12,9 @@ class GameConfigs {
     
     static let sharedInstance = GameConfigs(withFile: Config.configFilePath)
     
-    var defaultSettings = TemporarySettings()
+    let defaultSettings = TemporarySettings()
     
-    var configs: [GameType: GameConfig]
+    private(set) var configs: [GameType: GameConfig]
     
     lazy var configArray: [GameConfig] = {
         self.configs.map { $0.value }.sorted { $0.gameType.rawValue < $1.gameType.rawValue }

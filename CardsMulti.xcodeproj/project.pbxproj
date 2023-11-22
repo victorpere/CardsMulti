@@ -23,6 +23,7 @@
 		571278F42AE6131B004AA6B8 /* TextEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F32AE6131B004AA6B8 /* TextEditView.swift */; };
 		571278F72AE61388004AA6B8 /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F62AE61388004AA6B8 /* TextFieldView.swift */; };
 		571278F92AE76753004AA6B8 /* PickerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F82AE76753004AA6B8 /* PickerCellView.swift */; };
+		571320642B0C564A00FDA27D /* gameRules.json in Resources */ = {isa = PBXBuildFile; fileRef = 571320632B0C564A00FDA27D /* gameRules.json */; };
 		571BBC63294557D100C43B69 /* GameSceneBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571BBC61294557D100C43B69 /* GameSceneBase.swift */; };
 		571BBC64294557D100C43B69 /* GameSceneFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571BBC62294557D100C43B69 /* GameSceneFactory.swift */; };
 		57213CF0268903E800753AC4 /* TemporarySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57213CEF268903E800753AC4 /* TemporarySettings.swift */; };
@@ -227,6 +228,7 @@
 		571278F32AE6131B004AA6B8 /* TextEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditView.swift; sourceTree = "<group>"; };
 		571278F62AE61388004AA6B8 /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
 		571278F82AE76753004AA6B8 /* PickerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerCellView.swift; sourceTree = "<group>"; };
+		571320632B0C564A00FDA27D /* gameRules.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = gameRules.json; sourceTree = "<group>"; };
 		571BBC61294557D100C43B69 /* GameSceneBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSceneBase.swift; sourceTree = "<group>"; };
 		571BBC62294557D100C43B69 /* GameSceneFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSceneFactory.swift; sourceTree = "<group>"; };
 		57213CEF268903E800753AC4 /* TemporarySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemporarySettings.swift; path = classes/TemporarySettings.swift; sourceTree = "<group>"; };
@@ -571,6 +573,7 @@
 			children = (
 				57D5707D267FAFA90050B28E /* gameTypes.json */,
 				57A698C02B099F6500EC45BB /* cardDecks.json */,
+				571320632B0C564A00FDA27D /* gameRules.json */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -756,6 +759,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				571320642B0C564A00FDA27D /* gameRules.json in Resources */,
 				575F28071E62501600AE0C53 /* card_slide.m4a in Resources */,
 				57D5707E267FAFA90050B28E /* gameTypes.json in Resources */,
 				578DB6692677E1010034BB45 /* TextEditCell.xib in Resources */,

@@ -1,0 +1,32 @@
+[
+    {
+        "game": "Solitaire",
+        "maxPlayers": 1,
+        "canChangeCardSize": false,
+        "canChangeDeck": false,
+        "canRotateCards": false,
+        "defaultSettings": {
+            "deckName": "standard",
+            "cardWidthsPerScreen": 8.0,
+            "margin": 5.0
+        },
+        "rules": {
+            "snapLocations": {
+                "name": "foundation_1",
+                "snapBack": true,
+                
+                "cards": [
+                    {
+                        "rank": "ace"
+                    },
+                    {
+                        "rankUp": 1,
+                        "sameSuit": true,
+                        "repeats": true
+                    }
+                ]
+            }
+        }
+        "buttons": [ "autocomplete" ]
+    }
+]
