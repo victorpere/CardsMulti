@@ -36,4 +36,5 @@ protocol GameSettings {
     var cardWidthsPerScreen: Float { get set }
     var margin: Float { get set }
     var customOptions: NSDictionary? { get set }
+    var deck: CardDeck? { get set }
 }

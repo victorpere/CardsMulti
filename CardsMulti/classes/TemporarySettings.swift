@@ -23,6 +23,7 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
     var margin: Float = 5
     @Published var soundOn: Bool = true
     var customOptions: NSDictionary?
+    @Published var deck: CardDeck?
     
     var presetCardSize: String? {
         if let presetCardWidth = Config.presetCardWidthsPerScreen.first(where: { $0.value == self.cardWidthsPerScreen}) {

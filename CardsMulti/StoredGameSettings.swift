@@ -12,7 +12,11 @@ class StoredGameSettings : StoredBase, GameSettings {
 
     // MARK: - Properties
     
-    var gameType: GameType
+    let gameType: GameType
+    
+    @StoredEncodedValue var deck: CardDeck?
+    @StoredWithDefault var cardWidthsPerScreen: Float
+    @StoredWithDefault var margin: Float
     
     var minRank: Int {
         get {
@@ -77,15 +81,6 @@ class StoredGameSettings : StoredBase, GameSettings {
         }
     }
     
-    var cardWidthsPerScreen: Float {
-        get {
-            return self.settingOrDefault(forKey: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", defaultValue: Config.defaultCardWidthsPerScreen)
-        }
-        set(value) {
-            self.setSetting(forKey: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", toValue: value)
-        }
-    }
-    
     var customOptions: NSDictionary? {
         get {
             return self.settingOrDefault(forKey: "\(self.gameType.rawValue)\(SettingsKey.customOptions )", defaultValue: nil)
@@ -97,20 +92,13 @@ class StoredGameSettings : StoredBase, GameSettings {
         }
     }
     
-    var margin: Float {
-        get {
-            let config = GameConfigs.sharedInstance.gameConfig(for: self.gameType)
-            return config?.defaultSettings.margin ?? GameConfigs.sharedInstance.defaultSettings.margin
-        }
-        set(value) {
-            self.setSetting(forKey: "\(self.gameType.rawValue)\(SettingsKey.margin)", toValue: value)
-        }
-    }
-    
     // MARK: - initializer
     
     init(with gameType: GameType) {
         self.gameType = gameType
+        _deck = StoredEncodedValue(key: "\(gameType.rawValue)deck")
+        _cardWidthsPerScreen = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", defaultValue: Config.defaultCardWidthsPerScreen)
+        _margin = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.margin)", defaultValue: 0)
     }
     
     // MARK: - Public methods
