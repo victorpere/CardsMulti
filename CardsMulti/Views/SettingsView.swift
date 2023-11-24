@@ -210,7 +210,9 @@ struct SettingsView: View {
         if self.selectedSettings.game != StoredSettings.instance.game {
             self.selectedSettings.store()
             self.delegate?.gameChanged()
-        } else if self.selectedSettings.cardWidthsPerScreen != StoredSettings.instance.cardWidthsPerScreen {
+        } else if self.selectedSettings.cardWidthsPerScreen != StoredSettings.instance.cardWidthsPerScreen
+                   || self.selectedSettings.deck != StoredSettings.instance.deck
+        {
             if let gameType = GameType(rawValue: self.selectedSettings.game) {
                 let gameSettings = StoredGameSettings(with: gameType)
                 gameSettings.sync(to: self.selectedSettings)

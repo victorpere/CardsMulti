@@ -129,6 +129,7 @@ class StoredGameSettings : StoredBase, GameSettings {
         self.cardWidthsPerScreen = settings.cardWidthsPerScreen
         self.margin = settings.margin
         self.customOptions = settings.customOptions
+        self.deck = settings.deck
     }
     
     func equals(to gameSettings: GameSettings) -> Bool {

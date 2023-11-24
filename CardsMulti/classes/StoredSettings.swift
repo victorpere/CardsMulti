@@ -29,7 +29,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     @StoredWithDefault (key: "soundOn", defaultValue: true) var soundOn: Bool
     @StoredValue (key: "customOptions") var customOptions: NSDictionary?
     
-    @StoredEncodedValue (key: "deck") var deck: [Card]?
+    @StoredEncodedWithDefault (key: "deck", defaultValue: CardDeck.empty) var deck: CardDeck
     
     // TODO: replace with CardDeck
     var minRank: Int {
@@ -118,7 +118,10 @@ class StoredSettings : StoredBase, Settings, NSCoding {
             SettingsKey.queen.rawValue : self.queensEnabled,
             SettingsKey.king.rawValue : self.kingsEnabled,
             SettingsKey.ace.rawValue : self.acesEnabled,
-            SettingsKey.cardWidthsPerScreen.rawValue : self.cardWidthsPerScreen
+            SettingsKey.cardWidthsPerScreen.rawValue : self.cardWidthsPerScreen,
+            
+            // TODO: serialize deck
+            //SettingsKey.deck.rawValue : self.deck
         ])
     }
     
@@ -151,6 +154,9 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
         if let value = aDecoder.decodeObject(forKey: "cardWidthsPerScreen") as? Float {
             self.cardWidthsPerScreen = value
+        }
+        if let value = aDecoder.decodeObject(forKey: "deck") as? CardDeck {
+            self.deck = value
         }
     }
     
@@ -225,6 +231,9 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen.rawValue] as? Float {
             self.cardWidthsPerScreen = value
         }
+        if let value = settingsDictionary[SettingsKey.deck.rawValue] as? CardDeck {
+            self.deck = value
+        }
     }
     
     // MARK: - NSCoding methods
@@ -238,6 +247,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         aCoder.encode(self.kingsEnabled, forKey: "king")
         aCoder.encode(self.acesEnabled, forKey: "ace")
         aCoder.encode(self.cardWidthsPerScreen, forKey: "cardWidthsPerScreen")
+        aCoder.encode(self.deck, forKey: "deck")
     }
 }
 
@@ -264,4 +274,5 @@ enum SettingsKey : String {
     case cardWidthsPerScreen = "cardWidthsPerScreen"
     case margin = "margin"
     case customOptions = "customOptions"
+    case deck = "deck"
 }

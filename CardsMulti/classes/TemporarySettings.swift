@@ -51,6 +51,7 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
         self.soundOn = settings.soundOn
         self.margin = settings.margin
         self.customOptions = settings.customOptions
+        self.deck = settings.deck
     }
     
     // MARK: - Encode / decode
@@ -88,6 +89,7 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
         self.cardWidthsPerScreen = gameSettings.cardWidthsPerScreen
         self.margin = gameSettings.margin
         self.customOptions = gameSettings.customOptions
+        self.deck = gameSettings.deck
     }
     
     func syncUI(to gameSettings: GameSettings) {
@@ -109,6 +111,7 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
         StoredSettings.instance.cardWidthsPerScreen = self.cardWidthsPerScreen
         StoredSettings.instance.margin = self.margin
         StoredSettings.instance.customOptions = self.customOptions
+        StoredSettings.instance.deck = self.deck
         
         StoredSettings.instance.soundOn = self.soundOn
     }

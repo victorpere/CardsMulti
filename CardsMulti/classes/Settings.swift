@@ -23,6 +23,7 @@ protocol Settings {
     var margin: Float { get set }
     var soundOn: Bool { get set }
     var customOptions: NSDictionary? { get set }
+    var deck: CardDeck { get set }
 }
 
 protocol GameSettings {
