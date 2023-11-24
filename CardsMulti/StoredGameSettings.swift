@@ -14,7 +14,7 @@ class StoredGameSettings : StoredBase, GameSettings {
     
     let gameType: GameType
     
-    @StoredEncodedValue var deck: CardDeck?
+    @StoredEncodedWithDefault var deck: CardDeck
     @StoredWithDefault var cardWidthsPerScreen: Float
     @StoredWithDefault var margin: Float
     
@@ -96,7 +96,8 @@ class StoredGameSettings : StoredBase, GameSettings {
     
     init(with gameType: GameType) {
         self.gameType = gameType
-        _deck = StoredEncodedValue(key: "\(gameType.rawValue)deck")
+        
+        _deck = StoredEncodedWithDefault(key: "\(gameType.rawValue)deck", defaultValue: CardDeck.empty)
         _cardWidthsPerScreen = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", defaultValue: Config.defaultCardWidthsPerScreen)
         _margin = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.margin)", defaultValue: 0)
     }
@@ -114,6 +115,7 @@ class StoredGameSettings : StoredBase, GameSettings {
         self.cardWidthsPerScreen = gameSettings.cardWidthsPerScreen
         self.margin = gameSettings.margin
         self.customOptions = gameSettings.customOptions
+        self.deck = gameSettings.deck
     }
     
     func sync(toSettings settings: Settings) {

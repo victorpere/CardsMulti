@@ -9,18 +9,22 @@
 import Foundation
 
 /// Represents a deck of cards
-struct CardDeck: Codable {
+struct CardDeck: Codable, Hashable {
 
     /// Array of cards in the deck
     let cards: [Card]
     
-    let name: String?
+    let name: String
     
     // MARK: - Initializers
     
     /// Initialize with an array of cards
-    init(cards: [Card], name: String? = nil) {
+    init(cards: [Card], name: String) {
         self.cards = cards
         self.name = name
+    }
+    
+    static var empty: CardDeck {
+        CardDeck(cards: [], name: "empty")
     }
 }

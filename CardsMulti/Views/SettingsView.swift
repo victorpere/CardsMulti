@@ -76,8 +76,22 @@ struct SettingsView: View {
                         if let gameConfig = self.selectedGameConfig {
                             if gameConfig.canChangeDeck {
                                 // TODO: customize deck view
-                                NavigationLink(destination: { Text("customize deck view")}) {
-                                    Text("deck".localized)
+                                NavigationLink(destination: {
+                                    List {
+                                        ForEach(CardDecks.instance.decks, id: \.self.name) { deck in
+                                            //Text(deck.name)
+                                            
+                                            PickerCellView(value: deck, selectedValue: self.$selectedSettings.deck) {
+                                                Text(deck.name.localized)
+                                            }
+                                        }
+                                    }
+                                }) {
+                                    HStack {
+                                        Text("deck".localized)
+                                        Spacer()
+                                        Text(self.selectedSettings.deck.name.localized).foregroundColor(.secondary)
+                                    }
                                 }
                             }
                             
