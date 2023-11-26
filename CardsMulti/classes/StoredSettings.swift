@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StoredSettings : StoredBase, Settings, NSCoding {
+class StoredSettings : StoredBase, Settings {
     
     // MARK: - Singleton
     
@@ -26,6 +26,7 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     @StoredWithDefault (key: SettingsKey.game.rawValue, defaultValue: GameType.freePlay.rawValue) var game: Int
     @StoredWithDefault (key: SettingsKey.cardWidthsPerScreen.rawValue, defaultValue: Config.defaultCardWidthsPerScreen) var cardWidthsPerScreen: Float
     
+    @StoredWithDefault (key: "margin", defaultValue: 0) var margin: Float
     @StoredWithDefault (key: "soundOn", defaultValue: true) var soundOn: Bool
     @StoredValue (key: "customOptions") var customOptions: NSDictionary?
     
@@ -95,15 +96,11 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         }
     }
     
-    // TODO: use StoredWithDefault
-    var margin: Float {
-        get {
-            let config = GameConfigs.sharedInstance.gameConfig(for: GameType(rawValue: self.game))
-            return config?.defaultSettings.margin ?? GameConfigs.sharedInstance.defaultSettings.margin
+    var deckDictionary: NSDictionary? {
+        if let data = try? JSONEncoder().encode(self.deck) {
+            return try? JSONSerialization.jsonObject(with: data) as? NSDictionary
         }
-        set(value) {
-            self.setSetting(forKey: "margin", toValue: value)
-        }
+        return nil
     }
     
     // MARK: - Computed properties
@@ -119,46 +116,13 @@ class StoredSettings : StoredBase, Settings, NSCoding {
             SettingsKey.king.rawValue : self.kingsEnabled,
             SettingsKey.ace.rawValue : self.acesEnabled,
             SettingsKey.cardWidthsPerScreen.rawValue : self.cardWidthsPerScreen,
-            
-            // TODO: serialize deck
-            //SettingsKey.deck.rawValue : self.deck
+            SettingsKey.deck.rawValue : self.deckDictionary ?? ""
         ])
     }
     
     // MARK: - Initializers
     
     override init() {}
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init()
-        if let value = aDecoder.decodeObject(forKey: "game") as? Int {
-            self.game = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "minRank") as? Int {
-            self.minRank = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "minRank") as? Int {
-            self.maxRank = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "jack") as? Bool {
-            self.jacksEnabled = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "queen") as? Bool {
-            self.queensEnabled = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "king") as? Bool {
-            self.kingsEnabled = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "ace") as? Bool {
-            self.acesEnabled = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "cardWidthsPerScreen") as? Float {
-            self.cardWidthsPerScreen = value
-        }
-        if let value = aDecoder.decodeObject(forKey: "deck") as? CardDeck {
-            self.deck = value
-        }
-    }
     
     init(with data: Data) throws {
         super.init()
@@ -182,15 +146,6 @@ class StoredSettings : StoredBase, Settings, NSCoding {
     }
     
     // MARK: - Public methods
-    
-    func jsonData() throws -> Data {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: self.settingsDictionary)
-            return jsonData
-        } catch {
-            throw SettingsErrors.FailedToEncodeSettings
-        }
-    }
     
     func syncTo(settingsDictionary receivedSettingsDictionary: NSDictionary) {
         self.initialize(withDictionary: receivedSettingsDictionary)
@@ -231,23 +186,13 @@ class StoredSettings : StoredBase, Settings, NSCoding {
         if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen.rawValue] as? Float {
             self.cardWidthsPerScreen = value
         }
-        if let value = settingsDictionary[SettingsKey.deck.rawValue] as? CardDeck {
-            self.deck = value
+        if let value = settingsDictionary[SettingsKey.deck.rawValue] as? NSDictionary,
+           let data = try? JSONSerialization.data(withJSONObject: value),
+           let deck = try? JSONDecoder().decode(CardDeck.self, from: data) {
+            self.deck = deck
+        } else {
+            self.deck = CardDeck.empty
         }
-    }
-    
-    // MARK: - NSCoding methods
-    
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(self.game, forKey: "game")
-        aCoder.encode(self.minRank, forKey: "minRank")
-        aCoder.encode(self.maxRank, forKey: "maxRank")
-        aCoder.encode(self.jacksEnabled, forKey: "jack")
-        aCoder.encode(self.queensEnabled, forKey: "queen")
-        aCoder.encode(self.kingsEnabled, forKey: "king")
-        aCoder.encode(self.acesEnabled, forKey: "ace")
-        aCoder.encode(self.cardWidthsPerScreen, forKey: "cardWidthsPerScreen")
-        aCoder.encode(self.deck, forKey: "deck")
     }
 }
 
