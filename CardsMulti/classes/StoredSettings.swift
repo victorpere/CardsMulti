@@ -32,70 +32,7 @@ class StoredSettings : StoredBase, Settings {
     
     @StoredEncodedWithDefault (key: "deck", defaultValue: CardDeck.empty) var deck: CardDeck
     
-    // TODO: replace with CardDeck
-    var minRank: Int {
-        get {
-            return self.settingOrDefault(forKey: "minRank", defaultValue: StoredSettings.defaultMinRank)
-        }
-        set(value) {
-            self.setSetting(forKey: "minRank", toValue: value)
-        }
-    }
-    
-    var maxRank: Int {
-        get {
-            return self.settingOrDefault(forKey: "maxRank", defaultValue: StoredSettings.defaultMaxRank)
-        }
-        set(value) {
-            self.setSetting(forKey: "maxRank", toValue: value)
-        }
-    }
-    
-    var pipsEnabled: Bool {
-        get {
-            return self.settingOrDefault(forKey: "pips", defaultValue: true)
-        }
-        set(value) {
-            self.setSetting(forKey: "pips", toValue: value)
-        }
-    }
-    
-    var jacksEnabled: Bool {
-        get {
-            return self.settingOrDefault(forKey: "jack", defaultValue: true)
-        }
-        set(value) {
-            self.setSetting(forKey: "jack", toValue: value)
-        }
-    }
-    
-    var queensEnabled: Bool {
-        get {
-            return self.settingOrDefault(forKey: "queen", defaultValue: true)
-        }
-        set(value) {
-            self.setSetting(forKey: "queen", toValue: value)
-        }
-    }
-    
-    var kingsEnabled: Bool {
-        get {
-            return self.settingOrDefault(forKey: "king", defaultValue: true)
-        }
-        set(value) {
-            self.setSetting(forKey: "king", toValue: value)
-        }
-    }
-    
-    var acesEnabled: Bool {
-        get {
-            return self.settingOrDefault(forKey: "ace", defaultValue: true)
-        }
-        set(value) {
-            self.setSetting(forKey: "ace", toValue: value)
-        }
-    }
-    
+
     var deckDictionary: NSDictionary? {
         if let data = try? JSONEncoder().encode(self.deck) {
             return try? JSONSerialization.jsonObject(with: data) as? NSDictionary
@@ -108,13 +45,6 @@ class StoredSettings : StoredBase, Settings {
     var settingsDictionary: NSDictionary {
         return NSDictionary(dictionary: [
             SettingsKey.game.rawValue : self.game,
-            SettingsKey.minRank.rawValue : self.minRank,
-            SettingsKey.maxRank.rawValue : self.maxRank,
-            SettingsKey.pips.rawValue : self.pipsEnabled,
-            SettingsKey.jack.rawValue : self.jacksEnabled,
-            SettingsKey.queen.rawValue : self.queensEnabled,
-            SettingsKey.king.rawValue : self.kingsEnabled,
-            SettingsKey.ace.rawValue : self.acesEnabled,
             SettingsKey.cardWidthsPerScreen.rawValue : self.cardWidthsPerScreen,
             SettingsKey.deck.rawValue : self.deckDictionary ?? ""
         ])
@@ -161,27 +91,6 @@ class StoredSettings : StoredBase, Settings {
     private func initialize(withDictionary settingsDictionary: NSDictionary) {
         if let value = settingsDictionary[SettingsKey.game.rawValue] as? Int {
             self.game = value
-        }
-        if let value = settingsDictionary[SettingsKey.minRank.rawValue] as? Int {
-            self.minRank = value
-        }
-        if let value = settingsDictionary[SettingsKey.maxRank.rawValue] as? Int {
-            self.maxRank = value
-        }
-        if let value = settingsDictionary[SettingsKey.pips.rawValue] as? Bool {
-            self.pipsEnabled = value
-        }
-        if let value = settingsDictionary[SettingsKey.jack.rawValue] as? Bool {
-            self.jacksEnabled = value
-        }
-        if let value = settingsDictionary[SettingsKey.queen.rawValue] as? Bool {
-            self.queensEnabled = value
-        }
-        if let value = settingsDictionary[SettingsKey.king.rawValue] as? Bool {
-            self.kingsEnabled = value
-        }
-        if let value = settingsDictionary[SettingsKey.ace.rawValue] as? Bool {
-            self.acesEnabled = value
         }
         if let value = settingsDictionary[SettingsKey.cardWidthsPerScreen.rawValue] as? Float {
             self.cardWidthsPerScreen = value

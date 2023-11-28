@@ -227,3 +227,12 @@ struct SettingsView: View {
     }
 }
 
+// MARK: - Protocol SettingsTableControllerDelegate
+
+protocol SettingsDelegate: AnyObject {
+    func settingsChanged()
+    func uiSettingsChanged()
+    func gameChanged()
+    func gameAndSettingsChanged()
+    func resetScores()
+}
