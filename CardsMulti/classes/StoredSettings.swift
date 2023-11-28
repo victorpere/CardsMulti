@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StoredSettings : StoredBase, Settings {
+class StoredSettings : Settings {
     
     // MARK: - Singleton
     
@@ -52,10 +52,9 @@ class StoredSettings : StoredBase, Settings {
     
     // MARK: - Initializers
     
-    override init() {}
+    init() {}
     
     init(with data: Data) throws {
-        super.init()
         do {
             if let settingsDictionary = try JSONSerialization.jsonObject(with: data) as? NSDictionary {
                 
@@ -70,8 +69,6 @@ class StoredSettings : StoredBase, Settings {
     }
     
     init(withDictionary settingsDictionary: NSDictionary) {
-        super.init()
-        
         self.initialize(withDictionary: settingsDictionary)
     }
     

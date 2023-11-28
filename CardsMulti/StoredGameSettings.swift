@@ -8,7 +8,7 @@
 
 import Foundation
 
-class StoredGameSettings : StoredBase, GameSettings {
+class StoredGameSettings : GameSettings {
 
     // MARK: - Properties
     
@@ -17,17 +17,8 @@ class StoredGameSettings : StoredBase, GameSettings {
     @StoredEncodedWithDefault var deck: CardDeck
     @StoredWithDefault var cardWidthsPerScreen: Float
     @StoredWithDefault var margin: Float
-
-    var customOptions: NSDictionary? {
-        get {
-            return self.settingOrDefault(forKey: "\(self.gameType.rawValue)\(SettingsKey.customOptions )", defaultValue: nil)
-        }
-        set(value) {
-            if value != nil {
-                self.setSetting(forKey: "\(self.gameType.rawValue)\(SettingsKey.customOptions)", toValue: value)
-            }
-        }
-    }
+    
+    @StoredValue var customOptions: NSDictionary?
     
     // MARK: - initializer
     
@@ -37,6 +28,8 @@ class StoredGameSettings : StoredBase, GameSettings {
         _deck = StoredEncodedWithDefault(key: "\(gameType.rawValue)deck", defaultValue: CardDeck.empty)
         _cardWidthsPerScreen = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", defaultValue: Config.defaultCardWidthsPerScreen)
         _margin = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.margin)", defaultValue: 0)
+        
+        _customOptions = StoredValue(key: "\(self.gameType.rawValue)\(SettingsKey.customOptions )")
     }
     
     // MARK: - Public methods
