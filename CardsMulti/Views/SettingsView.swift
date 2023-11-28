@@ -207,17 +207,18 @@ struct SettingsView: View {
     // TODO: move to Temporary settings?
     /// Stores setting and calls delegate method
     private func didFinish() {
+        if let gameType = GameType(rawValue: self.selectedSettings.game) {
+            let gameSettings = StoredGameSettings(with: gameType)
+            gameSettings.sync(to: self.selectedSettings)
+        }
+        
         if self.selectedSettings.game != StoredSettings.instance.game {
             self.selectedSettings.store()
             self.delegate?.gameChanged()
-        } else if self.selectedSettings.cardWidthsPerScreen != StoredSettings.instance.cardWidthsPerScreen
-                   || self.selectedSettings.deck != StoredSettings.instance.deck
-        {
-            if let gameType = GameType(rawValue: self.selectedSettings.game) {
-                let gameSettings = StoredGameSettings(with: gameType)
-                gameSettings.sync(to: self.selectedSettings)
-            }
-            
+        } else if self.selectedSettings.deck != StoredSettings.instance.deck {
+            self.selectedSettings.store()
+            self.delegate?.settingsChanged()
+        } else if self.selectedSettings.cardWidthsPerScreen != StoredSettings.instance.cardWidthsPerScreen {
             self.selectedSettings.store()
             self.delegate?.uiSettingsChanged()
         } else {
