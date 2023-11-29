@@ -56,7 +56,7 @@ struct SettingsView: View {
                                                 if productInfo.purchasing {
                                                     ProgressView()
                                                 } else {
-                                                    Text(productInfo.price)
+                                                    Text(productInfo.price).foregroundColor(.secondary)
                                                 }
                                             }
                                         }
@@ -79,13 +79,12 @@ struct SettingsView: View {
                                 NavigationLink(destination: {
                                     List {
                                         ForEach(CardDecks.instance.decks, id: \.self.name) { deck in
-                                            //Text(deck.name)
-                                            
                                             PickerCellView(value: deck, selectedValue: self.$selectedSettings.deck) {
                                                 Text(deck.name.localized)
                                             }
                                         }
-                                    }
+                                    }.navigationTitle("deck".localized)
+                                        .navigationBarTitleDisplayMode(.inline)
                                 }) {
                                     HStack {
                                         Text("deck".localized)
@@ -99,7 +98,8 @@ struct SettingsView: View {
                                 NavigationLink(destination: {
                                     GeometryReader { geo in
                                         SettingsCardSizeView(cardWidthsPerScreen: self.$selectedSettings.cardWidthsPerScreen, screenWidth: Float(geo.size.width))
-                                    }
+                                    }.navigationTitle("card size".localized)
+                                        .navigationBarTitleDisplayMode(.inline)
                                 }) {
                                     HStack {
                                         Text("card size".localized)
