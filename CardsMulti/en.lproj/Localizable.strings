@@ -29,6 +29,7 @@
 "ace"       = "Ace";
 "card size" = "Card Size";
 "sound"     = "Sound";
+"deck"      = "Deck";
 
 "game will restart" = "Game will restart";
 "are you sure?"     = "Are you sure?";
