@@ -15,8 +15,10 @@ class GameGoFish : GameScene {
     
     // MARK: - Initializers
     
-    override init(size: CGSize, loadFromSave: Bool) {
-        super.init(size: size, gameType: .GoFish, loadFromSave: loadFromSave)
+    init(size: CGSize, loadFromSave: Bool) {
+        super.init(size: size, gameType: .goFish, loadFromSave: loadFromSave)
+        
+        self.buttonActions["autocomplete"] = self.playTurn
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -25,42 +27,52 @@ class GameGoFish : GameScene {
     
     // MARK: - GameScene override methods
     
-    override func resetGame(sync: Bool, loadSaved: Bool = false) {
-        super.resetGame(sync: sync, loadSaved: loadSaved)
+    
+    override func restartGame(sync: Bool) {
+        super.restartGame(sync: sync)
         
         self.deal()
     }
     
+    override func popUpMenuItems(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
+        return nil
+    }
+    
     override func deal() {
         
-        for peerId in self.peers {
-            if peerId != nil {
-                let score = Score(peerId: peerId!, name: "Books", gameType: .GoFish)
-                self.scores.append(score)
-            }
-        }
+//        for peerId in self.peers {
+//            if peerId != nil {
+//                let score = Score(peerId: peerId!, name: "Books", gameType: .goFish)
+//                self.scores.append(score)
+//            }
+//        }
         
         
         var numberOfCardsToDeal: Int
         switch self.numberOfPlayers {
-            case 2,3:
+            case 1,2:
                 numberOfCardsToDeal = 7
-            case 4:
-                numberOfCardsToDeal = 8
+            case 3,4:
+                numberOfCardsToDeal = 5
             default:
                 return
         }
             
-        let dealResult = self.deal(fromCards: self.allCards, numberOfCards: numberOfCardsToDeal)
-        
-        self.stockPile = dealResult.remainingCards
-        
-        /*
-        DispatchQueue.global(qos: .default).async {
-            usleep(useconds_t(dealResult.duration * 1000000))
+        let _ = self.deal(fromCards: self.allCards, numberOfCards: numberOfCardsToDeal) { remainingCards in
+            self.stockPile = remainingCards
             
-            self.pool(cardNodes: dealResult.remainingCards, centeredIn: self.playArea.center, withRadius: self.playArea.height / 3, flipFaceUp: false)
+            self.pool(cardNodes: remainingCards, centeredIn: self.playArea.center, withRadius: self.playArea.height / 3, flipFaceUp: false)
+            
         }
-         */
+        
+    }
+    
+    // MARK: - Private methods
+    
+    private func playTurn() {
+        let view = RankPickerView() { rank in
+            print("rank selected: \(rank.symbol)")
+        }
+        self.gameSceneDelegate?.presentView(view)
     }
 }

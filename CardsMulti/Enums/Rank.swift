@@ -6,11 +6,12 @@
 //  Copyright © 2017 Victor. All rights reserved.
 //
 
-enum Rank: Int {
+enum Rank: Int, CaseIterable, Codable {
     case two = 2, three,four, five
     case six, seven, eight, nine, ten
     case jack, queen, king
     case ace
+    
     var symbol: String {
         switch self {
         case .ace:
@@ -25,6 +26,7 @@ enum Rank: Int {
             return String(self.rawValue)
         }
     }
+    
     var name: String {
         switch self {
         case .ace:
@@ -37,6 +39,15 @@ enum Rank: Int {
             return "king"
         default:
             return String(self.rawValue)
+        }
+    }
+    
+    var unicode: String {
+        switch self {
+        case .ace:
+            return "1"
+        default:
+            return String(format: "%01X", self.rawValue)
         }
     }
 }
