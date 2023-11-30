@@ -29,7 +29,13 @@ class GameConfigs {
             let decoder = JSONDecoder()
             if let gameConfigs = try? decoder.decode([GameConfig].self, from: data) {
                 for gameConfig in gameConfigs {
+                    #if DEBUG
                     self.configs[gameConfig.gameType] = gameConfig
+                    #else
+                    if !(gameConfig.dev ?? false) {
+                        self.configs[gameConfig.gameType] = gameConfig
+                    }
+                    #endif
                 }
             }
         }
@@ -70,4 +76,5 @@ struct GameConfig: Codable {
     var canRotateCards: Bool = true
     var defaultSettings = TemporarySettings()
     var buttons: [String] = []
+    var dev: Bool?
 }
