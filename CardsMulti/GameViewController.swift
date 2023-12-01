@@ -12,6 +12,7 @@ import GameplayKit
 import MultipeerConnectivity
 import ContactsUI
 import MessageUI
+import SwiftUI
 
 class GameViewController: UIViewController {
         
@@ -421,9 +422,8 @@ class GameViewController: UIViewController {
     }
     
     private func openSettings(fromButton button: BottomButton) {
-        let settingsViewController = SettingsTableContoller(nibName: nil, bundle: nil)
-        settingsViewController.delegate = self
-        self.presentNavigationPopover(settingsViewController, fromButton: button)
+        let settingsView = SettingsView(delegate: self)
+        self.presentView(settingsView)
     }
     
     private func openScores(fromButton button: BottomButton) {
@@ -666,11 +666,19 @@ extension GameViewController : GameSceneDelegate {
     func flashMessage(_ message: String) {
         self.flashMessageLabel.flash(message: message)
     }
+    
+    func presentView<Content: View>(_ view: Content) {
+        // present swiftUI view
+        
+        let controller = UIHostingController(rootView: view)
+        
+        self.presentPopover(controller, fromButton: self.buttons.first!)
+    }
 }
 
 // MARK: - SettingsViewControllerDelegate
 
-extension GameViewController : SettingsTableControllerDelegate {
+extension GameViewController : SettingsDelegate {
     func uiSettingsChanged() {
         let settingsData = RequestData(withType: .uiSettings, andDictionary: StoredSettings.instance.settingsDictionary)
         do {
@@ -717,6 +725,7 @@ extension GameViewController : SettingsTableControllerDelegate {
     
     func gameAndSettingsChanged() {
         self.scene.saveGame()
+        self.setUpButtons()
         self.syncToMe(recipients: nil)
         self.startGame(loadFromSave: false)
         

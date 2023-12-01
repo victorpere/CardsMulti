@@ -8,11 +8,11 @@
 
 import Foundation
 
-enum GameType: Int, CaseIterable {
+enum GameType: Int, CaseIterable, Codable {
     case freePlay = 0
     case solitare = 1
-    //case GoFish = 2
     case freeCell = 2
+    case goFish = 3
     
     init(withName name: String) throws {
         switch name {
@@ -25,6 +25,9 @@ enum GameType: Int, CaseIterable {
         case "FreeCell":
             self = .freeCell
             break
+        case "GoFish":
+            self = .goFish
+            break
         default:
             throw GameTypeError.FailedToFindGameTypeError
         }
@@ -36,8 +39,8 @@ enum GameType: Int, CaseIterable {
             return "free play".localized
         case .solitare:
             return "solitaire".localized
-//        case .GoFish:
-//            return "Go Fish"
+        case .goFish:
+            return "go fish".localized
         case .freeCell:
             return "freecell".localized
         }
