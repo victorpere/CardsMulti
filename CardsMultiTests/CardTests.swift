@@ -27,16 +27,16 @@ class CardTests : XCTestCase {
         XCTAssertEqual(Rank.two, card?.rank)
     }
     
-    func testCardEncode() {
+    func testCardEncodeDecode() {
         let card = Card(suit: .spades, rank: .two)
         let encoder = JSONEncoder()
         let data = try? encoder.encode(card)
         
         XCTAssertNotNil(data)
         
-        let encodedString = String(data: data!, encoding: .utf8)
+        let decoder = JSONDecoder()
+        let decodedCard = try? decoder.decode(Card.self, from: data!)
         
-        XCTAssertNotNil(encodedString)
-        XCTAssertEqual("{\"rank\":2,\"suit\":0}", encodedString!)
+        XCTAssertEqual(decodedCard, card)
     }
 }
