@@ -19,8 +19,6 @@ class GameSceneFactory {
             return FreeCell(size: size, loadFromSave: loadFromSave)
         case .goFish:
             return GameGoFish(size: size, loadFromSave: loadFromSave)
-        default:
-            return GameScene(size: size, loadFromSave: loadFromSave)
         }
     }
 }
