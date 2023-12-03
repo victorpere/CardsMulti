@@ -11,21 +11,47 @@
             "margin": 5.0
         },
         "rules": {
-            "snapLocations": {
-                "name": "foundation_1",
-                "snapBack": true,
-                
-                "cards": [
-                    {
-                        "rank": "ace"
-                    },
-                    {
-                        "rankUp": 1,
-                        "sameSuit": true,
-                        "repeats": true
-                    }
-                ]
-            }
+            "snapLocations": [
+                {
+                    "name": "cell_1",
+                    "snapBack": true,
+                    "cards" : [
+                        {
+                            "minNumber": 1,
+                            "maxNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "name": "foundation_1",
+                    "snapBack": true,
+                    "cards": [
+                        {
+                            "minNumber": 1,
+                            "maxNumber": 1,
+                            "rank": "ace"
+                        },
+                        {
+                            "minNumber": 2,
+                            "maxNumber": 13,
+                            "addRank": 1,
+                            "sameSuit": true
+                        }
+                    ]
+                },
+                {
+                    "name": "foundation_2"
+                },
+                {
+                    "name": "tableau_1",
+                    "yOffset": 0,
+                    "snapAreaIncludesCards": true,
+                    "shouldFlip": true,
+                    "faceUp": true,
+                    "unsnapWhenMoved": false,
+                    "snapBack": true
+                }
+            ]
         }
         "buttons": [ "autocomplete" ]
     }
