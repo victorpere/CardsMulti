@@ -39,7 +39,6 @@
 		574693532367CBCD00AB6516 /* StoredBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* StoredBase.swift */; };
 		574693542367CBCD00AB6516 /* StoredBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* StoredBase.swift */; };
 		574693562367CD4600AB6516 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693552367CD4600AB6516 /* GameState.swift */; };
-		574725C8243C072E0094FF39 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574725C7243C072E0094FF39 /* GridView.swift */; };
 		5748641826DE62F4005517BB /* StoredGameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5748641726DE62F4005517BB /* StoredGameSettings.swift */; };
 		5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5A2AEDF79D00733918 /* ProductManager.swift */; };
 		5750E3EA2AF888FA00FE7AE1 /* StoredValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5F2AF486F300733918 /* StoredValue.swift */; };
@@ -154,8 +153,6 @@
 		57DA7BD626ACA6D900F3CA8F /* ProductIds.plist in Resources */ = {isa = PBXBuildFile; fileRef = 57DA7BD426ACA6D900F3CA8F /* ProductIds.plist */; };
 		57DA7BD826ACA96600F3CA8F /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BD726ACA96600F3CA8F /* StoreManager.swift */; };
 		57DA7BD926ACA96600F3CA8F /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BD726ACA96600F3CA8F /* StoreManager.swift */; };
-		57DA7BDB26ADB51800F3CA8F /* ProductsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BDA26ADB51800F3CA8F /* ProductsTableController.swift */; };
-		57DA7BDC26ADB51800F3CA8F /* ProductsTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BDA26ADB51800F3CA8F /* ProductsTableController.swift */; };
 		57DA7BDE26ADECEA00F3CA8F /* ProductIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BDD26ADECEA00F3CA8F /* ProductIdentifiers.swift */; };
 		57DA7BDF26ADECEA00F3CA8F /* ProductIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BDD26ADECEA00F3CA8F /* ProductIdentifiers.swift */; };
 		57DA7BE126AE4B1A00F3CA8F /* SKProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BE026AE4B1A00F3CA8F /* SKProduct.swift */; };
@@ -171,10 +168,6 @@
 		57DD91A925853FB30086336D /* Solitaire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F40C323778D9300719821 /* Solitaire.swift */; };
 		57DD91AD25853FE90086336D /* PopUpMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */; };
 		57DD91B125853FEF0086336D /* PopUpMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57BB31D2234BFC0C00AE2CDC /* PopUpMenu.swift */; };
-		57DD91B925853FFB0086336D /* ScoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F70566243A857B009552AB /* ScoreCell.swift */; };
-		57DD91BD25853FFE0086336D /* ScoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F70566243A857B009552AB /* ScoreCell.swift */; };
-		57DD91C1258540010086336D /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574725C7243C072E0094FF39 /* GridView.swift */; };
-		57DD91C5258540020086336D /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574725C7243C072E0094FF39 /* GridView.swift */; };
 		57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */; };
 		57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */; };
 		57E0935D212730E500D4E4F6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57897FF71E85652400B1D4A6 /* Config.swift */; };
@@ -185,7 +178,6 @@
 		57ED4A5B2AEDF79D00733918 /* ProductManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5A2AEDF79D00733918 /* ProductManager.swift */; };
 		57ED4A602AF486F300733918 /* StoredValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5F2AF486F300733918 /* StoredValue.swift */; };
 		57F400FF248D6D7800EF71D5 /* WsRequestSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F400FE248D6D7800EF71D5 /* WsRequestSender.swift */; };
-		57F70567243A857B009552AB /* ScoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F70566243A857B009552AB /* ScoreCell.swift */; };
 		7AF36F07313414DF60267185 /* Pods_CardsMultiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C6DB5156A4A8348D5666310 /* Pods_CardsMultiTests.framework */; };
 		DB45C3F501F4DA0B88BA27B8 /* Pods_CardsMulti.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987F0BA579C9C4CB037CF4DF /* Pods_CardsMulti.framework */; };
 		E1C2863A8F90E05C276664EB /* Pods_CardsMultiUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCCBBA39BBF31932BCA25228 /* Pods_CardsMultiUITests.framework */; };
@@ -235,7 +227,6 @@
 		574050541E5F82AA00316AEB /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDevice.swift; path = Extensions/UIDevice.swift; sourceTree = "<group>"; };
 		574693512367CB9D00AB6516 /* StoredBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredBase.swift; sourceTree = "<group>"; };
 		574693552367CD4600AB6516 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
-		574725C7243C072E0094FF39 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		5748641726DE62F4005517BB /* StoredGameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredGameSettings.swift; sourceTree = "<group>"; };
 		5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCardSizeView.swift; sourceTree = "<group>"; };
 		5750E3F52B0309D200FE7AE1 /* CardDeck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDeck.swift; sourceTree = "<group>"; };
@@ -297,7 +288,6 @@
 		57DA7BD226AC9B5200F3CA8F /* UIStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStrings.swift; sourceTree = "<group>"; };
 		57DA7BD426ACA6D900F3CA8F /* ProductIds.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ProductIds.plist; sourceTree = "<group>"; };
 		57DA7BD726ACA96600F3CA8F /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
-		57DA7BDA26ADB51800F3CA8F /* ProductsTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTableController.swift; sourceTree = "<group>"; };
 		57DA7BDD26ADECEA00F3CA8F /* ProductIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentifiers.swift; sourceTree = "<group>"; };
 		57DA7BE026AE4B1A00F3CA8F /* SKProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SKProduct.swift; path = Extensions/SKProduct.swift; sourceTree = "<group>"; };
 		57DA7C1F26BC976200F3CA8F /* Products.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Products.plist; sourceTree = "<group>"; };
@@ -309,7 +299,6 @@
 		57ED4A5A2AEDF79D00733918 /* ProductManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductManager.swift; sourceTree = "<group>"; };
 		57ED4A5F2AF486F300733918 /* StoredValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredValue.swift; sourceTree = "<group>"; };
 		57F400FE248D6D7800EF71D5 /* WsRequestSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WsRequestSender.swift; sourceTree = "<group>"; };
-		57F70566243A857B009552AB /* ScoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCell.swift; sourceTree = "<group>"; };
 		73C5D4C34CC51557A25B81C4 /* Pods-CardsMulti.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsMulti.debug.xcconfig"; path = "Target Support Files/Pods-CardsMulti/Pods-CardsMulti.debug.xcconfig"; sourceTree = "<group>"; };
 		8DDA64C75429E06BF73C4F5D /* Pods-CardsMultiUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsMultiUITests.debug.xcconfig"; path = "Target Support Files/Pods-CardsMultiUITests/Pods-CardsMultiUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		987F0BA579C9C4CB037CF4DF /* Pods_CardsMulti.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CardsMulti.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -587,10 +576,7 @@
 				57BB31D42353BA8700AE2CDC /* PlayerStatusLabel.swift */,
 				57BB31DC23569DA200AE2CDC /* SettingsTableController.swift */,
 				570218272373B44100310A67 /* CardSizeTableViewCell.swift */,
-				57F70566243A857B009552AB /* ScoreCell.swift */,
-				574725C7243C072E0094FF39 /* GridView.swift */,
 				578DB66A2677E1620034BB45 /* TextEditCell.swift */,
-				57DA7BDA26ADB51800F3CA8F /* ProductsTableController.swift */,
 				57A7169426E6672C0073C0E1 /* FlashMessageLabel.swift */,
 			);
 			name = UI;
@@ -887,7 +873,6 @@
 				57BB31D52353BA8700AE2CDC /* PlayerStatusLabel.swift in Sources */,
 				57DA7BE126AE4B1A00F3CA8F /* SKProduct.swift in Sources */,
 				57B054091E4E40750057E62F /* ConnectionServiceManager.swift in Sources */,
-				57DA7BDB26ADB51800F3CA8F /* ProductsTableController.swift in Sources */,
 				571278F72AE61388004AA6B8 /* TextFieldView.swift in Sources */,
 				57897FFA1E85658D00B1D4A6 /* Switch.swift in Sources */,
 				57C626122346E6D6008A9872 /* CardSlider.swift in Sources */,
@@ -939,9 +924,7 @@
 				578DB66B2677E1620034BB45 /* TextEditCell.swift in Sources */,
 				57B0540E1E4E75B10057E62F /* Suit.swift in Sources */,
 				578F40C62377923100719821 /* SnapLocation.swift in Sources */,
-				57F70567243A857B009552AB /* ScoreCell.swift in Sources */,
 				57B054141E4E75F30057E62F /* CardSpriteNode.swift in Sources */,
-				574725C8243C072E0094FF39 /* GridView.swift in Sources */,
 				57E97B0D1E7479F6000243B2 /* BottomButton.swift in Sources */,
 				57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */,
 				57D570982687B2490050B28E /* Settings.swift in Sources */,
@@ -966,7 +949,6 @@
 				5750E3F32B018A0E00FE7AE1 /* SettingsCardSizeView.swift in Sources */,
 				57D570992687B2490050B28E /* Settings.swift in Sources */,
 				5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */,
-				57DA7BDC26ADB51800F3CA8F /* ProductsTableController.swift in Sources */,
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
 				5750E3F92B070C8500FE7AE1 /* CardTests.swift in Sources */,
 				57DD91A125853F900086336D /* WsRequestSender.swift in Sources */,
@@ -1017,12 +999,10 @@
 				57A698C62B0AD09B00EC45BB /* CardDeckTests.swift in Sources */,
 				5781B06C29529300009D3C4A /* UIStrings.swift in Sources */,
 				57E0935C212730DF00D4E4F6 /* MovingDirection.swift in Sources */,
-				57DD91C1258540010086336D /* GridView.swift in Sources */,
 				578B1C5E1E7EFBD3008B8381 /* Math.swift in Sources */,
 				57DD919925853F820086336D /* WsMessage.swift in Sources */,
 				57DD91AD25853FE90086336D /* PopUpMenu.swift in Sources */,
 				57DD918D25853F6D0086336D /* Player.swift in Sources */,
-				57DD91B925853FFB0086336D /* ScoreCell.swift in Sources */,
 				57B8732F234584D4001A54DD /* Switch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1038,7 +1018,6 @@
 				57BB31D72353BAA200AE2CDC /* PlayerStatusLabel.swift in Sources */,
 				57085E092AD109600084A42B /* GameGoFish.swift in Sources */,
 				57D57088267FD5950050B28E /* TextEditCell.swift in Sources */,
-				57DD91BD25853FFE0086336D /* ScoreCell.swift in Sources */,
 				576C1D112AEDCAF7003276F7 /* TextEditView.swift in Sources */,
 				576C1D0F2AEDCAF4003276F7 /* TextFieldView.swift in Sources */,
 				5750E3F42B018A1600FE7AE1 /* SettingsCardSizeView.swift in Sources */,
@@ -1046,7 +1025,6 @@
 				576C1D0D2AEDCAF0003276F7 /* PickerCellView.swift in Sources */,
 				5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */,
 				578F40C82377924400719821 /* SnapLocation.swift in Sources */,
-				57DD91C5258540020086336D /* GridView.swift in Sources */,
 				576C1D092AEDCAE2003276F7 /* RankPickerView.swift in Sources */,
 				574693542367CBCD00AB6516 /* StoredBase.swift in Sources */,
 				576C1D122AEDCB4C003276F7 /* SettingsView.swift in Sources */,
