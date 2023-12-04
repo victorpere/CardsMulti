@@ -13,22 +13,30 @@ class GameState : StoredBase {
     // MARK: - Singleton
     
     static let instance = GameState()
-    static let solitare = GameState(.solitare)
     
     // MARK: - Initializers
     
     override init() {
+        _cardSymbols = StoredWithDefault(key: "\(Key.cardSymbols.rawValue)", defaultValue: [])
+        
         super.init()
     }
     
     init(_ gameType: GameType) {
+        _cardSymbols = StoredWithDefault(key: "\(gameType.rawValue)\(Key.cardSymbols.rawValue)", defaultValue: [])
+        
         super.init()
         self.gameType = gameType
+        
+        
     }
     
     // MARK: - Properties
     
     var gameType: GameType?
+    
+    @StoredWithDefault private var cardSymbols: [String]
+
     
     // MARK: - Enums
     
@@ -49,10 +57,9 @@ class GameState : StoredBase {
     
     var cardNodes: [CardSpriteNode] {
         get {
-            let cardSymbols = self.settingOrDefault(forKey: "\(self.gameTypeId)\(Key.cardSymbols.rawValue)", defaultValue: NSArray())
             var cardNodes: [CardSpriteNode] = []
-            for cardSymbol in cardSymbols {
-                let cardInfo = self.settingOrDefault(forKey: "\(self.gameTypeId)\(cardSymbol as! String)", defaultValue: NSDictionary())
+            for cardSymbol in self.cardSymbols {
+                let cardInfo = self.settingOrDefault(forKey: "\(self.gameTypeId)\(cardSymbol)", defaultValue: NSDictionary())
                 if cardInfo.allKeys.count > 0 {
                     cardNodes.append(CardSpriteNode(cardInfo: cardInfo))
                 }
@@ -60,8 +67,8 @@ class GameState : StoredBase {
             return cardNodes
         }
         set(value) {
-            let cardSymbols = NSArray(array: value.map { $0.card.symbol as Any })
-            self.setSetting(forKey: "\(self.gameTypeId)\(Key.cardSymbols.rawValue)", toValue: cardSymbols)
+            self.cardSymbols = value.map({ $0.card.symbol })
+
             for cardNode in value {
                 let cardInfo = cardNode.cardInfo
                 self.setSetting(forKey: "\(self.gameTypeId)\(cardNode.card.symbol)", toValue: cardInfo)
