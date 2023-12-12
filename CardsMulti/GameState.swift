@@ -14,29 +14,27 @@ class GameState : StoredBase {
     
     static let instance = GameState()
     
+    // MARK: - Properties
+    
+    var gameType: GameType?
+    
+    @StoredEncodedWithDefault var cardNodes: [CardSpriteNode]
+    
     // MARK: - Initializers
     
     override init() {
-        _cardSymbols = StoredWithDefault(key: "\(Key.cardSymbols.rawValue)", defaultValue: [])
+        _cardNodes = StoredEncodedWithDefault(key: "_cardNodes", defaultValue: [])
         
         super.init()
     }
     
     init(_ gameType: GameType) {
-        _cardSymbols = StoredWithDefault(key: "\(gameType.rawValue)\(Key.cardSymbols.rawValue)", defaultValue: [])
+        _cardNodes = StoredEncodedWithDefault(key: "\(gameType.rawValue)_cardNodes", defaultValue: [])
         
         super.init()
         self.gameType = gameType
-        
-        
     }
     
-    // MARK: - Properties
-    
-    var gameType: GameType?
-    
-    @StoredWithDefault private var cardSymbols: [String]
-
     
     // MARK: - Enums
     
@@ -53,27 +51,6 @@ class GameState : StoredBase {
             return String(gameTypeId)
         }
         return ""
-    }
-    
-    var cardNodes: [CardSpriteNode] {
-        get {
-            var cardNodes: [CardSpriteNode] = []
-            for cardSymbol in self.cardSymbols {
-                let cardInfo = self.settingOrDefault(forKey: "\(self.gameTypeId)\(cardSymbol)", defaultValue: NSDictionary())
-                if cardInfo.allKeys.count > 0 {
-                    cardNodes.append(CardSpriteNode(cardInfo: cardInfo))
-                }
-            }
-            return cardNodes
-        }
-        set(value) {
-            self.cardSymbols = value.map({ $0.card.symbol })
-
-            for cardNode in value {
-                let cardInfo = cardNode.cardInfo
-                self.setSetting(forKey: "\(self.gameTypeId)\(cardNode.card.symbol)", toValue: cardInfo)
-            }
-        }
     }
     
     var scores: [Score] {

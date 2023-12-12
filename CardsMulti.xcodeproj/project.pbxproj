@@ -159,6 +159,7 @@
 		57DA7BE226AE4B1A00F3CA8F /* SKProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DA7BE026AE4B1A00F3CA8F /* SKProduct.swift */; };
 		57DA7C2026BC976200F3CA8F /* Products.plist in Resources */ = {isa = PBXBuildFile; fileRef = 57DA7C1F26BC976200F3CA8F /* Products.plist */; };
 		57DA7C2126BC976200F3CA8F /* Products.plist in Resources */ = {isa = PBXBuildFile; fileRef = 57DA7C1F26BC976200F3CA8F /* Products.plist */; };
+		57DD632E2B26B438002F55D2 /* CardNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DD632D2B26B438002F55D2 /* CardNodeTests.swift */; };
 		57DD918D25853F6D0086336D /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
 		57DD919125853F770086336D /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693552367CD4600AB6516 /* GameState.swift */; };
 		57DD919525853F7C0086336D /* PlayArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573FD587239F343F009BDBF9 /* PlayArea.swift */; };
@@ -291,6 +292,7 @@
 		57DA7BDD26ADECEA00F3CA8F /* ProductIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentifiers.swift; sourceTree = "<group>"; };
 		57DA7BE026AE4B1A00F3CA8F /* SKProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SKProduct.swift; path = Extensions/SKProduct.swift; sourceTree = "<group>"; };
 		57DA7C1F26BC976200F3CA8F /* Products.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Products.plist; sourceTree = "<group>"; };
+		57DD632D2B26B438002F55D2 /* CardNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardNodeTests.swift; sourceTree = "<group>"; };
 		57E0935A2125DCAF00D4E4F6 /* MovingDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingDirection.swift; sourceTree = "<group>"; };
 		57E97B091E7368B3000243B2 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Position.swift; path = Enums/Position.swift; sourceTree = "<group>"; };
 		57E97B0C1E7479F5000243B2 /* BottomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
@@ -485,6 +487,7 @@
 				57D5707F267FD3E90050B28E /* GameConfigsTests.swift */,
 				5750E3F82B070C8500FE7AE1 /* CardTests.swift */,
 				57A698C52B0AD09B00EC45BB /* CardDeckTests.swift */,
+				57DD632D2B26B438002F55D2 /* CardNodeTests.swift */,
 			);
 			path = CardsMultiTests;
 			sourceTree = "<group>";
@@ -951,6 +954,7 @@
 				5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */,
 				578B1C611E7EFBDC008B8381 /* Actions.swift in Sources */,
 				5750E3F92B070C8500FE7AE1 /* CardTests.swift in Sources */,
+				57DD632E2B26B438002F55D2 /* CardNodeTests.swift in Sources */,
 				57DD91A125853F900086336D /* WsRequestSender.swift in Sources */,
 				576C1D0E2AEDCAF3003276F7 /* TextFieldView.swift in Sources */,
 				5781B06F2952966D009D3C4A /* UIViewController.swift in Sources */,

@@ -18,6 +18,8 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
     var customOptions: NSDictionary?
     @Published var deck: CardDeck = CardDeck.empty
     
+    var deckName: String?
+    
     var presetCardSize: String? {
         if let presetCardWidth = Config.presetCardWidthsPerScreen.first(where: { $0.value == self.cardWidthsPerScreen}) {
             return presetCardWidth.key
@@ -48,12 +50,19 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
         case cardWidthsPerScreen
         case soundOn
         case margin
+        case deckName
     }
     
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.cardWidthsPerScreen = try values.decode(Float.self, forKey: .cardWidthsPerScreen)
         self.margin = try values.decode(Float.self, forKey: .margin)
+        
+        let deckName = try values.decodeIfPresent(String.self, forKey: .deckName)
+        
+        if let deck = CardDecks.instance.decks.first(where: { deck in deck.name == deckName }) {
+            self.deck = deck
+        }
     }
     
     func encode(to encoder: Encoder) throws {
