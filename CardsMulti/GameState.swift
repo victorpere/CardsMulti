@@ -8,7 +8,7 @@
 
 import Foundation
 
-class GameState : StoredBase {
+class GameState {
     
     // MARK: - Singleton
     
@@ -16,38 +16,13 @@ class GameState : StoredBase {
     
     // MARK: - Properties
     
-    var gameType: GameType?
+    private let gameType: GameType?
     
     @StoredEncodedWithDefault var cardNodes: [CardSpriteNode]
     @StoredEncodedWithDefault var scores: [Score]
+    @StoredValue (key: "gameId") var gameId: String?
     
-    // MARK: - Initializers
-    
-    override init() {
-        _cardNodes = StoredEncodedWithDefault(key: "_cardNodes", defaultValue: [])
-        _scores = StoredEncodedWithDefault(key: "_scores", defaultValue: [])
-        
-        super.init()
-    }
-    
-    init(_ gameType: GameType) {
-        _cardNodes = StoredEncodedWithDefault(key: "\(gameType.rawValue)_cardNodes", defaultValue: [])
-        _scores = StoredEncodedWithDefault(key: "\(gameType.rawValue)_scores", defaultValue: [])
-        
-        super.init()
-        self.gameType = gameType
-    }
-    
-    
-    // MARK: - Enums
-    
-    fileprivate enum Key : String {
-        case cardSymbols = "cardSymbols"
-        case scores = "scores"
-        case gameId = "gameId"
-    }
-    
-    // MARK: - Stored properties
+    // MARK: - Computed properties
     
     var gameTypeId: String {
         if let gameTypeId = self.gameType?.rawValue {
@@ -56,16 +31,19 @@ class GameState : StoredBase {
         return ""
     }
     
-    var gameId: String? {
-        get {
-            return self.settingOrDefault(forKey: Key.gameId.rawValue, defaultValue: nil)
-        }
-        set(value) {
-            if value != nil {
-                self.setSetting(forKey: Key.gameId.rawValue, toValue: value)
-            } else {
-                self.removeSetting(forKey: Key.gameId.rawValue)
-            }
-        }
+    // MARK: - Initializers
+    
+    init() {
+        _cardNodes = StoredEncodedWithDefault(key: "_cardNodes", defaultValue: [])
+        _scores = StoredEncodedWithDefault(key: "_scores", defaultValue: [])
+
+        self.gameType = nil
+    }
+    
+    init(_ gameType: GameType) {
+        _cardNodes = StoredEncodedWithDefault(key: "\(gameType.rawValue)_cardNodes", defaultValue: [])
+        _scores = StoredEncodedWithDefault(key: "\(gameType.rawValue)_scores", defaultValue: [])
+        
+        self.gameType = gameType
     }
 }
