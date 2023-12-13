@@ -35,9 +35,6 @@
 		573FD588239F343F009BDBF9 /* PlayArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573FD587239F343F009BDBF9 /* PlayArea.swift */; };
 		5740504E1E5E890000316AEB /* card_flip.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 5740504C1E5E890000316AEB /* card_flip.m4a */; };
 		574050551E5F82AA00316AEB /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574050541E5F82AA00316AEB /* UIDevice.swift */; };
-		574693522367CB9D00AB6516 /* StoredBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* StoredBase.swift */; };
-		574693532367CBCD00AB6516 /* StoredBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* StoredBase.swift */; };
-		574693542367CBCD00AB6516 /* StoredBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693512367CB9D00AB6516 /* StoredBase.swift */; };
 		574693562367CD4600AB6516 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574693552367CD4600AB6516 /* GameState.swift */; };
 		5748641826DE62F4005517BB /* StoredGameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5748641726DE62F4005517BB /* StoredGameSettings.swift */; };
 		5750E3E92AF888EA00FE7AE1 /* ProductManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED4A5A2AEDF79D00733918 /* ProductManager.swift */; };
@@ -226,7 +223,6 @@
 		573FD587239F343F009BDBF9 /* PlayArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayArea.swift; sourceTree = "<group>"; };
 		5740504C1E5E890000316AEB /* card_flip.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = card_flip.m4a; sourceTree = "<group>"; };
 		574050541E5F82AA00316AEB /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIDevice.swift; path = Extensions/UIDevice.swift; sourceTree = "<group>"; };
-		574693512367CB9D00AB6516 /* StoredBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredBase.swift; sourceTree = "<group>"; };
 		574693552367CD4600AB6516 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		5748641726DE62F4005517BB /* StoredGameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredGameSettings.swift; sourceTree = "<group>"; };
 		5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCardSizeView.swift; sourceTree = "<group>"; };
@@ -521,7 +517,6 @@
 				57B054121E4E75F30057E62F /* CardSpriteNode.swift */,
 				57B9C8F31E58FAA900F8E25B /* Actions.swift */,
 				570C397423369C4D00A2882C /* Player.swift */,
-				574693512367CB9D00AB6516 /* StoredBase.swift */,
 				574693552367CD4600AB6516 /* GameState.swift */,
 				578F40C52377923100719821 /* SnapLocation.swift */,
 				573FD587239F343F009BDBF9 /* PlayArea.swift */,
@@ -887,7 +882,6 @@
 				57A698C32B09A5AD00EC45BB /* CardDecks.swift in Sources */,
 				5750E3F62B0309D200FE7AE1 /* CardDeck.swift in Sources */,
 				57DA7BD026AC949800F3CA8F /* StoreObserver.swift in Sources */,
-				574693522367CB9D00AB6516 /* StoredBase.swift in Sources */,
 				57A7169926E6A5E20073C0E1 /* Message.swift in Sources */,
 				57085DCD2ACBA6160084A42B /* GameGoFish.swift in Sources */,
 				57F400FF248D6D7800EF71D5 /* WsRequestSender.swift in Sources */,
@@ -944,7 +938,6 @@
 				5702182B2373B6D500310A67 /* CardSizeTableViewCell.swift in Sources */,
 				57DD919125853F770086336D /* GameState.swift in Sources */,
 				57D6560523651BBD00DA69C4 /* CoreGraphics.swift in Sources */,
-				574693532367CBCD00AB6516 /* StoredBase.swift in Sources */,
 				578B1C551E7EF960008B8381 /* GameViewController.swift in Sources */,
 				578B1C631E7EFBE4008B8381 /* Suit.swift in Sources */,
 				57EA2B5E25B39DFD00536B47 /* MathTests.swift in Sources */,
@@ -1030,7 +1023,6 @@
 				5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */,
 				578F40C82377924400719821 /* SnapLocation.swift in Sources */,
 				576C1D092AEDCAE2003276F7 /* RankPickerView.swift in Sources */,
-				574693542367CBCD00AB6516 /* StoredBase.swift in Sources */,
 				576C1D122AEDCB4C003276F7 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
