@@ -10,7 +10,7 @@ import Foundation
 import MultipeerConnectivity
 import GameKit
 
-class Score {
+class Score: Codable {
     
     // MARK: - Properties
     
@@ -46,19 +46,6 @@ class Score {
     
     // MARK: - Computed properties
     
-    var scoreInfo: NSDictionary {
-        get {
-            return NSDictionary(dictionary: [
-                "peerId": self.peerId?.displayName ?? "",
-                "name": self.name ?? "",
-                "score": self.score,
-                "prefix": self.prefix ,
-                "suffix": self.suffix ,
-                "gameType": self.gameType.rawValue 
-            ])
-        }
-    }
-    
     /// Unique identifier of the score usig the peer ID display name, game type and score name
     var scoreId: String {
         return "score_\(self.peerId?.displayName ?? "")_\(self.gameType.rawValue)_\(self.name ?? "")"
@@ -85,45 +72,39 @@ class Score {
         return total
     }
     
-    // MARK: - Initializers
+    // MARK: - Decode/Encode
     
-    convenience init(scoreInfo: NSDictionary) {
-        self.init()
-        
-        if let value = scoreInfo["peerId"] as? String, value.count > 0 {
-            self.peerId = MCPeerID(displayName: value)
-        }
-        
-        if let value = scoreInfo["name"] as? String {
-            self.name = value
-        } else {
-            self.name = ""
-        }
-        
-        if let value = scoreInfo["score"] as? Double {
-            self.score = value
-        } else {
-            self.score = 0
-        }
-        
-        if let value = scoreInfo["prefix"] as? String {
-            self.prefix = value
-        } else {
-            self.prefix = ""
-        }
-        
-        if let value = scoreInfo["suffix"] as? String {
-            self.suffix = value
-        } else {
-            self.suffix = ""
-        }
-        
-        if let value = scoreInfo["gameType"] as? Int {
-            self.gameType = GameType(rawValue: value)
-        } else {
-            self.gameType = .freePlay
-        }
+    private enum CodingKeys: String, CodingKey {
+        case peerId
+        case name
+        case score
+        case prefix
+        case suffix
+        case gameType
     }
+    
+    required convenience init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.init()
+        self.peerId = MCPeerID(displayName: try values.decode(String.self, forKey: .peerId))
+        self.name = try values.decode(String.self, forKey: .name)
+        self.score = try values.decode(Double.self, forKey: .score)
+        self.prefix = try values.decode(String.self, forKey: .prefix)
+        self.suffix = try values.decode(String.self, forKey: .suffix)
+        self.gameType = try values.decode(GameType.self, forKey: .gameType)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.peerId?.displayName ?? "", forKey: .peerId)
+        try container.encode(self.name ?? "", forKey: .name)
+        try container.encode(self.score, forKey: .score)
+        try container.encode(self.prefix, forKey: .prefix)
+        try container.encode(self.suffix, forKey: .suffix)
+        try container.encode(self.gameType, forKey: .gameType)
+    }
+    
+    // MARK: - Initializers
     
     convenience init(peerId: MCPeerID, gameType: GameType) {
         self.init()
