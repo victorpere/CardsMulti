@@ -10,10 +10,11 @@ import GameplayKit
 
 class Global {
     static func newShuffledDeck(name: String, deck: CardDeck) -> [CardSpriteNode] {
-        let shuffledDeck = (GKRandomSource.sharedRandom().arrayByShufflingObjects(in: deck.cards) as! [Card]).map {
+        var newDeck = deck.cards.map {
             CardSpriteNode(card: $0, name: name)
         }
-        return shuffledDeck
+        shuffle(&newDeck)
+        return newDeck
     }
 
     static func shuffle(_ deck: inout [CardSpriteNode]) {
