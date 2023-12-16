@@ -9,16 +9,11 @@
 import GameplayKit
 
 class Global {
-    static func newShuffledDeck(name: String, settings: Settings) -> [CardSpriteNode] {
-        var deck = [CardSpriteNode]()
-        
-        for card in settings.deck.cards {
-            let cardNode = CardSpriteNode(card: card, name: name)
-            deck.append(cardNode)
+    static func newShuffledDeck(name: String, deck: CardDeck) -> [CardSpriteNode] {
+        let shuffledDeck = (GKRandomSource.sharedRandom().arrayByShufflingObjects(in: deck.cards) as! [Card]).map {
+            CardSpriteNode(card: $0, name: name)
         }
-        
-        deck = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: deck) as! [CardSpriteNode]
-        return deck
+        return shuffledDeck
     }
 
     static func shuffle(_ deck: inout [CardSpriteNode]) {

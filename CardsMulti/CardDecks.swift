@@ -22,4 +22,9 @@ class CardDecks {
             self.decks = []
         }
     }
+    
+    /// Returns a deck by the specified name, if exists
+    func deck(named deckName: String) -> CardDeck? {
+        return self.decks.first { $0.name == deckName }
+    }
 }

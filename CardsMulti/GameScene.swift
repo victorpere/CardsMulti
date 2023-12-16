@@ -408,7 +408,7 @@ class GameScene: GameSceneBase {
             
             self.loadScores()
         } else {
-            self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
+            self.allCards = Global.newShuffledDeck(name: "deck", deck: StoredSettings.instance.deck)
             self.initCards()
             self.shuffleAndStackAllCards(sync: sync)
         }
@@ -480,7 +480,7 @@ class GameScene: GameSceneBase {
      */
     func resetCards() {
         self.resetNodes()
-        self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
+        self.allCards = Global.newShuffledDeck(name: "deck", deck: StoredSettings.instance.deck)
         self.initCards()
     }
     

@@ -58,9 +58,7 @@ class TemporarySettings : Settings, GameSettings, ObservableObject, Codable {
         self.cardWidthsPerScreen = try values.decode(Float.self, forKey: .cardWidthsPerScreen)
         self.margin = try values.decode(Float.self, forKey: .margin)
         
-        let deckName = try values.decodeIfPresent(String.self, forKey: .deckName)
-        
-        if let deck = CardDecks.instance.decks.first(where: { deck in deck.name == deckName }) {
+        if let deckName = try values.decodeIfPresent(String.self, forKey: .deckName), let deck = CardDecks.instance.deck(named: deckName) {
             self.deck = deck
         }
     }

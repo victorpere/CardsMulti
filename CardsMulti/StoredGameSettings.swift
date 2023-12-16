@@ -25,7 +25,9 @@ class StoredGameSettings : GameSettings {
     init(with gameType: GameType) {
         self.gameType = gameType
         
-        _deck = StoredEncodedWithDefault(key: "\(gameType.rawValue)deck", defaultValue: CardDeck.empty)
+        let defaultSettings = GameConfigs.sharedInstance.gameConfig(for: gameType)?.defaultSettings
+        
+        _deck = StoredEncodedWithDefault(key: "\(gameType.rawValue)deck", defaultValue: defaultSettings?.deck ?? CardDeck.empty)
         _cardWidthsPerScreen = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.cardWidthsPerScreen)", defaultValue: Config.defaultCardWidthsPerScreen)
         _margin = StoredWithDefault(key: "\(self.gameType.rawValue)\(SettingsKey.margin)", defaultValue: 0)
         
