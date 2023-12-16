@@ -29,6 +29,7 @@ struct Config {
     static let minCardWidthsPerScreen: Float = 3
     static let maxCardWidthsPerScreen: Float = 10
     static let presetCardWidthsPerScreen: KeyValuePairs<String, Float> = ["small": 8, "medium": 6, "large": 4, "xlarge": 3]
+    static let defaultMargin: Float = 0
     
     static let snapDistance: CGFloat = 20
     static let fanRadiusCoefficient: CGFloat = 100
