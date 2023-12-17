@@ -26,11 +26,11 @@ class StoredSettings : Settings {
     @StoredWithDefault (key: SettingsKey.game.rawValue, defaultValue: GameType.freePlay.rawValue) var game: Int
     @StoredWithDefault (key: SettingsKey.cardWidthsPerScreen.rawValue, defaultValue: Config.defaultCardWidthsPerScreen) var cardWidthsPerScreen: Float
     
-    @StoredWithDefault (key: "margin", defaultValue: 0) var margin: Float
+    @StoredWithDefault (key: "margin", defaultValue: Config.defaultMargin) var margin: Float
     @StoredWithDefault (key: "soundOn", defaultValue: true) var soundOn: Bool
     @StoredValue (key: "customOptions") var customOptions: NSDictionary?
     
-    @StoredEncodedWithDefault (key: "deck", defaultValue: CardDeck.empty) var deck: CardDeck
+    @StoredEncodedWithDefault (key: "deck", defaultValue: GameConfigs.sharedInstance.gameConfig(for: GameType.freePlay)?.defaultSettings.deck ?? CardDeck.empty) var deck: CardDeck
     
 
     var deckDictionary: NSDictionary? {
