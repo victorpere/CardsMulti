@@ -412,6 +412,7 @@ extension ConnectionServiceManager : MCSessionDelegate {
                 self.hostPeerID = self.myPeerId
                 
                 self.playersAWS = [nil, nil, nil, nil]
+                self.playersAWS[Position.bottom.rawValue] = self.myself
                 self.host = self.myself
             }
             

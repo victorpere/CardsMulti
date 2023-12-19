@@ -94,7 +94,6 @@ class GameScene: GameSceneBase {
     var movingDirection = MovingDirection.none
     var movingDirectionReversed = 0
     
-    var peers: [MCPeerID?]!
     var players: [Player?]?
     var scores = [Score]()
     var scoreLabel : SKLabelNode!
