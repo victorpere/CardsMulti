@@ -7,11 +7,13 @@
 
 import SwiftUI
 
-struct TextEditView: View {
+struct TextEditView<TrailingBarItem: View>: View {
     @Binding var text: String
     var label: String
     @FocusState private var focused: Bool
     @Environment(\.dismiss) private var dismiss
+    
+    @ViewBuilder let trailingBarItem: TrailingBarItem
 
     var body: some View {
         Form {
@@ -24,6 +26,7 @@ struct TextEditView: View {
         }.onAppear {
             self.focused = true
         }.navigationTitle(self.label).navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: self.trailingBarItem)
             .onSubmit {
                 dismiss()
             }

@@ -38,7 +38,10 @@ struct SettingsView: View {
             Form {
                 Section(header: Text("player".localized)) {
                     List {
-                        TextFieldView(text: self.$selectedSettings.displayName, label: "name".localized)
+                        TextFieldView(text: self.$selectedSettings.displayName, label: "name".localized, doneAction: { 
+                            self.dismiss()
+                            self.didFinish()
+                        })
                     }
                 }
                 
@@ -65,6 +68,10 @@ struct SettingsView: View {
                                 }
                             }.navigationTitle("game".localized)
                                 .navigationBarTitleDisplayMode(.inline)
+                                .navigationBarItems(trailing: Button("done".localized) {
+                                    self.dismiss()
+                                    self.didFinish()
+                                })
                         }) {
                             HStack {
                                 Text("game".localized)
@@ -85,6 +92,10 @@ struct SettingsView: View {
                                         }
                                     }.navigationTitle("deck".localized)
                                         .navigationBarTitleDisplayMode(.inline)
+                                        .navigationBarItems(trailing: Button("done".localized) {
+                                            self.dismiss()
+                                            self.didFinish()
+                                        })
                                 }) {
                                     HStack {
                                         Text("deck".localized)
@@ -100,6 +111,10 @@ struct SettingsView: View {
                                         SettingsCardSizeView(cardWidthsPerScreen: self.$selectedSettings.cardWidthsPerScreen, screenWidth: Float(geo.size.width))
                                     }.navigationTitle("card size".localized)
                                         .navigationBarTitleDisplayMode(.inline)
+                                        .navigationBarItems(trailing: Button("done".localized) {
+                                            dismiss()
+                                            self.didFinish()
+                                        })
                                 }) {
                                     HStack {
                                         Text("card size".localized)
