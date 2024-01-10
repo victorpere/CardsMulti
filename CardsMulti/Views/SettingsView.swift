@@ -84,13 +84,8 @@ struct SettingsView: View {
                             if gameConfig.canChangeDeck {
                                 // TODO: customize deck view
                                 NavigationLink(destination: {
-                                    List {
-                                        ForEach(CardDecks.instance.decks, id: \.self.name) { deck in
-                                            PickerCellView(value: deck, selectedValue: self.$selectedSettings.deck) {
-                                                Text(deck.name.localized)
-                                            }
-                                        }
-                                    }.navigationTitle("deck".localized)
+                                    SettingsDeckView(selectedDeck: self.$selectedSettings.deck)
+                                        .navigationTitle("deck".localized)
                                         .navigationBarTitleDisplayMode(.inline)
                                         .navigationBarItems(trailing: Button("done".localized) {
                                             self.dismiss()

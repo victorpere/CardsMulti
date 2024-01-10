@@ -19,6 +19,9 @@
 		57085E0F2AD342F40084A42B /* RankPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57085E0E2AD342F40084A42B /* RankPickerView.swift */; };
 		570A8110249EB8FC001096E1 /* WsMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570A810F249EB8FC001096E1 /* WsMessage.swift */; };
 		570C397523369C4D00A2882C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C397423369C4D00A2882C /* Player.swift */; };
+		570E4C172B4E40760040F10D /* SettingsDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C162B4E40760040F10D /* SettingsDeckView.swift */; };
+		570E4C182B4E41660040F10D /* SettingsDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C162B4E40760040F10D /* SettingsDeckView.swift */; };
+		570E4C192B4E41660040F10D /* SettingsDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C162B4E40760040F10D /* SettingsDeckView.swift */; };
 		571278F22AE612B5004AA6B8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F12AE612B5004AA6B8 /* SettingsView.swift */; };
 		571278F42AE6131B004AA6B8 /* TextEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F32AE6131B004AA6B8 /* TextEditView.swift */; };
 		571278F72AE61388004AA6B8 /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F62AE61388004AA6B8 /* TextFieldView.swift */; };
@@ -207,6 +210,7 @@
 		570A810F249EB8FC001096E1 /* WsMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WsMessage.swift; sourceTree = "<group>"; };
 		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
 		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		570E4C162B4E40760040F10D /* SettingsDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDeckView.swift; sourceTree = "<group>"; };
 		571278F12AE612B5004AA6B8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		571278F32AE6131B004AA6B8 /* TextEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditView.swift; sourceTree = "<group>"; };
 		571278F62AE61388004AA6B8 /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
@@ -351,6 +355,7 @@
 				57085E0E2AD342F40084A42B /* RankPickerView.swift */,
 				571278F12AE612B5004AA6B8 /* SettingsView.swift */,
 				5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */,
+				570E4C162B4E40760040F10D /* SettingsDeckView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -922,6 +927,7 @@
 				57B0540E1E4E75B10057E62F /* Suit.swift in Sources */,
 				578F40C62377923100719821 /* SnapLocation.swift in Sources */,
 				57B054141E4E75F30057E62F /* CardSpriteNode.swift in Sources */,
+				570E4C172B4E40760040F10D /* SettingsDeckView.swift in Sources */,
 				57E97B0D1E7479F6000243B2 /* BottomButton.swift in Sources */,
 				57E0935B2125DCAF00D4E4F6 /* MovingDirection.swift in Sources */,
 				57D570982687B2490050B28E /* Settings.swift in Sources */,
@@ -967,6 +973,7 @@
 				57C8B91D2426A1B700100DDE /* GameType.swift in Sources */,
 				578B1C621E7EFBE1008B8381 /* Rank.swift in Sources */,
 				578B1C641E7EFBE7008B8381 /* UIDevice.swift in Sources */,
+				570E4C182B4E41660040F10D /* SettingsDeckView.swift in Sources */,
 				57C8B9202426A44000100DDE /* Score.swift in Sources */,
 				578B1C581E7EFB0A008B8381 /* GameScene.swift in Sources */,
 				578F40C72377924400719821 /* SnapLocation.swift in Sources */,
@@ -1018,6 +1025,7 @@
 				576C1D112AEDCAF7003276F7 /* TextEditView.swift in Sources */,
 				576C1D0F2AEDCAF4003276F7 /* TextFieldView.swift in Sources */,
 				5750E3F42B018A1600FE7AE1 /* SettingsCardSizeView.swift in Sources */,
+				570E4C192B4E41660040F10D /* SettingsDeckView.swift in Sources */,
 				57DD91B125853FEF0086336D /* PopUpMenu.swift in Sources */,
 				576C1D0D2AEDCAF0003276F7 /* PickerCellView.swift in Sources */,
 				5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */,
