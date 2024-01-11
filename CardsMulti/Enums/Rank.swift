@@ -46,6 +46,10 @@ enum Rank: Int, CaseIterable, Codable {
         switch self {
         case .ace:
             return "1"
+        case .queen:
+            return "D"
+        case .king:
+            return "E"
         default:
             return String(format: "%01X", self.rawValue)
         }

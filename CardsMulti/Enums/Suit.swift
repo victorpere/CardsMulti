@@ -37,7 +37,7 @@ enum Suit: Int, CaseIterable, Codable {
         case .hearts:
             return "1f0b"
         case .diamonds:
-            return "1f0d"
+            return "1f0c"
         case .clubs:
             return "1f0d"
         }
