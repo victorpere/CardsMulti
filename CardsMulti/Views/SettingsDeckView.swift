@@ -11,11 +11,35 @@ import SwiftUI
 struct SettingsDeckView: View {
     @Binding var selectedDeck: CardDeck
     
+    @State private var cardSelected: [Card: Bool] = [:]
+    
     var body: some View {
-        List {
-            ForEach(CardDecks.instance.decks, id: \.self.name) { deck in
-                PickerCellView(value: deck, selectedValue: self.$selectedDeck) {
-                    Text(deck.name.localized)
+        Form {
+            Section {
+                List {
+                    ForEach(CardDecks.instance.decks, id: \.self.name) { deck in
+                        PickerCellView(value: deck, selectedValue: self.$selectedDeck) {
+                            Text(deck.name.localized)
+                        }
+                    }
+                }
+                Text("add new...")
+            }
+            
+            Section {
+                if #available(iOS 16.0, *) {
+                    Grid {
+                        ForEach(Rank.allCases, id: \.self) { rank in
+                            GridRow {
+                                ForEach(Suit.allCases, id: \.self) { suit in
+                                    let card = Card(suit: suit, rank: rank)
+                                    CardSelectView(selected: $cardSelected, card: card)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Fallback on earlier versions
                 }
             }
         }

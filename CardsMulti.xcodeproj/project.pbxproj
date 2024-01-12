@@ -22,6 +22,9 @@
 		570E4C172B4E40760040F10D /* SettingsDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C162B4E40760040F10D /* SettingsDeckView.swift */; };
 		570E4C182B4E41660040F10D /* SettingsDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C162B4E40760040F10D /* SettingsDeckView.swift */; };
 		570E4C192B4E41660040F10D /* SettingsDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C162B4E40760040F10D /* SettingsDeckView.swift */; };
+		570E4C1B2B4F87C50040F10D /* CardSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C1A2B4F87C50040F10D /* CardSelectView.swift */; };
+		570E4C1C2B4F8CA70040F10D /* CardSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C1A2B4F87C50040F10D /* CardSelectView.swift */; };
+		570E4C1D2B4F8CA80040F10D /* CardSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E4C1A2B4F87C50040F10D /* CardSelectView.swift */; };
 		571278F22AE612B5004AA6B8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F12AE612B5004AA6B8 /* SettingsView.swift */; };
 		571278F42AE6131B004AA6B8 /* TextEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F32AE6131B004AA6B8 /* TextEditView.swift */; };
 		571278F72AE61388004AA6B8 /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571278F62AE61388004AA6B8 /* TextFieldView.swift */; };
@@ -211,6 +214,7 @@
 		570C3972233697E200A2882C /* GameGoFish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameGoFish.swift; sourceTree = "<group>"; };
 		570C397423369C4D00A2882C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		570E4C162B4E40760040F10D /* SettingsDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDeckView.swift; sourceTree = "<group>"; };
+		570E4C1A2B4F87C50040F10D /* CardSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSelectView.swift; sourceTree = "<group>"; };
 		571278F12AE612B5004AA6B8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		571278F32AE6131B004AA6B8 /* TextEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditView.swift; sourceTree = "<group>"; };
 		571278F62AE61388004AA6B8 /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
@@ -356,6 +360,7 @@
 				571278F12AE612B5004AA6B8 /* SettingsView.swift */,
 				5750E3EF2AFFD1F800FE7AE1 /* SettingsCardSizeView.swift */,
 				570E4C162B4E40760040F10D /* SettingsDeckView.swift */,
+				570E4C1A2B4F87C50040F10D /* CardSelectView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -905,6 +910,7 @@
 				57B053DD1E4E3BD20057E62F /* GameViewController.swift in Sources */,
 				57E97B0A1E7368B4000243B2 /* Position.swift in Sources */,
 				57085E0F2AD342F40084A42B /* RankPickerView.swift in Sources */,
+				570E4C1B2B4F87C50040F10D /* CardSelectView.swift in Sources */,
 				57D5709026879DA60050B28E /* UIViewController.swift in Sources */,
 				578742BB2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
 				57DA7BDE26ADECEA00F3CA8F /* ProductIdentifiers.swift in Sources */,
@@ -999,6 +1005,7 @@
 				57213CF1268903F600753AC4 /* TemporarySettings.swift in Sources */,
 				576C1D0C2AEDCAEF003276F7 /* PickerCellView.swift in Sources */,
 				578742BC2586D054004C9DBB /* ReceivedDataHandler.swift in Sources */,
+				570E4C1C2B4F8CA70040F10D /* CardSelectView.swift in Sources */,
 				57DA7BD126AC962600F3CA8F /* StoreObserver.swift in Sources */,
 				57A698C62B0AD09B00EC45BB /* CardDeckTests.swift in Sources */,
 				5781B06C29529300009D3C4A /* UIStrings.swift in Sources */,
@@ -1029,6 +1036,7 @@
 				57DD91B125853FEF0086336D /* PopUpMenu.swift in Sources */,
 				576C1D0D2AEDCAF0003276F7 /* PickerCellView.swift in Sources */,
 				5702182C2373B6D600310A67 /* CardSizeTableViewCell.swift in Sources */,
+				570E4C1D2B4F8CA80040F10D /* CardSelectView.swift in Sources */,
 				578F40C82377924400719821 /* SnapLocation.swift in Sources */,
 				576C1D092AEDCAE2003276F7 /* RankPickerView.swift in Sources */,
 				576C1D122AEDCB4C003276F7 /* SettingsView.swift in Sources */,
