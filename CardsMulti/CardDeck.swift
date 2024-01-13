@@ -12,7 +12,7 @@ import Foundation
 struct CardDeck: Codable, Hashable {
 
     /// Array of cards in the deck
-    let cards: [Card]
+    var cards: [Card]
     
     let name: String
     

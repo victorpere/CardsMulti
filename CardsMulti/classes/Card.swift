@@ -6,7 +6,7 @@
 //  Copyright © 2017 Victor. All rights reserved.
 //
 
-struct Card: Codable, Hashable {
+struct Card: Codable, Hashable, Equatable {
     let suit: Suit
     let rank: Rank
     

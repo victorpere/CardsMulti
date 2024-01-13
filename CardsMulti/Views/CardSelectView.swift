@@ -9,12 +9,16 @@
 import SwiftUI
 
 struct CardSelectView: View {
-    @Binding var selected: [Card: Bool]
+    @Binding var deck: CardDeck
     
     let card: Card
     
+    var selected: Bool {
+        self.deck.cards.contains(self.card)
+    }
+    
     var color: Color {
-        if self.selected[self.card] ?? false {
+        if self.selected {
             return self.card.suit.uiColor
         }
         
@@ -26,7 +30,11 @@ struct CardSelectView: View {
             .font(.system(size: 100))
             .onTapGesture {
                 withAnimation() {
-                    self.selected[self.card] = !(self.selected[self.card] ?? false)
+                    if !self.selected {
+                        self.deck.cards.append(self.card)
+                    } else {
+                        self.deck.cards.removeAll { $0 == self.card }
+                    }
                 }
             }
     }

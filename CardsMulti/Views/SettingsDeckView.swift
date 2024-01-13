@@ -11,8 +11,6 @@ import SwiftUI
 struct SettingsDeckView: View {
     @Binding var selectedDeck: CardDeck
     
-    @State private var cardSelected: [Card: Bool] = [:]
-    
     var body: some View {
         Form {
             Section {
@@ -33,7 +31,7 @@ struct SettingsDeckView: View {
                             GridRow {
                                 ForEach(Suit.allCases, id: \.self) { suit in
                                     let card = Card(suit: suit, rank: rank)
-                                    CardSelectView(selected: $cardSelected, card: card)
+                                    CardSelectView(deck: $selectedDeck, card: card)
                                 }
                             }
                         }
