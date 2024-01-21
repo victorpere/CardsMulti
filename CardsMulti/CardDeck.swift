@@ -16,15 +16,18 @@ struct CardDeck: Codable, Hashable {
     
     let name: String
     
+    let editable: Bool
+    
     // MARK: - Initializers
     
     /// Initialize with an array of cards
-    init(cards: [Card], name: String) {
+    init(cards: [Card], name: String, editable: Bool) {
         self.cards = cards
         self.name = name
+        self.editable = editable
     }
     
     static var empty: CardDeck {
-        CardDeck(cards: [], name: "empty")
+        CardDeck(cards: [], name: "empty", editable: false)
     }
 }

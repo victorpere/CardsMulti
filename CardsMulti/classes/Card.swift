@@ -10,6 +10,16 @@ struct Card: Codable, Hashable, Equatable {
     let suit: Suit
     let rank: Rank
     
+    static var allCards: [Card] {
+        var cards: [Card] = []
+        for suit in Suit.allCases {
+            for rank in Rank.allCases {
+                cards.append(Card(suit: suit, rank: rank))
+            }
+        }
+        return cards
+    }
+    
     init(suit: Suit, rank: Rank) {
         self.suit = suit
         self.rank = rank

@@ -11,6 +11,10 @@ import SwiftUI
 struct SettingsDeckView: View {
     @Binding var selectedDeck: CardDeck
     
+    @State private var newDeckAlert = false
+    
+    @State private var temp: String = ""
+    
     var body: some View {
         Form {
             Section {
@@ -19,9 +23,35 @@ struct SettingsDeckView: View {
                         PickerCellView(value: deck, selectedValue: self.$selectedDeck) {
                             Text(deck.name.localized)
                         }
+                        .swipeActions() {
+                            if deck.editable {
+                                Button(role: .destructive) {
+                                    CardDecks.instance.delete(deck: deck)
+                                    if deck == self.selectedDeck, let firstDeck = CardDecks.instance.decks.first {
+                                        self.selectedDeck = firstDeck
+                                    }
+                                } label: {
+                                    Label("delete".localized, systemImage: "trash")
+                                }
+                            }
+                        }
                     }
                 }
-                Text("add new...")
+                
+                Button("add new".localized) {
+                    self.newDeckAlert = true
+                }
+                .alert("add new deck", isPresented: self.$newDeckAlert, actions: {
+                    TextField("deck name", text: $temp)
+                    Button("ok".localized, action: {
+                        let newDeck = CardDeck(cards: Card.allCards, name: temp, editable: true)
+                        CardDecks.instance.save(deck: newDeck)
+                        self.selectedDeck = newDeck
+                    })
+                    Button("cancel".localized, role: .cancel, action: {})
+                }, message: {
+                    Text("deck name")
+                })
             }
             
             Section {

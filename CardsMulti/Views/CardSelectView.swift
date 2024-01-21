@@ -29,11 +29,17 @@ struct CardSelectView: View {
         Text(self.card.unicode).foregroundColor(self.color)
             .font(.system(size: 100))
             .onTapGesture {
-                withAnimation() {
-                    if !self.selected {
-                        self.deck.cards.append(self.card)
-                    } else {
-                        self.deck.cards.removeAll { $0 == self.card }
+                if self.deck.editable {
+                    withAnimation() {
+                        if !self.selected {
+                            self.deck.cards.append(self.card)
+                        } else {
+                            self.deck.cards.removeAll { $0 == self.card }
+                        }
+                    }
+                    
+                    DispatchQueue.global(qos: .background).async {
+                        CardDecks.instance.save(deck: self.deck)
                     }
                 }
             }
