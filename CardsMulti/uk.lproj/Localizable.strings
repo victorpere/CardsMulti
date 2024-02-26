@@ -82,6 +82,12 @@
 "connections"   = "Підключені";
 "%d cards"      = "%d карт";
 
+"small"     = "Маленький";
+"medium"    = "Середній";
+"large"     = "Великий";
+"xlarge"    = "Величезний";
+"custom"    = "Custom";
+
 // UIStrings
 
 "Error"                                     = "Помилка";

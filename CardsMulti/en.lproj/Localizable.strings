@@ -82,6 +82,12 @@
 "connections"   = "Connections";
 "%d cards"      = "%d cards";
 
+"small"     = "Small";
+"medium"    = "Medium";
+"large"     = "Large";
+"xlarge"    = "Largest";
+"custom"    = "Custom";
+
 // UIStrings
 
 "Error"                                     = "Error";
