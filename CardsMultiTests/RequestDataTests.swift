@@ -23,7 +23,7 @@ class RequestDataTests: XCTestCase {
     
     func testDataArray() {
         let settings = TemporarySettings()
-        let cards = Global.newShuffledDeck(name: "test", settings: settings)
+        let cards = Global.newShuffledDeck(name: "test", deck: settings.deck)
         let cardDictionaryArray = Global.cardDictionaryArray(with: cards, playerPosition: .top, width: 0, yOffset: 0, moveToFront: false, animate: false, velocity: nil)
         let requestData = RequestData(withType: .game, andArray: cardDictionaryArray)
         
@@ -48,7 +48,7 @@ class RequestDataTests: XCTestCase {
     
     func testGameDataFromArray() {
         let settings = TemporarySettings()
-        let cards = Global.newShuffledDeck(name: "test", settings: settings)
+        let cards = Global.newShuffledDeck(name: "test", deck: settings.deck)
         let cardDictionaryArray = Global.cardDictionaryArray(with: cards, playerPosition: .top, width: 0, yOffset: 0, moveToFront: false, animate: false, velocity: nil)
         let requestData = RequestData(withType: .game, andArray: cardDictionaryArray)
 

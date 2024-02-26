@@ -6,6 +6,7 @@
         "canChangeDeck": true,
         "canRotateCards": true,
         "defaultSettings": {
+            "deckName": "standard",
             "cardWidthsPerScreen": 6.0,
             "margin": 5.0
         },
@@ -45,6 +46,7 @@
         "canChangeDeck": false,
         "canRotateCards": false,
         "defaultSettings": {
+            "deckName": "standard",
             "pipsEnabled": true,
             "minValue": 2,
             "maxValue": 10,
@@ -64,6 +66,7 @@
         "canChangeDeck": false,
         "canRotateCards": true,
         "defaultSettings": {
+            "deckName": "standard",
             "pipsEnabled": true,
             "minValue": 2,
             "maxValue": 10,

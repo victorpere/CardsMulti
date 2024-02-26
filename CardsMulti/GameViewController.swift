@@ -426,11 +426,6 @@ class GameViewController: UIViewController {
         self.presentView(settingsView)
     }
     
-    private func openScores(fromButton button: BottomButton) {
-        let scoresViewController = ScoresViewController(withScene: self.scene)
-        self.presentNavigationPopover(scoresViewController, fromButton: button)
-    }
-    
     /**
      Creates an invitation link to the current game and opens a sharing dialog
      */
@@ -466,7 +461,6 @@ class GameViewController: UIViewController {
     }
     
     fileprivate func updateScenePlayers() {
-        self.scene.peers = self.connectionService.players
         self.scene.players = self.connectionService.playersAWS
         
         if self.connectionService.gameId != nil {

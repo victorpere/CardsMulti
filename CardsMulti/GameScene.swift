@@ -48,7 +48,7 @@ class GameScene: GameSceneBase {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
-    var settings = StoredSettings()
+    var settings: StoredGameSettings
     
     private var lastUpdateTime : TimeInterval = 0
     
@@ -94,7 +94,6 @@ class GameScene: GameSceneBase {
     var movingDirection = MovingDirection.none
     var movingDirectionReversed = 0
     
-    var peers: [MCPeerID?]!
     var players: [Player?]?
     var scores = [Score]()
     var scoreLabel : SKLabelNode!
@@ -152,6 +151,9 @@ class GameScene: GameSceneBase {
         self.flashMessageNode = FlashMessageNode(position: CGPoint(x: 0, y: 0), width: size.width)
                 
         self.gameType = gameType
+        
+        self.settings = StoredGameSettings(with: gameType)
+        
         self.loadSaved = loadFromSave
         self.gameConfig = GameConfigs.sharedInstance.gameConfig(for: gameType) ?? GameConfig(gameType: gameType)
         
@@ -408,7 +410,7 @@ class GameScene: GameSceneBase {
             
             self.loadScores()
         } else {
-            self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
+            self.allCards = Global.newShuffledDeck(name: "deck", deck: self.settings.deck)
             self.initCards()
             self.shuffleAndStackAllCards(sync: sync)
         }
@@ -480,7 +482,7 @@ class GameScene: GameSceneBase {
      */
     func resetCards() {
         self.resetNodes()
-        self.allCards = Global.newShuffledDeck(name: "deck", settings: StoredSettings.instance)
+        self.allCards = Global.newShuffledDeck(name: "deck", deck: self.settings.deck)
         self.initCards()
     }
     
@@ -500,7 +502,7 @@ class GameScene: GameSceneBase {
     func shuffleAndStackAllCards(sync: Bool) {
         var message = Message()
         message.systemMessage = UIStrings.shuffledAllCards
-        message.arguments = [self.settings.displayName]
+        message.arguments = [StoredSettings.instance.displayName]
         message.location = self.playArea.center.relativePoint(for: self.playerPosition, width: self.size.width, yOffset: self.dividerLine.position.y)
         self.sendMessage(message)
         
@@ -529,7 +531,7 @@ class GameScene: GameSceneBase {
     func deal(numberOfCards: Int) {
         var message = Message()
         message.systemMessage = UIStrings.dealingCards
-        message.arguments = [self.settings.displayName, numberOfCards]
+        message.arguments = [StoredSettings.instance.displayName, numberOfCards]
         self.sendMessage(message)
         
         let _ = self.deal(fromCards: self.selectedNodes, numberOfCards: numberOfCards) { _ in }
@@ -913,7 +915,7 @@ class GameScene: GameSceneBase {
         if let topCardPosition = cards.shuffle(delegate: self) {
             var message = Message()
             message.systemMessage = UIStrings.shuffledNCards
-            message.arguments = [self.settings.displayName, cards.count]
+            message.arguments = [StoredSettings.instance.displayName, cards.count]
             message.location =  topCardPosition.relativePoint(for: self.playerPosition, width: self.size.width, yOffset: self.dividerLine.position.y)
             self.sendMessage(message)
         }
@@ -1248,13 +1250,13 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func makeMoveSound() {
-        if settings.soundOn && !self.hasActions() {
+        if StoredSettings.instance.soundOn && !self.hasActions() {
             self.run(self.moveSound)
         }
     }
     
     func makeFlipSound() {
-        if settings.soundOn && !self.hasActions() {
+        if StoredSettings.instance.soundOn && !self.hasActions() {
             self.run(self.flipSound)
         }
     }

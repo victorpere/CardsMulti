@@ -9,32 +9,35 @@
 import Foundation
 
 /// Contains information on available and purchased products
-class ProductIdentifiers: StoredBase {
+class ProductIdentifiers {
     
     // MARK: - Properties
     
-    let purchasedIdentifiersKey = "PurchasedIdentifiers"
-    var identifiers = [String]()
-    var purchasedIdentifiers: [String]!
+    /// List of all available product identifiers. Read from a configuration file
+    let identifiers: [String]
+    
+    /// Stored list of identifiers of purchased products
+    @StoredWithDefault (key: "PurchasedIdentifiers", defaultValue: []) private (set) var purchasedIdentifiers: [String]
     
     // MARK: - Initializer
     
-    override init() {
-        super.init()
-        
+    init() {
         if let path = Config.productIdsFilePath, let identifiers = NSArray(contentsOfFile: path) as? [String] {
             self.identifiers = identifiers
+        } else {
+            self.identifiers = []
         }
-        
-        self.purchasedIdentifiers = self.settingOrDefault(forKey: self.purchasedIdentifiersKey , defaultValue: [String]())
     }
     
     // MARK: - Public methods
     
+    /// Adds a new identifier to the list of purchased product identifiers.
+    /// If the identifier is already in the list, nothing will be added.
+    ///
+    /// - Parameter identifier: The identifier to add
     func add(purchasedIdentifier identifier: String) {
         if !self.purchasedIdentifiers.contains(identifier) {
             self.purchasedIdentifiers.append(identifier)
-            self.setSetting(forKey: self.purchasedIdentifiersKey, toValue: self.purchasedIdentifiers)
         }
     }
 }

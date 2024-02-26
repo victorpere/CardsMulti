@@ -82,6 +82,12 @@
 "connections"   = "Присоединены";
 "%d cards"      = "%d карт";
 
+"small"     = "Mаленький";
+"medium"    = "Средний";
+"large"     = "Большой";
+"xlarge"    = "Огромный";
+"custom"    = "Custom";
+
 // UIStrings
 
 "Error"                                     = "Ошибка";

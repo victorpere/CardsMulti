@@ -9,10 +9,16 @@ import SwiftUI
 
 struct TextFieldView: View {
     @Binding var text: String
-    var label: String
+    let label: String
+    
+    let doneAction: (() -> Void)
     
     var body: some View {
-        NavigationLink(destination: TextEditView(text: self.$text, label: self.label)) {
+        NavigationLink(destination: TextEditView(text: self.$text, label: self.label, trailingBarItem: {
+            Button("done".localized) {
+                self.doneAction()
+            }
+        })) {
             HStack {
                 Text(self.label)
                 Spacer()

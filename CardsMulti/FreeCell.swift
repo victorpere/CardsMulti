@@ -152,7 +152,7 @@ class FreeCell : GameScene {
             // conditions for adding cards to the foundations
             foundation.isSnappable = { (_ card) in
                 if let topFoundationCard = foundation.topCard {
-                    return topFoundationCard.card.suit == card.card.suit && (topFoundationCard.card.rank.rawValue + 1 == card.card.rank.rawValue || (topFoundationCard.card.rank == Rank.ace && card.card.rank == Rank.two))
+                    return topFoundationCard.card.suit == card.card.suit && (topFoundationCard.card.rank.rawValue + 1 == card.card.rank.rawValue)
                 }
                 
                 return card.card.rank == Rank.ace

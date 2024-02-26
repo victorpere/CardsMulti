@@ -8,7 +8,46 @@
 
 import GameplayKit
 
-class CardSpriteNode : SKSpriteNode {
+class CardSpriteNode : SKSpriteNode, Codable {
+    
+    // MARK: - Decode/Endcode
+    
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case card
+        case faceUp
+        case rotation
+        case position
+        case zPosition
+        case snap
+    }
+    
+    required convenience init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let name = try values.decode(String.self, forKey: .name)
+        let card = try values.decode(Card.self, forKey: .card)
+        let faceUp = try values.decode(Bool.self, forKey: .faceUp)
+        
+        self.init(card: card, name: name, faceUp: faceUp)
+        
+        self.zRotation = try values.decode(CGFloat.self, forKey: .rotation)
+        self.position = try values.decode(CGPoint.self, forKey: .position)
+        self.zPosition = try values.decode(CGFloat.self, forKey: .zPosition)
+        self.snapLocationName = try values.decode(String.self, forKey: .snap)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(self.name, forKey: .name)
+        try container.encode(self.card, forKey: .card)
+        try container.encode(self.faceUp, forKey: .faceUp)
+        try container.encode(self.zRotation, forKey: .rotation)
+        try container.encode(self.position, forKey: .position)
+        try container.encode(self.zPosition, forKey: .zPosition)
+        try container.encode(self.snapLocation?.name ?? "", forKey: .snap)
+    }
     
     // MARK: - Properties
     

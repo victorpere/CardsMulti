@@ -6,6 +6,8 @@
 //  Copyright © 2017 Victor. All rights reserved.
 //
 
+import SwiftUI
+
 enum Suit: Int, CaseIterable, Codable {
     case spades, hearts, diamonds, clubs
     var symbol: String {
@@ -30,6 +32,15 @@ enum Suit: Int, CaseIterable, Codable {
         }
     }
     
+    var uiColor: Color {
+        switch self.color {
+        case .black:
+            return Color.primary
+        case .red:
+            return Color.red
+        }
+    }
+    
     var unicode: String {
         switch self {
         case .spades:
@@ -37,7 +48,7 @@ enum Suit: Int, CaseIterable, Codable {
         case .hearts:
             return "1f0b"
         case .diamonds:
-            return "1f0d"
+            return "1f0c"
         case .clubs:
             return "1f0d"
         }
