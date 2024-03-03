@@ -11,6 +11,7 @@ import SwiftUI
 struct SettingsCardSizeView: View {
     @Binding var cardWidthsPerScreen: Float
     var screenWidth: Float
+    var editable: Bool
     
     @State private var cardWidth: Float = 0
     @State private var customSize = false
@@ -19,11 +20,12 @@ struct SettingsCardSizeView: View {
     private let maxCardWidth: Float
     private let uiImage = UIImage(named: "back")
     
-    init(cardWidthsPerScreen: Binding<Float>, screenWidth: Float) {
+    init(cardWidthsPerScreen: Binding<Float>, screenWidth: Float, editable: Bool) {
         self._cardWidthsPerScreen = cardWidthsPerScreen
         self.screenWidth = screenWidth
         self.minCardWidth = screenWidth / Config.maxCardWidthsPerScreen
         self.maxCardWidth = screenWidth / Config.minCardWidthsPerScreen
+        self.editable = editable
     }
     
     var body: some View {
@@ -37,19 +39,23 @@ struct SettingsCardSizeView: View {
                             .frame(width: CGFloat(self.cardWidth), height: uiImage.size.height * CGFloat(self.maxCardWidth) / uiImage.size.width)
                     }
                     
-                    Picker("" ,selection: self.$cardWidth.animation()) {
-                        ForEach (Config.presetCardWidthsPerScreen, id: \.self.value) { presetCardWidth in
-                            Text(presetCardWidth.key.localized).tag(self.screenWidth / presetCardWidth.value)
+                    if self.editable || !self.customSize {
+                        Picker("" ,selection: self.$cardWidth.animation()) {
+                            ForEach (Config.presetCardWidthsPerScreen, id: \.self.value) { presetCardWidth in
+                                Text(presetCardWidth.key.localized).tag(self.screenWidth / presetCardWidth.value)
+                            }
                         }
+                        .disabled(!self.editable)
+                        .padding([.top], 20)
+                        .pickerStyle(.segmented)
                     }
-                    .padding([.top], 20)
-                    .pickerStyle(.segmented)
                     
                     if self.customSize {
                         Slider(value: self.$cardWidth.animation(), in: self.minCardWidth...self.maxCardWidth)
+                            .disabled(!self.editable)
                             .padding([.leading,.trailing], 10)
                             .padding([.top], 40)
-                    } else {
+                    } else if self.editable {
                         Button("custom".localized) {
                             withAnimation() {
                                 self.customSize = true
