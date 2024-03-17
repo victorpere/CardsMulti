@@ -81,11 +81,13 @@ class Actions {
         return SKAction.sequence([popUp, popDown])
     }
     
-//    static func getCardFlipSound() -> SKAction {
+    static func getCardFlipSound() -> SKAction {
+        return SKAction()
 //        return SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false)
-//    }
-//    
-//    static func getCardMoveSound() -> SKAction {
+    }
+    
+    static func getCardMoveSound() -> SKAction {
+        return SKAction()
 //        return SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
-//    }
+    }
 }

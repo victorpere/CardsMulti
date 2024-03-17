@@ -85,8 +85,8 @@ class GameScene: GameSceneBase {
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
     
-    var moveSound = SKAction() // Actions.getCardMoveSound()
-    var flipSound = SKAction() // Actions.getCardFlipSound()
+    var moveSound = Actions.getCardMoveSound()
+    var flipSound = Actions.getCardFlipSound()
     
     var cutting = false
     var cutStartPosition: CGPoint!
