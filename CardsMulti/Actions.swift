@@ -82,11 +82,11 @@ class Actions {
     }
     
     static func getCardFlipSound() -> SKAction {
+        #if TEST
         return SKAction()
-    }
-    
-    static func getCardFlipSound2() -> SKAction {
+        #else
         return SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false)
+        #endif
     }
     
     static func getCardMoveSound() -> SKAction {
