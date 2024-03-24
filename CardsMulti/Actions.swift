@@ -81,12 +81,9 @@ class Actions {
         return SKAction.sequence([popUp, popDown])
     }
     
-    static func getCardFlipSound() -> SKAction {
-        #if TEST
+    static func getCardFlipSound() -> SKAction? {
         return SKAction()
-        #else
-        return SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false)
-        #endif
+//        return SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false)
     }
     
     static func getCardMoveSound() -> SKAction {

@@ -86,7 +86,7 @@ class GameScene: GameSceneBase {
     var forceTouchActivated = false
     
     var moveSound = Actions.getCardMoveSound()
-    var flipSound = Actions.getCardFlipSound()
+    var flipSound = SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false) // Actions.getCardFlipSound()
     
     var cutting = false
     var cutStartPosition: CGPoint!
