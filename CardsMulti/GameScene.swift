@@ -85,6 +85,7 @@ class GameScene: GameSceneBase {
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
     
+    var moveSound: SKAction
 //    var moveSound = Actions.getCardMoveSound()
 //    var flipSound = Actions.getCardFlipSound()
 //    let moveAudio = SKAudioNode(fileNamed: "card_slide.m4a")
@@ -164,6 +165,8 @@ class GameScene: GameSceneBase {
         self.margin = CGFloat(self.settings.margin)
         
         self.gameState = GameState(gameType)
+        
+        self.moveSound = SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
         
         super.init(size: size)
         
