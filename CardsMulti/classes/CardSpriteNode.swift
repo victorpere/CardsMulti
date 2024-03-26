@@ -99,6 +99,9 @@ class CardSpriteNode : SKSpriteNode, Codable {
     
     var settings: Settings
     
+//    let moveAudio = SKAudioNode(fileNamed: "card_slide.m4a")
+//    let flipAudio = SKAudioNode(fileNamed: "card_flip.m4ax")
+    
     // MARK: - Computed properties
     
     var cardWidth: CGFloat { return CardSpriteNode.cardWidthFullSizePixels * self.cardScale }
@@ -193,6 +196,14 @@ class CardSpriteNode : SKSpriteNode, Codable {
         self.card = card
         
         super.init(texture: faceUp ? self.frontTexture : self.backTexture, color: .clear, size: (self.frontTexture?.size())!)
+        
+//        self.moveAudio.autoplayLooped = false
+//        self.moveAudio.isPositional = true
+//        self.flipAudio.autoplayLooped = false
+//        self.flipAudio.isPositional = true
+        
+//        self.addChild(self.moveAudio)
+//        self.addChild(self.flipAudio)
 
         self.name = name
         self.cardScale = self.getScale()
