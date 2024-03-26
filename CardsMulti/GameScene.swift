@@ -85,8 +85,10 @@ class GameScene: GameSceneBase {
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
     
-    var moveSound = Actions.getCardMoveSound()
-    var flipSound = SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false) // Actions.getCardFlipSound()
+//    var moveSound = Actions.getCardMoveSound()
+//    var flipSound = Actions.getCardFlipSound()
+    let moveAudio = SKAudioNode(fileNamed: "card_slide.m4a")
+    let flipAudio = SKAudioNode(fileNamed: "card_flip.m4a")
     
     var cutting = false
     var cutStartPosition: CGPoint!
@@ -462,6 +464,8 @@ class GameScene: GameSceneBase {
         connectionLabel.position = CGPoint(x: connectionLabel.frame.width / 2, y: self.frame.height - connectionLabel.frame.height / 2 - border)
         connectionLabel.zPosition = 100
         self.initDividerLine(hidden: false)
+        
+        self.addChild(self.flipAudio)
     }
     
     /**
@@ -1251,13 +1255,15 @@ extension GameScene : CardSpriteNodeDelegate {
     
     func makeMoveSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-            self.run(self.moveSound)
+            self.moveAudio.run(SKAction.play())
+//            self.run(self.moveSound)
         }
     }
     
     func makeFlipSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-            self.run(self.flipSound)
+//            self.flipAudio.run(SKAction.play())
+//            self.run(self.flipSound)
         }
     }
     
