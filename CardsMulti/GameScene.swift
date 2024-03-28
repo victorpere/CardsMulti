@@ -166,9 +166,13 @@ class GameScene: GameSceneBase {
         
         self.gameState = GameState(gameType)
         
-        self.moveSound = SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
+        self.moveSound = SKAction() // .playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
         
         super.init(size: size)
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.moveSound = SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
+        }
         
         if (!self.gameConfig.canChangeCardSize && self.settings.cardWidthsPerScreen != self.gameConfig.defaultSettings.cardWidthsPerScreen) {
             self.settings.cardWidthsPerScreen = self.gameConfig.defaultSettings.cardWidthsPerScreen
