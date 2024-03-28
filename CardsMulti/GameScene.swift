@@ -172,6 +172,7 @@ class GameScene: GameSceneBase {
         
         DispatchQueue.global(qos: .userInitiated).async {
             self.moveSound = SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
+            self.run(self.moveSound)
         }
         
         if (!self.gameConfig.canChangeCardSize && self.settings.cardWidthsPerScreen != self.gameConfig.defaultSettings.cardWidthsPerScreen) {
