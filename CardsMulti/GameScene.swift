@@ -85,11 +85,8 @@ class GameScene: GameSceneBase {
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
     
-    var moveSound: SKAction
-//    var moveSound = Actions.getCardMoveSound()
-//    var flipSound = Actions.getCardFlipSound()
-//    let moveAudio = SKAudioNode(fileNamed: "card_slide.m4a")
-//    let flipAudio = SKAudioNode(fileNamed: "card_flip.m4a")
+    var moveSound = SKAction()
+    var flipSound = SKAction()
     
     var cutting = false
     var cutStartPosition: CGPoint!
@@ -166,13 +163,11 @@ class GameScene: GameSceneBase {
         
         self.gameState = GameState(gameType)
         
-        self.moveSound = SKAction() // .playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
-        
         super.init(size: size)
         
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInitiated).sync {
             self.moveSound = SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
-            self.run(self.moveSound)
+            self.flipSound = SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false)
         }
         
         if (!self.gameConfig.canChangeCardSize && self.settings.cardWidthsPerScreen != self.gameConfig.defaultSettings.cardWidthsPerScreen) {
@@ -1261,15 +1256,17 @@ extension GameScene : CardSpriteNodeDelegate {
     
     func makeMoveSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-//            self.moveAudio.run(SKAction.play())
-//            self.run(self.moveSound)
+            DispatchQueue.global(qos: .userInitiated).sync {
+                self.run(self.moveSound)
+            }
         }
     }
     
     func makeFlipSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-//            self.flipAudio.run(SKAction.play())
-//            self.run(self.flipSound)
+            DispatchQueue.global(qos: .userInitiated).sync {
+                self.run(self.flipSound)
+            }
         }
     }
     
