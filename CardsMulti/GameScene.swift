@@ -165,7 +165,7 @@ class GameScene: GameSceneBase {
         
         super.init(size: size)
         
-        DispatchQueue.global(qos: .userInitiated).sync {
+        DispatchQueue.global(qos: .userInitiated).async {
             self.moveSound = SKAction.playSoundFileNamed("card_slide.m4a", waitForCompletion: false)
             self.flipSound = SKAction.playSoundFileNamed("card_flip.m4a", waitForCompletion: false)
         }
