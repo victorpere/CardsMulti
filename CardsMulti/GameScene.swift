@@ -1256,7 +1256,7 @@ extension GameScene : CardSpriteNodeDelegate {
     
     func makeMoveSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-            DispatchQueue.global(qos: .userInitiated).sync {
+            DispatchQueue.main.async {
                 self.run(self.moveSound)
             }
         }
@@ -1264,7 +1264,7 @@ extension GameScene : CardSpriteNodeDelegate {
     
     func makeFlipSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-            DispatchQueue.global(qos: .userInitiated).sync {
+            DispatchQueue.main.async {
                 self.run(self.flipSound)
             }
         }
