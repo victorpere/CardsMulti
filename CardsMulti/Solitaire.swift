@@ -129,6 +129,7 @@ class Solitaire : GameScene {
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
             foundation.yOffset = CGFloat(self.verticalHeight)
+            foundation.unsnapWhenMoved = false
             foundation.snapBack = true
             
             foundation.doubleTapAction = { (_) in }
@@ -145,6 +146,14 @@ class Solitaire : GameScene {
             // top card in the foudation is movable
             foundation.isMovable = { (_ card) in
                 return card == foundation.topCard
+            }
+            
+            foundation.selectedCardsWhenTouched = { (_ card) in
+                if card == foundation.topCard {
+                    return [card]
+                }
+                
+                return []
             }
             
             foundation.snapAction = { (_) in
