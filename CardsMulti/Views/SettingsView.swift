@@ -81,42 +81,43 @@ struct SettingsView: View {
                         }
                         
                         if let gameConfig = self.selectedGameConfig {
-                            if gameConfig.canChangeDeck {
-                                // TODO: customize deck view
-                                NavigationLink(destination: {
-                                    SettingsDeckView(selectedDeck: self.$selectedSettings.deck)
-                                        .navigationTitle("deck".localized)
-                                        .navigationBarTitleDisplayMode(.inline)
-                                        .navigationBarItems(trailing: Button("done".localized) {
-                                            self.dismiss()
-                                            self.didFinish()
-                                        })
-                                }) {
-                                    HStack {
-                                        Text("deck".localized)
-                                        Spacer()
-                                        Text(self.selectedSettings.deck.name.localized).foregroundColor(.secondary)
+                            NavigationLink(destination: {
+                                SettingsDeckView(selectedDeck: self.$selectedSettings.deck, editable: gameConfig.canChangeDeck)
+                                    .navigationTitle("deck".localized)
+                                    .navigationBarTitleDisplayMode(.inline)
+                                    .navigationBarItems(trailing: Button("done".localized) {
+                                        self.dismiss()
+                                        self.didFinish()
+                                    })
+                            }) {
+                                HStack {
+                                    Text("deck".localized)
+                                    if !gameConfig.canChangeDeck {
+                                        Image(systemName: "lock")
                                     }
+                                    Spacer()
+                                    Text(self.selectedSettings.deck.name.localized).foregroundColor(.secondary)
                                 }
                             }
-                            
-                            if gameConfig.canChangeCardSize {
-                                NavigationLink(destination: {
-                                    GeometryReader { geo in
-                                        SettingsCardSizeView(cardWidthsPerScreen: self.$selectedSettings.cardWidthsPerScreen, screenWidth: Float(geo.size.width))
-                                    }.navigationTitle("card size".localized)
-                                        .navigationBarTitleDisplayMode(.inline)
-                                        .navigationBarItems(trailing: Button("done".localized) {
-                                            dismiss()
-                                            self.didFinish()
-                                        })
-                                }) {
-                                    HStack {
-                                        Text("card size".localized)
-                                        Spacer()
-                                        Text((self.selectedSettings.presetCardSize ?? "custom").localized)
-                                            .foregroundColor(.secondary)
+
+                            NavigationLink(destination: {
+                                GeometryReader { geo in
+                                    SettingsCardSizeView(cardWidthsPerScreen: self.$selectedSettings.cardWidthsPerScreen, screenWidth: Float(geo.size.width), editable: gameConfig.canChangeCardSize)
+                                }.navigationTitle("card size".localized)
+                                    .navigationBarTitleDisplayMode(.inline)
+                                    .navigationBarItems(trailing: Button("done".localized) {
+                                        dismiss()
+                                        self.didFinish()
+                                    })
+                            }) {
+                                HStack {
+                                    Text("card size".localized)
+                                    if !gameConfig.canChangeCardSize {
+                                        Image(systemName: "lock")
                                     }
+                                    Spacer()
+                                    Text((self.selectedSettings.presetCardSize ?? "custom").localized)
+                                        .foregroundColor(.secondary)
                                 }
                             }
                         }

@@ -85,8 +85,8 @@ class GameScene: GameSceneBase {
     /// Whether force touch or a long press has been activated
     var forceTouchActivated = false
     
-    var moveSound = Actions.getCardMoveSound()
-    var flipSound = Actions.getCardFlipSound()
+    var moveSound = SKAction()
+    var flipSound = SKAction()
     
     var cutting = false
     var cutStartPosition: CGPoint!
@@ -164,6 +164,11 @@ class GameScene: GameSceneBase {
         self.gameState = GameState(gameType)
         
         super.init(size: size)
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.moveSound = Actions.getCardMoveSound()
+            self.flipSound = Actions.getCardFlipSound()
+        }
         
         if (!self.gameConfig.canChangeCardSize && self.settings.cardWidthsPerScreen != self.gameConfig.defaultSettings.cardWidthsPerScreen) {
             self.settings.cardWidthsPerScreen = self.gameConfig.defaultSettings.cardWidthsPerScreen
@@ -402,7 +407,7 @@ class GameScene: GameSceneBase {
                         let snapLocation = snapLocations.first
                         let snapShouldFlip = snapLocation?.shouldFlip
                         snapLocation?.shouldFlip = false
-                        snapLocation?.snap(card)
+                        snapLocation?.snap([card])
                         snapLocation?.shouldFlip = snapShouldFlip ?? false
                     }
                 }
@@ -1251,13 +1256,17 @@ extension GameScene : CardSpriteNodeDelegate {
     
     func makeMoveSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-            self.run(self.moveSound)
+            DispatchQueue.global(qos: .userInteractive).async {
+                self.run(self.moveSound)
+            }
         }
     }
     
     func makeFlipSound() {
         if StoredSettings.instance.soundOn && !self.hasActions() {
-            self.run(self.flipSound)
+            DispatchQueue.global(qos: .userInteractive).async {
+                self.run(self.flipSound)
+            }
         }
     }
     
@@ -1282,8 +1291,10 @@ extension GameScene : CardSpriteNodeDelegate {
                     }
                 }
                 
-                if let snapBackToLocation = bottomCard.snapBackToLocation {
-                    if !snappedToNewLocation && snapBackToLocation.snapBack {                    
+                if !snappedToNewLocation {
+                    if let snapLocation = bottomCard.snapLocation {
+                        snapLocation.snap(cardNodes)
+                    } else if let snapBackToLocation = bottomCard.snapBackToLocation {
                         snapBackToLocation.snap(cardNodes)
                     }
                 }

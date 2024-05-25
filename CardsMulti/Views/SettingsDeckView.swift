@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SettingsDeckView: View {
     @Binding var selectedDeck: CardDeck
+    var editable: Bool
     
     @State private var newDeckAlert = false
     
@@ -19,10 +20,14 @@ struct SettingsDeckView: View {
         Form {
             Section {
                 List {
-                    ForEach(CardDecks.instance.decks, id: \.self.name) { deck in
+                    ForEach(CardDecks.instance.decks.filter { $0 == self.selectedDeck || self.editable }, id: \.self.name) { deck in
                         PickerCellView(value: deck, selectedValue: self.$selectedDeck) {
                             Text(deck.name.localized)
+                            if !deck.editable {
+                                Image(systemName: "lock")
+                            }
                         }
+                        .disabled(!self.editable)
                         .swipeActions() {
                             if deck.editable {
                                 Button(role: .destructive) {
@@ -38,20 +43,22 @@ struct SettingsDeckView: View {
                     }
                 }
                 
-                Button("add new".localized) {
-                    self.newDeckAlert = true
-                }
-                .alert("add new deck", isPresented: self.$newDeckAlert, actions: {
-                    TextField("deck name", text: $temp)
-                    Button("ok".localized, action: {
-                        let newDeck = CardDeck(cards: Card.allCards, name: temp, editable: true)
-                        CardDecks.instance.save(deck: newDeck)
-                        self.selectedDeck = newDeck
+                if self.editable {
+                    Button("add new".localized) {
+                        self.newDeckAlert = true
+                    }
+                    .alert("add new deck", isPresented: self.$newDeckAlert, actions: {
+                        TextField("deck name", text: $temp)
+                        Button("ok".localized, action: {
+                            let newDeck = CardDeck(cards: Card.allCards, name: temp, editable: true)
+                            CardDecks.instance.save(deck: newDeck)
+                            self.selectedDeck = newDeck
+                        })
+                        Button("cancel".localized, role: .cancel, action: {})
+                    }, message: {
+                        Text("deck name")
                     })
-                    Button("cancel".localized, role: .cancel, action: {})
-                }, message: {
-                    Text("deck name")
-                })
+                }
             }
             
             Section {

@@ -55,7 +55,7 @@ class Solitaire : GameScene {
                     if let snapLocation = card.snapLocation {
                         snapLocation.unSnap(cards: [card])
                     }
-                    foundation.snap(card)
+                    foundation.snap([card])
                     return
                 }
             }
@@ -129,7 +129,8 @@ class Solitaire : GameScene {
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
             foundation.yOffset = CGFloat(self.verticalHeight)
-            foundation.snapBack = true
+            foundation.unsnapWhenMoved = false
+            //foundation.snapBack = true
             
             foundation.doubleTapAction = { (_) in }
             
@@ -147,7 +148,15 @@ class Solitaire : GameScene {
                 return card == foundation.topCard
             }
             
-            foundation.snapAction = { (_) in
+            foundation.selectedCardsWhenTouched = { (_ card) in
+                if card == foundation.topCard {
+                    return [card]
+                }
+                
+                return []
+            }
+            
+            foundation.snapAction = { (_ card) in
                 if let score = self.scores.first {
                     score.score += 3
                     self.updateScoreLabel()
@@ -230,7 +239,7 @@ class Solitaire : GameScene {
                 for foundation in self.foundations {
                     if foundation.isSnappable(topCard) {
                         wastePile.unSnap(cards: [topCard])
-                        foundation.snap(topCard)
+                        foundation.snap([topCard])
                         return
                     }
                 }
@@ -269,7 +278,7 @@ class Solitaire : GameScene {
                 for foundation in self.foundations {
                     if foundation.isSnappable(topCard) {
                         pile.unSnap(cards: [topCard])
-                        foundation.snap(topCard)
+                        foundation.snap([topCard])
                         return
                     }
                 }
@@ -316,7 +325,7 @@ class Solitaire : GameScene {
                     for foundation in self.foundations {
                         if foundation.isSnappable(topCard) {
                             tableau.unSnap(cards: [topCard])
-                            foundation.snap(topCard)
+                            foundation.snap([topCard])
                             return
                         }
                     }
@@ -397,7 +406,7 @@ class Solitaire : GameScene {
                                 tableauLocation.faceUp = true
                             }
                             topCard.isHidden = false
-                            tableauLocation.snap(topCard)
+                            tableauLocation.snap([topCard])
                             usleep(useconds_t(self.dealDuration * 1000000))
                         }
                     }
@@ -406,7 +415,7 @@ class Solitaire : GameScene {
             
             for card in sortedCards {
                 card.isHidden = false
-                self.stockPile.snap(card)
+                self.stockPile.snap([card])
             }
         }
         
@@ -450,7 +459,7 @@ class Solitaire : GameScene {
                         for foundation in self.foundations {
                             if foundation.isSnappable(topCard) {
                                 tableau.unSnap(cards: [topCard])
-                                foundation.snap(topCard)
+                                foundation.snap([topCard])
                                 usleep(useconds_t(self.dealDuration * 1000000))
                                 done = false
                                 break
@@ -463,7 +472,7 @@ class Solitaire : GameScene {
                     for foundation in self.foundations {
                         if foundation.isSnappable(topCard) {
                             self.playPile.unSnap(cards: [topCard])
-                            foundation.snap(topCard)
+                            foundation.snap([topCard])
                             usleep(useconds_t(self.dealDuration * 1000000))
                             done = false
                             break
@@ -475,7 +484,7 @@ class Solitaire : GameScene {
                     for foundation in self.foundations {
                         if foundation.isSnappable(topCard) {
                             self.wastePile.unSnap(cards: [topCard])
-                            foundation.snap(topCard)
+                            foundation.snap([topCard])
                             usleep(useconds_t(self.dealDuration * 1000000))
                             done = false
                             break

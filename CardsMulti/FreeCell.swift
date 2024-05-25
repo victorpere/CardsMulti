@@ -52,7 +52,7 @@ class FreeCell : GameScene {
                     if let snapLocation = card.snapLocation {
                         snapLocation.unSnap(cards: [card])
                     }
-                    foundation.snap(card)
+                    foundation.snap([card])
                     return
                 }
             }
@@ -122,7 +122,7 @@ class FreeCell : GameScene {
                     for foundation in self.foundations {
                         if foundation.isSnappable(topCard) {
                             cell.unSnap(cards: [topCard])
-                            foundation.snap(topCard)
+                            foundation.snap([topCard])
                             return
                         }
                     }
@@ -145,6 +145,7 @@ class FreeCell : GameScene {
             foundation.name = "Foundation \(col)"
             foundation.xOffset = CGFloat(self.verticalHeight)
             foundation.yOffset = CGFloat(self.verticalHeight)
+            foundation.unsnapWhenMoved = false
             foundation.snapBack = true
             
             foundation.doubleTapAction = { (_) in }
@@ -158,9 +159,17 @@ class FreeCell : GameScene {
                 return card.card.rank == Rank.ace
             }
             
-            // top car in the foudation is movable
+            // top card in the foudation is movable
             foundation.isMovable = { (_ card) in
                 return card == foundation.topCard
+            }
+            
+            foundation.selectedCardsWhenTouched = { (_ card) in
+                if card == foundation.topCard {
+                    return [card]
+                }
+                
+                return []
             }
             
             self.snapLocations.append(foundation)
@@ -198,7 +207,7 @@ class FreeCell : GameScene {
                     for foundation in self.foundations {
                         if foundation.isSnappable(topCard) {
                             tableau.unSnap(cards: [topCard])
-                            foundation.snap(topCard)
+                            foundation.snap([topCard])
                             return
                         }
                     }
@@ -308,7 +317,7 @@ class FreeCell : GameScene {
 
                     if let topCard = sortedCards.popLast() {
                         topCard.isHidden = false
-                        tableauLocation.snap(topCard)
+                        tableauLocation.snap([topCard])
                         usleep(useconds_t(self.dealDuration * 1000000))
                     }
 
@@ -383,7 +392,7 @@ class FreeCell : GameScene {
                         for foundation in self.foundations {
                             if foundation.isSnappable(topCard) {
                                 cell.unSnap(cards: [topCard])
-                                foundation.snap(topCard)
+                                foundation.snap([topCard])
                                 usleep(useconds_t(self.dealDuration * 1000000))
                                 done = false
                                 break
@@ -397,7 +406,7 @@ class FreeCell : GameScene {
                         for foundation in self.foundations {
                             if foundation.isSnappable(topCard) {
                                 tableau.unSnap(cards: [topCard])
-                                foundation.snap(topCard)
+                                foundation.snap([topCard])
                                 usleep(useconds_t(self.dealDuration * 1000000))
                                 done = false
                                 break
