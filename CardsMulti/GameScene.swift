@@ -407,7 +407,7 @@ class GameScene: GameSceneBase {
                         let snapLocation = snapLocations.first
                         let snapShouldFlip = snapLocation?.shouldFlip
                         snapLocation?.shouldFlip = false
-                        snapLocation?.snap(card)
+                        snapLocation?.snap([card])
                         snapLocation?.shouldFlip = snapShouldFlip ?? false
                     }
                 }
@@ -1291,8 +1291,10 @@ extension GameScene : CardSpriteNodeDelegate {
                     }
                 }
                 
-                if let snapBackToLocation = bottomCard.snapBackToLocation {
-                    if !snappedToNewLocation && snapBackToLocation.snapBack {                    
+                if !snappedToNewLocation {
+                    if let snapLocation = bottomCard.snapLocation {
+                        snapLocation.snap(cardNodes)
+                    } else if let snapBackToLocation = bottomCard.snapBackToLocation {
                         snapBackToLocation.snap(cardNodes)
                     }
                 }

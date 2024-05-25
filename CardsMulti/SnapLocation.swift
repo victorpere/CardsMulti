@@ -95,6 +95,9 @@ class SnapLocation {
     /// Action to perform when a card is snapped. Default is nothing
     var snapAction: (CardSpriteNode) -> Void = { (_) in }
     
+    /// Whether to execute snapAction when snapping a card that is already snapped to the snap location
+    let executeSnapActionIfCardAlreadySnapped = false
+    
     /// Action to perform on cards when they are unsnapped. Default is nothing
     var unsnapAction: ([CardSpriteNode]) -> Void = { (_) in }
     
@@ -205,59 +208,16 @@ class SnapLocation {
     }
     
     /**
-     Snaps the specified card to this location
-     
-     - parameter cardNode: the card node to snap
-     */
-    func snap(_ cardNode: CardSpriteNode) {
-        // remove this card if it is already snapped
-        if let cardNodeIndex = self.snappedCards.lastIndex(of: cardNode) {
-            self.snappedCards.remove(at: cardNodeIndex)
-        }
-        
-        // determine location for the new card
-        let xOffset = self.xOffset * CGFloat(self.snappedCards.count)
-        let yOffset = self.yOffset * CGFloat(self.snappedCards.count)
-        let newLocation = CGPoint(x: self.location.x + xOffset, y: self.location.y + yOffset)
-        
-        // determine rotation if it needs to be changed
-        let rotationOffset = self.shouldRotate ? self.rotationOffset * CGFloat(self.snappedCards.count) : 0
-        let newRotation = self.shouldRotate ? self.rotation + rotationOffset : cardNode.zRotation
-        
-        // determine if the card needs to be flipped
-        let newFaceUp = self.shouldFlip ? self.faceUp : cardNode.faceUp
-        
-        // determine whether the card needs to go on the top or bottom of the pile
-        if self.putOnTop {
-            cardNode.moveToFront()
-        } else {
-            cardNode.moveToBack()
-        }
-        
-        // perform the movement
-        cardNode.moveAndFlip(to: newLocation, rotateToAngle: newRotation, faceUp: newFaceUp, duration: self.duration, sendPosition: true, animateReceiver: false)
-        
-        self.snappedCards.append(cardNode)
-        cardNode.snapLocation = self
-        cardNode.snapBackToLocation = nil
-        
-        self.snapAction(cardNode)
-        
-        print("added to snapped \(self.name)")
-        Global.displayCards(self.snappedCards)
-    }
-    
-    /**
      Snaps multiple cards to this location
      
      - parameter cardNodes: array of cards to snap
      */
     func snap(_ cardNodes: [CardSpriteNode]) {
+        let currentlySnapped = Array(self.snappedCards)
         self.removeFromSnapped(cardNodes)
-        
         let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
         for card in sortedCards {
-            self.snap(card)
+            self.snap(card, currentlySnappedCards: currentlySnapped)
         }
     }
     
@@ -269,13 +229,13 @@ class SnapLocation {
         - delay: delay in seconds between snapping each card
     */
     func snap(_ cardNodes: [CardSpriteNode], withDelay delay: Double) {
+        let currentlySnapped = Array(self.snappedCards)
         self.removeFromSnapped(cardNodes)
-        
         let sortedCards = cardNodes.sorted { $0.zPosition < $1.zPosition }
         DispatchQueue.global(qos: .default).async {
             for card in sortedCards {
                 DispatchQueue.main.async {
-                    self.snap(card)
+                    self.snap(card, currentlySnappedCards: currentlySnapped)
                 }
                 
                 usleep(useconds_t(delay * 1000000))
@@ -331,8 +291,60 @@ class SnapLocation {
         return self.snappedCards.filter { self.isMovable($0) }
     }
     
-    // MARK: - Private methods
+    /**
+     Indicates whether a card is snapped to the snap location
+     
+     - parameter cardNode: card to check
+     - returns: True if the card is snapped to the snap location
+     */
+    func contains(card cardNode: CardSpriteNode) -> Bool {
+        return self.snappedCards.contains { $0.card.symbol == cardNode.card.symbol }
+    }
     
+    // MARK: - Private methods
+
+    /**
+     Snaps the specified card to this location
+     
+     - parameter cardNode: the card node to snap
+     */
+    private func snap(_ cardNode: CardSpriteNode, currentlySnappedCards: [CardSpriteNode]) {
+        let cardAlreadySnapped = currentlySnappedCards.contains(cardNode)
+        
+        // determine location for the new card
+        let xOffset = self.xOffset * CGFloat(self.snappedCards.count)
+        let yOffset = self.yOffset * CGFloat(self.snappedCards.count)
+        let newLocation = CGPoint(x: self.location.x + xOffset, y: self.location.y + yOffset)
+        
+        // determine rotation if it needs to be changed
+        let rotationOffset = self.shouldRotate ? self.rotationOffset * CGFloat(self.snappedCards.count) : 0
+        let newRotation = self.shouldRotate ? self.rotation + rotationOffset : cardNode.zRotation
+        
+        // determine if the card needs to be flipped
+        let newFaceUp = self.shouldFlip ? self.faceUp : cardNode.faceUp
+        
+        // determine whether the card needs to go on the top or bottom of the pile
+        if self.putOnTop {
+            cardNode.moveToFront()
+        } else {
+            cardNode.moveToBack()
+        }
+        
+        // perform the movement
+        cardNode.moveAndFlip(to: newLocation, rotateToAngle: newRotation, faceUp: newFaceUp, duration: self.duration, sendPosition: true, animateReceiver: false)
+        
+        self.snappedCards.append(cardNode)
+        cardNode.snapLocation = self
+        cardNode.snapBackToLocation = nil
+        
+        if self.executeSnapActionIfCardAlreadySnapped || !cardAlreadySnapped {
+            self.snapAction(cardNode)
+        }
+        
+        print("added to snapped \(self.name)")
+        Global.displayCards(self.snappedCards)
+    }
+
     /**
      Removes the specified set of cards from the array of snapped cards
      
