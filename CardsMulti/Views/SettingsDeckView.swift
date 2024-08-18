@@ -73,6 +73,8 @@ struct SettingsDeckView: View {
                             }
                         }
                     }
+                    
+                    .frame(maxWidth: .infinity)
                 } else {
                     // Fallback on earlier versions
                 }

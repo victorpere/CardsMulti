@@ -43,6 +43,7 @@ struct CardSelectView: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity)
     }
 }
 
