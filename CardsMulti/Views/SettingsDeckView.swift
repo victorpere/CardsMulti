@@ -63,16 +63,18 @@ struct SettingsDeckView: View {
             
             Section {
                 if #available(iOS 16.0, *) {
-                    Grid {
-                        ForEach(Rank.allCases, id: \.self) { rank in
-                            GridRow {
-                                ForEach(Suit.allCases, id: \.self) { suit in
+                    Grid(horizontalSpacing: 2, verticalSpacing: 8) {
+                        ForEach(Suit.allCases, id: \.self) { suit in
+                            GridRow(alignment: .center) {
+                                ForEach(Rank.allCases, id: \.self) { rank in
                                     let card = Card(suit: suit, rank: rank)
                                     CardSelectView(deck: $selectedDeck, card: card)
                                 }
                             }
                         }
                     }
+                    .frame(maxWidth: .infinity)
+
                 } else {
                     // Fallback on earlier versions
                 }
