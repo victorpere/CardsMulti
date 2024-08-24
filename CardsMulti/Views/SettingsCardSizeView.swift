@@ -18,7 +18,8 @@ struct SettingsCardSizeView: View {
     
     private let minCardWidth: Float
     private let maxCardWidth: Float
-    private let uiImage = UIImage(named: "back")
+    private let uiImageBack = UIImage(named: "back")
+    private let uiImageFront = UIImage(named: "queen_of_hearts")
     
     init(cardWidthsPerScreen: Binding<Float>, screenWidth: Float, editable: Bool) {
         self._cardWidthsPerScreen = cardWidthsPerScreen
@@ -32,11 +33,20 @@ struct SettingsCardSizeView: View {
         Form {
             List {
                 VStack() {
-                    if let uiImage = self.uiImage {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: CGFloat(self.cardWidth), height: uiImage.size.height * CGFloat(self.maxCardWidth) / uiImage.size.width)
+                    HStack() {
+                        if let uiImageBack = self.uiImageBack, let uiImageFront = self.uiImageFront {
+                            let imageHeight = uiImageBack.size.height * CGFloat(self.maxCardWidth) / uiImageBack.size.width
+                            
+                            Image(uiImage: uiImageBack)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: CGFloat(self.cardWidth), height: imageHeight)
+                            
+                            Image(uiImage: uiImageFront)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: CGFloat(self.cardWidth), height: imageHeight)
+                        }
                     }
                     
                     if self.editable || !self.customSize {
