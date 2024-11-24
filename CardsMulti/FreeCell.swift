@@ -352,7 +352,8 @@ class FreeCell : GameScene {
     override func updateScoreLabel() {
         if let winCount = self.scores.first(where: { $0.name == "WinCount" }),
            let gameCount = self.scores.first(where: { $0.name == "GameCount" }) {
-            self.scoreLabel.text = "\(winCount.scoreText) / \(gameCount.scoreText)"
+            let winPercentage = gameCount.score == 0 ? "0.00" : String(format: "%.2f", (winCount.score / gameCount.score) * 100)
+            self.scoreLabel.text = "\(winCount.scoreText) / \(gameCount.scoreText)  \(winPercentage)%"
         } else {
             self.scoreLabel.text = ""
         }
