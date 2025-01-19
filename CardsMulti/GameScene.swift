@@ -386,6 +386,11 @@ class GameScene: GameSceneBase {
         }
     }
     
+    func undo() {
+        self.gameState.undo()
+        self.resetGame(sync: true, loadSaved: true)
+    }
+    
     /**
      Load cards from a saved state or start over with a new deck
      

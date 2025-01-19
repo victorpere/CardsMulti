@@ -20,10 +20,6 @@ class GameState {
     private var previousSceneStates: [SceneState] = []
     
     @StoredEncodedWithDefault var sceneState: SceneState
-    
-    
-//    @StoredEncodedWithDefault var cardNodes: [CardSpriteNode]
-//    @StoredEncodedWithDefault var scores: [Score]
     @StoredValue (key: "gameId") var gameId: String?
     
     // MARK: - Computed properties
@@ -33,6 +29,10 @@ class GameState {
             return String(gameTypeId)
         }
         return ""
+    }
+    
+    var undoAvailable: Bool {
+        return self.previousSceneStates.count > 0
     }
     
     // MARK: - Initializers
@@ -63,6 +63,13 @@ class GameState {
     
     // MARK: - Public methods
     
+    /**
+     Save cards an scores to the current game state
+     
+     - parameters:
+        - cardNodes: cards to save
+        - scores: scores to save
+     */
     func save(cardNodes: [CardSpriteNode], scores: [Score]) {
         let previousSceneState = self.sceneState
         
@@ -71,9 +78,19 @@ class GameState {
         self.sceneState = SceneState(cardNodes: cardNodes, scores: scores)
     }
     
+    /**
+     Revert to the previous game state
+     */
     func undo() {
         if self.previousSceneStates.count > 0, let previousSceneState = self.previousSceneStates.popLast() {
             self.sceneState = previousSceneState
         }
+    }
+    
+    /**
+     Delete previous states
+     */
+    func resetUndo() {
+        self.previousSceneStates = []
     }
 }
