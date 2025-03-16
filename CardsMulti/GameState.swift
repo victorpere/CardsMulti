@@ -70,10 +70,14 @@ class GameState {
         - cardNodes: cards to save
         - scores: scores to save
      */
-    func save(cardNodes: [CardSpriteNode], scores: [Score]) {
-        let previousSceneState = self.sceneState
+    func save(cardNodes: [CardSpriteNode], scores: [Score], clearUndo: Bool = false, saveToUndo: Bool = true) {
+        if clearUndo {
+            self.previousSceneStates = []
+        }
         
-        self.previousSceneStates.append(previousSceneState)
+        if saveToUndo {
+            self.previousSceneStates.append(self.sceneState)
+        }
         
         self.sceneState = SceneState(cardNodes: cardNodes, scores: scores)
     }
@@ -87,10 +91,7 @@ class GameState {
         }
     }
     
-    /**
-     Delete previous states
-     */
-    func resetUndo() {
+    func clearUndo() {
         self.previousSceneStates = []
     }
 }
