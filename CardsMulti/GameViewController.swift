@@ -178,7 +178,6 @@ class GameViewController: UIViewController {
     }
 
     override var prefersStatusBarHidden: Bool {
-        print("Device: \(UIDevice.current.identifier)")
         return UIDevice.current.hasSquaredCorners
     }
 
