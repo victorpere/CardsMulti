@@ -46,7 +46,7 @@ class CardSpriteNode : SKSpriteNode, Codable {
         try container.encode(self.zRotation, forKey: .rotation)
         try container.encode(self.position, forKey: .position)
         try container.encode(self.zPosition, forKey: .zPosition)
-        try container.encode(self.snapLocation?.name ?? "", forKey: .snap)
+        try container.encode(self.snapLocation?.name ?? self.snapLocationName ?? "", forKey: .snap)
     }
     
     // MARK: - Properties

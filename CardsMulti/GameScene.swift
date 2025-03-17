@@ -382,9 +382,13 @@ class GameScene: GameSceneBase {
      */
     func saveGame() {
         DispatchQueue.global(qos: .background).async {
-            self.gameState.cardNodes = self.allCards
-            self.gameState.scores = self.scores
+            self.gameState.save(cardNodes: self.allCards, scores: self.scores)
         }
+    }
+    
+    func undo() {
+        self.gameState.undo()
+        self.resetGame(sync: true, loadSaved: true)
     }
     
     /**
@@ -394,7 +398,7 @@ class GameScene: GameSceneBase {
      */
     func loadCards(fromSaved loadSaved: Bool, sync: Bool = false) {
         let continueGameType = StoredSettings.instance.game == self.gameType.rawValue
-        let savedCards = self.gameState.cardNodes
+        let savedCards = self.gameState.sceneState.cardNodes
 
         if continueGameType && loadSaved && savedCards.count > 0 {
             self.allCards = savedCards
@@ -425,7 +429,7 @@ class GameScene: GameSceneBase {
      Loads game scores from saved state
      */
     func loadScores() {
-        let savedScores = self.gameState.scores
+        let savedScores = self.gameState.sceneState.scores
 
         if savedScores.count > 0 {
             self.scores = savedScores

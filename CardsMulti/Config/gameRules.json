@@ -24,20 +24,15 @@
                 },
                 {
                     "name": "foundation_1",
+                    "unsnapWhenMoved": false,
                     "snapBack": true,
-                    "cards": [
-                        {
-                            "minNumber": 1,
-                            "maxNumber": 1,
-                            "rank": "ace"
-                        },
-                        {
-                            "minNumber": 2,
-                            "maxNumber": 13,
-                            "addRank": 1,
-                            "sameSuit": true
-                        }
-                    ]
+                    "firstCard": {
+                        "rank": 1
+                    },
+                    "nextCard": {
+                        "sameSuit": true
+                        "rankDiff": 1
+                    }
                 },
                 {
                     "name": "foundation_2"
@@ -49,7 +44,8 @@
                     "shouldFlip": true,
                     "faceUp": true,
                     "unsnapWhenMoved": false,
-                    "snapBack": true
+                    "snapBack": true,
+                    
                 }
             ]
         }

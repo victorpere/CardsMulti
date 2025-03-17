@@ -422,15 +422,22 @@ class Solitaire : GameScene {
     }
     
     override func popUpMenuItems(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
-        let autocompleteItem = PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
+        var popUpMenuItems: [PopUpMenuItem] = []
+        
+        popUpMenuItems.append(PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
             self.autoComplete()
-        }, parameter: nil)
+        }, parameter: nil))
         
-        let resetScoresItem = PopUpMenuItem(title: UIStrings.resetScore, action: {(_: Any?) in
+        popUpMenuItems.append(PopUpMenuItem(title: UIStrings.resetScore, action: {(_: Any?) in
             self.resetScores()
-        }, parameter: nil)
+        }, parameter: nil))
         
-        return [autocompleteItem, resetScoresItem]
+        popUpMenuItems.append(PopUpMenuItem(title: "undo", action: {(_: Any?) in
+            self.undo()
+        }, parameter: nil))
+
+        
+        return popUpMenuItems
     }
     
     override func resetScores() {
