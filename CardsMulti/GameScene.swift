@@ -380,9 +380,9 @@ class GameScene: GameSceneBase {
     /**
      Saves positions of all cards
      */
-    func saveGame() {
+    func saveGame(saveToUndo: Bool = false) {
         DispatchQueue.global(qos: .background).async {
-            self.gameState.save(cardNodes: self.allCards, scores: self.scores)
+            self.gameState.save(cardNodes: self.allCards, scores: self.scores, saveToUndo: saveToUndo)
         }
     }
     
@@ -779,6 +779,10 @@ class GameScene: GameSceneBase {
         let touchedNode = self.nodes(at: touchLocation).sorted(by: { $0.zPosition > $1.zPosition}).first(where: { $0 is CardSpriteNode })
                 
         if let touchedCardNode = touchedNode as? CardSpriteNode {
+            // Save game state to undo
+            DispatchQueue.global(qos: .background).async {
+                self.saveGame(saveToUndo: true)
+            }
             
             // select card to move
             if touchedCardNode.selectable {
@@ -944,7 +948,7 @@ class GameScene: GameSceneBase {
 
     // MARK: - UIResponder methods
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {        
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
             print("touchesBegan tapCount \(t.tapCount)")
             
@@ -1307,7 +1311,7 @@ extension GameScene : CardSpriteNodeDelegate {
     }
     
     func moveCompleted() {
-        self.saveGame()
+        self.saveGame(saveToUndo: false)
         
         if !self.gameFinished {
             DispatchQueue.global(qos: .background).async {
