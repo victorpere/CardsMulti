@@ -330,21 +330,15 @@ class FreeCell : GameScene {
     }
     
     override func popUpMenuItems(at touchLocation: CGPoint) -> [PopUpMenuItem]? {
-        var popUpMenuItems: [PopUpMenuItem] = []
-        
-        popUpMenuItems.append(PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
+        let autocompleteItem = PopUpMenuItem(title: "autocomplete".localized, action: {(_: Any?) in
             self.autoComplete()
-        }, parameter: nil))
+        }, parameter: nil)
         
-        popUpMenuItems.append(PopUpMenuItem(title: UIStrings.resetScore, action: {(_: Any?) in
+        let resetScoresItem = PopUpMenuItem(title: UIStrings.resetScore, action: {(_: Any?) in
             self.resetScores()
-        }, parameter: nil))
+        }, parameter: nil)
         
-        popUpMenuItems.append(PopUpMenuItem(title: "undo", action: {(_: Any?) in
-            self.undo()
-        }, parameter: nil))
-        
-        return popUpMenuItems
+        return [autocompleteItem, resetScoresItem]
     }
     
     override func selectMultipleNodesForTouch(touchLocation: CGPoint) {
