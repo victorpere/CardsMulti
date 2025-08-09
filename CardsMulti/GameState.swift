@@ -20,7 +20,7 @@ class GameState {
     private var previousSceneStates: [SceneState] = []
     
     @StoredEncodedWithDefault var sceneState: SceneState
-    @StoredValue(key: "gameId") var gameId: String?
+    @StoredValue (key: "gameId") var gameId: String?
     
     // MARK: - Computed properties
     
@@ -87,7 +87,7 @@ class GameState {
      */
     func undo() {
         if self.previousSceneStates.count > 0, let previousSceneState = self.previousSceneStates.popLast() {
-            self.sceneState = SceneState(cardNodes: previousSceneState.cardNodes, scores: previousSceneState.scores)
+            self.sceneState = previousSceneState
         }
     }
     
