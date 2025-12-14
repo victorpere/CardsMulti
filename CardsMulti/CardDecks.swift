@@ -12,7 +12,7 @@ class CardDecks {
     
     static let instance = CardDecks()
     
-    @StoredEncodedWithDefault (key: "customDecks", defaultValue: []) private var customDecks: [CardDeck]
+    @StoredEncodedWithDefault(key: "customDecks", defaultValue: []) private var customDecks: [CardDeck]
     
     private let definedDecks: [CardDeck]
     

@@ -17,7 +17,7 @@ class ProductIdentifiers {
     let identifiers: [String]
     
     /// Stored list of identifiers of purchased products
-    @StoredWithDefault (key: "PurchasedIdentifiers", defaultValue: []) private (set) var purchasedIdentifiers: [String]
+    @StoredWithDefault(key: "PurchasedIdentifiers", defaultValue: []) private(set) var purchasedIdentifiers: [String]
     
     // MARK: - Initializer
     

@@ -21,16 +21,16 @@ class StoredSettings : Settings {
     
     // MARK: - Properties
     
-    @StoredWithDefault (key: SettingsKey.displayName.rawValue, defaultValue: UIDevice.current.name) var displayName: String
-    @StoredValue (key: "cardSet") var cardSet: String?
-    @StoredWithDefault (key: SettingsKey.game.rawValue, defaultValue: GameType.freePlay.rawValue) var game: Int
-    @StoredWithDefault (key: SettingsKey.cardWidthsPerScreen.rawValue, defaultValue: Config.defaultCardWidthsPerScreen) var cardWidthsPerScreen: Float
+    @StoredWithDefault(key: SettingsKey.displayName.rawValue, defaultValue: UIDevice.current.name) var displayName: String
+    @StoredValue(key: "cardSet") var cardSet: String?
+    @StoredWithDefault(key: SettingsKey.game.rawValue, defaultValue: GameType.freePlay.rawValue) var game: Int
+    @StoredWithDefault(key: SettingsKey.cardWidthsPerScreen.rawValue, defaultValue: Config.defaultCardWidthsPerScreen) var cardWidthsPerScreen: Float
     
-    @StoredWithDefault (key: "margin", defaultValue: Config.defaultMargin) var margin: Float
-    @StoredWithDefault (key: "soundOn", defaultValue: true) var soundOn: Bool
-    @StoredValue (key: "customOptions") var customOptions: NSDictionary?
+    @StoredWithDefault(key: "margin", defaultValue: Config.defaultMargin) var margin: Float
+    @StoredWithDefault(key: "soundOn", defaultValue: true) var soundOn: Bool
+    @StoredValue(key: "customOptions") var customOptions: NSDictionary?
     
-    @StoredEncodedWithDefault (key: "deck", defaultValue: GameConfigs.sharedInstance.gameConfig(for: GameType.freePlay)?.defaultSettings.deck ?? CardDeck.empty) var deck: CardDeck
+    @StoredEncodedWithDefault(key: "deck", defaultValue: GameConfigs.sharedInstance.gameConfig(for: GameType.freePlay)?.defaultSettings.deck ?? CardDeck.empty) var deck: CardDeck
     
 
     var deckDictionary: NSDictionary? {
